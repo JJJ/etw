@@ -10,13 +10,14 @@
  */
 
 if ( file_exists( dirname( __FILE__ ) . '/local-config.php' ) ) {
-  include( dirname( __FILE__ ) . '/local-config.php' );
-  define( 'WP_LOCAL_DEV', true );
+	include( dirname( __FILE__ ) . '/local-config.php' );
+	define( 'WP_LOCAL_DEV', true );
+} elseif ( file_exists( dirname( __FILE__ ) . '/.config.php' ) ) {
+	include( dirname( __FILE__ ) . '/.config.php' );
+	define( 'WP_LOCAL_DEV', false );
 } else {
-  define( 'DB_NAME',     '' );
-  define( 'DB_USER',     '' );
-  define( 'DB_PASSWORD', '' );
-  define( 'DB_HOST',     '' );
+	echo "Ooops!";
+	die();
 }
 
 /** Database Charset to use in creating database tables. */
