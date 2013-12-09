@@ -8,6 +8,6 @@ server {
     access_log   /srv/www/easttroyweb/log/access.log;
     error_log    /srv/www/easttroyweb/log/error.log;
 
-    include      /etc/nginx/global/restrictions.conf
+    include      /etc/nginx/global/restrictions.conf;
     include      /etc/nginx/global/wordpress.conf;
 }
