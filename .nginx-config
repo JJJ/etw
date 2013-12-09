@@ -7,44 +7,6 @@ server {
     access_log   /srv/www/easttroyweb/log/access.log;
     error_log    /srv/www/easttroyweb/log/error.log;
 
-    location / {
-        index index.php;
-        try_files $uri $uri/ /index.php?$args;
-    }
-
-    # Add trailing slash to */wp-admin requests.
-    rewrite /wp-admin$ $scheme://$host$uri/ permanent;
-
-    # Pass uploaded files to wp-includes/ms-files.php.
-    rewrite /files/$ /index.php last;
-
-    if ($uri !~ wp-content/plugins) {
-        rewrite /files/(.+)$ /wp-includes/ms-files.php?file=$1 last;
-    }
-
-    # Rewrite multisite '.../wp-.*' and '.../*.php'.
-    if (!-e $request_filename) {
-        rewrite ^/[_0-9a-zA-Z-]+(/wp-.*) $1 last;
-        rewrite ^/[_0-9a-zA-Z-]+.*(/wp-admin/.*\.php)$ $1 last;
-        rewrite ^/[_0-9a-zA-Z-]+(/.*\.php)$ $1 last;
-    }
-
-    location ~ \.php$ {
-        client_max_body_size 50M;
-        try_files      $uri =404;
-		include        /etc/nginx/fastcgi_params;
-		fastcgi_param  SCRIPT_FILENAME         $document_root$fastcgi_script_name;
-        fastcgi_pass   unix:/var/run/php5-fpm.sock;
-        fastcgi_index  index.php;
-    }
-}
-
-# WordPress nginx configuration
-server {
-    listen       80;
-    listen       443 ssl;
-    server_name  easttroyweb.com;
-    root         /srv/www/easttroyweb/public;
     include      /etc/nginx/global/restrictions.conf
     include      /etc/nginx/global/wordpress.conf;
 }
