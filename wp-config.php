@@ -30,9 +30,6 @@ if ( file_exists( dirname( __FILE__ ) . '/local-config.php' ) ) {
  */
 define( 'WPLANG', '' );
 
-// Debug
-define( 'WP_DEBUG', false );
-
 // Custom Content Directory
 define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/etw-content' );
 define( 'WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/etw-content' );
