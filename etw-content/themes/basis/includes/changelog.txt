@@ -1,0 +1,37 @@
+== 1.0.6 ==
+* Added support for Infinite Scroll on search results pages
+* Added style support for WP 3.8+ while maintaining backwards compatibility for older versions with the MP6 plugin
+* Added the "Button Link" option to the Styles dropdown in the Visual Editor
+
+== 1.0.5 ==
+
+* Added link inputs for titles and images in the feature and profile sections
+
+== 1.0.4 ==
+
+* Fixed potential issue with Unbox displaying when child theme is installed
+* Fixed broken JS in Unbox when child theme is installed
+* Added "custom-colors" tag to the theme
+* Added editor styles to section editors
+
+== 1.0.3 ==
+
+* Improved table styling
+* Improved section menu styling in MP6
+* Removed extra buttons in the section editors
+* Added better slashes handling for section content
+
+== 1.0.2 ==
+
+* Fixed content spacing issues
+* Fixed responsiveness of Feature section images
+
+== 1.0.1 ==
+
+* Improved styling of special content (e.g., shortocdes, videos) in post content
+* Deprecated full width content image
+* Improved styling of some Jetpack features
+
+== 1.0 ==
+
+* Initial release
