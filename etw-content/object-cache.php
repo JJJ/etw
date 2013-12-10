@@ -182,7 +182,7 @@ class WP_Object_Cache {
 	function decr( $id, $n = 1, $group = 'default' ) {
 		$key = $this->key( $id, $group );
 		if ( function_exists( 'apc_dec' ) )
-			return apc_dec( $key, $n );
+			return apc_dec( $id, $n );
 		else
 			return false;
 	}
