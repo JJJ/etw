@@ -279,7 +279,7 @@ if ( ! is_multisite() && current_user_can('edit_themes') && $broken_themes = wp_
 	<# } #>
 	<span class="more-details"><?php _e( 'Theme Details' ); ?></span>
 	<div class="theme-author"><?php printf( __( 'By %s' ), '{{{ data.author }}}' ); ?></div>
-	
+
 	<# if ( data.active ) { #>
 		<h3 class="theme-name"><span><?php _ex( 'Active:', 'theme' ); ?></span> {{{ data.name }}}</h3>
 	<# } else { #>
@@ -360,8 +360,8 @@ if ( ! is_multisite() && current_user_can('edit_themes') && $broken_themes = wp_
 				<a href="{{{ data.actions.preview }}}" class="button button-secondary hide-if-customize"><?php _e( 'Preview' ); ?></a>
 			</div>
 
-			<# if ( ! data.active && data.actions.delete ) { #>
-				<a href="{{{ data.actions.delete }}}" class="button button-secondary delete-theme"><?php _e( 'Delete' ); ?></a>
+			<# if ( ! data.active && data.actions['delete'] ) { #>
+				<a href="{{{ data.actions['delete'] }}}" class="button button-secondary delete-theme"><?php _e( 'Delete' ); ?></a>
 			<# } #>
 		</div>
 	</div>

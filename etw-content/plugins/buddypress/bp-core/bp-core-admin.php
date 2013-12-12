@@ -150,6 +150,9 @@ class BP_Admin {
 		// Add settings
 		add_action( 'bp_register_admin_settings', array( $this, 'register_admin_settings' ) );
 
+		// Add a link to BuddyPress About page to the admin bar
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_about_link' ), 15 );
+
 		/** Filters ***********************************************************/
 
 		// Add link to settings page
@@ -331,6 +334,24 @@ class BP_Admin {
 				add_settings_field( '_bp_enable_akismet', __( 'Akismet',          'buddypress' ), 'bp_admin_setting_callback_activity_akismet', 'buddypress', 'bp_activity' );
 				register_setting  ( 'buddypress',         '_bp_enable_akismet',   'intval'                                                                                  );
 			}
+		}
+	}
+
+	/**
+	 * Add a link to BuddyPress About page to the admin bar.
+	 *
+	 * @since BuddyPress (1.9.0)
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar As passed to 'admin_bar_menu'.
+	 */
+	public function admin_bar_about_link( $wp_admin_bar ) {
+		if ( is_user_logged_in() ) {
+			$wp_admin_bar->add_menu( array(
+				'parent' => 'wp-logo',
+				'id'     => 'bp-about',
+				'title'  => esc_html__( 'About BuddyPress', 'buddypress' ),
+				'href'   => add_query_arg( array( 'page' => 'bp-about' ), bp_get_admin_url( 'index.php' ) ),
+			) );
 		}
 	}
 
@@ -598,11 +619,14 @@ class BP_Admin {
 				<a href="http://profiles.wordpress.org/ddean/">ddean</a>,
 				<a href="http://profiles.wordpress.org/DennisSmolek/">DennisSmolek</a>,
 				<a href="http://profiles.wordpress.org/dimensionmedia/">dimensionmedia</a>,
+				<a href="http://profiles.wordpress.org/djpaul/">DJPaul</a>,
 				<a href="http://profiles.wordpress.org/dtc7240/">dtc7240</a>,
 				<a href="http://profiles.wordpress.org/ericlewis/">ericlewis</a>,
 				<a href="http://profiles.wordpress.org/gametako/">gametako</a>,
 				<a href="http://profiles.wordpress.org/geoffroycochard/">geoffroycochard</a>,
+				<a href="http://profiles.wordpress.org/graham-washbrook/">graham-washbrook</a>,
 				<a href="http://profiles.wordpress.org/hanni/">hanni</a>,
+				<a href="http://profiles.wordpress.org/haykayltduk/">haykayltduk</a>,
 				<a href="http://profiles.wordpress.org/henrywright/">henrywright</a>,
 				<a href="http://profiles.wordpress.org/hnla/">hnla</a>,
 				<a href="http://profiles.wordpress.org/imath/">imath</a>,
