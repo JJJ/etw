@@ -2,8 +2,8 @@
 Contributors: johnjamesjacoby, ddean, BrianLayman
 Tags: network, networks, blog, blogs, site, sites, domain, domains, mapping, domain mapping, fun
 Requires at least: WordPress 3.6
-Tested up to: WordPress 3.7.1
-Stable tag: 1.4
+Tested up to: WordPress 3.8
+Stable tag: 1.5.1
 
 == Description ==
 
@@ -53,6 +53,16 @@ Thanks to RavanH for the suggestion!
 Not much to talk about really. Check the code for details!
 
 == Changelog ==
+
+= 1.5.1 =
+* Fixes debug notices when creating networks
+* Fixes incorrect variable usage causing weird output
+* Adds default path when creating new networks
+
+= 1.5 =
+* Support for WordPress 3.8
+* Finally, a menu icon!
+* Improved output sanitization
 
 = 1.4.1 =
 * Fix issue when changing network domain or path - contributed by mgburns

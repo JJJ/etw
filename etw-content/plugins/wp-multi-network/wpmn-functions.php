@@ -226,7 +226,7 @@ function add_network( $domain, $path, $site_name = false, $clone_network = false
 		 */
 
 		// Switch to main network (if it exists)
-		if( network_exists( SITE_ID_CURRENT_SITE ) ) {
+		if ( defined( 'SITE_ID_CURRENT_SITE' ) && network_exists( SITE_ID_CURRENT_SITE ) ) {
 			switch_to_network( SITE_ID_CURRENT_SITE );
 			$use_files_rewriting = get_site_option( 'ms_files_rewriting' );
 			restore_current_network();
@@ -282,11 +282,11 @@ function add_network( $domain, $path, $site_name = false, $clone_network = false
 		restore_current_network();
 		switch_to_network( $new_network_id );
 
-		foreach($options_to_clone as $option) {
-			if($options_cache[$option] !== false) {
+		foreach( $options_to_clone as $option ) {
+			if ( isset( $options_cache[$option] ) ) {
 				
 				// Fix for strange bug that prevents writing the ms_files_rewriting value for new networks
-				if( $option == 'ms_files_rewriting' ) {
+				if ( $option == 'ms_files_rewriting' ) {
 					$wpdb->insert( $wpdb->sitemeta, array('site_id' => $wpdb->siteid, 'meta_key' => $option, 'meta_value' => $options_cache[$option] ) );
 				} else {
 					add_site_option( $option, $options_cache[$option] );
@@ -296,7 +296,7 @@ function add_network( $domain, $path, $site_name = false, $clone_network = false
 		unset($options_cache);
 
 		foreach ( $options_to_clone as $option ) {
-			if ( $options_cache[$option] !== false ) {
+			if ( isset( $options_cache[$option] ) ) {
 				add_site_option( $option, $options_cache[$option] );
 			}
 		}

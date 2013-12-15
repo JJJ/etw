@@ -9,6 +9,7 @@
  * Refreshed by John James Jacoby for WordPress 3.3
  * Refreshed by John James Jacoby for WordPress 3.5
  * Refreshed by David Dean for WordPress 3.6
+ * Refreshed by John James Jacoby for WordPress 3.8
  *
  * @package WPMN
  * @subpackage Loader
@@ -18,10 +19,10 @@
  * Plugin Name: WP Multi-Network
  * Plugin URI:  http://wordpress.org/extend/plugins/wp-multi-network/
  * Description: Adds a Network Management UI for super admins in a WordPress Multisite environment
- * Version:     1.4
+ * Version:     1.5.1
  * Author:      johnjamesjacoby, ddean, BrianLayman
- * Author URI:  http://johnjamesjacoby.com
- * Tags: multi, networks, site, network, blog, domain, subdomain, path, multisite, MS
+ * Author URI:  http://jjj.me
+ * Tags:        multi, networks, site, network, blog, domain, subdomain, path, multisite, MS
  */
 
 // Exit if accessed directly
@@ -54,8 +55,9 @@ class WPMN_Loader {
 	private function constants() {
 
 		// Enable the holding network. Must be true to save orphaned blogs.
-		if ( !defined( 'ENABLE_NETWORK_ZERO' ) )
+		if ( !defined( 'ENABLE_NETWORK_ZERO' ) ) {
 			define( 'ENABLE_NETWORK_ZERO', false );
+		}
 
 		/**
 		 * true = Redirect blogs from deleted network to holding network
@@ -63,8 +65,9 @@ class WPMN_Loader {
 		 *
 		 * false = Allow blogs belonging to deleted networks to be deleted.
 		 */
-		if ( !defined( 'RESCUE_ORPHANED_BLOGS' ) )
+		if ( !defined( 'RESCUE_ORPHANED_BLOGS' ) ) {
 			define( 'RESCUE_ORPHANED_BLOGS', false );
+		}
 
 		define( 'NETWORKS_PER_PAGE', 10 );
 	}
@@ -94,8 +97,8 @@ class WPMN_Loader {
 	 * @uses is_network_admin() To only include admin code when needed
 	 */
 	private function includes() {
-		require( $this->plugin_dir . 'wpmn-functions.php'  );
-		require( $this->plugin_dir . 'wpmn-actions.php'  );
+		require( $this->plugin_dir . 'wpmn-functions.php' );
+		require( $this->plugin_dir . 'wpmn-actions.php'   );
 
 		if ( is_network_admin() || is_admin() ) {
 			require( $this->plugin_dir . 'wpmn-admin.php' );
