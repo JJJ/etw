@@ -20,12 +20,10 @@ a {
 	}
 }
 
-#rightnow a:hover,
 #media-upload a.del-link:hover,
 div.dashboard-widget-submit input:hover,
 .subsubsub a:hover,
-.subsubsub a.current:hover,
-.ui-tabs-nav a:hover {
+.subsubsub a.current:hover {
 	color: $link-focus;
 }
 
@@ -33,11 +31,11 @@ div.dashboard-widget-submit input:hover,
 /* Forms */
 
 input[type=checkbox]:checked:before {
-    color: $form-checked;
+	color: $form-checked;
 }
 
 input[type=radio]:checked:before {
-    background: $form-checked;
+	background: $form-checked;
 }
 
 .wp-core-ui input[type="reset"]:hover,
@@ -434,6 +432,26 @@ ul#adminmenu > li.current > a.current:after {
 	background: $highlight-color;
 }
 
+.theme-section.current,
+.theme-filter.current {
+	border-bottom-color: $menu-background;
+}
+
+body.more-filters-opened .more-filters,
+body.more-filters-opened .more-filters:before {
+	color: $menu-text;
+	background-color: $menu-background;
+}
+
+body.more-filters-opened .more-filters:hover,
+body.more-filters-opened .more-filters:focus,
+body.more-filters-opened .more-filters:hover:before,
+body.more-filters-opened .more-filters:focus:before {
+	background-color: $menu-highlight-background;
+	color: $menu-highlight-text;
+}
+
+
 /* jQuery UI Slider */
 
 .wp-slider .ui-slider-handle,
@@ -441,7 +459,6 @@ ul#adminmenu > li.current > a.current:after {
 .wp-slider .ui-slider-handle.focus {
 	background: $button-color;
 	border-color: darken( $button-color, 10% );
-	-webkit-box-shadow: inset 0 1px 0 lighten( $button-color, 15% ), 0 1px 0 rgba(0,0,0,.15);
 	box-shadow: inset 0 1px 0 lighten( $button-color, 15% ), 0 1px 0 rgba(0,0,0,.15);
 }
 

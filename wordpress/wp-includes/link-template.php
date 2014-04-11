@@ -71,10 +71,27 @@ function permalink_anchor( $mode = 'id' ) {
 /**
  * Retrieve full permalink for current post or post ID.
  *
+ * This function is an alias for get_permalink().
+ *
+ * @since 3.9.0
+ *
+ * @see get_permalink()
+ *
+ * @param int|WP_Post $id        Optional. Post ID or post object. Default is the current post.
+ * @param bool        $leavename Optional. Whether to keep post name or page name. Default false.
+ * @return string|bool The permalink URL or false if post does not exist.
+ */
+function get_the_permalink( $id = 0, $leavename = false ) {
+	return get_permalink( $id, $leavename );
+}
+
+/**
+ * Retrieve full permalink for current post or post ID.
+ *
  * @since 1.0.0
  *
- * @param int|WP_Post $id Optional. Post ID or post object, defaults to the current post.
- * @param bool $leavename Optional. Whether to keep post name or page name, defaults to false.
+ * @param int|WP_Post $id        Optional. Post ID or post object. Default current post.
+ * @param bool        $leavename Optional. Whether to keep post name or page name. Default false.
  * @return string|bool The permalink URL or false if post does not exist.
  */
 function get_permalink( $id = 0, $leavename = false ) {
@@ -499,8 +516,6 @@ function get_post_comments_feed_link($post_id = 0, $feed = '') {
  * anchor. If no link text is specified, default text is used. If no post ID is
  * specified, the current post is used.
  *
- * @package WordPress
- * @subpackage Feed
  * @since 2.5.0
  *
  * @param string $link_text Descriptive text.
@@ -522,8 +537,6 @@ function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
  * Returns a link to the feed for all posts by a given author. A specific feed
  * can be requested or left blank to get the default feed.
  *
- * @package WordPress
- * @subpackage Feed
  * @since 2.5.0
  *
  * @param int $author_id ID of an author.
@@ -560,8 +573,6 @@ function get_author_feed_link( $author_id, $feed = '' ) {
  * Returns a link to the feed for all posts in a given category. A specific feed
  * can be requested or left blank to get the default feed.
  *
- * @package WordPress
- * @subpackage Feed
  * @since 2.5.0
  *
  * @param int $cat_id ID of a category.
@@ -578,7 +589,7 @@ function get_category_feed_link($cat_id, $feed = '') {
  * Returns a link to the feed for all posts in a given term. A specific feed
  * can be requested or left blank to get the default feed.
  *
- * @since 3.0
+ * @since 3.0.0
  *
  * @param int $term_id ID of a category.
  * @param string $taxonomy Optional. Taxonomy of $term_id
@@ -994,14 +1005,13 @@ function get_edit_comment_link( $comment_id = 0 ) {
 }
 
 /**
- * Display or retrieve edit comment link with formatting.
+ * Display edit comment link with formatting.
  *
  * @since 1.0.0
  *
  * @param string $link Optional. Anchor text.
  * @param string $before Optional. Display before edit link.
  * @param string $after Optional. Display after edit link.
- * @return string|null HTML content, if $echo is set to false.
  */
 function edit_comment_link( $link = null, $before = '', $after = '' ) {
 	global $comment;
@@ -1256,8 +1266,8 @@ function get_adjacent_post_rel_link( $title = '%title', $in_same_term = false, $
  * @param string       $taxonomy       Optional. Taxonomy, if $in_same_term is true. Default 'category'.
  */
 function adjacent_posts_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
-	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms = '', true, $taxonomy );
-	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms = '', false, $taxonomy );
+	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, true, $taxonomy );
+	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, false, $taxonomy );
 }
 
 /**
@@ -1284,7 +1294,7 @@ function adjacent_posts_rel_link_wp_head() {
  * @param string       $taxonomy       Optional. Taxonomy, if $in_same_term is true. Default 'category'.
  */
 function next_post_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
-	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms = '', false, $taxonomy );
+	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, false, $taxonomy );
 }
 
 /**
@@ -1298,7 +1308,7 @@ function next_post_rel_link( $title = '%title', $in_same_term = false, $excluded
  * @param string       $taxonomy       Optional. Taxonomy, if $in_same_term is true. Default 'category'.
  */
 function prev_post_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
-	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms = '', true, $taxonomy );
+	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, true, $taxonomy );
 }
 
 /**
@@ -1313,7 +1323,7 @@ function prev_post_rel_link( $title = '%title', $in_same_term = false, $excluded
  * @param array|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
  * @param bool         $start          Optional. Whether to retrieve first or last post.
  * @param string       $taxonomy       Optional. Taxonomy, if $in_same_term is true. Default 'category'.
- * @return object
+ * @return mixed Array containing the boundary post object if successful, null otherwise.
  */
 function get_boundary_post( $in_same_term = false, $excluded_terms = '', $start = true, $taxonomy = 'category' ) {
 	$post = get_post();
@@ -1711,7 +1721,7 @@ function previous_posts_link( $label = null ) {
 /**
  * Return post pages link navigation for previous and next pages.
  *
- * @since 2.8
+ * @since 2.8.0
  *
  * @param string|array $args Optional args.
  * @return string The posts link navigation.
@@ -1956,7 +1966,6 @@ function get_shortcut_link() {
  * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
  * overridden.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @uses get_home_url()
@@ -1976,7 +1985,6 @@ function home_url( $path = '', $scheme = null ) {
  * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
  * overridden.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param  int $blog_id   (optional) Blog ID. Defaults to current blog.
@@ -2017,7 +2025,6 @@ function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
  * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
  * overridden.
  *
- * @package WordPress
  * @since 2.6.0
  *
  * @uses get_site_url()
@@ -2037,7 +2044,6 @@ function site_url( $path = '', $scheme = null ) {
  * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
  * overridden.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param int $blog_id (optional) Blog ID. Defaults to current blog.
@@ -2065,7 +2071,6 @@ function get_site_url( $blog_id = null, $path = '', $scheme = null ) {
 /**
  * Retrieve the url to the admin area for the current site.
  *
- * @package WordPress
  * @since 2.6.0
  *
  * @param string $path Optional path relative to the admin url.
@@ -2079,7 +2084,6 @@ function admin_url( $path = '', $scheme = 'admin' ) {
 /**
  * Retrieve the url to the admin area for a given site.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param int $blog_id (optional) Blog ID. Defaults to current blog.
@@ -2099,7 +2103,6 @@ function get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
 /**
  * Retrieve the url to the includes directory.
  *
- * @package WordPress
  * @since 2.6.0
  *
  * @param string $path Optional. Path relative to the includes url.
@@ -2118,7 +2121,6 @@ function includes_url( $path = '', $scheme = null ) {
 /**
  * Retrieve the url to the content directory.
  *
- * @package WordPress
  * @since 2.6.0
  *
  * @param string $path Optional. Path relative to the content url.
@@ -2137,7 +2139,6 @@ function content_url($path = '') {
  * Retrieve the url to the plugins directory or to a specific file within that directory.
  * You can hardcode the plugin slug in $path or pass __FILE__ as a second argument to get the correct folder name.
  *
- * @package WordPress
  * @since 2.6.0
  *
  * @param string $path Optional. Path relative to the plugins url.
@@ -2179,7 +2180,6 @@ function plugins_url($path = '', $plugin = '') {
  * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
  * overridden.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param string $path Optional. Path relative to the site url.
@@ -2210,7 +2210,6 @@ function network_site_url( $path = '', $scheme = null ) {
  * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
  * overridden.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param  string $path   (optional) Path relative to the home url.
@@ -2241,7 +2240,6 @@ function network_home_url( $path = '', $scheme = null ) {
 /**
  * Retrieve the url to the admin area for the network.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param string $path Optional path relative to the admin url.
@@ -2263,7 +2261,6 @@ function network_admin_url( $path = '', $scheme = 'admin' ) {
 /**
  * Retrieve the url to the admin area for the current user.
  *
- * @package WordPress
  * @since 3.0.0
  *
  * @param string $path Optional path relative to the admin url.
@@ -2282,7 +2279,6 @@ function user_admin_url( $path = '', $scheme = 'admin' ) {
 /**
  * Retrieve the url to the admin area for either the current blog or the network depending on context.
  *
- * @package WordPress
  * @since 3.1.0
  *
  * @param string $path Optional path relative to the admin url.
@@ -2344,13 +2340,13 @@ function set_url_scheme( $url, $scheme = null ) {
  *
  * @since 3.1.0
  *
- * @param int $user_id User ID
+ * @param int $user_id Optional. User ID. Defaults to current user.
  * @param string $path Optional path relative to the dashboard. Use only paths known to both blog and user admins.
  * @param string $scheme The scheme to use. Default is 'admin', which obeys force_ssl_admin() and is_ssl(). 'http' or 'https' can be passed to force those schemes.
  * @return string Dashboard url link with optional path appended.
  */
-function get_dashboard_url( $user_id, $path = '', $scheme = 'admin' ) {
-	$user_id = (int) $user_id;
+function get_dashboard_url( $user_id = 0, $path = '', $scheme = 'admin' ) {
+	$user_id = $user_id ? (int) $user_id : get_current_user_id();
 
 	$blogs = get_blogs_of_user( $user_id );
 	if ( ! is_super_admin() && empty($blogs) ) {
@@ -2378,27 +2374,27 @@ function get_dashboard_url( $user_id, $path = '', $scheme = 'admin' ) {
  *
  * @since 3.1.0
  *
- * @param int $user User ID
- * @param string $scheme The scheme to use. Default is 'admin', which obeys force_ssl_admin() and is_ssl(). 'http' or 'https' can be passed to force those schemes.
+ * @param int    $user_id Optional. User ID. Defaults to current user.
+ * @param string $scheme  The scheme to use. Default is 'admin', which obeys force_ssl_admin() and is_ssl().
+ *                        'http' or 'https' can be passed to force those schemes.
  * @return string Dashboard url link with optional path appended.
  */
-function get_edit_profile_url( $user, $scheme = 'admin' ) {
-	$user = (int) $user;
+function get_edit_profile_url( $user_id = 0, $scheme = 'admin' ) {
+	$user_id = $user_id ? (int) $user_id : get_current_user_id();
 
 	if ( is_user_admin() )
 		$url = user_admin_url( 'profile.php', $scheme );
 	elseif ( is_network_admin() )
 		$url = network_admin_url( 'profile.php', $scheme );
 	else
-		$url = get_dashboard_url( $user, 'profile.php', $scheme );
+		$url = get_dashboard_url( $user_id, 'profile.php', $scheme );
 
-	return apply_filters( 'edit_profile_url', $url, $user, $scheme);
+	return apply_filters( 'edit_profile_url', $url, $user_id, $scheme);
 }
 
 /**
  * Output rel=canonical for singular queries.
  *
- * @package WordPress
  * @since 2.9.0
 */
 function rel_canonical() {
@@ -2454,8 +2450,12 @@ function wp_get_shortlink($id = 0, $context = 'post', $allow_slugs = true) {
 	// Return p= link for all public post types.
 	if ( ! empty( $post_id ) ) {
 		$post_type = get_post_type_object( $post->post_type );
-		if ( $post_type->public )
-			$shortlink = home_url('?p=' . $post_id);
+
+		if ( 'page' === $post->post_type && $post->ID == get_option( 'page_on_front' ) && 'page' == get_option( 'show_on_front' ) ) {
+			$shortlink = home_url( '/' );
+		} elseif ( $post_type->public ) {
+			$shortlink = home_url( '?p=' . $post_id );
+		}
 	}
 
 	return apply_filters('get_shortlink', $shortlink, $id, $context, $allow_slugs);

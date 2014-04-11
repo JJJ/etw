@@ -46,13 +46,14 @@ function mysql2date( $format, $date, $translate = true ) {
  *
  * The 'mysql' type will return the time in the format for MySQL DATETIME field.
  * The 'timestamp' type will return the current timestamp.
+ * Other strings will be interpreted as PHP date formats (e.g. 'Y-m-d').
  *
  * If $gmt is set to either '1' or 'true', then both types will use GMT time.
  * if $gmt is false, the output is adjusted with the GMT offset in the WordPress option.
  *
  * @since 1.0.0
  *
- * @param string $type Either 'mysql' or 'timestamp'.
+ * @param string $type 'mysql', 'timestamp', or PHP date format string (e.g. 'Y-m-d').
  * @param int|bool $gmt Optional. Whether to use GMT timezone. Default is false.
  * @return int|string String if $type is 'gmt', int if $type is 'timestamp'.
  */
@@ -63,6 +64,9 @@ function current_time( $type, $gmt = 0 ) {
 			break;
 		case 'timestamp':
 			return ( $gmt ) ? time() : time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
+			break;
+		default:
+			return ( $gmt ) ? date( $type ) : date( $type, time() + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
 			break;
 	}
 }
@@ -247,20 +251,24 @@ function maybe_unserialize( $original ) {
  */
 function is_serialized( $data, $strict = true ) {
 	// if it isn't a string, it isn't serialized
-	if ( ! is_string( $data ) )
+	if ( ! is_string( $data ) ) {
 		return false;
+	}
 	$data = trim( $data );
- 	if ( 'N;' == $data )
+ 	if ( 'N;' == $data ) {
 		return true;
-	$length = strlen( $data );
-	if ( $length < 4 )
+	}
+	if ( strlen( $data ) < 4 ) {
 		return false;
-	if ( ':' !== $data[1] )
+	}
+	if ( ':' !== $data[1] ) {
 		return false;
+	}
 	if ( $strict ) {
-		$lastc = $data[ $length - 1 ];
-		if ( ';' !== $lastc && '}' !== $lastc )
+		$lastc = substr( $data, -1 );
+		if ( ';' !== $lastc && '}' !== $lastc ) {
 			return false;
+		}
 	} else {
 		$semicolon = strpos( $data, ';' );
 		$brace     = strpos( $data, '}' );
@@ -277,8 +285,9 @@ function is_serialized( $data, $strict = true ) {
 	switch ( $token ) {
 		case 's' :
 			if ( $strict ) {
-				if ( '"' !== $data[ $length - 2 ] )
+				if ( '"' !== substr( $data, -2, 1 ) ) {
 					return false;
+				}
 			} elseif ( false === strpos( $data, '"' ) ) {
 				return false;
 			}
@@ -305,22 +314,23 @@ function is_serialized( $data, $strict = true ) {
  */
 function is_serialized_string( $data ) {
 	// if it isn't a string, it isn't a serialized string
-	if ( !is_string( $data ) )
+	if ( ! is_string( $data ) ) {
 		return false;
+	}
 	$data = trim( $data );
-	$length = strlen( $data );
-	if ( $length < 4 )
+	if ( strlen( $data ) < 4 ) {
 		return false;
-	elseif ( ':' !== $data[1] )
+	} elseif ( ':' !== $data[1] ) {
 		return false;
-	elseif ( ';' !== $data[$length-1] )
+	} elseif ( ';' !== substr( $data, -1 ) ) {
 		return false;
-	elseif ( $data[0] !== 's' )
+	} elseif ( $data[0] !== 's' ) {
 		return false;
-	elseif ( '"' !== $data[$length-2] )
+	} elseif ( '"' !== substr( $data, -2, 1 ) ) {
 		return false;
-	else
+	} else {
 		return true;
+	}
 }
 
 /**
@@ -349,8 +359,6 @@ function maybe_serialize( $data ) {
  * If the title element is not part of the XML, then the default post title from
  * the $post_default_title will be used instead.
  *
- * @package WordPress
- * @subpackage XMLRPC
  * @since 0.71
  *
  * @global string $post_default_title Default XMLRPC post title.
@@ -375,8 +383,6 @@ function xmlrpc_getposttitle( $content ) {
  * used. The return type then would be what $post_default_category. If the
  * category is found, then it will always be an array.
  *
- * @package WordPress
- * @subpackage XMLRPC
  * @since 0.71
  *
  * @global string $post_default_category Default XMLRPC post category.
@@ -398,8 +404,6 @@ function xmlrpc_getpostcategory( $content ) {
 /**
  * XMLRPC XML content without title and category elements.
  *
- * @package WordPress
- * @subpackage XMLRPC
  * @since 0.71
  *
  * @param string $content XMLRPC XML Request content
@@ -439,7 +443,6 @@ function wp_extract_urls( $content ) {
  * remove enclosures that are no longer in the post. This is called as
  * pingbacks and trackbacks.
  *
- * @package WordPress
  * @since 1.5.0
  *
  * @uses $wpdb
@@ -867,10 +870,14 @@ function get_status_header_desc( $code ) {
 			415 => 'Unsupported Media Type',
 			416 => 'Requested Range Not Satisfiable',
 			417 => 'Expectation Failed',
+			418 => 'I\'m a teapot',
 			422 => 'Unprocessable Entity',
 			423 => 'Locked',
 			424 => 'Failed Dependency',
 			426 => 'Upgrade Required',
+			428 => 'Precondition Required',
+			429 => 'Too Many Requests',
+			431 => 'Request Header Fields Too Large',
 
 			500 => 'Internal Server Error',
 			501 => 'Not Implemented',
@@ -880,7 +887,8 @@ function get_status_header_desc( $code ) {
 			505 => 'HTTP Version Not Supported',
 			506 => 'Variant Also Negotiates',
 			507 => 'Insufficient Storage',
-			510 => 'Not Extended'
+			510 => 'Not Extended',
+			511 => 'Network Authentication Required',
 		);
 	}
 
@@ -1187,14 +1195,12 @@ function is_blog_installed() {
 /**
  * Retrieve URL with nonce added to URL query.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @param string $actionurl URL to add nonce action.
  * @param string $action Optional. Nonce action name.
  * @param string $name Optional. Nonce name.
- * @return string URL with nonce action added.
+ * @return string Escaped URL with nonce action added.
  */
 function wp_nonce_url( $actionurl, $action = -1, $name = '_wpnonce' ) {
 	$actionurl = str_replace( '&amp;', '&', $actionurl );
@@ -1219,8 +1225,6 @@ function wp_nonce_url( $actionurl, $action = -1, $name = '_wpnonce' ) {
  * The input name will be whatever $name value you gave. The input value will be
  * the nonce creation value.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @param string $action Optional. Action name.
@@ -1248,8 +1252,6 @@ function wp_nonce_field( $action = -1, $name = "_wpnonce", $referer = true , $ec
  * The referer link is the current Request URI from the server super global. The
  * input name is '_wp_http_referer', in case you wanted to check manually.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @param bool $echo Whether to echo or return the referer field.
@@ -1270,8 +1272,6 @@ function wp_referer_field( $echo = true ) {
  * value of {@link wp_referer_field()}, if that was posted already or it will
  * be the current page, if it doesn't exist.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @param bool $echo Whether to echo the original http referer
@@ -1292,8 +1292,6 @@ function wp_original_referer_field( $echo = true, $jump_back_to = 'current' ) {
  * Retrieve referer from '_wp_http_referer' or HTTP referer. If it's the same
  * as the current request URL, will return false.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @return string|bool False on failure. Referer URL on success.
@@ -1315,8 +1313,6 @@ function wp_get_referer() {
 /**
  * Retrieve original referer that was posted, if it exists.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @return string|bool False if no original referer or original referer if set.
@@ -1434,6 +1430,23 @@ function path_join( $base, $path ) {
 }
 
 /**
+ * Normalize a filesystem path.
+ *
+ * Replaces backslashes with forward slashes for Windows systems,
+ * and ensures no duplicate slashes exist.
+ *
+ * @since 3.9.0
+ *
+ * @param string $path Path to normalize.
+ * @return string Normalized path.
+ */
+function wp_normalize_path( $path ) {
+	$path = str_replace( '\\', '/', $path );
+	$path = preg_replace( '|/+|','/', $path );
+	return $path;
+}
+
+/**
  * Determines a writable directory for temporary files.
  * Function's preference is the return value of <code>sys_get_temp_dir()</code>,
  * followed by your PHP temporary upload directory, followed by WP_CONTENT_DIR,
@@ -1453,17 +1466,17 @@ function get_temp_dir() {
 		return trailingslashit(WP_TEMP_DIR);
 
 	if ( $temp )
-		return trailingslashit( rtrim( $temp, '\\' ) );
+		return trailingslashit( $temp );
 
 	if ( function_exists('sys_get_temp_dir') ) {
 		$temp = sys_get_temp_dir();
 		if ( @is_dir( $temp ) && wp_is_writable( $temp ) )
-			return trailingslashit( rtrim( $temp, '\\' ) );
+			return trailingslashit( $temp );
 	}
 
 	$temp = ini_get('upload_tmp_dir');
 	if ( @is_dir( $temp ) && wp_is_writable( $temp ) )
-		return trailingslashit( rtrim( $temp, '\\' ) );
+		return trailingslashit( $temp );
 
 	$temp = WP_CONTENT_DIR . '/';
 	if ( is_dir( $temp ) && wp_is_writable( $temp ) )
@@ -1810,7 +1823,6 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 /**
  * Retrieve the file type based on the extension name.
  *
- * @package WordPress
  * @since 2.5.0
  * @uses apply_filters() Calls 'ext2type' hook on default supported types.
  *
@@ -1977,6 +1989,7 @@ function wp_get_mime_types() {
 	'rtx' => 'text/richtext',
 	'css' => 'text/css',
 	'htm|html' => 'text/html',
+	'vtt' => 'text/vtt',
 	// Audio formats
 	'mp3|m4a|m4b' => 'audio/mpeg',
 	'ra|ram' => 'audio/x-realaudio',
@@ -2071,8 +2084,6 @@ function get_allowed_mime_types( $user = null ) {
  * If the action has the nonce explain message, then it will be displayed along
  * with the "Are you sure?" message.
  *
- * @package WordPress
- * @subpackage Security
  * @since 2.0.4
  *
  * @param string $action The nonce action.
@@ -2081,7 +2092,8 @@ function wp_nonce_ays( $action ) {
 	$title = __( 'WordPress Failure Notice' );
 	if ( 'log-out' == $action ) {
 		$html = sprintf( __( 'You are attempting to log out of %s' ), get_bloginfo( 'name' ) ) . '</p><p>';
-		$html .= sprintf( __( "Do you really want to <a href='%s'>log out</a>?"), wp_logout_url() );
+		$redirect_to = isset( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
+		$html .= sprintf( __( "Do you really want to <a href='%s'>log out</a>?"), wp_logout_url( $redirect_to ) );
 	} else {
 		$html = __( 'Are you sure you want to do this?' );
 		if ( wp_get_referer() )
@@ -2188,11 +2200,11 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 	<title><?php echo $title ?></title>
 	<style type="text/css">
 		html {
-			background: #eee;
+			background: #f1f1f1;
 		}
 		body {
 			background: #fff;
-			color: #333;
+			color: #444;
 			font-family: "Open Sans", sans-serif;
 			margin: 2em auto;
 			padding: 1em 2em;
@@ -2409,7 +2421,6 @@ function wp_send_json_error( $data = null ) {
  * development environment.
  *
  * @access private
- * @package WordPress
  * @since 2.2.0
  *
  * @param string $url URL for the home location
@@ -2429,7 +2440,6 @@ function _config_wp_home( $url = '' ) {
  * your localhost while not having to change the database to your URL.
  *
  * @access private
- * @package WordPress
  * @since 2.2.0
  *
  * @param string $url URL to set the WordPress site location.
@@ -2451,8 +2461,6 @@ function _config_wp_siteurl( $url = '' ) {
  * keys. These keys are then returned in the $input array.
  *
  * @access private
- * @package WordPress
- * @subpackage MCE
  * @since 2.1.0
  *
  * @param array $input MCE plugin array.
@@ -2793,6 +2801,8 @@ function wp_ob_end_flush_all() {
 function dead_db() {
 	global $wpdb;
 
+	wp_load_translations_early();
+
 	// Load custom DB error template, if present.
 	if ( file_exists( WP_CONTENT_DIR . '/db-error.php' ) ) {
 		require_once( WP_CONTENT_DIR . '/db-error.php' );
@@ -2807,8 +2817,6 @@ function dead_db() {
 	status_header( 500 );
 	nocache_headers();
 	header( 'Content-Type: text/html; charset=utf-8' );
-
-	wp_load_translations_early();
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"<?php if ( is_rtl() ) echo ' dir="rtl"'; ?>>
@@ -2883,8 +2891,6 @@ function url_is_accessable_via_ssl($url)
  *
  * This function is to be used in every function that is deprecated.
  *
- * @package WordPress
- * @subpackage Debug
  * @since 2.5.0
  * @access private
  *
@@ -2928,8 +2934,6 @@ function _deprecated_function( $function, $version, $replacement = null ) {
  *
  * This function is to be used in every file that is deprecated.
  *
- * @package WordPress
- * @subpackage Debug
  * @since 2.5.0
  * @access private
  *
@@ -2981,8 +2985,6 @@ function _deprecated_file( $file, $version, $replacement = null, $message = '' )
  *
  * The current behavior is to trigger a user error if WP_DEBUG is true.
  *
- * @package WordPress
- * @subpackage Debug
  * @since 3.0.0
  * @access private
  *
@@ -3024,8 +3026,6 @@ function _deprecated_argument( $function, $version, $message = null ) {
  *
  * The current behavior is to trigger a user error if WP_DEBUG is true.
  *
- * @package WordPress
- * @subpackage Debug
  * @since 3.1.0
  * @access private
  *
@@ -3369,7 +3369,6 @@ function is_main_network( $network_id = null ) {
  *
  *
  * @since 3.0.0
- * @package WordPress
  *
  * @return bool True if multisite and global terms enabled
  */
@@ -4095,7 +4094,7 @@ function wp_auth_check_html() {
  *
  * @since 3.6.0
  */
-function wp_auth_check( $response, $data ) {
+function wp_auth_check( $response ) {
 	$response['wp-auth-check'] = is_user_logged_in() && empty( $GLOBALS['login_grace_period'] );
 	return $response;
 }
