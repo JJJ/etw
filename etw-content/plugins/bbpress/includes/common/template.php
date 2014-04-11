@@ -893,6 +893,7 @@ function bbp_is_edit() {
  * @uses bbp_is_subscriptions()
  * @uses bbp_is_favorites()
  * @uses bbp_is_topics_created()
+ * @uses bbp_is_replies_created()
  * @uses bbp_is_forum_archive()
  * @uses bbp_is_topic_archive()
  * @uses bbp_is_topic_tag()
@@ -981,6 +982,11 @@ function bbp_body_class( $wp_classes, $custom_classes = false ) {
 		$bbp_classes[] = 'single';
 		$bbp_classes[] = 'singular';
 
+	} elseif ( bbp_is_replies_created() ) {
+		$bbp_classes[] = 'bbp-replies-created';
+		$bbp_classes[] = 'single';
+		$bbp_classes[] = 'singular';
+
 	} elseif ( bbp_is_favorites() ) {
 		$bbp_classes[] = 'bbp-favorites';
 		$bbp_classes[] = 'single';
@@ -1038,6 +1044,7 @@ function bbp_body_class( $wp_classes, $custom_classes = false ) {
  * @uses bbp_is_subscriptions()
  * @uses bbp_is_favorites()
  * @uses bbp_is_topics_created()
+ * @uses bbp_is_replies_created()
  * @return bool In a bbPress page
  */
 function is_bbpress() {
@@ -1105,6 +1112,9 @@ function is_bbpress() {
 		$retval = true;
 
 	} elseif ( bbp_is_topics_created() ) {
+		$retval = true;
+
+	} elseif ( bbp_is_replies_created() ) {
 		$retval = true;
 
 	} elseif ( bbp_is_favorites() ) {
@@ -2585,28 +2595,28 @@ function bbp_title( $title = '', $sep = '&raquo;', $seplocation = '' ) {
 
 		// User is viewing someone else's profile (so use their display name)
 		} else {
-			$new_title['text'] = get_userdata( bbp_get_user_id() )->display_name;
+			$new_title['text'] = sprintf( esc_attr_x( "%s's", 'User viewing another users profile', 'bbpress' ), get_userdata( bbp_get_user_id() )->display_name );
 		}
 
 		// User topics created
 		if ( bbp_is_single_user_topics() ) {
-			$new_title['format'] = esc_attr__( "%s's Topics",        'bbpress' );
+			$new_title['format'] = esc_attr__( "%s Topics",        'bbpress' );
 
 		// User rueplies created
 		} elseif ( bbp_is_single_user_replies() ) {
-			$new_title['format'] = esc_attr__( "%s's Replies",       'bbpress' );
+			$new_title['format'] = esc_attr__( "%s Replies",       'bbpress' );
 
 		// User favorites
 		} elseif ( bbp_is_favorites() ) {
-			$new_title['format'] = esc_attr__( "%s's Favorites",     'bbpress' );
+			$new_title['format'] = esc_attr__( "%s Favorites",     'bbpress' );
 
 		// User subscriptions
 		} elseif ( bbp_is_subscriptions() ) {
-			$new_title['format'] = esc_attr__( "%s's Subscriptions", 'bbpress' );
+			$new_title['format'] = esc_attr__( "%s Subscriptions", 'bbpress' );
 
 		// User "home"
 		} else {
-			$new_title['format'] = esc_attr__( "%s's Profile",       'bbpress' );
+			$new_title['format'] = esc_attr__( "%s Profile",       'bbpress' );
 		}
 
 	// Profile edit page

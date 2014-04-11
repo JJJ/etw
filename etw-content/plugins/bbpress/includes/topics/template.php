@@ -152,6 +152,7 @@ function bbp_has_topics( $args = '' ) {
 		'post_type'      => bbp_get_topic_post_type(), // Narrow query down to bbPress topics
 		'post_parent'    => $default_post_parent,      // Forum ID
 		'meta_key'       => '_bbp_last_active_time',   // Make sure topic has some last activity time
+		'meta_type'      => 'DATETIME',
 		'orderby'        => 'meta_value',              // 'meta_value', 'author', 'date', 'title', 'modified', 'parent', rand',
 		'order'          => 'DESC',                    // 'ASC', 'DESC'
 		'posts_per_page' => bbp_get_topics_per_page(), // Topics per page
@@ -280,6 +281,7 @@ function bbp_has_topics( $args = '' ) {
 					'post_type'   => bbp_get_topic_post_type(),
 					'post_parent' => 'any',
 					'meta_key'    => '_bbp_last_active_time',
+					'meta_type'   => 'DATETIME',
 					'orderby'     => 'meta_value',
 					'order'       => 'DESC',
 					'include'     => $stickies
@@ -3365,16 +3367,17 @@ function bbp_topic_tag_tax_id() {
  */
 function bbp_get_topic_tag_tax_labels() {
 	return apply_filters( 'bbp_get_topic_tag_tax_labels', array(
-		'name'          => __( 'Topic Tags',     'bbpress' ),
-		'singular_name' => __( 'Topic Tag',      'bbpress' ),
-		'search_items'  => __( 'Search Tags',    'bbpress' ),
-		'popular_items' => __( 'Popular Tags',   'bbpress' ),
-		'all_items'     => __( 'All Tags',       'bbpress' ),
-		'edit_item'     => __( 'Edit Tag',       'bbpress' ),
-		'update_item'   => __( 'Update Tag',     'bbpress' ),
-		'add_new_item'  => __( 'Add New Tag',    'bbpress' ),
-		'new_item_name' => __( 'New Tag Name',   'bbpress' ),
-		'view_item'     => __( 'View Topic Tag', 'bbpress' )
+		'name'                       => __( 'Topic Tags',                      'bbpress' ),
+		'singular_name'              => __( 'Topic Tag',                       'bbpress' ),
+		'search_items'               => __( 'Search Tags',                     'bbpress' ),
+		'popular_items'              => __( 'Popular Tags',                    'bbpress' ),
+		'all_items'                  => __( 'All Tags',                        'bbpress' ),
+		'edit_item'                  => __( 'Edit Tag',                        'bbpress' ),
+		'update_item'                => __( 'Update Tag',                      'bbpress' ),
+		'add_new_item'               => __( 'Add New Tag',                     'bbpress' ),
+		'new_item_name'              => __( 'New Tag Name',                    'bbpress' ),
+		'view_item'                  => __( 'View Topic Tag',                  'bbpress' ),
+		'separate_items_with_commas' => __( 'Separate topic tags with commas', 'bbpress' )
 	) );
 }
 
@@ -3898,8 +3901,8 @@ function bbp_form_topic_subscribed() {
 	 * @since bbPress (r2976)
 	 *
 	 * @uses bbp_is_topic_edit() To check if it's the topic edit page
-	 * @uses bbp_is_user_subscribed() To check if the user is subscribed to
-	 *                                 the topic
+	 * @uses bbp_is_user_subscribed_to_topic() To check if the user is
+	 *                                          subscribed to the topic
 	 * @uses apply_filters() Calls 'bbp_get_form_topic_subscribed' with the
 	 *                        option
 	 * @return string Checked value of topic subscription
@@ -3918,16 +3921,16 @@ function bbp_form_topic_subscribed() {
 
 			// Post author is not the current user
 			if ( bbp_get_current_user_id() !== $post_author ) {
-				$topic_subscribed = bbp_is_user_subscribed( $post_author );
+				$topic_subscribed = bbp_is_user_subscribed_to_topic( $post_author );
 
 			// Post author is the current user
 			} else {
-				$topic_subscribed = bbp_is_user_subscribed( bbp_get_current_user_id() );
+				$topic_subscribed = bbp_is_user_subscribed_to_topic( bbp_get_current_user_id() );
 			}
 
 		// Get current status
 		} elseif ( bbp_is_single_topic() ) {
-			$topic_subscribed = bbp_is_user_subscribed( bbp_get_current_user_id() );
+			$topic_subscribed = bbp_is_user_subscribed_to_topic( bbp_get_current_user_id() );
 
 		// No data
 		} else {

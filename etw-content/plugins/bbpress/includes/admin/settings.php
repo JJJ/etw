@@ -516,15 +516,15 @@ function bbp_admin_setting_callback_global_access() {
 	// Start the output buffer for the select dropdown
 	ob_start(); ?>
 
-	<select name="_bbp_default_role" id="_bbp_default_role" <?php bbp_maybe_admin_setting_disabled( '_bbp_default_role' ); ?>>
-
+	</label>
+	<label for="_bbp_default_role">
+		<select name="_bbp_default_role" id="_bbp_default_role" <?php bbp_maybe_admin_setting_disabled( '_bbp_default_role' ); ?>>
 		<?php foreach ( bbp_get_dynamic_roles() as $role => $details ) : ?>
 
 			<option <?php selected( $default_role, $role ); ?> value="<?php echo esc_attr( $role ); ?>"><?php echo translate_user_role( $details['name'] ); ?></option>
 
 		<?php endforeach; ?>
-
-	</select>
+		</select>
 
 	<?php $select = ob_get_clean(); ?>
 
@@ -635,13 +635,15 @@ function bbp_admin_setting_callback_thread_replies_depth() {
 	// Start an output buffer for the select dropdown
 	ob_start(); ?>
 
-	<select name="_bbp_thread_replies_depth" id="_bbp_thread_replies_depth" <?php bbp_maybe_admin_setting_disabled( '_bbp_thread_replies_depth' ); ?>>
-	<?php for ( $i = 2; $i <= $max_depth; $i++ ) : ?>
+	</label>
+	<label for="_bbp_thread_replies_depth">
+		<select name="_bbp_thread_replies_depth" id="_bbp_thread_replies_depth" <?php bbp_maybe_admin_setting_disabled( '_bbp_thread_replies_depth' ); ?>>
+		<?php for ( $i = 2; $i <= $max_depth; $i++ ) : ?>
 
-		<option value="<?php echo esc_attr( $i ); ?>" <?php selected( $i, $current_depth ); ?>><?php echo esc_html( $i ); ?></option>
+			<option value="<?php echo esc_attr( $i ); ?>" <?php selected( $i, $current_depth ); ?>><?php echo esc_html( $i ); ?></option>
 
-	<?php endfor; ?>
-	</select>
+		<?php endfor; ?>
+		</select>
 
 	<?php $select = ob_get_clean(); ?>
 
@@ -1242,7 +1244,6 @@ function bbp_admin_setting_callback_akismet() {
  *
  * @since bbPress (r2643)
  *
- * @uses screen_icon() To display the screen icon
  * @uses settings_fields() To output the hidden fields for the form
  * @uses do_settings_sections() To output the settings sections
  */
@@ -1250,8 +1251,6 @@ function bbp_admin_settings() {
 ?>
 
 	<div class="wrap">
-
-		<?php screen_icon(); ?>
 
 		<h2><?php esc_html_e( 'Forums Settings', 'bbpress' ) ?></h2>
 
@@ -1493,7 +1492,6 @@ function bbp_converter_setting_callback_convert_users() {
 /**
  * The main settings page
  *
- * @uses screen_icon() To display the screen icon
  * @uses settings_fields() To output the hidden fields for the form
  * @uses do_settings_sections() To output the settings sections
  */
@@ -1501,8 +1499,6 @@ function bbp_converter_settings() {
 ?>
 
 	<div class="wrap">
-
-		<?php screen_icon( 'tools' ); ?>
 
 		<h2 class="nav-tab-wrapper"><?php bbp_tools_admin_tabs( esc_html__( 'Import Forums', 'bbpress' ) ); ?></h2>
 

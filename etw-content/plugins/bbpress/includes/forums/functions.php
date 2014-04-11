@@ -929,6 +929,15 @@ function bbp_repair_forum_visibility() {
 	// First, delete everything.
 	delete_option( '_bbp_private_forums' );
 	delete_option( '_bbp_hidden_forums'  );
+	
+	/**
+	 * Don't search for both private/hidden statuses. Since 'pre_get_posts' is an
+	 * action, it's not removed by suppress_filters. We need to make sure that 
+	 * we're only searching for the supplied post_status.
+	 *
+	 * @see https://bbpress.trac.wordpress.org/ticket/2512
+	 */
+	remove_action( 'pre_get_posts', 'bbp_pre_get_posts_normalize_forum_visibility', 4 );
 
 	// Next, get all the private and hidden forums
 	$private_forums = new WP_Query( array(
@@ -945,6 +954,9 @@ function bbp_repair_forum_visibility() {
 		'post_status'      => bbp_get_hidden_status_id(),
 		'fields'           => 'ids'
 	) );
+	
+	// Enable forum visibilty normalization
+	add_action( 'pre_get_posts', 'bbp_pre_get_posts_normalize_forum_visibility', 4 );
 
 	// Reset the $post global
 	wp_reset_postdata();
@@ -1172,6 +1184,7 @@ function bbp_update_forum_last_topic_id( $forum_id = 0, $topic_id = 0 ) {
 			'post_parent' => $forum_id,
 			'post_type'   => bbp_get_topic_post_type(),
 			'meta_key'    => '_bbp_last_active_time',
+			'meta_type'   => 'DATETIME',
 			'orderby'     => 'meta_value',
 			'numberposts' => 1
 		);
@@ -1736,7 +1749,7 @@ function bbp_exclude_forum_ids( $type = 'string' ) {
 					$retval = array(
 						'key'     => '_bbp_forum_id',
 						'value'   => implode( ',', $forum_ids ),
-						'type'    => 'numeric',
+						'type'    => 'NUMERIC',
 						'compare' => ( 1 < count( $forum_ids ) ) ? 'NOT IN' : '!='
 					);
 					break;
@@ -1834,10 +1847,9 @@ function bbp_pre_get_posts_normalize_forum_visibility( $posts_query = null ) {
 
 		// Add the statuses
 		$posts_query->set( 'post_status', array_unique( array_filter( $post_stati ) ) );
-	}
 
-	// Topics Or Replies
-	if ( array_intersect( array( bbp_get_topic_post_type(), bbp_get_reply_post_type() ), $post_types ) ) {
+	// Some other post type besides bbPress's Forums, Topics, or Replies
+	} elseif ( ! array_diff( $post_types, array( bbp_get_forum_post_type(), bbp_get_topic_post_type(), bbp_get_reply_post_type() ) ) ) {
 
 		// Get forums to exclude
 		$forum_ids = bbp_exclude_forum_ids( 'meta_query' );

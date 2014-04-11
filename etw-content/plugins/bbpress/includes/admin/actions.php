@@ -74,7 +74,10 @@ add_action( 'bbp_deactivation', 'bbp_delete_rewrite_rules' );
 add_action( 'bbp_new_site', 'bbp_create_initial_content', 8 );
 
 // Contextual Helpers
-add_action( 'load-settings_page_bbpress', 'bbp_admin_settings_help' );
+add_action( 'load-settings_page_bbpress',    'bbp_admin_settings_help' );
+add_action( 'load-tools_page_bbp-repair',    'bbp_admin_tools_repair_help' );
+add_action( 'load-tools_page_bbp-converter', 'bbp_admin_tools_converter_help' );
+add_action( 'load-tools_page_bbp-reset',     'bbp_admin_tools_reset_help' );
 
 // Handle submission of Tools pages
 add_action( 'load-tools_page_bbp-repair', 'bbp_admin_repair_handler' );
@@ -82,6 +85,9 @@ add_action( 'load-tools_page_bbp-reset',  'bbp_admin_reset_handler'  );
 
 // Add sample permalink filter
 add_filter( 'post_type_link', 'bbp_filter_sample_permalink', 10, 4 );
+
+// Add quick stats to dashboard glance elements
+add_filter( 'dashboard_glance_items', 'bbp_filter_dashboard_glance_items', -99 );
 
 /**
  * When a new site is created in a multisite installation, run the activation

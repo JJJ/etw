@@ -1206,7 +1206,7 @@ function bbp_reply_author_link( $args = '' ) {
 			$anonymous  = bbp_is_reply_anonymous( $reply_id );
 
 			// Tweak link title if empty
-			if ( empty( $$r['link_title'] ) ) {
+			if ( empty( $r['link_title'] ) ) {
 				$link_title = sprintf( empty( $anonymous ) ? __( 'View %s\'s profile', 'bbpress' ) : __( 'Visit %s\'s website', 'bbpress' ), bbp_get_reply_author_display_name( $reply_id ) );
 
 			// Use what was passed if not
@@ -2338,7 +2338,7 @@ function bbp_topic_pagination_count() {
 
 			// Adjust for topic
 			$threads--;
-			$retstr  = sprintf( _n( 'Viewing %1$s reply thread', 'Viewing %1$s reply threads', $threads, 'bbbpress' ), bbp_number_format( $threads ) );
+			$retstr  = sprintf( _n( 'Viewing %1$s reply thread', 'Viewing %1$s reply threads', $threads, 'bbpress' ), bbp_number_format( $threads ) );
 
 		// We are not including the lead topic
 		} elseif ( bbp_show_lead_topic() ) {
