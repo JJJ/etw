@@ -90,6 +90,7 @@
 .theme-browser .theme .theme-name {
 	font-size: 15px;
 	font-weight: 600;
+	height: 18px;
 	margin: 0;
 	padding: 15px;
 	-webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
@@ -1711,6 +1712,9 @@ body.full-overlay-active {
 }
 .wp-full-overlay .theme-navigation .next-theme {
 	float: left;
+}
+.wp-full-overlay.no-navigation .theme-navigation {
+	display: none;
 }
 
 /* Animations */

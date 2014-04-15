@@ -56,7 +56,7 @@ wp_localize_script( 'theme', '_wpThemeSettings', array(
 		'searchPlaceholder' => __( 'Search themes...' ), // placeholder (no ellipsis)
 		'upload' => __( 'Upload Theme' ),
 		'back'   => __( 'Back' ),
-		'error'  => ( 'There was a problem trying to load the themes. Please, try again.' ), // @todo improve
+		'error'  => sprintf( __( 'An unexpected error occurred and we can&#8127;t reach WordPress.org. If you continue to have problems, please try the <a href="%s">support forums</a>.' ), __( 'https://wordpress.org/support/' ) )
 	),
 	'installedThemes' => array_keys( $installed_themes ),
 	'browse' => array(
@@ -122,7 +122,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 
 	<div class="theme-navigation">
 		<span class="theme-count"></span>
-		<a class="theme-section current" href="#" data-sort="featured"><?php _ex( 'Featured', 'themes' ); ?></a>
+		<a class="theme-section" href="#" data-sort="featured"><?php _ex( 'Featured', 'themes' ); ?></a>
 		<a class="theme-section" href="#" data-sort="popular"><?php _ex( 'Popular', 'themes' ); ?></a>
 		<a class="theme-section" href="#" data-sort="new"><?php _ex( 'Latest', 'themes' ); ?></a>
 		<div class="theme-top-filters">

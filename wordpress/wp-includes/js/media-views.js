@@ -32,6 +32,13 @@
 	}());
 
 	/**
+	 * A shared event bus used to provide events into
+	 * the media workflows that 3rd-party devs can use to hook
+	 * in.
+	 */
+	media.events = _.extend( {}, Backbone.Events );
+
+	/**
 	 * Makes it easier to bind events using transitions.
 	 *
 	 * @param {string} selector
@@ -2753,7 +2760,7 @@
 		bindHandlers: function() {
 			media.view.MediaFrame.Select.prototype.bindHandlers.apply( this, arguments );
 			this.on( 'menu:create:image-details', this.createMenu, this );
-			this.on( 'content:render:image-details', this.renderImageDetailsContent, this );
+			this.on( 'content:create:image-details', this.imageDetailsContent, this );
 			this.on( 'content:render:edit-image', this.editImageContent, this );
 			this.on( 'menu:render:image-details', this.renderMenu, this );
 			this.on( 'toolbar:render:image-details', this.renderImageDetailsToolbar, this );
@@ -2786,15 +2793,12 @@
 			]);
 		},
 
-		renderImageDetailsContent: function() {
-			var view = new media.view.ImageDetails({
+		imageDetailsContent: function( options ) {
+			options.view = new media.view.ImageDetails({
 				controller: this,
 				model: this.state().image,
 				attachment: this.state().image.attachment
-			}).render();
-
-			this.content.set( view );
-
+			});
 		},
 
 		editImageContent: function() {
@@ -6222,7 +6226,7 @@
 		events: _.defaults( media.view.Settings.AttachmentDisplay.prototype.events, {
 			'click .edit-attachment': 'editAttachment',
 			'click .replace-attachment': 'replaceAttachment',
-			'click .advanced-toggle': 'toggleAdvanced',
+			'click .advanced-toggle': 'onToggleAdvanced',
 			'change [data-setting="customWidth"]': 'onCustomSize',
 			'change [data-setting="customHeight"]': 'onCustomSize',
 			'keyup [data-setting="customWidth"]': 'onCustomSize',
@@ -6234,6 +6238,7 @@
 			this.listenTo( this.model, 'change:url', this.updateUrl );
 			this.listenTo( this.model, 'change:link', this.toggleLinkSettings );
 			this.listenTo( this.model, 'change:size', this.toggleCustomSize );
+
 			media.view.Settings.AttachmentDisplay.prototype.initialize.apply( this, arguments );
 		},
 
@@ -6256,21 +6261,27 @@
 			if ( this.model.attachment && 'pending' === this.model.dfd.state() ) {
 				this.model.dfd.done( function() {
 					media.view.Settings.AttachmentDisplay.prototype.render.apply( self, args );
-					self.resetFocus();
-					self.toggleLinkSettings();
+					self.postRender();
 				} ).fail( function() {
 					self.model.attachment = false;
 					media.view.Settings.AttachmentDisplay.prototype.render.apply( self, args );
-					self.resetFocus();
-					self.toggleLinkSettings();
+					self.postRender();
 				} );
 			} else {
 				media.view.Settings.AttachmentDisplay.prototype.render.apply( this, arguments );
-				setTimeout( function() { self.resetFocus(); }, 10 );
-				self.toggleLinkSettings();
+				this.postRender();
 			}
 
 			return this;
+		},
+
+		postRender: function() {
+			setTimeout( _.bind( this.resetFocus, this ), 10 );
+			this.toggleLinkSettings();
+			if ( getUserSetting( 'advImgDetails' ) === 'show' ) {
+				this.toggleAdvanced( true );
+			}
+			this.trigger( 'post-render' );
 		},
 
 		resetFocus: function() {
@@ -6322,16 +6333,26 @@
 			}
 		},
 
-		toggleAdvanced: function( event ) {
-			var $advanced = $( event.target ).closest( '.advanced' );
+		onToggleAdvanced: function( event ) {
 			event.preventDefault();
-			if ( $advanced.hasClass('advanced-visible') ) {
+			this.toggleAdvanced();
+		},
+
+		toggleAdvanced: function( show ) {
+			var $advanced = this.$el.find( '.advanced-section' ),
+				mode;
+
+			if ( $advanced.hasClass('advanced-visible') || show === false ) {
 				$advanced.removeClass('advanced-visible');
-				$advanced.find('div').addClass('hidden');
+				$advanced.find('.advanced-settings').addClass('hidden');
+				mode = 'hide';
 			} else {
 				$advanced.addClass('advanced-visible');
-				$advanced.find('div').removeClass('hidden');
+				$advanced.find('.advanced-settings').removeClass('hidden');
+				mode = 'show';
 			}
+
+			setUserSetting( 'advImgDetails', mode );
 		},
 
 		editAttachment: function( event ) {
