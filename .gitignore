@@ -1,6 +1,8 @@
 .DS_Store
-/local-config.php
 /.htaccess
+/.config.php
+/.nginx-conf
+/local-config.php
 /etw-content/uploads/
 /etw-content/blogs.dir/
 /etw-content/plugins/hello.php
