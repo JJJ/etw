@@ -276,8 +276,6 @@ function bp_core_activation_notice() {
 			'id'   => 'register',
 			'name' => __( 'Register', 'buddypress' )
 		);
-
-		bp_core_maybe_install_signups();
 	}
 
 	// On the first admin screen after a new installation, this isn't set, so grab it to supress a misleading error message.
@@ -794,39 +792,6 @@ function bp_admin_wp_nav_menu_restrict_items() {
 }
 
 /**
- * Check if the signups table needs to be created.
- *
- * @since BuddyPress (2.0.0)
- *
- * @global $wpdb
- */
-function bp_core_maybe_install_signups() {
-	global $wpdb;
-
-	// Multisite installations already have the signups table.
-	if ( ! empty( $wpdb->signups ) ) {
-		return;
-	}
-
-	$bp_signups = bp_core_get_table_prefix() . 'signups';
-
-	// Check for the table
-	$suppress = $wpdb->suppress_errors();
-	$table_exists = $wpdb->get_results( "DESCRIBE {$bp_signups};" );
-	$wpdb->suppress_errors( $suppress );
-
-	// Bail if the table exists
-	if ( ! empty( $table_exists ) ) {
-		return;
-	}
-
-	// Signups is not there and we need it so let's create it
-	require_once( buddypress()->plugin_dir . '/bp-core/admin/bp-core-schema.php' );
-
-	bp_core_install_signups();
-}
-
-/**
  * Add "Mark as Spam/Ham" button to user row actions.
  *
  * @since BuddyPress (2.0.0)
@@ -842,9 +807,9 @@ function bp_core_admin_user_row_actions( $actions, $user_object ) {
 		$url = bp_get_admin_url( 'users.php' );
 
 		if ( bp_is_user_spammer( $user_object->ID ) ) {
-			$actions['ham'] = "<a href='" . wp_nonce_url( $url . "?action=ham&amp;user=$user_object->ID", 'bp-spam-user' ) . "'>" . __( 'Not Spam' ) . "</a>";
+			$actions['ham'] = "<a href='" . wp_nonce_url( $url . "?action=ham&amp;user=$user_object->ID", 'bp-spam-user' ) . "'>" . __( 'Not Spam', 'buddypress' ) . "</a>";
 		} else {
-			$actions['spam'] = "<a class='submitdelete' href='" . wp_nonce_url( $url . "?action=spam&amp;user=$user_object->ID", 'bp-spam-user' ) . "'>" . __( 'Mark as Spam' ) . "</a>";
+			$actions['spam'] = "<a class='submitdelete' href='" . wp_nonce_url( $url . "?action=spam&amp;user=$user_object->ID", 'bp-spam-user' ) . "'>" . __( 'Mark as Spam', 'buddypress' ) . "</a>";
 		}
 	}
 

@@ -822,6 +822,10 @@ class BP_Members_Admin {
 			return;
 		}
 
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return;
+		}
+
 		if ( $this->users_page != get_current_screen()->id ) {
 			return;
 		}
@@ -1291,13 +1295,13 @@ class BP_Members_Admin {
 				<?php
 				_e( 'Users', 'buddypress' );
 				if ( current_user_can( 'create_users' ) ) { ?>
-					<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x( 'Add New', 'user' ); ?></a>
+					<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x( 'Add New', 'user', 'buddypress' ); ?></a>
 				<?php } elseif ( is_multisite() && current_user_can( 'promote_users' ) ) { ?>
-					<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x( 'Add Existing', 'user' ); ?></a>
+					<a href="user-new.php" class="add-new-h2"><?php echo esc_html_x( 'Add Existing', 'user', 'buddypress' ); ?></a>
 				<?php }
 
 				if ( $usersearch ) {
-					printf( '<span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', esc_html( $usersearch ) );
+					printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;', 'buddypress' ) . '</span>', esc_html( $usersearch ) );
 				}
 
 				?>
