@@ -9,17 +9,22 @@
 /** WordPress Administration Bootstrap */
 require_once( dirname( __FILE__ ) . '/admin.php' );
 
+wp_enqueue_style( 'wp-mediaelement' );
+wp_enqueue_script( 'wp-playlist' );
+add_action( 'admin_footer', 'wp_underscore_playlist_templates', 0 );
+
 $title = __( 'About' );
 
 list( $display_version ) = explode( '-', $wp_version );
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
+<!--[if lt IE 9]><script>document.createElement('audio');document.createElement('video');</script><![endif]-->
 <div class="wrap about-wrap">
 
 <h1><?php printf( __( 'Welcome to WordPress&nbsp;%s' ), $display_version ); ?></h1>
 
-<div class="about-text"><?php printf( ( 'Thank you for updating! WordPress %s refines the way you write and edit.<br />We hope you like&nbsp;it.' ), $display_version ); ?></div>
+<div class="about-text"><?php printf( __( 'Thank you for updating! WordPress %s has lots of refinements we think you&#8217;ll love.' ), $display_version ); ?></div>
 
 <div class="wp-badge"><?php printf( __( 'Version %s' ), $display_version ); ?></div>
 
@@ -34,64 +39,172 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 </h2>
 
 <div class="changelog">
-	<h2 class="about-headline-callout"><?php echo ( 'A smoother media editing&nbsp;experience' ); ?></h2>
-	<img class="about-overview-img" src="<?php echo is_ssl() ? 'https://' : '//s.'; ?>wordpress.org/images/core/3.8/overview.png?1" />
+	<div class="about-overview">
+	<?php
+	if ( ( $locale = get_locale() ) && 'en_' === substr( $locale, 0, 3 ) ) : ?>
+		<embed src="//v0.wordpress.com/player.swf?v=1.03" type="application/x-shockwave-flash" width="640" height="360" wmode="direct" seamlesstabbing="true" allowfullscreen="true" allowscriptaccess="always" overstretch="true" flashvars="guid=sAiXhCfV&amp;isDynamicSeeking=true" title=""></embed>
+	<?php else : ?>
+		<img class="about-overview-img" src="//s.w.org/images/core/3.9/overview.png?0" />
+	<?php endif; ?>
+	</div>
+	<h2 class="about-headline-callout"><?php _e( 'A smoother media editing&nbsp;experience' ); ?></h2>
 	<div class="feature-section col three-col">
 		<div class="col-1">
-			<h4><?php echo ( 'Gallery previews' ); ?></h4>
-			<p><?php echo ( 'Galleries display a beautiful grid of images right in the editor, just like they do in your published post.' ); ?></p>
+			<img src="//s.w.org/images/core/3.9/editor.jpg?0" />
+			<h4><?php _e( 'Improved visual editing' ); ?></h4>
+			<p><?php _e( 'The updated visual editor has improved speed, accessibility, and mobile support.' );
+				echo ' ' . __( 'You can paste into the visual editor from your word processor without wasting time to clean up messy styling. (Yeah, we&#8217;re talking about you, Microsoft Word.)' ); ?></p>
 		</div>
 		<div class="col-2">
-			<h4><?php echo ( 'Improved image editing' ); ?></h4>
-			<p><?php echo ( 'We&#8217;ve made it much easier to edit your images, with quicker access to cropping and rotation tools. You can also scale images directly in the editor to find just the right fit.' ); ?></p>
+			<img src="//s.w.org/images/core/3.9/image.gif?0" />
+			<h4><?php _e( 'Edit images easily' ); ?></h4>
+			<p><?php _e( 'With quicker access to crop and rotation tools, it&#8217;s now much easier to edit your images while editing posts. You can also scale images directly in the editor to find just the right fit.' ); ?></p>
 		</div>
 		<div class="col-3 last-feature">
-			<h4><?php echo ( 'Drag and drop your images' ); ?></h4>
-			<p><?php echo ( 'Grab images from your desktop and drop them directly onto the editor, saving yourself that extra step.' ); ?></p>
+			<img src="//s.w.org/images/core/3.9/drop.jpg?0" />
+			<h4><?php _e( 'Drag and drop your images' ); ?></h4>
+			<p><?php _e( 'Uploading your images is easier than ever. Just grab them from your desktop and drop them onto the editor.' ); ?></p>
 		</div>
 	</div>
-	<div class="feature-section col three-col">
-		<div class="col-1">
-			<h4><?php echo ( 'Improved visual editor' ); ?></h4>
-			<p><?php echo ( 'We&#8217;ve updated the visual editor with better mobile support, improved speed and accessibility, and a modern API for developers.' ); ?></p>
-			<p><?php echo ( 'The visual editor will now automatically clean up the messy styling that certain word processing applications insert when copying and pasting. Yeah, we&#8217;re talking about you, Microsoft Word.' ); ?></p>
-		</div>
-		<div class="col-2">
-			<h4><?php echo ( 'Do more with audio and video' ); ?></h4>
-			<p><?php echo ( 'Images have galleries; now we&#8217;ve added simple audio and video playlists, so you can showcase your music and clips.' ); ?></p>
-			<!-- maybe insert note about playing/editing audio/video from the editor -->
-		</div>
-		<div class="col-3 last-feature">
-			<img src="<?php echo is_ssl() ? 'https://' : '//s.'; ?>wordpress.org/images/core/3.8/colors.png?1" />
-			<!-- embedded playlist? -->
-		</div>
-	</div>
-</div>
 
-<hr>
-
-<div class="changelog">
-	<h3><?php echo ( 'Customize your heart out' ); ?></h3>
+	<hr>
 
 	<div class="feature-section col two-col">
-		<div>
-			<img src="<?php echo is_ssl() ? 'https://' : '//s.'; ?>wordpress.org/images/core/3.8/twentyfourteen.jpg?1" />
-			<h4><?php echo ( 'Live widget previews' ); ?></h4>
-			<p><?php echo ( 'Add, edit, and rearrange your site&#8217;s widgets right in the theme customizer. No &#8220;save and surprise&#8221; &mdash; preview your changes live and only save them when you&#8217;re ready.' ); ?></p>
-			<p><?php echo ( 'The improved header image tool also lets you upload, crop, and manage headers while customizing your theme.' ); ?></p>
+		<div class="col-1">
+			<img src="//s.w.org/images/core/3.9/gallery.jpg?0" />
+			<h4><?php _e( 'Gallery previews' ); ?></h4>
+			<p><?php _e( 'Galleries display a beautiful grid of images right in the editor, just like they do in your published post.' ); ?></p>
 		</div>
-		<div class="last-feature">
-			<img src="<?php echo is_ssl() ? 'https://' : '//s.'; ?>wordpress.org/images/core/3.8/twentyfourteen.jpg?1" />
-			<h4><?php _e( 'Stunning new theme browser' ); ?></h4>
-			<p><?php _e( 'Looking for a new theme should be easy and fun. Lose yourself in the boundless supply of free WordPress.org themes with the beautiful new theme browser.' ); ?></p>
-			<p><a href="<?php echo network_admin_url( 'theme-install.php' ); ?>" class="button button-primary">Browse Themes</a></p>
+		<div class="col-2 last-feature">
+			<div class="wp-playlist wp-audio-playlist wp-playlist-light">
+				<div class="wp-playlist-current-item"></div>
+				<audio controls="controls" preload="metadata"></audio>
+				<div class="wp-playlist-next"></div>
+				<div class="wp-playlist-prev"></div>
+				<?php
+				$audio_icon_js = esc_js( includes_url( 'images/media/audio.png' ) );
+				$wp_host = '//s.w.org/images/core/3.9/';
+				?>
+
+				<script type="application/json">{
+					"type":"audio",
+					"tracklist":true,
+					"tracknumbers":true,
+					"images":true,
+					"artists":true,
+					"tracks":[{
+						"src":"<?php echo $wp_host ?>AintMisbehavin.mp3",
+						"type":"audio\/mpeg","title":"Ain't Misbehavin'","caption":"","description":"",
+						"meta":{
+							"artist":"Louis Armstrong & His Orchestra",
+							"album":"78 RPMs & Cylinder Recordings",
+							"genre":"Jazz",
+							"length_formatted":"3:21"
+						},
+						"image":{"src":"//s.w.org/images/core/3.9/louis.jpg","width":308,"height":240},
+						"thumb":{"src":"//s.w.org/images/core/3.9/louis.jpg","width":308,"height":240}
+					},
+					{
+						"src":"<?php echo $wp_host ?>JellyRollMorton-BuddyBoldensBlues.mp3",
+						"type":"audio\/mpeg","title":"Buddy Bolden's Blues","caption":"","description":"",
+						"meta":{
+							"artist":"Jelly Roll Morten",
+							"album":"78 RPMs & Cylinder Recordings",
+							"genre":"Jazz",
+							"length_formatted":"2:09"
+						},
+						"image":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64},
+						"thumb":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64}
+					},
+					{
+						"src":"<?php echo $wp_host ?>DavenportBlues.mp3",
+						"type":"audio\/mpeg","title":"Davenport Blues","caption":"","description":"",
+						"meta":{
+							"artist":"Bix Beiderbecke & His Rhythm Jugglers",
+							"album":"78 RPMs & Cylinder Recordings",
+							"genre":"Jazz",
+							"length_formatted":"2:48"
+						},
+						"image":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64},
+						"thumb":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64}
+					},
+					{
+						"src":"<?php echo $wp_host ?>WolverineBlues.mp3",
+						"type":"audio\/mpeg","title":"Wolverine Blues","caption":"","description":"",
+						"meta":{
+							"artist":"Benny Goodman's Boys",
+							"album":"78 RPMs & Cylinder Recordings",
+							"genre":"Jazz",
+							"length_formatted":"2:55"
+						},
+						"image":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64},
+						"thumb":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64}
+					},
+					{
+						"src":"<?php echo $wp_host ?>Louisiana_Five-Dixie_Blues-1919.mp3",
+						"type":"audio\/mpeg","title":"Dixie Blues","caption":"","description":"",
+						"meta":{
+							"artist":"Louisiana Five",
+							"album":"78 RPMs & Cylinder Recordings",
+							"genre":"Jazz",
+							"length_formatted":"3:01"
+						},
+						"image":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64},
+						"thumb":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64}
+					},
+					{
+						"src":"<?php echo $wp_host ?>Johnny_Hodges_Orchestra-Squaty_Roo-1941.mp3",
+						"type":"audio\/mpeg","title":"Squaty Roo","caption":"","description":"",
+						"meta":{
+							"artist":"Johnny Hodges Orchestra",
+							"album":"78 RPMs & Cylinder Recordings",
+							"genre":"Jazz",
+							"length_formatted":"2:24"
+						},
+						"image":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64},
+						"thumb":{"src":"<?php echo $audio_icon_js ?>","width":48,"height":64}
+					}]
+				}</script>
+			</div>
+			<h4><?php _e( 'Do more with audio and video' ); ?></h4>
+			<p><?php _e( 'Images have galleries; now we&#8217;ve added simple audio and video playlists, so you can showcase your music and clips.' ); ?></p>
 		</div>
 	</div>
 </div>
 
 <hr>
 
-<div class="changelog">
+<div class="changelog customize">
+	<div class="feature-section col two-col">
+		<div>
+			<?php
+				echo wp_video_shortcode( array(
+					'mp4'      => '//s.w.org/images/core/3.9/widgets.mp4',
+					'ogv'      => '//s.w.org/images/core/3.9/widgets.ogv',
+					'webm'     => '//s.w.org/images/core/3.9/widgets.webm',
+					'loop'     => true,
+					'autoplay' => true,
+					'width'    => 499
+				) );
+			?>
+			<h4><?php _e( 'Live widget and header previews' ); ?></h4>
+			<p><?php _e( 'Add, edit, and rearrange your site&#8217;s widgets right in the theme customizer. No &#8220;save and surprise&#8221; &mdash; preview your changes live and only save them when you&#8217;re ready.' ); ?></p>
+			<p><?php _e( 'The improved header image tool also lets you upload, crop, and manage headers while customizing your theme.' ); ?></p>
+		</div>
+		<div class="last-feature">
+			<img src="//s.w.org/images/core/3.9/theme.jpg?0" />
+			<h4><?php _e( 'Stunning new theme browser' ); ?></h4>
+			<p><?php _e( 'Looking for a new theme should be easy and fun. Lose yourself in the boundless supply of free WordPress.org themes with the beautiful new theme browser.' ); ?></p>
+		<?php if ( current_user_can( 'install_themes' ) ) { ?>
+			<p><a href="<?php echo network_admin_url( 'theme-install.php' ); ?>" class="button button-large button-primary"><?php _e( 'Browse Themes' ); ?></a></p>
+		<?php } ?>
+		</div>
+	</div>
+</div>
+
+<hr>
+
+<div class="changelog under-the-hood">
 	<h3><?php _e( 'Under the Hood' ); ?></h3>
 
 	<div class="feature-section col three-col">
@@ -112,7 +225,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 		<div class="last-feature">
 			<h4><?php _e( 'New Utility Functions' ); ?></h4>
 			<p><?php _e( 'Identify a hook in progress with <code>doing_action()</code> and <code>doing_filter()</code>, and manipulate custom image sizes with <code>has_image_size()</code> and <code>remove_image_size()</code>.' ); ?></p>
-			<p><?php _e( 'Plugins and themes registering custom theme sizes can now register suggested cropping points. For example, prevent heads from being cropped out of photos with a top-center crop.' ); ?></p>
+			<p><?php _e( 'Plugins and themes registering custom image sizes can now register suggested cropping points. For example, prevent heads from being cropped out of photos with a top-center crop.' ); ?></p>
 		</div>
 </div>
 
