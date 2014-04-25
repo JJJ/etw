@@ -410,7 +410,7 @@ class Akismet_Admin {
 
 			add_comment_meta( $c['comment_ID'], 'akismet_rechecking', true );
 
-			$response = Akismet::http_post( http_build_query( $c ), 'comment-check' );
+			$response = Akismet::http_post( build_query( $c ), 'comment-check' );
 			if ( 'true' == $response[1] ) {
 				wp_set_comment_status( $c['comment_ID'], 'spam' );
 				update_comment_meta( $c['comment_ID'], 'akismet_result', 'true' );
@@ -514,7 +514,10 @@ class Akismet_Admin {
 		if ( $desc )
 			echo '<span class="akismet-status" commentid="'.$comment->comment_ID.'"><a href="comment.php?action=editcomment&amp;c='.$comment->comment_ID.'#akismet-status" title="' . esc_attr__( 'View comment history' , 'akismet') . '">'.esc_html( $desc ).'</a></span>';
 
-		if ( apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') ) ) {
+		$show_user_comments = apply_filters( 'akismet_show_user_comments_approved', get_option('akismet_show_user_comments_approved') );
+		$show_user_comments = $show_user_comments === 'false' ? false : $show_user_comments; //option used to be saved as 'false' / 'true'
+		
+		if ( $show_user_comments ) {
 			$comment_count = Akismet::get_user_comments_approved( $comment->user_id, $comment->comment_author_email, $comment->comment_author, $comment->comment_author_url );
 			$comment_count = intval( $comment_count );
 			echo '<span class="akismet-user-comment-count" commentid="'.$comment->comment_ID.'" style="display:none;"><br><span class="akismet-user-comment-counts">'. sprintf( esc_html( _n( '%s approved', '%s approved', $comment_count , 'akismet') ), number_format_i18n( $comment_count ) ) . '</span></span>';
@@ -597,7 +600,7 @@ class Akismet_Admin {
 		$post = get_post( $comment->comment_post_ID );
 		$comment->comment_post_modified_gmt = $post->post_modified_gmt;
 
-		$response = Akismet::http_post( http_build_query( $comment ), 'submit-spam' );
+		$response = Akismet::http_post( build_query( $comment ), 'submit-spam' );
 		if ( $comment->reporter ) {
 			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as spam', 'akismet'), $comment->reporter ), 'report-spam' );
 			update_comment_meta( $comment_id, 'akismet_user_result', 'true' );
@@ -643,7 +646,7 @@ class Akismet_Admin {
 		$post = get_post( $comment->comment_post_ID );
 		$comment->comment_post_modified_gmt = $post->post_modified_gmt;
 
-		$response = Akismet::http_post( http_build_query( $comment ), 'submit-ham' );
+		$response = Akismet::http_post( build_query( $comment ), 'submit-ham' );
 		if ( $comment->reporter ) {
 			Akismet::update_comment_history( $comment_id, sprintf( __('%s reported this comment as not spam', 'akismet'), $comment->reporter ), 'report-ham' );
 			update_comment_meta( $comment_id, 'akismet_user_result', 'false' );
@@ -684,8 +687,8 @@ class Akismet_Admin {
 	public static function check_server_connectivity() {
 		$test_host = 'rest.akismet.com';
 
-		// Some web hosts may disable one or both functions
-		if ( !function_exists('fsockopen') || !function_exists('gethostbynamel') )
+		// Some web hosts may disable this function
+		if ( !function_exists('gethostbynamel') )
 			return array();
 
 		$ips = gethostbynamel( $test_host );
@@ -741,7 +744,7 @@ class Akismet_Admin {
 	}
 	
 	public static function get_akismet_user( $api_key ) {
-		$akismet_user = Akismet::http_post( http_build_query( array( 'key' => $api_key ) ), 'get-subscription' );
+		$akismet_user = Akismet::http_post( build_query( array( 'key' => $api_key ) ), 'get-subscription' );
 
 		if ( ! empty( $akismet_user[1] ) )
 			$akismet_user = json_decode( $akismet_user[1] );
@@ -755,7 +758,7 @@ class Akismet_Admin {
 		$stat_totals = array();
 
 		foreach( array( '6-months', 'all' ) as $interval ) {
-			$response = Akismet::http_post( http_build_query( array( 'blog' => urlencode( get_bloginfo('url') ), 'key' => $api_key, 'from' => $interval ) ), 'get-stats' );
+			$response = Akismet::http_post( build_query( array( 'blog' => urlencode( get_bloginfo('url') ), 'key' => $api_key, 'from' => $interval ) ), 'get-stats' );
 
 			if ( ! empty( $response[1] ) ) {
 				$stat_totals[$interval] = json_decode( $response[1] );
@@ -765,7 +768,7 @@ class Akismet_Admin {
 	}
 	
 	public static function verify_wpcom_key( $api_key, $user_id, $token = '' ) {
-		$akismet_account = Akismet::http_post( http_build_query( array(
+		$akismet_account = Akismet::http_post( build_query( array(
 			'user_id'          => $user_id,
 			'api_key'          => $api_key,
 			'token'            => $token,
@@ -927,7 +930,7 @@ class Akismet_Admin {
 		if ( empty( $servers ) || $fail_count > 0 )
 			$type = 'servers-be-down';
 
-		if ( !function_exists('fsockopen') || !function_exists('gethostbynamel') )
+		if ( !function_exists('gethostbynamel') )
 			$type = 'missing-functions';
 
 		if ( !empty( $type ) )
