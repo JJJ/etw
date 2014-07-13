@@ -1,8 +1,8 @@
 server {
     listen       80 default_server;
     listen       [::]:80 default_server ipv6only=on;
-	root         /srv/www/easttroyweb/public;
-    server_name  easttroyweb.com *.easttroyweb.com;
+    root         /srv/www/easttroyweb/public;
+    server_name  easttroyweb.com *.easttroyweb.com unpressable.com *.unpressable.com;
 
     access_log   /srv/www/easttroyweb/log/access.log;
     error_log    /srv/www/easttroyweb/log/error.log;
