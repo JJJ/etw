@@ -31,8 +31,8 @@ if ( file_exists( dirname( __FILE__ ) . '/local-config.php' ) ) {
 define( 'WPLANG', '' );
 
 // Custom Content Directory
-define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/etw-content' );
-define( 'WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/etw-content' );
+define( 'WP_CONTENT_DIR', dirname( __FILE__ ) . '/content' );
+define( 'WP_CONTENT_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/content' );
 
 // Load a Memcached config if we have one
 if ( file_exists( dirname( __FILE__ ) . '/memcached.php' ) ) {
