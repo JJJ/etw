@@ -44,57 +44,110 @@ function bp_blogs_has_directory() {
  */
 function bp_blogs_get_blogs( $args = '' ) {
 
-	$defaults = array(
-		'type'              => 'active', // active, alphabetical, newest, or random
-		'user_id'           => false,    // Pass a user_id to limit to only blogs that this user has privilages higher than subscriber on
-		'include_blog_ids'  => false,
-		'search_terms'      => false,    // Limit to blogs that match these search terms
+	// Parse query arguments
+	$r = bp_parse_args( $args, array(
+		'type'              => 'active', // 'active', 'alphabetical', 'newest', or 'random'
+		'include_blog_ids'  => false,    // Array of blog IDs to include
+		'user_id'           => false,    // Limit to blogs this user can post to
+		'search_terms'      => false,    // Limit to blogs matching these search terms
 		'per_page'          => 20,       // The number of results to return per page
 		'page'              => 1,        // The page to return if limiting per page
-		'update_meta_cache' => true,
+		'update_meta_cache' => true      // Whether to pre-fetch blogmeta
+	), 'blogs_get_blogs' );
+
+	// Get the blogs
+	$blogs = BP_Blogs_Blog::get(
+		$r['type'],
+		$r['per_page'],
+		$r['page'],
+		$r['user_id'],
+		$r['search_terms'],
+		$r['update_meta_cache'],
+		$r['include_blog_ids']
 	);
 
-	$params = wp_parse_args( $args, $defaults );
-	extract( $params, EXTR_SKIP );
-
-	return apply_filters( 'bp_blogs_get_blogs', BP_Blogs_Blog::get( $type, $per_page, $page, $user_id, $search_terms, $update_meta_cache, $include_blog_ids ), $params );
+	// Filter and return
+	return apply_filters( 'bp_blogs_get_blogs', $blogs, $r );
 }
 
 /**
  * Populate the BP blogs table with existing blogs.
  *
- * @global object $bp BuddyPress global settings
+ * @since BuddyPress (1.0.0)
+ *
  * @global object $wpdb WordPress database object
  * @uses get_users()
  * @uses bp_blogs_record_blog()
  */
 function bp_blogs_record_existing_blogs() {
-	global $bp, $wpdb;
+	global $wpdb;
 
-	// Truncate user blogs table and re-record.
-	$wpdb->query( "DELETE FROM {$bp->blogs->table_name} WHERE 1=1" );
-
+	// Query for all sites in network
 	if ( is_multisite() ) {
-		$blog_ids = $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM {$wpdb->base_prefix}blogs WHERE mature = 0 AND spam = 0 AND deleted = 0 AND site_id = %d", $wpdb->siteid ) );
+
+		// Get blog ID's if not a large network
+		if ( ! wp_is_large_network() ) {
+			$blog_ids = $wpdb->get_col( $wpdb->prepare( "SELECT blog_id FROM {$wpdb->base_prefix}blogs WHERE mature = 0 AND spam = 0 AND deleted = 0 AND site_id = %d", $wpdb->siteid ) );
+
+			// If error running this query, set blog ID's to false
+			if ( is_wp_error( $blog_ids ) ) {
+				$blog_ids = false;
+			}
+
+		// Large networks are not currently supported
+		} else {
+			$blog_ids = false;
+		}
+
+	// Record a single site
 	} else {
-		$blog_ids = 1;
+		$blog_ids = $wpdb->blogid;
 	}
 
-	if ( !empty( $blog_ids ) ) {
-		foreach( (array) $blog_ids as $blog_id ) {
-			$users       = get_users( array( 'blog_id' => $blog_id, 'fields' => 'ID' ) );
-			$subscribers = get_users( array( 'blog_id' => $blog_id, 'fields' => 'ID', 'role' => 'subscriber' ) );
+	// Bail if there are no blogs in the network
+	if ( empty( $blog_ids ) ) {
+		return false;
+	}
 
-			if ( !empty( $users ) ) {
-				foreach ( (array) $users as $user ) {
-					// Don't record blogs for subscribers
-					if ( !in_array( $user, $subscribers ) ) {
-						bp_blogs_record_blog( $blog_id, $user, true );
-					}
-				}
-			}
+	// Get BuddyPress
+	$bp = buddypress();
+
+	// Truncate user blogs table
+	$truncate = $wpdb->query( "TRUNCATE {$bp->blogs->table_name}" );
+	if ( is_wp_error( $truncate ) ) {
+		return false;
+	}
+
+	// Truncate user blogsmeta table
+	$truncate = $wpdb->query( "TRUNCATE {$bp->blogs->table_name_blogmeta}" );
+	if ( is_wp_error( $truncate ) ) {
+		return false;
+	}
+
+	// Loop through users of blogs and record the relationship
+	foreach ( (array) $blog_ids as $blog_id ) {
+
+		// Ensure that the cache is clear after the table TRUNCATE above
+		wp_cache_delete( $blog_id, 'blog_meta' );
+
+		// Get all users
+		$users = get_users( array(
+			'blog_id' => $blog_id
+		) );
+
+		// Continue on if no users exist for this site (how did this happen?)
+		if ( empty( $users ) ) {
+			continue;
+		}
+
+		// Loop through users and record their relationship to this blog
+		foreach ( (array) $users as $user ) {
+			bp_blogs_add_user_to_blog( $user->ID, false, $blog_id );
 		}
 	}
+
+	// No errors
+	return true;
 }
 
 /**
@@ -717,23 +770,46 @@ add_action( 'edit_comment', 'bp_blogs_record_comment', 10    );
 function bp_blogs_add_user_to_blog( $user_id, $role = false, $blog_id = 0 ) {
 	global $wpdb;
 
+	require_once( ABSPATH . '/wp-admin/includes/user.php' );
+
+	// If no blog ID was passed, use the root blog ID
 	if ( empty( $blog_id ) ) {
 		$blog_id = isset( $wpdb->blogid ) ? $wpdb->blogid : bp_get_root_blog_id();
 	}
 
+	// If no role was passed, try to find the blog role
 	if ( empty( $role ) ) {
-		$key = $wpdb->get_blog_prefix( $blog_id ). 'capabilities';
 
-		$roles = bp_get_user_meta( $user_id, $key, true );
+		// Get user capabilities
+		$key        = $wpdb->get_blog_prefix( $blog_id ). 'capabilities';
+		$user_roles = bp_get_user_meta( $user_id, $key, true );
 
-		if ( is_array( $roles ) )
-			$role = array_search( 1, $roles );
-		else
-			return false;
+		// User has roles so lets
+		if ( ! empty( $user_roles ) ) {
+
+			// Look for blog only roles
+			$blog_roles = array_intersect(
+				array_keys( $user_roles ),
+				array_keys( get_editable_roles() )
+			);
+
+			// If there's a role in the array, use the first one. This isn't
+			// very smart, but since roles aren't exactly hierarchical, and
+			// WordPress does not yet have a UI for multiple user roles, it's
+			// fine for now.
+			if ( ! empty( $blog_roles ) ) {
+				$role = array_shift( $blog_roles );
+			}
+		}
 	}
 
-	if ( $role != 'subscriber' )
-		bp_blogs_record_blog( $blog_id, $user_id, true );
+	// Bail if no role was found or user is a subscriber
+	if ( empty( $role ) || ( $role === 'subscriber' ) ) {
+		return false;
+	}
+
+	// Record the blog activity for this user being added to this blog
+	bp_blogs_record_blog( $blog_id, $user_id, true );
 }
 add_action( 'add_user_to_blog', 'bp_blogs_add_user_to_blog', 10, 3 );
 add_action( 'profile_update',   'bp_blogs_add_user_to_blog'        );
@@ -748,8 +824,9 @@ add_action( 'user_register',    'bp_blogs_add_user_to_blog'        );
 function bp_blogs_remove_user_from_blog( $user_id, $blog_id = 0 ) {
 	global $wpdb;
 
-	if ( empty( $blog_id ) )
+	if ( empty( $blog_id ) ) {
 		$blog_id = $wpdb->blogid;
+	}
 
 	bp_blogs_remove_blog_for_user( $user_id, $blog_id );
 }
@@ -1245,7 +1322,7 @@ function bp_blogs_update_blogmeta( $blog_id, $meta_key, $meta_value, $prev_value
  * @param int $blog_id ID of the blog.
  * @param string $meta_key Metadata key.
  * @param mixed $meta_value Metadata value.
- * @param bool $unique. Optional. Whether to enforce a single metadata value
+ * @param bool $unique Optional. Whether to enforce a single metadata value
  *        for the given key. If true, and the object already has a value for
  *        the key, no change will be made. Default: false.
  * @return int|bool The meta ID on successful update, false on failure.

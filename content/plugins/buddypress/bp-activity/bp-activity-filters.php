@@ -22,7 +22,7 @@ add_filter( 'bp_get_activity_latest_update_excerpt', 'bp_activity_filter_kses', 
 add_filter( 'bp_get_activity_feed_item_description', 'bp_activity_filter_kses', 1 );
 add_filter( 'bp_activity_content_before_save',       'bp_activity_filter_kses', 1 );
 add_filter( 'bp_activity_action_before_save',        'bp_activity_filter_kses', 1 );
-add_filter( 'bp_activity_latest_update_content',     'wp_filter_kses', 1 );
+add_filter( 'bp_activity_latest_update_content',     'bp_activity_filter_kses', 1 );
 
 add_filter( 'bp_get_activity_action',                'force_balance_tags' );
 add_filter( 'bp_get_activity_content_body',          'force_balance_tags' );
@@ -95,6 +95,9 @@ add_filter( 'bp_get_activity_parent_content',        'bp_create_excerpt' );
 
 add_filter( 'bp_get_activity_content_body', 'bp_activity_truncate_entry', 5 );
 add_filter( 'bp_get_activity_content',      'bp_activity_truncate_entry', 5 );
+
+add_filter( 'bp_get_total_favorite_count_for_user', 'bp_core_number_format' );
+add_filter( 'bp_get_total_mention_count_for_user',  'bp_core_number_format' );
 
 /** Actions *******************************************************************/
 

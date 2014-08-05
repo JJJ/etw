@@ -505,7 +505,7 @@ function groups_screen_group_request_membership() {
 		if ( groups_accept_invite( bp_loggedin_user_id(), $bp->groups->current_group->id ) )
 			bp_core_add_message( __( 'Group invite accepted', 'buddypress' ) );
 		else
-			bp_core_add_message( __( 'There was an error accepting the group invitation, please try again.', 'buddypress' ), 'error' );
+			bp_core_add_message( __( 'There was an error accepting the group invitation; please try again.', 'buddypress' ), 'error' );
 		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) );
 	}
 
@@ -517,7 +517,7 @@ function groups_screen_group_request_membership() {
 			return false;
 
 		if ( !groups_send_membership_request( bp_loggedin_user_id(), $bp->groups->current_group->id ) ) {
-			bp_core_add_message( __( 'There was an error sending your group membership request, please try again.', 'buddypress' ), 'error' );
+			bp_core_add_message( __( 'There was an error sending your group membership request; please try again.', 'buddypress' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'Your membership request was sent to the group administrator successfully. You will be notified when the group administrator responds to your request.', 'buddypress' ) );
 		}
@@ -568,7 +568,7 @@ function groups_screen_group_admin_edit_details() {
 			$group_notify_members = isset( $_POST['group-notify-members'] ) ? (int) $_POST['group-notify-members'] : 0;
 
 			if ( !groups_edit_base_group_details( $_POST['group-id'], $_POST['group-name'], $_POST['group-desc'], $group_notify_members ) ) {
-				bp_core_add_message( __( 'There was an error updating group details, please try again.', 'buddypress' ), 'error' );
+				bp_core_add_message( __( 'There was an error updating group details; please try again.', 'buddypress' ), 'error' );
 			} else {
 				bp_core_add_message( __( 'Group details were successfully updated.', 'buddypress' ) );
 			}
@@ -612,7 +612,7 @@ function groups_screen_group_admin_settings() {
 			return false;
 
 		if ( !groups_edit_group_settings( $_POST['group-id'], $enable_forum, $status, $invite_status ) ) {
-			bp_core_add_message( __( 'There was an error updating group settings, please try again.', 'buddypress' ), 'error' );
+			bp_core_add_message( __( 'There was an error updating group settings; please try again.', 'buddypress' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'Group settings were successfully updated.', 'buddypress' ) );
 		}
@@ -634,7 +634,7 @@ function groups_screen_group_admin_avatar() {
 		return false;
 
 	// If the logged-in user doesn't have permission or if avatar uploads are disabled, then stop here
-	if ( ! bp_is_item_admin() || (int) bp_get_option( 'bp-disable-avatar-uploads' ) )
+	if ( ! bp_is_item_admin() || (int) bp_get_option( 'bp-disable-avatar-uploads' ) || ! buddypress()->avatar->show_avatars )
 		return false;
 
 	$bp = buddypress();
@@ -646,9 +646,9 @@ function groups_screen_group_admin_avatar() {
 		check_admin_referer( 'bp_group_avatar_delete' );
 
 		if ( bp_core_delete_existing_avatar( array( 'item_id' => $bp->groups->current_group->id, 'object' => 'group' ) ) ) {
-			bp_core_add_message( __( 'Your avatar was deleted successfully!', 'buddypress' ) );
+			bp_core_add_message( __( 'The group profile photo was deleted successfully!', 'buddypress' ) );
 		} else {
-			bp_core_add_message( __( 'There was a problem deleting that avatar, please try again.', 'buddypress' ), 'error' );
+			bp_core_add_message( __( 'There was a problem deleting the group profile photo; please try again.', 'buddypress' ), 'error' );
 		}
 	}
 
@@ -691,9 +691,9 @@ function groups_screen_group_admin_avatar() {
 		);
 
 		if ( !bp_core_avatar_handle_crop( $args ) ) {
-			bp_core_add_message( __( 'There was a problem cropping the avatar.', 'buddypress' ), 'error' );
+			bp_core_add_message( __( 'There was a problem cropping the group profile photo.', 'buddypress' ), 'error' );
 		} else {
-			bp_core_add_message( __( 'The new group avatar was uploaded successfully.', 'buddypress' ) );
+			bp_core_add_message( __( 'The new group profile photo was uploaded successfully.', 'buddypress' ) );
 		}
 	}
 
@@ -754,7 +754,7 @@ function groups_screen_group_admin_manage_members() {
 
 			// Demote a user.
 			elseif ( !groups_demote_member( $user_id, $bp->groups->current_group->id ) )
-				bp_core_add_message( __( 'There was an error when demoting that user, please try again', 'buddypress' ), 'error' );
+				bp_core_add_message( __( 'There was an error when demoting that user; please try again', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User demoted successfully', 'buddypress' ) );
 
@@ -772,7 +772,7 @@ function groups_screen_group_admin_manage_members() {
 
 			// Ban a user.
 			if ( !groups_ban_member( $user_id, $bp->groups->current_group->id ) )
-				bp_core_add_message( __( 'There was an error when banning that user, please try again', 'buddypress' ), 'error' );
+				bp_core_add_message( __( 'There was an error when banning that user; please try again', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User banned successfully', 'buddypress' ) );
 
@@ -808,7 +808,7 @@ function groups_screen_group_admin_manage_members() {
 
 			// Remove a user.
 			if ( !groups_remove_member( $user_id, $bp->groups->current_group->id ) )
-				bp_core_add_message( __( 'There was an error removing that user from the group, please try again', 'buddypress' ), 'error' );
+				bp_core_add_message( __( 'There was an error removing that user from the group; please try again', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'User removed successfully', 'buddypress' ) );
 
@@ -847,7 +847,7 @@ function groups_screen_group_admin_requests() {
 
 			// Accept the membership request
 			if ( !groups_accept_membership_request( $membership_id ) )
-				bp_core_add_message( __( 'There was an error accepting the membership request, please try again.', 'buddypress' ), 'error' );
+				bp_core_add_message( __( 'There was an error accepting the membership request; please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'Group membership request accepted', 'buddypress' ) );
 
@@ -858,7 +858,7 @@ function groups_screen_group_admin_requests() {
 
 			// Reject the membership request
 			if ( !groups_reject_membership_request( $membership_id ) )
-				bp_core_add_message( __( 'There was an error rejecting the membership request, please try again.', 'buddypress' ), 'error' );
+				bp_core_add_message( __( 'There was an error rejecting the membership request; please try again.', 'buddypress' ), 'error' );
 			else
 				bp_core_add_message( __( 'Group membership request rejected', 'buddypress' ) );
 		}
@@ -892,7 +892,7 @@ function groups_screen_group_admin_delete_group() {
 
 		// Group admin has deleted the group, now do it.
 		if ( !groups_delete_group( $bp->groups->current_group->id ) ) {
-			bp_core_add_message( __( 'There was an error deleting the group, please try again.', 'buddypress' ), 'error' );
+			bp_core_add_message( __( 'There was an error deleting the group; please try again.', 'buddypress' ), 'error' );
 		} else {
 			bp_core_add_message( __( 'The group was deleted successfully', 'buddypress' ) );
 
@@ -933,7 +933,7 @@ function groups_screen_notification_settings() {
 		<thead>
 			<tr>
 				<th class="icon"></th>
-				<th class="title"><?php _e( 'Groups', 'buddypress' ) ?></th>
+				<th class="title"><?php _ex( 'Groups', 'Group settings on notification settings page', 'buddypress' ) ?></th>				
 				<th class="yes"><?php _e( 'Yes', 'buddypress' ) ?></th>
 				<th class="no"><?php _e( 'No', 'buddypress' )?></th>
 			</tr>
@@ -942,25 +942,25 @@ function groups_screen_notification_settings() {
 		<tbody>
 			<tr id="groups-notification-settings-invitation">
 				<td></td>
-				<td><?php _e( 'A member invites you to join a group', 'buddypress' ) ?></td>
+				<td><?php _ex( 'A member invites you to join a group', 'group settings on notification settings page','buddypress' ) ?></td>
 				<td class="yes"><input type="radio" name="notifications[notification_groups_invite]" value="yes" <?php checked( $group_invite, 'yes', true ) ?>/></td>
 				<td class="no"><input type="radio" name="notifications[notification_groups_invite]" value="no" <?php checked( $group_invite, 'no', true ) ?>/></td>
 			</tr>
 			<tr id="groups-notification-settings-info-updated">
 				<td></td>
-				<td><?php _e( 'Group information is updated', 'buddypress' ) ?></td>
+				<td><?php _ex( 'Group information is updated', 'group settings on notification settings page', 'buddypress' ) ?></td>
 				<td class="yes"><input type="radio" name="notifications[notification_groups_group_updated]" value="yes" <?php checked( $group_update, 'yes', true ) ?>/></td>
 				<td class="no"><input type="radio" name="notifications[notification_groups_group_updated]" value="no" <?php checked( $group_update, 'no', true ) ?>/></td>
 			</tr>
 			<tr id="groups-notification-settings-promoted">
 				<td></td>
-				<td><?php _e( 'You are promoted to a group administrator or moderator', 'buddypress' ) ?></td>
+				<td><?php _ex( 'You are promoted to a group administrator or moderator', 'group settings on notification settings page', 'buddypress' ) ?></td>
 				<td class="yes"><input type="radio" name="notifications[notification_groups_admin_promotion]" value="yes" <?php checked( $group_promo, 'yes', true ) ?>/></td>
 				<td class="no"><input type="radio" name="notifications[notification_groups_admin_promotion]" value="no" <?php checked( $group_promo, 'no', true ) ?>/></td>
 			</tr>
 			<tr id="groups-notification-settings-request">
 				<td></td>
-				<td><?php _e( 'A member requests to join a private group for which you are an admin', 'buddypress' ) ?></td>
+				<td><?php _ex( 'A member requests to join a private group for which you are an admin', 'group settings on notification settings page', 'buddypress' ) ?></td>
 				<td class="yes"><input type="radio" name="notifications[notification_groups_membership_request]" value="yes" <?php checked( $group_request, 'yes', true ) ?>/></td>
 				<td class="no"><input type="radio" name="notifications[notification_groups_membership_request]" value="no" <?php checked( $group_request, 'no', true ) ?>/></td>
 			</tr>
@@ -1071,7 +1071,7 @@ class BP_Groups_Theme_Compat {
 			'post_author'    => 0,
 			'post_date'      => 0,
 			'post_content'   => '',
-			'post_type'      => 'bp_group',
+			'post_type'      => 'page',
 			'post_status'    => 'publish',
 			'is_page'        => true,
 			'comment_status' => 'closed'
@@ -1119,7 +1119,7 @@ class BP_Groups_Theme_Compat {
 	 */
 	public function create_dummy_post() {
 
-		$title = __( 'Groups', 'buddypress' );
+		$title = _x( 'Groups', 'Group creation page', 'buddypress' );
 
 		bp_theme_compat_reset_post( array(
 			'ID'             => 0,
@@ -1127,7 +1127,7 @@ class BP_Groups_Theme_Compat {
 			'post_author'    => 0,
 			'post_date'      => 0,
 			'post_content'   => '',
-			'post_type'      => 'bp_group',
+			'post_type'      => 'page',
 			'post_status'    => 'publish',
 			'is_page'        => true,
 			'comment_status' => 'closed'
@@ -1187,7 +1187,7 @@ class BP_Groups_Theme_Compat {
 			'post_author'    => 0,
 			'post_date'      => 0,
 			'post_content'   => '',
-			'post_type'      => 'bp_group',
+			'post_type'      => 'page',
 			'post_status'    => 'publish',
 			'is_page'        => true,
 			'comment_status' => 'closed'
