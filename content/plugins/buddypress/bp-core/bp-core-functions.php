@@ -338,6 +338,28 @@ function bp_use_wp_admin_bar() {
 /** Directory *****************************************************************/
 
 /**
+ * Returns an array of core component IDs.
+ *
+ * @since BuddyPress (2.1.0)
+ *
+ * @return array
+ */
+function bp_core_get_packaged_component_ids() {
+	return array(
+		'activity',
+		'members',
+		'groups',
+		'blogs',
+		'xprofile',
+		'friends',
+		'messages',
+		'settings',
+		'notifications',
+		'forums',
+	);
+}
+
+/**
  * Fetch a list of BP directory pages from the appropriate meta table.
  *
  * @since BuddyPress (1.5.0)

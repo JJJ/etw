@@ -178,6 +178,7 @@ class BP_Activity_Template {
 			'filter'            => false,
 			'search_terms'      => false,
 			'meta_query'        => false,
+			'date_query'        => false,
 			'display_comments'  => 'threaded',
 			'show_hidden'       => false,
 			'spam'              => 'ham_only',
@@ -220,6 +221,7 @@ class BP_Activity_Template {
 				'sort'              => $sort,
 				'search_terms'      => $search_terms,
 				'meta_query'        => $meta_query,
+				'date_query'        => $date_query,
 				'filter'            => $filter,
 				'show_hidden'       => $show_hidden,
 				'exclude'           => $exclude,
@@ -567,6 +569,7 @@ function bp_has_activities( $args = '' ) {
 		'since'             => false,        // return only items recorded since this Y-m-d H:i:s date
 
 		'meta_query'        => false,        // filter on activity meta. See WP_Meta_Query for format
+		'date_query'        => false,        // filter by date. See first parameter of WP_Date_Query for format
 
 		// Searching
 		'search_terms'      => false,        // specify terms to search on
@@ -680,6 +683,7 @@ function bp_has_activities( $args = '' ) {
 		'filter'            => $filter,
 		'search_terms'      => $search_terms,
 		'meta_query'        => $meta_query,
+		'date_query'        => $date_query,
 		'display_comments'  => $display_comments,
 		'show_hidden'       => $show_hidden,
 		'spam'              => $spam,
@@ -768,7 +772,7 @@ function bp_activity_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $activities_template->pag_num - 1 ) > $activities_template->total_activity_count ) ? $activities_template->total_activity_count : $start_num + ( $activities_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $activities_template->total_activity_count );
 
-		return sprintf( _n( 'Viewing item %1$s to %2$s (of %3$s item)', 'Viewing item %1$s to %2$s (of %3$s items)', $total, 'buddypress' ), $from_num, $to_num, $total );
+		return sprintf( _n( 'Viewing 1 item', 'Viewing %1$s - %2$s of %3$s items', $total, 'buddypress' ), $from_num, $to_num, $total );
 	}
 
 /**
@@ -1659,7 +1663,7 @@ function bp_activity_user_can_delete( $activity = false ) {
 		// Users are allowed to delete their own activity. This is actually
 		// quite powerful, because doing so also deletes all comments to that
 		// activity item. We should revisit this eventually.
-		if ( $activity->user_id === bp_loggedin_user_id() ) {
+		if ( isset( $activity->user_id ) && ( $activity->user_id === bp_loggedin_user_id() ) ) {
 			$can_delete = true;
 		}
 

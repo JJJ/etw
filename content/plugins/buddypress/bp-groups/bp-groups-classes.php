@@ -765,7 +765,7 @@ class BP_Groups_Group {
 			$sql[] = "ORDER BY {$orderby} {$order}";
 		}
 
-		if ( ! empty( $r['per_page'] ) && ! empty( $r['page'] ) ) {
+		if ( ! empty( $r['per_page'] ) && ! empty( $r['page'] ) && $r['per_page'] != -1 ) {
 			$sql['pagination'] = $wpdb->prepare( "LIMIT %d, %d", intval( ( $r['page'] - 1 ) * $r['per_page']), intval( $r['per_page'] ) );
 		}
 
@@ -3278,6 +3278,11 @@ class BP_Group_Extension {
 	 * @since BuddyPress (2.1.0)
 	 */
 	protected function setup_access_settings() {
+		// Bail if no gruop ID is available
+		if ( empty( $this->group_id ) ) {
+			return;
+		}
+
 		// Backward compatibility
 		if ( isset( $this->params['enable_nav_item'] ) ) {
 			$this->enable_nav_item = (bool) $this->params['enable_nav_item'];

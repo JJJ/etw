@@ -257,6 +257,9 @@ class BP_Activity_Activity {
 	 *                     Default: false.
 	 *     @type array $meta_query An array of meta_query conditions.
 	 *                             See WP_Meta_Query::queries for description.
+	 *     @type array $date_query An array of date_query conditions.
+	 *                             See first parameter of WP_Date_Query::__construct()
+	 *                             for description.
 	 *     @type array $filter See BP_Activity_Activity::get_filter_sql().
 	 *     @type string $search_terms Limit results by a search term.
 	 *                                Default: false.
@@ -308,6 +311,7 @@ class BP_Activity_Activity {
 			'exclude'           => false,      // Array of ids to exclude
 			'in'                => false,      // Array of ids to limit query by (IN)
 			'meta_query'        => false,      // Filter by activitymeta
+			'date_query'        => false,      // Filter by date
 			'filter'            => false,      // See self::get_filter_sql()
 			'search_terms'      => false,      // Terms to search by
 			'display_comments'  => false,      // Whether to include activity comments
@@ -328,6 +332,9 @@ class BP_Activity_Activity {
 
 		// Where conditions
 		$where_conditions = array();
+
+		// Excluded types
+		$excluded_types = array();
 
 		// Spam
 		if ( 'ham_only' == $spam )
@@ -376,17 +383,35 @@ class BP_Activity_Activity {
 			$where_conditions[] = $meta_query_sql['where'];
 		}
 
+		// Process date_query into SQL
+		$date_query_sql = self::get_date_query_sql( $date_query );
+
+		if ( ! empty( $date_query_sql ) ) {
+			$where_conditions['date'] = $date_query_sql;
+		}
+
 		// Alter the query based on whether we want to show activity item
 		// comments in the stream like normal comments or threaded below
 		// the activity.
 		if ( false === $display_comments || 'threaded' === $display_comments ) {
-			$where_conditions[] = "a.type != 'activity_comment'";
+			$excluded_types[] = 'activity_comment';
 		}
 
 		// Exclude 'last_activity' items unless the 'action' filter has
 		// been explicitly set
 		if ( empty( $filter['object'] ) ) {
-			$where_conditions[] = "a.type != 'last_activity'";
+			$excluded_types[] = 'last_activity';
+		}
+
+		// Exclude 'new_member' items if xprofile component is not active
+		if ( ! bp_is_active( 'xprofile' ) ) {
+			$excluded_types[] = 'new_member';
+		}
+
+		// Build the excluded type sql part
+		if ( ! empty( $excluded_types ) ) {
+			$not_in = "'" . implode( "', '", esc_sql( $excluded_types ) ) . "'";
+			$where_conditions['excluded_types'] = "a.type NOT IN ({$not_in})";
 		}
 
 		// Filter the where conditions
@@ -682,6 +707,33 @@ class BP_Activity_Activity {
 		}
 
 		return $sql_array;
+	}
+
+	/**
+	 * Get the SQL for the 'date_query' param in BP_Activity_Activity::get().
+	 *
+	 * We use BP_Date_Query, which extends WP_Date_Query, to do the heavy lifting
+	 * of parsing the date_query array and creating the necessary SQL clauses.
+	 * However, since BP_Activity_Activity::get() builds its SQL differently than
+	 * WP_Query, we have to alter the return value (stripping the leading AND
+	 * keyword from the query).
+	 *
+	 * @since BuddyPress (2.1.0)
+	 *
+	 * @param array $date_query An array of date_query parameters. See the
+	 *        documentation for the first parameter of WP_Date_Query.
+	 * @return string
+	 */
+	public static function get_date_query_sql( $date_query = array() ) {
+		$sql = '';
+
+		// Date query
+		if ( ! empty( $date_query ) && is_array( $date_query ) && class_exists( 'BP_Date_Query' ) ) {
+			$date_query = new BP_Date_Query( $date_query, 'date_recorded' );
+			$sql = preg_replace( '/^\sAND/', '', $date_query->get_sql() );
+		}
+
+		return $sql;
 	}
 
 	/**

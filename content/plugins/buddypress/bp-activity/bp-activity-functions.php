@@ -1019,6 +1019,7 @@ function bp_activity_get( $args = '' ) {
 
 		'search_terms'      => false,        // Pass search terms as a string
 		'meta_query'        => false,        // Filter by activity meta. See WP_Meta_Query for format
+		'date_query'        => false,        // Filter by date. See first parameter of WP_Date_Query for format
 		'show_hidden'       => false,        // Show activity items that are hidden site-wide?
 		'exclude'           => false,        // Comma-separated list of activity IDs to exclude
 		'in'                => false,        // Comma-separated list or array of activity IDs to which you want to limit the query
@@ -1040,7 +1041,7 @@ function bp_activity_get( $args = '' ) {
 	) );
 
 	// Attempt to return a cached copy of the first page of sitewide activity.
-	if ( ( 1 === (int) $r['page'] ) && empty( $r['max'] ) && empty( $r['search_terms'] ) && empty( $r['meta_query'] ) && empty( $r['filter'] ) && empty( $r['exclude'] ) && empty( $r['in'] ) && ( 'DESC' === $r['sort'] ) && empty( $r['exclude'] ) && ( 'ham_only' === $r['spam'] ) ) {
+	if ( ( 1 === (int) $r['page'] ) && empty( $r['max'] ) && empty( $r['search_terms'] ) && empty( $r['meta_query'] ) && empty( $r['date_query'] ) && empty( $r['filter'] ) && empty( $r['exclude'] ) && empty( $r['in'] ) && ( 'DESC' === $r['sort'] ) && empty( $r['exclude'] ) && ( 'ham_only' === $r['spam'] ) ) {
 
 		$activity = wp_cache_get( 'bp_activity_sitewide_front', 'bp' );
 		if ( false === $activity ) {
@@ -1052,6 +1053,7 @@ function bp_activity_get( $args = '' ) {
 				'sort'              => $r['sort'],
 				'search_terms'      => $r['search_terms'],
 				'meta_query'        => $r['meta_query'],
+				'date_query'        => $r['date_query'],
 				'filter'            => $r['filter'],
 				'display_comments'  => $r['display_comments'],
 				'show_hidden'       => $r['show_hidden'],
@@ -1071,6 +1073,7 @@ function bp_activity_get( $args = '' ) {
 			'sort'             => $r['sort'],
 			'search_terms'     => $r['search_terms'],
 			'meta_query'       => $r['meta_query'],
+			'date_query'       => $r['date_query'],
 			'filter'           => $r['filter'],
 			'display_comments' => $r['display_comments'],
 			'show_hidden'      => $r['show_hidden'],
@@ -1797,15 +1800,13 @@ function bp_activity_user_can_mark_spam() {
  *
  * @since BuddyPress (1.6.0)
  *
- * @global object $bp BuddyPress global settings.
- *
  * @param BP_Activity_Activity $activity The activity item to be spammed.
  * @param string $source Optional. Default is "by_a_person" (ie, a person has
  *        manually marked the activity as spam). BP core also accepts
  *        'by_akismet'.
  */
 function bp_activity_mark_as_spam( &$activity, $source = 'by_a_person' ) {
-	global $bp;
+	$bp = buddypress();
 
 	$activity->is_spam = 1;
 
@@ -1837,15 +1838,13 @@ function bp_activity_mark_as_spam( &$activity, $source = 'by_a_person' ) {
  *
  * @since BuddyPress (1.6.0)
  *
- * @global object $bp BuddyPress global settings.
- *
  * @param BP_Activity_Activity $activity The activity item to be hammed.
  * @param string $source Optional. Default is "by_a_person" (ie, a person has
  *        manually marked the activity as spam). BP core also accepts
  *        'by_akismet'.
  */
 function bp_activity_mark_as_ham( &$activity, $source = 'by_a_person' ) {
-	global $bp;
+	$bp = buddypress();
 
 	$activity->is_spam = 0;
 
@@ -1931,7 +1930,6 @@ add_action( 'bp_before_activity_comment', 'bp_activity_comment_embed' );
  * @since BuddyPress (1.5.0)
  *
  * @see BP_Embed
- * @global object $bp BuddyPress global settings
  * @uses add_filter() To attach create_function() to 'embed_post_id'.
  * @uses add_filter() To attach 'bp_embed_activity_cache' to 'bp_embed_get_cache'.
  * @uses add_action() To attach 'bp_embed_activity_save_cache' to 'bp_embed_update_cache'.
@@ -1939,15 +1937,13 @@ add_action( 'bp_before_activity_comment', 'bp_activity_comment_embed' );
  * @param object $activity The activity that is being expanded.
  */
 function bp_dtheme_embed_read_more( $activity ) {
-	global $bp;
+	buddypress()->activity->read_more_id = $activity->id;
 
-	$bp->activity->read_more_id = $activity->id;
-
-	add_filter( 'embed_post_id',            create_function( '', 'global $bp; return $bp->activity->read_more_id;' ) );
-	add_filter( 'bp_embed_get_cache',       'bp_embed_activity_cache',      10, 3 );
-	add_action( 'bp_embed_update_cache',    'bp_embed_activity_save_cache', 10, 3 );
+	add_filter( 'embed_post_id',         create_function( '', 'return buddypress()->activity->read_more_id;' ) );
+	add_filter( 'bp_embed_get_cache',    'bp_embed_activity_cache',      10, 3 );
+	add_action( 'bp_embed_update_cache', 'bp_embed_activity_save_cache', 10, 3 );
 }
-add_action( 'bp_dtheme_get_single_activity_content', 'bp_dtheme_embed_read_more' );
+add_action( 'bp_dtheme_get_single_activity_content',       'bp_dtheme_embed_read_more' );
 add_action( 'bp_legacy_theme_get_single_activity_content', 'bp_dtheme_embed_read_more' );
 
 /**

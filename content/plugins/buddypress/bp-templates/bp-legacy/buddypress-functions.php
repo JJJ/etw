@@ -199,16 +199,19 @@ class BP_Legacy extends BP_Theme_Compat {
 	 * @uses wp_enqueue_style() To enqueue the styles
 	 */
 	public function enqueue_styles() {
-
-		// LTR or RTL
-		$file = is_rtl() ? 'buddypress-rtl.css' : 'buddypress.css';
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Locate the BP stylesheet
-		$asset = $this->locate_asset_in_stack( $file, 'css' );
+		$asset = $this->locate_asset_in_stack( "buddypress{$min}.css", 'css' );
 
 		// Enqueue BuddyPress-specific styling, if found
 		if ( isset( $asset['location'], $asset['handle'] ) ) {
 			wp_enqueue_style( $asset['handle'], $asset['location'], array(), $this->version, 'screen' );
+
+			wp_style_add_data( $asset['handle'], 'rtl', true );
+			if ( $min ) {
+				wp_style_add_data( $asset['handle'], 'suffix', $min );
+			}
 		}
 	}
 
@@ -218,11 +221,10 @@ class BP_Legacy extends BP_Theme_Compat {
 	 * @since BuddyPress (1.7)
 	 */
 	public function enqueue_scripts() {
-
-		$file = 'buddypress.js';
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Locate the BP JS file
-		$asset = $this->locate_asset_in_stack( $file, 'js' );
+		$asset = $this->locate_asset_in_stack( "buddypress{$min}.js", 'js' );
 
 		// Enqueue the global JS, if found - AJAX will not work
 		// without it
@@ -256,16 +258,15 @@ class BP_Legacy extends BP_Theme_Compat {
 
 		// Maybe enqueue password verify JS (register page or user settings page)
 		if ( bp_is_register_page() || ( function_exists( 'bp_is_user_settings_general' ) && bp_is_user_settings_general() ) ) {
-			$min      = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			$filename = "password-verify{$min}.js";
 
 			// Locate the Register Page JS file
-			$asset = $this->locate_asset_in_stack( $filename, 'js' );
+			$asset = $this->locate_asset_in_stack( "password-verify{$min}.js", 'js' );
 
-			// Enqueue script
 			$dependencies = array_merge( bp_core_get_js_dependencies(), array(
 				'password-strength-meter',
 			) );
+
+			// Enqueue script
 			wp_enqueue_script( $asset['handle'] . '-password-verify', $asset['location'], $dependencies, $this->version);
 		}
 	}
@@ -791,11 +792,11 @@ function bp_legacy_theme_new_activity_comment() {
 		// Because the whole tree has not been loaded, we manually
 		// determine depth
 		$depth = 1;
-		$parent_id = $activities_template->activities[0]->secondary_item_id;
-		while ( $parent_id !== $activities_template->activities[0]->item_id ) {
+		$parent_id = (int) $activities_template->activities[0]->secondary_item_id;
+		while ( $parent_id !== (int) $activities_template->activities[0]->item_id ) {
 			$depth++;
 			$p_obj = new BP_Activity_Activity( $parent_id );
-			$parent_id = $p_obj->secondary_item_id;
+			$parent_id = (int) $p_obj->secondary_item_id;
 		}
 		$activities_template->activity->current_comment->depth = $depth;
 	}

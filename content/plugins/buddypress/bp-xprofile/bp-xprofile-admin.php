@@ -36,7 +36,7 @@ function xprofile_admin( $message = '', $type = 'error' ) {
 
 	$type = preg_replace( '|[^a-z]|i', '', $type );
 
-	$groups = BP_XProfile_Group::get( array(
+	$groups = bp_xprofile_get_groups( array(
 		'fetch_fields' => true
 	) );
 
@@ -287,7 +287,7 @@ function xprofile_admin_manage_field( $group_id, $field_id = null ) {
 
 				do_action( 'xprofile_fields_saved_field', $field );
 
-				$groups = BP_XProfile_Group::get();
+				$groups = bp_xprofile_get_groups();
 				xprofile_admin( $message, $type );
 			}
 		} else {
@@ -553,7 +553,12 @@ class BP_XProfile_User_Admin {
 		$stats_metabox->priority = 'low';
 
 		// Each Group of fields will have his own metabox
-		if ( ! bp_is_user_spammer( $user_id ) && bp_has_profile( array( 'fetch_fields' => false ) ) ) {
+		$profile_args = array(
+			'fetch_fields' => false,
+			'user_id'      => $user_id,
+		);
+
+		if ( ! bp_is_user_spammer( $user_id ) && bp_has_profile( $profile_args ) ) {
 
 			// Loop through field groups and add a metabox for each one
 			while ( bp_profile_groups() ) : bp_the_profile_group();

@@ -108,18 +108,27 @@ class BP_XProfile_Group {
 	 * @global $wpdb WordPress DB access object.
 	 * @global BuddyPress $bp The one true BuddyPress instance
 	 *
-	 * @param array $args Takes an array of parameters:
-	 *		'profile_group_id' - Limit results to a single profile group
-	 *		'user_id' - Required if you want to load a specific user's data
-	 *		'hide_empty_groups' - Hide groups without any fields
-	 *		'hide_empty_fields' - Hide fields where the user has not provided data
-	 *		'fetch_fields' - Load each group's fields
-	 *		'fetch_field_data' - Load each field's data. Requires a user_id
-	 *		'exclude_groups' - Comma-separated list of groups to exclude
-	 *		'exclude_fields' - Comma-separated list of fields to exclude
-	 *		'update_meta_cache' - Whether to pre-fetch xprofilemeta
-	 *		   for all retrieved groups, fields, and data
-	 *
+	 * @param array $args {
+	 *	Array of optional arguments:
+	 *	@type int $profile_group_id Limit results to a single profile
+	 *	      group.
+	 *      @type int $user_id Required if you want to load a specific
+	 *            user's data. Default: displayed user's ID.
+	 *      @type bool $hide_empty_groups True to hide groups that don't
+	 *            have any fields. Default: false.
+	 *	@type bool $hide_empty_fields True to hide fields where the
+	 *	      user has not provided data. Default: false.
+	 *      @type bool $fetch_fields Whether to fetch each group's fields.
+	 *            Default: false.
+	 *      @type bool $fetch_field_data Whether to fetch data for each
+	 *            field. Requires a $user_id. Default: false.
+	 *      @type array $exclude_groups Comma-separated list or array of
+	 *            group IDs to exclude.
+	 *      @type array $exclude_fields Comma-separated list or array of
+	 *            field IDs to exclude.
+	 *      @type bool $update_meta_cache Whether to pre-fetch xprofilemeta
+	 *            for all retrieved groups, fields, and data. Default: true.
+	 * }
 	 * @return array $groups
 	 */
 	public static function get( $args = array() ) {
@@ -502,11 +511,35 @@ class BP_XProfile_Group {
 						</div>
 						<div id="postbox-container-1" class="postbox-container">
 							<div id="side-sortables" class="meta-box-sortables ui-sortable">
+
+								<?php
+								/**
+								 * Fires before XProfile Group submit metabox.
+								 *
+								 * @since BuddyPress (2.1.0)
+								 *
+								 * @param BP_XProfile_Group $this Current XProfile group.
+								 */
+								do_action( 'xprofile_group_before_submitbox', $this );
+								?>
+
 								<div id="submitdiv" class="postbox">
 									<div id="handlediv"><h3 class="hndle"><?php _e( 'Save', 'buddypress' ); ?></h3></div>
 									<div class="inside">
 										<div id="submitcomment" class="submitbox">
 											<div id="major-publishing-actions">
+
+												<?php
+												/**
+												 * Fires at the beginning of the XProfile Group publishing actions section.
+												 *
+												 * @since BuddyPress (2.1.0)
+												 *
+												 * @param BP_XProfile_Group $this Current XProfile group.
+												 */
+												do_action( 'xprofile_group_submitbox_start', $this );
+												?>
+
 												<div id="delete-action">
 													<a href="users.php?page=bp-profile-setup" class="submitdelete deletion"><?php _e( 'Cancel', 'buddypress' ); ?></a>
 												</div>
@@ -519,6 +552,17 @@ class BP_XProfile_Group {
 										</div>
 									</div>
 								</div>
+
+								<?php
+								/**
+								 * Fires after XProfile Group submit metabox.
+								 *
+								 * @since BuddyPress (2.1.0)
+								 *
+								 * @param BP_XProfile_Group $this Current XProfile group.
+								 */
+								do_action( 'xprofile_group_after_submitbox', $this );
+								?>
 							</div>
 						</div>
 					</div>
@@ -883,11 +927,35 @@ class BP_XProfile_Field {
 						</div><!-- #post-body-content -->
 
 						<div id="postbox-container-1" class="postbox-container">
+
+							<?php
+							/**
+							 * Fires before XProfile Field submit metabox.
+							 *
+							 * @since BuddyPress (2.1.0)
+							 *
+							 * @param BP_XProfile_Field $this Current XProfile field.
+							 */
+							do_action( 'xprofile_field_before_submitbox', $this );
+							?>
+
 							<div id="submitdiv" class="postbox">
 								<h3><?php _e( 'Submit', 'buddypress' ); ?></h3>
 								<div class="inside">
 									<div id="submitcomment" class="submitbox">
 										<div id="major-publishing-actions">
+
+											<?php
+											/**
+											 * Fires at the beginning of the XProfile Field publishing actions section.
+											 *
+											 * @since BuddyPress (2.1.0)
+											 *
+											 * @param BP_XProfile_Field $this Current XProfile field.
+											 */
+											do_action( 'xprofile_field_submitbox_start', $this );
+											?>
+
 											<input type="hidden" name="field_order" id="field_order" value="<?php echo esc_attr( $this->field_order ); ?>" />
 											<div id="publishing-action">
 												<input type="submit" value="<?php esc_attr_e( 'Save', 'buddypress' ); ?>" name="saveField" id="saveField" style="font-weight: bold" class="button-primary" />
@@ -901,6 +969,17 @@ class BP_XProfile_Field {
 									</div>
 								</div>
 							</div>
+
+							<?php
+							/**
+							 * Fires after XProfile Field submit metabox.
+							 *
+							 * @since BuddyPress (2.1.0)
+							 *
+							 * @param BP_XProfile_Field $this Current XProfile field.
+							 */
+							do_action( 'xprofile_field_after_submitbox', $this );
+							?>
 
 							<?php /* Field 1 is the fullname field, which cannot have custom visibility */ ?>
 							<?php if ( 1 != $this->id ) : ?>
@@ -1223,7 +1302,7 @@ class BP_XProfile_ProfileData {
 	public static function get_all_for_user( $user_id ) {
 		global $wpdb, $bp;
 
-		$groups = BP_XProfile_Group::get( array(
+		$groups = bp_xprofile_get_groups( array(
 			'user_id'                => $user_id,
 			'hide_empty_groups'      => true,
 			'hide_empty_fields'      => true,
@@ -2708,11 +2787,18 @@ class BP_XProfile_Field_Type_URL extends BP_XProfile_Field_Type {
 	 * @param string $submitted_value Raw value submitted by the user.
 	 * @return string
 	 */
-	public static function pre_validate_filter( $submitted_value ) {
+	public static function pre_validate_filter( $submitted_value = '' ) {
+
+		// Allow empty URL values
+		if ( empty( $submitted_value ) ) {
+			return '';
+		}
+
+		// Run some checks on the submitted value
 		if ( false === strpos( $submitted_value, ':'  )
-	          && substr( $submitted_value, 0, 1 ) !== '/'
-                  && substr( $submitted_value, 0, 1 ) !== '#'
-		  && ! preg_match( '/^[a-z0-9-]+?\.php/i', $submitted_value )
+		     && substr( $submitted_value, 0, 1 ) !== '/'
+		     && substr( $submitted_value, 0, 1 ) !== '#'
+		     && ! preg_match( '/^[a-z0-9-]+?\.php/i', $submitted_value )
 		) {
 			$submitted_value = 'http://' . $submitted_value;
 		}

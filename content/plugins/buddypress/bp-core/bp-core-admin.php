@@ -466,12 +466,16 @@ class BP_Admin {
 	 * @since BuddyPress (1.6.0)
 	 */
 	public function enqueue_scripts() {
-
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		$file = $this->css_url . "common{$min}.css";
 		$file = apply_filters( 'bp_core_admin_common_css', $file );
 		wp_enqueue_style( 'bp-admin-common-css', $file, array(), bp_get_version() );
+
+		wp_style_add_data( 'bp-admin-common-css', 'rtl', true );
+		if ( $min ) {
+			wp_style_add_data( 'bp-admin-common-css', 'suffix', $min );
+		}
 	}
 
 	/** About *****************************************************************/
@@ -544,7 +548,6 @@ class BP_Admin {
 
 			<div class="changelog">
 				<h2 class="about-headline-callout"><?php _e( 'Performance Improvements', 'buddypress' ); ?></h2>
-				<img class="about-overview-img" src="<?php echo $image_base ?>performance.png" alt="Performance improvements in BP 2.0" />
 				<p><?php esc_html_e( 'Whether your community has tens of members or tens of thousands, we think the performance improvements in BuddyPress 2.0 will knock your socks off. We&#8217;ve slashed our memory footprint and query overhead across the board, with a special focus on the Activity and Members components.', 'buddypress' ) ?></p>
 			</div>
 
@@ -557,13 +560,11 @@ class BP_Admin {
 					<div class="col-1">
 						<h4><?php esc_html_e( 'Extended Profiles in Admin', 'buddypress' ); ?></h4>
 						<p><?php esc_html_e( 'Site administrators can edit members&#8217; xProfile data at Dashboard > Users > Extended Profiles.', 'buddypress' ); ?></p>
-						<img src="<?php echo $image_base ?>admin-xprofile.jpg" style="width:95%" />
 					</div>
 
 					<div class="col-2 last-feature">
 						<h4><?php esc_html_e( 'Registration Management', 'buddypress' ); ?></h4>
 						<p><?php esc_html_e( 'Perform common tasks with pending signups - including resending activation emails and manually activating accounts - on the new Pending tab of Dashboard > Users.', 'buddypress' ); ?></p>
-						<img src="<?php echo $image_base ?>users-pending.jpg" style="width:95%" />
 					</div>
 				</div>
 
@@ -571,13 +572,11 @@ class BP_Admin {
 					<div class="col-1">
 						<h4><?php esc_html_e( 'BuddyPress Repair Tools', 'buddypress' ); ?></h4>
 						<p><?php esc_html_e( 'Dashboard > Tools > BuddyPress contains a number of tools for correcting data that occasionally gets out of sync on BP installs.', 'buddypress' ); ?></p>
-						<img src="<?php echo $image_base ?>tools-buddypress.jpg" style="width:95%" />
 					</div>
 
 					<div class="col-2 last-feature">
 						<h4><?php esc_html_e( 'Mark Spammers in Admin', 'buddypress' ); ?></h4>
 						<p><?php esc_html_e( 'Admins on non-Multisite installations can now perform spam actions from Dashboard > Users > All Users.', 'buddypress' ); ?></p>
-						<img src="<?php echo $image_base ?>user-mark-spam.jpg" style="width:95%" />
 					</div>
 				</div>
 
@@ -597,7 +596,6 @@ class BP_Admin {
 					</div>
 
 					<div class="col-2 last-feature">
-						<img src="<?php echo $image_base ?>load-newest.jpg" />
 					</div>
 				</div>
 			</div>
@@ -653,6 +651,16 @@ class BP_Admin {
 				<?php endif; ?>
 			</div>
 
+			<div class="bp-badge"></div>
+
+			<h2 class="nav-tab-wrapper">
+				<a class="nav-tab" href="<?php echo esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-about' ), 'index.php' ) ) ); ?>">
+					<?php _e( 'What&#8217;s New', 'buddypress' ); ?>
+				</a><a class="nav-tab nav-tab-active" href="<?php echo esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'bp-credits' ), 'index.php' ) ) ); ?>">
+					<?php _e( 'Credits', 'buddypress' ); ?>
+				</a>
+			</h2>
+
 			<p class="about-description"><?php _e( 'BuddyPress is created by a worldwide network of friendly folks.', 'buddypress' ); ?></p>
 
 			<h4 class="wp-people-group"><?php _e( 'Project Leaders', 'buddypress' ); ?></h4>
@@ -705,50 +713,53 @@ class BP_Admin {
 				</li>
 			</ul>
 
-			<h4 class="wp-people-group"><?php _e( 'Contributors to BuddyPress 2.0', 'buddypress' ); ?></h4>
+			<h4 class="wp-people-group"><?php printf( __( 'Contributors to BuddyPress %s', 'buddypress' ), $display_version ); ?></h4>
 			<p class="wp-credits-list">
-				<a href="https://profiles.wordpress.org/boonebgorges/">boonebgorges</a>,
-				<a href="https://profiles.wordpress.org/Bowromir/">Bowromir</a>,
-				<a href="https://profiles.wordpress.org/burakali/">burakali</a>,
-				<a href="https://profiles.wordpress.org/chouf1/">chouf1</a>,
-				<a href="https://profiles.wordpress.org/cmmarslender/">cmmarslender</a>,
+				<a href="https://profiles.wordpress.org/adamt19/">adamt19</a>,
+				<a href="https://profiles.wordpress.org/Viper007Bond/">Alex Mills (Viper007Bond)</a>,
+				<a href="https://profiles.wordpress.org/allendav/">allendav</a>,
+				<a href="https://profiles.wordpress.org/alternatekev/">alternatekev</a>,
+				<a href="https://profiles.wordpress.org/automattic/">Automattic</a>,
+				<a href="https://profiles.wordpress.org/beaulebens/">Beau Lebens (beaulebens)</a>,
+				<a href="https://profiles.wordpress.org/boonebgorges/">Boone B Gorges (boonebgorges)</a>,
+				<a href="https://profiles.wordpress.org/williamsba1/">Brad Williams (williamsba1)</a>,
+				<a href="https://profiles.wordpress.org/sbrajesh/">Brajesh Singh (sbrajesh)</a>,
 				<a href="https://profiles.wordpress.org/danbp/">danbp</a>,
-				<a href="https://profiles.wordpress.org/dcavins/">dcavins</a>,
-				<a href="https://profiles.wordpress.org/Denis-de-Bernardy/">Denis-de-Bernardy</a>,
-				<a href="https://profiles.wordpress.org/DJPaul/">DJPaul</a>,
-				<a href="https://profiles.wordpress.org/ericlewis/">ericlewis</a>,
-				<a href="https://profiles.wordpress.org/glyndavidson/">glyndavidson</a>,
-				<a href="https://profiles.wordpress.org/graham-washbrook/">graham-washbrook</a>,
-				<a href="https://profiles.wordpress.org/henrywright/">henrywright</a>,
-				<a href="https://profiles.wordpress.org/henry.wright/">henry.wright</a>,
-				<a href="https://profiles.wordpress.org/hnla/">hnla</a>,
-				<a href="https://profiles.wordpress.org/imath/">imath</a>,
-				<a href="https://profiles.wordpress.org/johnjamesjacoby/">johnjamesjacoby</a>,
-				<a href="https://profiles.wordpress.org/karmatosed/">karmatosed</a>,
+				<a href="https://profiles.wordpress.org/dcavins/">David Cavins (dcavins)</a>,
+				<a href="https://profiles.wordpress.org/ebellempire/">Erin B. (ebellempire)</a>,
+				<a href="https://profiles.wordpress.org/esroyo/">esroyo</a>,
+				<a href="https://profiles.wordpress.org/hnla/">Hugo (hnla)</a>,
+				<a href="https://profiles.wordpress.org/imath/">Mathieu Viet (imath)</a>,
+				<a href="https://profiles.wordpress.org/johnjamesjacoby/">John James Jacoby (johnjamesjacoby)</a>,
+				<a href="https://profiles.wordpress.org/jconti/">Jose Conti (jconti)</a>,
+				<a href="https://profiles.wordpress.org/jreeve/">jreeve</a>,
+				<a href="https://profiles.wordpress.org/Offereins">Laurens Offereins (Offereins)</a>
 				<a href="https://profiles.wordpress.org/lenasterg/">lenasterg</a>,
-				<a href="https://profiles.wordpress.org/MacPresss/">MacPresss</a>,
-				<a href="https://profiles.wordpress.org/markoheijnen/">markoheijnen</a>,
-				<a href="https://profiles.wordpress.org/megainfo/">megainfo</a>,
-				<a href="https://profiles.wordpress.org/modemlooper/">modemlooper</a>,
-				<a href="https://profiles.wordpress.org/mpa4hu/">mpa4hu</a>,
+				<a href="https://profiles.wordpress.org/mercime/">mercime</a>,
+				<a href="https://profiles.wordpress.org/tw2113/">Michael Beckwith (tw2113)</a>,
+				<a href="https://profiles.wordpress.org/milesstewart88/">Miles Stewart (milesstewart88)</a>,
 				<a href="https://profiles.wordpress.org/needle/">needle</a>,
-				<a href="https://profiles.wordpress.org/netweb/">netweb</a>,
-				<a href="https://profiles.wordpress.org/ninnypants/">ninnypants</a>,
-				Pietro Oliva,
-				<a href="https://profiles.wordpress.org/pross/">pross</a>,
+				<a href="https://profiles.wordpress.org/sooskriszta/">OC2PS (sooskriszta)</a>,
+				<a href="https://profiles.wordpress.org/DJPaul/">Paul Gibbs (DJPaul)</a>,
 				<a href="https://profiles.wordpress.org/r-a-y/">r-a-y</a>,
-				<a href="https://profiles.wordpress.org/reactuate/">reactuate</a>,
-				<a href="https://profiles.wordpress.org/rodrigorznd/">rodrigorznd</a>,
-				<a href="https://profiles.wordpress.org/rogercoathup/">rogercoathup</a>,
-				<a href="https://profiles.wordpress.org/rzen/">rzen</a>,
-				<a href="https://profiles.wordpress.org/SergeyBiryukov/">SergeyBiryukov</a>,
+				<a href="https://profiles.wordpress.org/rogercoathup/">Roger Coathup (rogercoathup)</a>,
+				<a href="https://profiles.wordpress.org/SGr33n/">Sergio De Falco (SGr33n)</a>,
 				<a href="https://profiles.wordpress.org/shanebp/">shanebp</a>,
-				<a href="https://profiles.wordpress.org/SlothLoveChunk/">SlothLoveChunk</a>,
-				<a href="https://profiles.wordpress.org/StijnDeWitt/">StijnDeWitt</a>,
-				<a href="https://profiles.wordpress.org/terraling/">terraling</a>,
-				<a href="https://profiles.wordpress.org/trishasalas/">trishasalas</a>,
-				<a href="https://profiles.wordpress.org/tw2113/">tw2113</a>,
-				<a href="https://profiles.wordpress.org/vanillalounge/">vanillalounge</a>.
+				<a href="https://profiles.wordpress.org/slaFFik/">Slava UA (slaFFik)</a>,
+				<a href="https://profiles.wordpress.org/netweb/">Stephen Edgar (netweb)</a>,
+				<a href="https://profiles.wordpress.org/karmatosed/">Tammie (karmatosed)</a>,
+				<a href="https://profiles.wordpress.org/tomdxw/">tomdxw</a>,
+				<a href="https://profiles.wordpress.org/treyhunner/">treyhunner</a>,
+				<a href="https://profiles.wordpress.org/wbajzek/">wbajzek</a>,
+				<a href="https://profiles.wordpress.org/WCUADD/">WCUADD</a>,
+				<a href="https://profiles.wordpress.org/wolfhoundjesse/">wolfhoundjesse</a>.
+			</p>
+
+			<h4 class="wp-people-group"><?php _e( 'External Libraries', 'buddypress' ); ?></h4>
+			<p class="wp-credits-list">
+				<a href="https://github.com/ichord/At.js">At.js</a>,
+				<a href="https://github.com/ichord/Caret.js">Caret.js</a>,
+				<a href="https://github.com/carhartl/jquery-cookie">jquery.cookie</a>.
 			</p>
 
 			<?php if ( current_user_can( $this->capability ) ) :?>
@@ -772,5 +783,35 @@ endif; // class_exists check
  * @uses BP_Admin
  */
 function bp_admin() {
-       buddypress()->admin = new BP_Admin();
+	buddypress()->admin = new BP_Admin();
+	return;
+
+
+	// These are strings we may use to describe maintenance/security releases, where we aim for no new strings.
+
+	_n_noop( 'Maintenance Release', 'Maintenance Releases', 'buddypress' );
+	_n_noop( 'Security Release', 'Security Releases', 'buddypress' );
+	_n_noop( 'Maintenance and Security Release', 'Maintenance and Security Releases', 'buddypress' );
+
+	/* translators: 1: WordPress version number. */
+	_n_noop( '<strong>Version %1$s</strong> addressed a security issue.',
+	         '<strong>Version %1$s</strong> addressed some security issues.',
+	         'buddypress' );
+
+	/* translators: 1: WordPress version number, 2: plural number of bugs. */
+	_n_noop( '<strong>Version %1$s</strong> addressed %2$s bug.',
+	         '<strong>Version %1$s</strong> addressed %2$s bugs.',
+	         'buddypress' );
+
+	/* translators: 1: WordPress version number, 2: plural number of bugs. Singular security issue. */
+	_n_noop( '<strong>Version %1$s</strong> addressed a security issue and fixed %2$s bug.',
+	         '<strong>Version %1$s</strong> addressed a security issue and fixed %2$s bugs.',
+	         'buddypress' );
+
+	/* translators: 1: WordPress version number, 2: plural number of bugs. More than one security issue. */
+	_n_noop( '<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bug.',
+	         '<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bugs.',
+	         'buddypress' );
+
+	__( 'For more information, see <a href="%s">the release notes</a>.', 'buddypress' );
 }

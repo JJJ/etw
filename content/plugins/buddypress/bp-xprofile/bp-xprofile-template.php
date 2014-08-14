@@ -25,7 +25,7 @@ class BP_XProfile_Data_Template {
 	var $user_id;
 
 	function __construct( $user_id, $profile_group_id, $hide_empty_groups = false, $fetch_fields = false, $fetch_field_data = false, $exclude_groups = false, $exclude_fields = false, $hide_empty_fields = false, $fetch_visibility_level = false, $update_meta_cache = true ) {
-		$this->groups = BP_XProfile_Group::get( array(
+		$this->groups = bp_xprofile_get_groups( array(
 			'profile_group_id'    => $profile_group_id,
 			'user_id'             => $user_id,
 			'hide_empty_groups'   => $hide_empty_groups,
@@ -314,6 +314,34 @@ function bp_the_profile_group_field_ids() {
 		return substr( $field_ids, 0, -1 );
 	}
 
+/**
+ * Output a comma-separated list of field IDs that are to be submitted on profile edit.
+ *
+ * @since BuddyPress (2.1.0)
+ */
+function bp_the_profile_field_ids() {
+	echo bp_get_the_profile_field_ids();
+}
+	/**
+	 * Generate a comma-separated list of field IDs that are to be submitted on profile edit.
+	 *
+	 * @since BuddyPress (2.1.0)
+	 *
+	 * @return string
+	 */
+	function bp_get_the_profile_field_ids() {
+		global $profile_template;
+
+		$field_ids = array();
+		foreach ( $profile_template->groups as $group ) {
+			$field_ids = array_merge( $field_ids, wp_list_pluck( $group->fields, 'id' ) );
+		}
+
+		$field_ids = implode( ',', wp_parse_id_list( $field_ids ) );
+
+		return apply_filters( 'bp_get_the_profile_field_ids', $field_ids );
+	}
+
 function bp_profile_fields() {
 	global $profile_template;
 	return $profile_template->profile_fields();
@@ -600,7 +628,7 @@ function bp_profile_get_field_groups() {
 	$groups = wp_cache_get( 'xprofile_groups_inc_empty', 'bp' );
 
 	if ( empty( $groups ) ) {
-		$groups = BP_XProfile_Group::get( array( 'fetch_fields' => true ) );
+		$groups = bp_xprofile_get_groups( array( 'fetch_fields' => true ) );
 		wp_cache_set( 'xprofile_groups_inc_empty', $groups, 'bp' );
 	}
 

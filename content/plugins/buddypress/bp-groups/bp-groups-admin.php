@@ -168,12 +168,17 @@ function bp_groups_admin_load() {
 
 	// Enqueue CSS and JavaScript
 	wp_enqueue_script( 'bp_groups_admin_js', $bp->plugin_url . "bp-groups/admin/js/admin.{$min}js", array( 'jquery', 'wp-ajax-response', 'jquery-ui-autocomplete' ), bp_get_version(), true );
-	wp_enqueue_style( 'bp_groups_admin_css', $bp->plugin_url . "bp-groups/admin/css/admin.{$min}css", array(), bp_get_version() );
-
 	wp_localize_script( 'bp_groups_admin_js', 'BP_Group_Admin', array(
 		'add_member_placeholder' => __( 'Start typing a username to add a new member.', 'buddypress' ),
 		'warn_on_leave'          => __( 'If you leave this page, you will lose any unsaved changes you have made to the group.', 'buddypress' ),
 	) );
+	wp_enqueue_style( 'bp_groups_admin_css', $bp->plugin_url . "bp-groups/admin/css/admin.{$min}css", array(), bp_get_version() );
+
+	wp_style_add_data( 'bp_groups_admin_css', 'rtl', true );
+	if ( $min ) {
+		wp_style_add_data( 'bp_groups_admin_css', 'suffix', $min );
+	}
+
 
 	if ( $doaction && 'save' == $doaction ) {
 		// Get group ID
@@ -945,10 +950,10 @@ function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, 
 	) );
 
 	$viewing_text = sprintf(
-		__( 'Viewing %1$s - %2$s of %3$s', 'buddypress' ),
+		_n( 'Viewing 1 member', 'Viewing %1$s - %2$s of %3$s members', $query->total_users, 'buddypress' ),
 		number_format_i18n( $current_page_start ),
 		number_format_i18n( $current_page_end ),
-		sprintf( _n( '%s member', '%s members', $query->total_users, 'buddypress' ), $query->total_users )
+		(int) $query->total_users
 	);
 
 	$pagination .= '<span class="bp-group-admin-pagination-viewing">' . $viewing_text . '</span>';

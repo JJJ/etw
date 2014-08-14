@@ -1088,7 +1088,7 @@ function bp_groups_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $groups_template->pag_num - 1 ) > $groups_template->total_group_count ) ? $groups_template->total_group_count : $start_num + ( $groups_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $groups_template->total_group_count );
 
-		return apply_filters( 'bp_get_groups_pagination_count', sprintf( _n( 'Viewing group %1$s to %2$s (of %3$s group)', 'Viewing group %1$s to %2$s (of %3$s groups)', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_groups_pagination_count', sprintf( _n( 'Viewing 1', 'Viewing %1$s - %2$s of %3$s groups', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 function bp_groups_auto_join() {
@@ -1629,7 +1629,7 @@ function bp_group_admin_tabs( $group = false ) {
 
 	<?php if ( !(int)bp_get_option( 'bp-disable-avatar-uploads' ) && buddypress()->avatar->show_avatars ) : ?>
 
-		<li<?php if ( 'group-avatar'   == $current_tab ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_get_group_permalink( $group ) . 'admin/group-avatar' ) ?>"><?php _e( 'Profile Photo', 'buddypress' ); ?></a></li>
+		<li<?php if ( 'group-avatar'   == $current_tab ) : ?> class="current"<?php endif; ?>><a href="<?php echo trailingslashit( bp_get_group_permalink( $group ) . 'admin/group-avatar' ) ?>"><?php _e( 'Photo', 'buddypress' ); ?></a></li>
 
 	<?php endif; ?>
 
@@ -2586,7 +2586,7 @@ function bp_group_member_pagination_count() {
 		$to_num = bp_core_number_format( ( $start_num + ( $members_template->pag_num - 1 ) > $members_template->total_member_count ) ? $members_template->total_member_count : $start_num + ( $members_template->pag_num - 1 ) );
 		$total = bp_core_number_format( $members_template->total_member_count );
 
-		return apply_filters( 'bp_get_group_member_pagination_count', sprintf( _n( 'Viewing member %1$s to %2$s (of %3$s member)', 'Viewing members %1$s to %2$s (of %3$s members)', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_group_member_pagination_count', sprintf( _n( 'Viewing 1 member', 'Viewing %1$s - %2$s of %3$s members', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 function bp_group_member_admin_pagination() {
@@ -3059,14 +3059,16 @@ function bp_groups_filter_title() {
 	do_action( 'bp_groups_filter_title' );
 }
 
-function bp_is_group_admin_screen( $slug ) {
-	if ( !bp_is_groups_component() || !bp_is_current_action( 'admin' ) )
-		return false;
-
-	if ( bp_is_action_variable( $slug ) )
-		return true;
-
-	return false;
+/**
+ * Is the current page a specific group admin screen?
+ *
+ * @since BuddyPress (1.1)
+ *
+ * @param string $slug
+ * @return bool
+ */
+function bp_is_group_admin_screen( $slug = '' ) {
+	return (bool) ( bp_is_group_admin_page() && bp_is_action_variable( $slug ) );
 }
 
 /**
@@ -3464,7 +3466,7 @@ function bp_group_requests_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $requests_template->pag_num - 1 ) > $requests_template->total_request_count ) ? $requests_template->total_request_count : $start_num + ( $requests_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $requests_template->total_request_count );
 
-		return apply_filters( 'bp_get_group_requests_pagination_count', sprintf( _n( 'Viewing requests %1$s to %2$s (of %3$s request)', 'Viewing request %1$s to %2$s (of %3$s requests)', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_group_requests_pagination_count', sprintf( _n( 'Viewing 1 request', 'Viewing %1$s - %2$s of %3$s requests', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 /************************************************************************************
@@ -3759,7 +3761,7 @@ function bp_group_invite_pagination_count() {
 		$to_num    = bp_core_number_format( ( $start_num + ( $invites_template->pag_num - 1 ) > $invites_template->total_invite_count ) ? $invites_template->total_invite_count : $start_num + ( $invites_template->pag_num - 1 ) );
 		$total     = bp_core_number_format( $invites_template->total_invite_count );
 
-		return apply_filters( 'bp_get_groups_pagination_count', sprintf( _n( 'Viewing invitation %1$s to %2$s (of %3$s invitation)', 'Viewing invitation %1$s to %2$s (of %3$s invitations)', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
+		return apply_filters( 'bp_get_groups_pagination_count', sprintf( _n( 'Viewing 1 invitation', 'Viewing %1$s - %2$s of %3$s invitations', $total, 'buddypress' ), $from_num, $to_num, $total ), $from_num, $to_num, $total );
 	}
 
 /***

@@ -340,30 +340,21 @@ function bp_core_enable_root_profiles() {
  * @return bool|null Returns false on failure.
  */
 function bp_core_load_template( $templates ) {
-	global $post, $bp, $wp_query, $wpdb;
+	global $wp_query;
 
-	// Determine if the root object WP page exists for this request
-	// note: get_page_by_path() breaks non-root pages
-	if ( !empty( $bp->unfiltered_uri_offset ) ) {
-		if ( !$page_exists = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s", $bp->unfiltered_uri[$bp->unfiltered_uri_offset] ) ) ) {
-			return false;
-		}
-	}
+	// reset post if not on a directory page
+	// if we're not on a directory page, this means we're faking a page and we
+	// need to reset the post to avoid notices
+	if ( ! bp_is_directory() ) {
+		bp_theme_compat_reset_post( array(
+			'ID'          => 0,
+			'is_404'      => true,
+			'post_status' => 'publish',
+		) );
 
-	// Set the root object as the current wp_query-ied item
-	$object_id = 0;
-	foreach ( (array) $bp->pages as $page ) {
-		if ( $page->name == $bp->unfiltered_uri[$bp->unfiltered_uri_offset] ) {
-			$object_id = $page->id;
-		}
-	}
-
-	// Make the queried/post object an actual valid page
-	if ( !empty( $object_id ) ) {
-		$wp_query->queried_object    = get_post( $object_id );
-		$wp_query->queried_object_id = $object_id;
-		$wp_query->post              = $wp_query->queried_object;
-		$post                        = $wp_query->queried_object;
+		// need to set theme compat to false since the reset post function
+		// automatically sets theme compat to true
+		bp_set_theme_compat_active( false );
 	}
 
 	// Fetch each template and add the php suffix
@@ -372,8 +363,17 @@ function bp_core_load_template( $templates ) {
 		$filtered_templates[] = $template . '.php';
 	}
 
+	// Only perform template lookup for bp-default themes
+	if ( ! bp_use_theme_compat_with_current_theme() ) {
+		$template = locate_template( (array) $filtered_templates, false );
+
+	// Theme compat doesn't require a template lookup
+	} else {
+		$template = '';
+	}
+
 	// Filter the template locations so that plugins can alter where they are located
-	$located_template = apply_filters( 'bp_located_template', locate_template( (array) $filtered_templates, false ), $filtered_templates );
+	$located_template = apply_filters( 'bp_located_template', $template, $filtered_templates );
 	if ( !empty( $located_template ) ) {
 
 		// Template was located, lets set this as a valid page and not a 404.
