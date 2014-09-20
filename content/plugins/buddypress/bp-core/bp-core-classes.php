@@ -368,7 +368,7 @@ class BP_User_Query {
 		// 'search_terms' searches user_login and user_nicename
 		// xprofile field matches happen in bp_xprofile_bp_user_query_search()
 		if ( false !== $search_terms ) {
-			$search_terms = bp_esc_like( $search_terms );
+			$search_terms = bp_esc_like( wp_kses_normalize_entities( $search_terms ) );
 
 			if ( $search_wildcard === 'left' ) {
 				$search_terms_nospace = '%' . $search_terms;
@@ -2669,7 +2669,7 @@ class BP_Members_Suggestions extends BP_Suggestions {
 			'page'            => 1,
 			'per_page'        => $this->args['limit'],
 			'search_terms'    => $this->args['term'],
-			'search_wildcard' => is_rtl() ? 'left' : 'right',
+			'search_wildcard' => 'right',
 		);
 
 		// Only return matches of friends of this user.

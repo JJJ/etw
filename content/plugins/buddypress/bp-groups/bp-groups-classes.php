@@ -158,6 +158,12 @@ class BP_Groups_Group {
 	 *
 	 * @param int $id Optional. If the ID of an existing group is provided,
 	 *        the object will be pre-populated with info about that group.
+	 * @param array $args {
+	 *     Array of optional arguments.
+	 *     @type bool $populate_extras Whether to fetch "extra" data about
+	 *           the group (group admins/mods, access for the current user).
+	 *           Default: false.
+	 * }
 	 */
 	public function __construct( $id = null, $args = array() ) {
 		$this->args = wp_parse_args( $args, array(
@@ -625,9 +631,11 @@ class BP_Groups_Group {
 	 *     @type bool $populate_extras Whether to fetch additional
 	 *           information (such as member count) about groups. Default:
 	 *           true.
-	 *     @type array|string Optional. Array or comma-separated list of
-	 *           group IDs. Results will exclude the listed groups.
+	 *     @type array|string $exclude Optional. Array or comma-separated
+	 *           list of group IDs. Results will exclude the listed groups.
 	 *           Default: false.
+	 *     @type bool $update_meta_cache Whether to pre-fetch groupmeta for
+	 *           the returned groups. Default: true.
 	 *     @type bool $show_hidden Whether to include hidden groups in
 	 *           results. Default: false.
 	 * }
@@ -891,19 +899,8 @@ class BP_Groups_Group {
 			preg_match_all( '/ON \((.*)\)/', $meta_sql['join'], $matches_b );
 
 			if ( ! empty( $matches_a[1] ) && ! empty( $matches_b[1] ) ) {
-				$sql_array['join']  = implode( ',', $matches_a[1] ). ', ';
-
-				$sql_array['where'] = '';
-
-				$meta_query_where_clauses = explode( "\n", $meta_sql['where'] );
-
-				// Trim empties
-				$meta_query_where_clauses = array_values( array_filter( $meta_query_where_clauses ) );
-
-				foreach( $matches_b[1] as $key => $group_id_clause ) {
-					$sql_array['where'] .= ' ' . preg_replace( '/^(AND\s+[\(\s]+)/', '$1' . $group_id_clause . ' AND ', ltrim( $meta_query_where_clauses[ $key ] ) );
-				}
-
+				$sql_array['join']  = implode( ',', $matches_a[1] ) . ', ';
+				$sql_array['where'] = $meta_sql['where'] . ' AND ' . implode ( ' AND ', $matches_b[1] );
 			}
 		}
 
@@ -1502,6 +1499,7 @@ class BP_Group_Member_Query extends BP_User_Query {
 	 * Array of group member ids, cached to prevent redundant lookups.
 	 *
 	 * @since BuddyPress (1.8.1)
+	 * @access protected
 	 * @var null|array Null if not yet defined, otherwise an array of ints.
 	 */
 	protected $group_member_ids;
@@ -1748,10 +1746,11 @@ class BP_Group_Member_Query extends BP_User_Query {
 	 *
 	 * @since BuddyPress (1.8.0)
 	 *
-	 * @param object $query BP_User_Query object. Because we're filtering
-	 *   the current object, we use $this inside of the method instead
+	 * @param BP_User_Query $query BP_User_Query object. Because we're
+	 *        filtering the current object, we use $this inside of the
+	 *        method instead.
 	 * @param string $user_ids_sql Sanitized, comma-separated string of
-	 *   the user ids returned by the main query
+	 *        the user ids returned by the main query.
 	 */
 	public function populate_group_member_extras( $query, $user_ids_sql ) {
 		global $wpdb;
@@ -1783,7 +1782,7 @@ class BP_Group_Member_Query extends BP_User_Query {
 	/**
 	 * Sort user IDs by how recently they have generated activity within a given group.
 	 *
-	 * @since  BuddyPress (2.1.0)
+	 * @since BuddyPress (2.1.0)
 	 *
 	 * @param BP_User_Query $query BP_User_Query object.
 	 * @param array $gm_ids array of group member ids.
@@ -1825,7 +1824,7 @@ class BP_Group_Member_Query extends BP_User_Query {
 }
 
 /**
- * BuddyPress Group Membership objects.
+ * BuddyPress Group Membership object.
  */
 class BP_Groups_Member {
 
@@ -2851,6 +2850,7 @@ class BP_Group_Extension {
 	 * Information about this extension's screens.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access public
 	 * @var array
 	 */
 	public $screens = array();
@@ -2859,6 +2859,7 @@ class BP_Group_Extension {
 	 * The name of the extending class.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access public
 	 * @var string
 	 */
 	public $class_name = '';
@@ -2867,6 +2868,7 @@ class BP_Group_Extension {
 	 * A ReflectionClass object of the current extension.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access public
 	 * @var ReflectionClass
 	 */
 	public $class_reflection = null;
@@ -2875,6 +2877,7 @@ class BP_Group_Extension {
 	 * Parsed configuration paramaters for the extension.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access public
 	 * @var array
 	 */
 	public $params = array();
@@ -2883,6 +2886,7 @@ class BP_Group_Extension {
 	 * Raw config params, as passed by the extending class.
 	 *
 	 * @since BuddyPress (2.1.0)
+	 * @access public
 	 * @var array
 	 */
 	public $params_raw = array();
@@ -2891,6 +2895,7 @@ class BP_Group_Extension {
 	 * The ID of the current group.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access public
 	 * @var int
 	 */
 	public $group_id = 0;
@@ -2898,6 +2903,7 @@ class BP_Group_Extension {
 	/**
 	 * The slug of the current extension.
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $slug = '';
@@ -2905,6 +2911,7 @@ class BP_Group_Extension {
 	/**
 	 * The translatable name of the current extension.
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $name = '';
@@ -2912,6 +2919,7 @@ class BP_Group_Extension {
 	/**
 	 * The visibility of the extension tab. 'public' or 'private'.
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $visibility = 'public';
@@ -2919,6 +2927,7 @@ class BP_Group_Extension {
 	/**
 	 * The numeric position of the main nav item.
 	 *
+	 * @access public
 	 * @var int
 	 */
 	public $nav_item_position = 81;
@@ -2926,6 +2935,7 @@ class BP_Group_Extension {
 	/**
 	 * Whether to show the nav item.
 	 *
+	 * @access public
 	 * @var bool
 	 */
 	public $enable_nav_item = true;
@@ -2934,6 +2944,7 @@ class BP_Group_Extension {
 	 * Whether the current user should see the navigation item.
 	 *
 	 * @since BuddyPress (2.1.0)
+	 * @access public
 	 * @var bool
 	 */
 	public $user_can_see_nav_item;
@@ -2942,6 +2953,7 @@ class BP_Group_Extension {
 	 * Whether the current user can visit the tab.
 	 *
 	 * @since BuddyPress (2.1.0)
+	 * @access public
 	 * @var bool
 	 */
 	public $user_can_visit;
@@ -2949,6 +2961,7 @@ class BP_Group_Extension {
 	/**
 	 * The text of the nav item. Defaults to self::name.
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $nav_item_name = '';
@@ -2958,6 +2971,7 @@ class BP_Group_Extension {
 	 *
 	 * Default: 'groups_custom_group_boxes'.
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $display_hook = 'groups_custom_group_boxes';
@@ -2967,6 +2981,7 @@ class BP_Group_Extension {
 	 *
 	 * Default: 'groups/single/plugins'.
 	 *
+	 * @access public
 	 * @var string
 	 */
 	public $template_file = 'groups/single/plugins';
@@ -2977,6 +2992,7 @@ class BP_Group_Extension {
 	 * Has the extension been initialized?
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access protected
 	 * @var bool
 	 */
 	protected $initialized = false;
@@ -2985,6 +3001,7 @@ class BP_Group_Extension {
 	 * Extension properties as set by legacy extensions.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access protected
 	 * @var array
 	 */
 	protected $legacy_properties = array();
@@ -2996,14 +3013,25 @@ class BP_Group_Extension {
 	 * then converted to match the new format for params.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access protected
 	 * @var array
 	 */
 	protected $legacy_properties_converted = array();
 
 	/**
+	 * Redirect location as defined by post-edit save callback.
+	 *
+	 * @since BuddyPress (2.1.0)
+	 * @access protected
+	 * @var string
+	 */
+	protected $post_save_redirect;
+
+	/**
 	 * Miscellaneous data as set by the __set() magic method.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 * @access protected
 	 * @var array
 	 */
 	protected $data = array();
@@ -3193,6 +3221,8 @@ class BP_Group_Extension {
 	 *   - group admin
 	 *
 	 * @since BuddyPress (1.8.0)
+	 *
+	 * @return int
 	 */
 	public static function get_group_id() {
 
@@ -3224,6 +3254,8 @@ class BP_Group_Extension {
 	 * Gather configuration data about your screens.
 	 *
 	 * @since BuddyPress (1.8.0)
+	 *
+	 * @return array
 	 */
 	protected function get_default_screens() {
 		$this->setup_class_info();
@@ -3689,7 +3721,24 @@ class BP_Group_Extension {
 		}
 
 		$this->check_nonce( 'edit' );
+
+		// Detect whether the screen_save_callback is performing a
+		// redirect, so that we don't do one of our own
+		add_filter( 'wp_redirect', array( $this, 'detect_post_save_redirect' ) );
+
+		// Call the extension's save routine
 		call_user_func( $this->screens['edit']['screen_save_callback'], $this->group_id );
+
+		// Clean up detection filters
+		remove_filter( 'wp_redirect', array( $this, 'detect_post_save_redirect' ) );
+
+		// Perform a redirect only if one has not already taken place
+		if ( empty( $this->post_save_redirect ) ) {
+			$redirect_to = apply_filters( 'bp_group_extension_edit_screen_save_redirect', bp_get_requested_url( ) );
+
+			bp_core_redirect( $redirect_to );
+			die();
+		}
 	}
 
 	/**
@@ -3751,6 +3800,22 @@ class BP_Group_Extension {
 		$pattern = "/<input[^>]+type=[\'\"]submit[\'\"]/";
 		preg_match( $pattern, $screen, $matches );
 		return ! empty( $matches[0] );
+	}
+
+	/**
+	 * Detect redirects hardcoded into edit_screen_save() callbacks.
+	 *
+	 * @since BuddyPress (2.1.0)
+	 *
+	 * @param string $location
+	 * @return string
+	 */
+	public function detect_post_save_redirect( $redirect = '' ) {
+		if ( ! empty( $redirect ) ) {
+			$this->post_save_redirect = $redirect;
+		}
+
+		return $redirect;
 	}
 
 	/** Admin *************************************************************/
@@ -3828,8 +3893,6 @@ class BP_Group_Extension {
 	 *
 	 * @since BuddyPress (1.8.0)
 	 *
-	 * @uses wp_nonce_field()
-	 *
 	 * @param string $context Screen context. 'create', 'edit', or 'admin'.
 	 */
 	public function nonce_field( $context = '' ) {
@@ -3840,8 +3903,6 @@ class BP_Group_Extension {
 	 * Check the nonce on a submitted settings form.
 	 *
 	 * @since BuddyPress (1.8.0)
-	 *
-	 * @uses check_admin_referer()
 	 *
 	 * @param string $context Screen context. 'create', 'edit', or 'admin'.
 	 */
@@ -3859,7 +3920,6 @@ class BP_Group_Extension {
 	 * @since BuddyPress (1.8.0)
 	 *
 	 * @param string $context Screen context. 'create', 'edit', or 'admin'.
-	 *
 	 * @return bool True if the screen is enabled, otherwise false.
 	 */
 	public function is_screen_enabled( $context = '' ) {
@@ -4330,6 +4390,7 @@ class BP_Groups_Member_Suggestions extends BP_Members_Suggestions {
 	 * Default arguments for this suggestions service.
 	 *
 	 * @since BuddyPress (2.1.0)
+	 * @access protected
 	 * @var array $args {
 	 *     @type int $group_id Positive integers will restrict the search to members in that group.
 	 *           Negative integers will restrict the search to members in every other group.

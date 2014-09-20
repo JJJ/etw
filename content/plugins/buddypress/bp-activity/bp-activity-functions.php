@@ -1226,6 +1226,9 @@ function bp_activity_add( $args = '' ) {
 
 	// If this is an activity comment, rebuild the tree
 	if ( 'activity_comment' === $activity->type ) {
+		// Also clear the comment cache for the parent activity ID
+		wp_cache_delete( $activity->item_id, 'bp_activity_comments' );
+
 		BP_Activity_Activity::rebuild_activity_comment_tree( $activity->item_id );
 	}
 
@@ -1622,6 +1625,9 @@ function bp_activity_delete_comment( $activity_id, $comment_id ) {
 	if ( ! bp_activity_delete( array( 'id' => $comment_id, 'type' => 'activity_comment' ) ) ) {
 		return false;
 	}
+
+	// Purge comment cache for the root activity update
+	wp_cache_delete( $activity_id, 'bp_activity_comments' );
 
 	// Recalculate the comment tree
 	BP_Activity_Activity::rebuild_activity_comment_tree( $activity_id );

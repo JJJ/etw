@@ -1,3 +1,4 @@
+/* jshint undef: false, unused:false */
 // AJAX Functions
 var jq = jQuery;
 
@@ -182,7 +183,7 @@ jq(document).ready( function() {
 
 				if ( 0 !== jq('#latest-update').length ) {
 					var l   = jq('#activity-stream li.new-update .activity-content .activity-inner p').html(),
-						v     = jq('#activity-stream li.new-update .activity-content .activity-header p a.view').attr('href').
+						v     = jq('#activity-stream li.new-update .activity-content .activity-header p a.view').attr('href'),
 						ltext = jq('#activity-stream li.new-update .activity-content .activity-inner p').text(),
 						u     = '';
 
@@ -421,7 +422,7 @@ jq(document).ready( function() {
 				'cookie': bp_get_cookies(),
 				'page': oldest_page,
 				'exclude_just_posted': just_posted.join(',')
-			}
+			};
 
 			load_more_search = bp_get_querystring('s');
 
@@ -1687,10 +1688,6 @@ function bp_init_objects(objects) {
 function bp_filter_request( object, filter, scope, target, search_terms, page, extras, caller, template ) {
 	if ( 'activity' === object ) {
 		return false;
-	}
-
-	if ( bp_get_querystring('s') && !search_terms ) {
-		search_terms = bp_get_querystring('s');
 	}
 
 	if ( null === scope ) {

@@ -685,7 +685,7 @@ function bp_xprofile_bp_user_query_search( $sql, BP_User_Query $query ) {
 
 	$bp = buddypress();
 
-	$search_terms_clean = bp_esc_like( $query->query_vars['search_terms'] );
+	$search_terms_clean = bp_esc_like( wp_kses_normalize_entities( $query->query_vars['search_terms'] ) );
 
 	if ( $query->query_vars['search_wildcard'] === 'left' ) {
 		$search_terms_nospace = '%' . $search_terms_clean;
@@ -767,7 +767,7 @@ add_action( 'bp_core_activated_user',   'xprofile_sync_wp_profile' );
 function xprofile_sync_bp_profile( &$errors, $update, &$user ) {
 
 	// Bail if profile syncing is disabled
-	if ( bp_disable_profile_sync() ) {
+	if ( bp_disable_profile_sync() || ! $update || $errors->get_error_codes() ) {
 		return;
 	}
 

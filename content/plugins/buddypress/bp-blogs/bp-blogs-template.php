@@ -369,7 +369,7 @@ function bp_has_blogs( $args = '' ) {
 		'page'              => 1,
 		'per_page'          => 20,
 		'max'               => false,
-		'user_id'           => bp_displayed_user_id(), // Pass a user_id to limit to only blogs this user has higher than subscriber access to
+		'user_id'           => bp_displayed_user_id(), // Pass a user_id to limit to only blogs this user is a member of
 		'include_blog_ids'  => false,
 		'search_terms'      => $search_terms,          // Pass search terms to filter on the blog title or description.
 		'update_meta_cache' => true
@@ -660,16 +660,25 @@ function bp_blog_last_active( $args = array() ) {
 	function bp_get_blog_last_active( $args = array() ) {
 		global $blogs_template;
 
-		$r = wp_parse_args( $args, array(
-			'active_format' => true,
+		// Parse the activity format
+		$r = bp_parse_args( $args, array(
+			'active_format' => true
 		) );
 
+		// Backwards compatibilty for anyone forcing a 'true' active_format
+		if ( true === $r['active_format'] ) {
+			$r['active_format'] = __( 'active %s', 'buddypress' );
+		}
+
+		// Blog has been posted to at least once
 		if ( isset( $blogs_template->blog->last_activity ) ) {
-			if ( ! empty( $r['active_format'] ) ) {
-				$last_activity = bp_core_get_last_activity( $blogs_template->blog->last_activity, __( 'active %s', 'buddypress' ) );
-			} else {
-				$last_activity = bp_core_time_since( $blogs_template->blog->last_activity );
-			}
+
+			// Backwards compatibility for pre 1.5 'ago' strings
+			$last_activity = ! empty( $r['active_format'] )
+				? bp_core_get_last_activity( $blogs_template->blog->last_activity, $r['active_format'] )
+				: bp_core_time_since( $blogs_template->blog->last_activity );
+
+		// Blog has never been posted to
 		} else {
 			$last_activity = __( 'Never active', 'buddypress' );
 		}

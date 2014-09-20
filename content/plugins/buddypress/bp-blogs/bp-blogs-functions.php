@@ -523,7 +523,7 @@ function bp_blogs_record_post( $post_id, $post, $user_id = 0 ) {
 
 			$activity_content = $post->post_content;
 
-			bp_blogs_record_activity( array(
+			$activity_id = bp_blogs_record_activity( array(
 				'user_id'           => (int) $post->post_author,
 				'content'           => apply_filters( 'bp_blogs_activity_new_post_content',      $activity_content, $post, $post_permalink ),
 				'primary_link'      => apply_filters( 'bp_blogs_activity_new_post_primary_link', $post_permalink,   $post_id               ),
@@ -531,7 +531,11 @@ function bp_blogs_record_post( $post_id, $post, $user_id = 0 ) {
 				'item_id'           => $blog_id,
 				'secondary_item_id' => $post_id,
 				'recorded_time'     => $post->post_date_gmt,
-			));
+			) );
+
+			// save post title in activity meta
+			bp_activity_update_meta( $activity_id, 'post_title', $post->post_title );
+			bp_activity_update_meta( $activity_id, 'post_url',   $post_permalink );
 		}
 
 		// Update the blogs last activity
@@ -571,8 +575,76 @@ function bp_blogs_update_post( $post ) {
 
 	// update the activity entry
 	$activity = new BP_Activity_Activity( $activity_id );
-	$activity->content = $post->post_content;
+
+	if ( ! empty( $post->post_content ) ) {
+		// Make sure to update the thumbnail image
+		$post_content = bp_activity_thumbnail_content_images( $post->post_content, $activity->primary_link, (array) $activity );
+
+		// Make sure to apply the blop post excerpt
+		$activity->content = apply_filters( 'bp_blogs_record_activity_content', bp_create_excerpt( $post_content ), $post_content, (array) $activity );
+	}
+
+	// Save the updated activity
 	$activity->save();
+
+	// update post title in activity meta
+	$existing_title = bp_activity_get_meta( $activity_id, 'post_title' );
+	if ( $post->post_title !== $existing_title ) {
+		bp_activity_update_meta( $activity_id, 'post_title', $post->post_title );
+
+		// now update activity meta for post comments... sigh
+		add_filter( 'comments_clauses', 'bp_blogs_comments_clauses_select_by_id' );
+		$comments = get_comments( array( 'post_id' => $post->ID ) );
+		remove_filter( 'comments_clauses', 'bp_blogs_comments_clauses_select_by_id' );
+
+		if ( ! empty( $comments ) ) {
+			$activity_ids = array();
+			$comment_ids  = wp_list_pluck( $comments, 'comment_ID' );
+
+			// setup activity args
+			$args = array(
+				'update_meta_cache' => false,
+				'show_hidden'       => true,
+				'per_page'          => 99999,
+			);
+
+			// query for old-style "new_blog_comment" activity items
+			$args['filter'] = array(
+				'object'       => buddypress()->blogs->id,
+				'action'       => 'new_blog_comment',
+				'secondary_id' => implode( ',', $comment_ids ),
+			);
+
+			$activities = bp_activity_get( $args );
+			if ( ! empty( $activities['activities'] ) ) {
+				$activity_ids = (array) wp_list_pluck( $activities['activities'], 'id' );
+			}
+
+			// query for activity comments connected to a blog post
+			unset( $args['filter'] );
+			$args['meta_query'] = array( array(
+				'key'     => 'bp_blogs_post_comment_id',
+				'value'   => $comment_ids,
+				'compare' => 'IN',
+			) );
+			$args['type'] = 'activity_comment';
+			$args['display_comments'] = 'stream';
+
+			$activities = bp_activity_get( $args );
+			if ( ! empty( $activities['activities'] ) ) {
+				$activity_ids = array_merge( $activity_ids, (array) wp_list_pluck( $activities['activities'], 'id' ) );
+			}
+
+			// update activity meta for all found activity items
+			if ( ! empty( $activity_ids ) ) {
+				foreach ( $activity_ids as $aid ) {
+					bp_activity_update_meta( $aid, 'post_title', $post->post_title );
+				}
+			}
+
+			unset( $activities, $activity_ids, $comment_ids, $comments );
+		}
+	}
 
 	// add post comment status to activity meta if closed
 	if( 'closed' == $post->comment_status ) {
@@ -671,7 +743,11 @@ function bp_blogs_record_comment( $comment_id, $is_approved = true ) {
 			$args['secondary_item_id'] = $comment_id;
 
 			// record the activity entry
-			bp_blogs_record_activity( $args );
+			$activity_id = bp_blogs_record_activity( $args );
+
+			// add some post info in activity meta
+			bp_activity_update_meta( $activity_id, 'post_title', $recorded_comment->post->post_title );
+			bp_activity_update_meta( $activity_id, 'post_url',   add_query_arg( 'p', $recorded_comment->post->ID, home_url( '/' ) ) );
 
 		// record comment as BP activity comment under the parent 'new_blog_post'
 		// activity item
@@ -735,6 +811,8 @@ function bp_blogs_record_comment( $comment_id, $is_approved = true ) {
 				if ( empty( $args['id'] ) ) {
 					// add meta to activity comment
 					bp_activity_update_meta( $comment_activity_id, 'bp_blogs_post_comment_id', $comment_id );
+					bp_activity_update_meta( $comment_activity_id, 'post_title', $recorded_comment->post->post_title );
+					bp_activity_update_meta( $comment_activity_id, 'post_url', add_query_arg( 'p', $recorded_comment->post->ID, home_url( '/' ) ) );
 
 					// add meta to comment
 					add_comment_meta( $comment_id, 'bp_activity_comment_id', $comment_activity_id );
@@ -758,19 +836,18 @@ add_action( 'edit_comment', 'bp_blogs_record_comment', 10    );
  * set/changed ('add_user_to_blog', 'profile_update', 'user_register'). It
  * parses the changes, and records them as necessary in the BP blog tracker.
  *
- * BuddyPress does not track blogs for Subscribers.
+ * BuddyPress does not track blogs for users with the 'subscriber' role by
+ * default, though as of 2.1.0 you can filter 'bp_blogs_get_allowed_roles' to
+ * modify this behavior.
  *
- * @param int $user_id The ID of the user.
- * @param string|bool $role The WP role being assigned to the user
- *        ('subscriber', 'contributor', 'author', 'editor', 'administrator', or
- *        a custom role). Defaults to false.
- * @param int $blog_id Default: the current blog ID.
+ * @param int         $user_id The ID of the user
+ * @param string|bool $role    User's WordPress role for this blog ID
+ * @param int         $blog_id Blog ID user is being added to
+ *
  * @return bool|null False on failure.
  */
 function bp_blogs_add_user_to_blog( $user_id, $role = false, $blog_id = 0 ) {
 	global $wpdb;
-
-	require_once( ABSPATH . '/wp-admin/includes/user.php' );
 
 	// If no blog ID was passed, use the root blog ID
 	if ( empty( $blog_id ) ) {
@@ -782,29 +859,29 @@ function bp_blogs_add_user_to_blog( $user_id, $role = false, $blog_id = 0 ) {
 
 		// Get user capabilities
 		$key        = $wpdb->get_blog_prefix( $blog_id ). 'capabilities';
-		$user_roles = bp_get_user_meta( $user_id, $key, true );
+		$user_roles = array_keys( (array) bp_get_user_meta( $user_id, $key, true ) );
 
 		// User has roles so lets
 		if ( ! empty( $user_roles ) ) {
 
-			// Look for blog only roles
-			$blog_roles = array_intersect(
-				array_keys( $user_roles ),
-				array_keys( get_editable_roles() )
-			);
+			// Get blog roles
+			$blog_roles      = array_keys( bp_get_current_blog_roles() );
+
+			// Look for blog only roles of the user
+			$intersect_roles = array_intersect( $user_roles, $blog_roles );
 
 			// If there's a role in the array, use the first one. This isn't
 			// very smart, but since roles aren't exactly hierarchical, and
 			// WordPress does not yet have a UI for multiple user roles, it's
 			// fine for now.
-			if ( ! empty( $blog_roles ) ) {
-				$role = array_shift( $blog_roles );
+			if ( ! empty( $intersect_roles ) ) {
+				$role = array_shift( $intersect_roles );
 			}
 		}
 	}
 
-	// Bail if no role was found or user is a subscriber
-	if ( empty( $role ) || ( $role === 'subscriber' ) ) {
+	// Bail if no role was found or role is not in the allowed roles array
+	if ( empty( $role ) || ! in_array( $role, bp_blogs_get_allowed_roles() ) ) {
 		return false;
 	}
 
@@ -814,6 +891,21 @@ function bp_blogs_add_user_to_blog( $user_id, $role = false, $blog_id = 0 ) {
 add_action( 'add_user_to_blog', 'bp_blogs_add_user_to_blog', 10, 3 );
 add_action( 'profile_update',   'bp_blogs_add_user_to_blog'        );
 add_action( 'user_register',    'bp_blogs_add_user_to_blog'        );
+
+/**
+ * The allowed blog roles a member must have to be recorded into the
+ * `bp_user_blogs` pointer table.
+ *
+ * This added and was made filterable in BuddyPress 2.1.0 to make it easier
+ * to extend the functionality of the Blogs component.
+ *
+ * @since BuddyPress (2.1.0)
+ *
+ * @return string
+ */
+function bp_blogs_get_allowed_roles() {
+	return apply_filters( 'bp_blogs_get_allowed_roles', array( 'contributor', 'author', 'editor', 'administrator' ) );
+}
 
 /**
  * Remove a blog-user pair from BP's blog tracker.
@@ -1127,16 +1219,24 @@ function bp_blogs_total_blogs() {
 /**
  * Get the total number of blogs being tracked by BP for a specific user.
  *
+ * @since BuddyPress (1.2.0)
+ *
  * @param int $user_id ID of the user being queried. Default: on a user page,
  *        the displayed user. Otherwise, the logged-in user.
  * @return int $count Total blog count for the user.
  */
 function bp_blogs_total_blogs_for_user( $user_id = 0 ) {
-
-	if ( empty( $user_id ) )
+	if ( empty( $user_id ) ) {
 		$user_id = ( bp_displayed_user_id() ) ? bp_displayed_user_id() : bp_loggedin_user_id();
+	}
 
-	if ( !$count = wp_cache_get( 'bp_total_blogs_for_user_' . $user_id, 'bp' ) ) {
+	// no user ID? do not attempt to look at cache
+	if ( empty( $user_id ) ) {
+		return 0;
+	}
+
+	$count = wp_cache_get( 'bp_total_blogs_for_user_' . $user_id, 'bp' );
+	if ( false === $count ) {
 		$count = BP_Blogs_Blog::total_blog_count_for_user( $user_id );
 		wp_cache_set( 'bp_total_blogs_for_user_' . $user_id, $count, 'bp' );
 	}
