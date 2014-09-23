@@ -1,6 +1,7 @@
 .DS_Store
 /.htaccess
 /.config.php
+/.deploy.php
 /.nginx-conf
 /local-config.php
 /content/uploads/
