@@ -22,24 +22,24 @@ class BP_Multi_Network {
 	 *
 	 * @var array
 	 */
-	protected $user_meta_keys = array(
-		'last_activity',
-		'bp_new_mention_count',
-		'bp_favorite_activities',
-		'bp_latest_update',
-		'total_friend_count',
-		'total_group_count',
-		'notification_groups_group_updated',
-		'notification_groups_membership_request',
-		'notification_membership_request_completed',
-		'notification_groups_admin_promotion',
-		'notification_groups_invite',
-		'notification_messages_new_message',
-		'notification_messages_new_notice',
-		'closed_notices',
-		'profile_last_updated',
-		'notification_activity_new_mention',
-		'notification_activity_new_reply'
+	private $user_meta_keys = array(
+		'last_activity' => false,
+		'bp_new_mention_count' => false,
+		'bp_favorite_activities' => false,
+		'bp_latest_update' => false,
+		'total_friend_count' => false,
+		'total_group_count' => false,
+		'notification_groups_group_updated' => false,
+		'notification_groups_membership_request' => false,
+		'notification_membership_request_completed' => false,
+		'notification_groups_admin_promotion' => false,
+		'notification_groups_invite' => false,
+		'notification_messages_new_message' => false,
+		'notification_messages_new_notice' => false,
+		'closed_notices' => false,
+		'profile_last_updated' => false,
+		'notification_activity_new_mention' => false,
+		'notification_activity_new_reply' => false
 	);
 
 	/** Filters ***************************************************************/
@@ -60,18 +60,13 @@ class BP_Multi_Network {
 	 */
 	public function filter_table_prefix( $prefix = '' ) {
 
-		// Bail if already on main network
-		if ( $this->is_main_network() ) {
-			return $prefix;
-		}
-
-		// Bail if already using base network prefix
-		if ( $this->is_base_prefix( $prefix ) ) {
-			return $prefix;
+		// Override prefix if not main network and there is a prefix match
+		if ( ! $this->is_main_network() && ( true === $this->is_base_prefix( $prefix ) ) ) {
+			$prefix = $this->get_network_prefix();
 		}
 
 		// Use this network's prefix
-		return $this->get_network_prefix();
+		return $prefix;
 	}
 
 	/**
@@ -93,14 +88,19 @@ class BP_Multi_Network {
 			return $key;
 		}
 
+		// Set the user meta key to the new prefix
+		if ( false === $this->user_meta_keys[ $key ] ) {
+			$this->user_meta_keys[ $key ] = $this->get_network_prefix() . $key;
+		}
+
 		// Return the modified user meta key
-		return $this->get_network_prefix() . $key;
+		return $this->user_meta_keys[ $key ];
 	}
 
 	/** Helpers ***************************************************************/
 
 	/**
-	 * Whether or not the current network is the main one.
+	 * Whether or not the current query is from in the main network.
 	 *
 	 * The main network is typically ID 1, and does not have a modified prefix.
 	 *
