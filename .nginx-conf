@@ -1,8 +1,9 @@
 server {
     listen       80 default_server;
     listen       [::]:80 default_server ipv6only=on;
+    listen       443 ssl;
     root         /srv/www/easttroyweb/public;
-    server_name  easttroyweb.com *.easttroyweb.com unpressable.com *.unpressable.com;
+    server_name  easttroyweb.com *.easttroyweb.com unpressable.com *.unpressable.com villagestatus.com *.villagestatus.com siliconfarms.com *.siliconfarms.com;
 
     access_log   /srv/www/easttroyweb/log/access.log;
     error_log    /srv/www/easttroyweb/log/error.log;
@@ -10,3 +11,4 @@ server {
     include      /etc/nginx/global/restrictions.conf;
     include      /etc/nginx/global/wordpress.conf;
 }
+
