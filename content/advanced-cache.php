@@ -1,102 +1,334 @@
 <?php
 
-// nananananananananananananananana BATCACHE!!!
+/**
+ * Plugin name: Batcache
+ * Plugin URI:  https://wordpress.org/plugins/batcache/
+ * Description: Batcache uses Memcached to store and serve rendered pages.
+ * Version:     1.2
+ */
 
+// WordPress or bust
+defined( 'ABSPATH' ) || exit();
+
+// Look for batcache stats
+if ( is_readable( dirname( __FILE__ ) . '/batcache-stats.php' ) ) {
+	require_once dirname( __FILE__ ) . '/batcache-stats.php';
+}
+
+// Stub if batcache stats is not installed
+if ( ! function_exists( 'batcache_stats' ) ) {
+	function batcache_stats( $name, $value, $num = 1, $today = false, $hour = false ) { }
+}
+
+/**
+ * nananananananananananananananana BATCACHE!!!
+ *
+ * @global batcache $batcache
+ */
 function batcache_cancel() {
 	global $batcache;
 
-	if ( is_object($batcache) )
+	if ( is_object( $batcache ) ) {
 		$batcache->cancel = true;
+	}
 }
 
-class batcache {
-	// This is the base configuration. You can edit these variables or move them into your wp-config.php file.
-	var $max_age =  300; // Expire batcache items aged this many seconds (zero to disable batcache)
-	
-	var $remote  =    0; // Zero disables sending buffers to remote datacenters (req/sec is never sent)
-	
-	var $times   =    2; // Only batcache a page after it is accessed this many times... (two or more)
-	var $seconds =  120; // ...in this many seconds (zero to ignore this and use batcache immediately)
-	
-	var $group   = 'batcache'; // Name of memcached group. You can simulate a cache flush by changing this.
-	
-	var $unique  = array(); // If you conditionally serve different content, put the variable values here.
-	
-	var $headers = array(); // Add headers here. These will be sent with every response from the cache.
+/**
+ * Variants can be set by functions which use early-set globals like $_SERVER to
+ * run simple tests. Functions defined in WordPress, plugins, and themes are not
+ * available and MUST NOT be used.
+ *
+ * Example: vary_cache_on_function('return preg_match("/feedburner/i", $_SERVER["HTTP_USER_AGENT"]);');
+ *          This will cause batcache to cache a variant for requests from Feedburner.
+ *
+ * Tips for writing $function:
+ * - DO NOT use any functions from your theme or plugins. Those files have not
+ *   been included. Fatal error.
+ * - DO NOT use any WordPress functions except is_admin() and is_multisite().
+ *   Fatal error.
+ * - DO NOT include or require files from anywhere without consulting expensive
+ *   professionals first. Fatal error.
+ * - DO NOT use $wpdb, $blog_id, $current_user, etc. These have not been initialized.
+ * - DO understand how create_function works. This is how your code is used: create_function('', $function);
+ * - DO remember to return something. The return value determines the cache variant.
+ */
+function vary_cache_on_function( $function = '' ) {
+	global $batcache;
 
-	var $cache_redirects = false; // Set true to enable redirect caching.
-	var $redirect_status = false; // This is set to the response code during a redirect.
-	var $redirect_location = false; // This is set to the redirect location.
-
-	var $uncached_headers = array('transfer-encoding'); // These headers will never be cached. Apply strtolower.
-
-	var $debug   = true; // Set false to hide the batcache info <!-- comment -->
-
-	var $cache_control = true; // Set false to disable Last-Modified and Cache-Control headers
-
-	var $cancel = false; // Change this to cancel the output buffer. Use batcache_cancel();
-
-	var $genlock; // Used internally
-	var $do; // Used internally
-
-	function batcache( $settings ) {
-		if ( is_array( $settings ) ) foreach ( $settings as $k => $v )
-			$this->$k = $v;
+	if ( empty( $function ) ) {
+		die( 'Variant determiner cannot be empty.' );
 	}
 
-	function is_ssl() {
-		if ( isset($_SERVER['HTTPS']) ) {
-			if ( 'on' == strtolower($_SERVER['HTTPS']) )
+	if ( preg_match( '/include|require|echo|print|dump|export|open|sock|unlink|`|eval/i', $function ) ) {
+		die( 'Illegal word in variant determiner.' );
+	}
+
+	if ( ! preg_match( '/\$_/', $function ) ) {
+		die( 'Variant determiner should refer to at least one $_ variable.' );
+	}
+
+	$batcache->add_variant( $function );
+}
+
+/** Main Class ****************************************************************/
+
+/**
+ * The main Batcache class
+ *
+ * @todo Detail what this is and how it works
+ */
+class batcache {
+
+	/**
+	 * This is the base configuration. You can edit these variables or move them
+	 * into your wp-config.php file.
+	 *
+	 * @var int
+	 */
+	public $max_age = 300;
+
+	/**
+	 * Zero disables sending buffers to remote datacenters
+	 * (req/sec is never sent)
+	 *
+	 * @var int
+	 */
+	public $remote = 0;
+
+	/**
+	 * Only batcache a page after it is accessed this many times...
+	 * (two or more)
+	 *
+	 * @var int
+	 */
+	public $times = 2;
+
+	/**
+	 * ...in this many seconds (zero to ignore this and use batcache immediately)
+	 *
+	 * @var int
+	 */
+	public $seconds = 120;
+
+	/**
+	 * Name of memcached group. You can simulate a cache flush by changing this.
+	 *
+	 * @var string
+	 */
+	public $group = 'batcache';
+
+	/**
+	 * If you conditionally serve different content, put the variable values here.
+	 *
+	 * @var array
+	 */
+	public $unique = array();
+
+	/**
+	 * Array of functions for create_function. The return value is added to
+	 * $unique above.
+	 *
+	 * @var array
+	 */
+	public $vary = array();
+
+	/**
+	 * Add headers here as name=>value or name=>array(values).
+	 * These will be sent with every response from the cache.
+	 *
+	 * @var array
+	 */
+	public $headers = array();
+
+	/**
+	 * Set true to enable redirect caching.
+	 *
+	 * @var bool
+	 */
+	public $cache_redirects = false;
+
+	/**
+	 * This is set to the response code during a redirect.
+	 *
+	 * @var bool
+	 */
+	public $redirect_status = false;
+
+	/**
+	 * This is set to the redirect location.
+	 *
+	 * @var bool
+	 */
+	public $redirect_location = false;
+
+	/**
+	 * These headers will never be cached. Apply strtolower.
+	 *
+	 * @var array
+	 */
+	public $uncached_headers = array( 'transfer-encoding' );
+
+	/**
+	 * Set false to hide the batcache info <!-- comment -->
+	 *
+	 * @var bool
+	 */
+	public $debug = false;
+
+	/**
+	 * Set false to disable Last-Modified and Cache-Control headers
+	 *
+	 * @var bool
+	 */
+	public $cache_control = true;
+
+	/**
+	 * Change this to cancel the output buffer. Use batcache_cancel();
+	 *
+	 * @var bool
+	 */
+	public $cancel = false;
+
+	/**
+	 * Names of cookies - if they exist and the cache would normally be
+	 * bypassed, don't bypass it.
+	 *
+	 * @var array
+	 */
+	public $noskip_cookies = array( TEST_COOKIE );
+
+	/**
+	 * Used internally
+	 *
+	 * @var bool
+	 */
+	public $genlock = false;
+
+	/**
+	 * Used internally
+	 *
+	 * @var bool
+	 */
+	public $do = false;
+
+	/**
+	 * Main batcache constructor
+	 *
+	 * @param array $settings
+	 */
+	public function __construct( $settings ) {
+		if ( is_array( $settings ) ) {
+			foreach ( $settings as $k => $v ) {
+				$this->$k = $v;
+			}
+		}
+	}
+
+	public function is_ssl() {
+		if ( isset( $_SERVER['HTTPS'] ) ) {
+
+			if ( 'on' === strtolower( $_SERVER['HTTPS'] ) ) {
 				return true;
-			if ( '1' == $_SERVER['HTTPS'] )
+			}
+
+			if ( '1' === $_SERVER['HTTPS'] ) {
 				return true;
-		} elseif ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+			}
+
+		} elseif ( isset( $_SERVER['SERVER_PORT'] ) && ( '443' === $_SERVER['SERVER_PORT'] ) ) {
 			return true;
 		}
+
 		return false;
 	}
 
-	function status_header( $status_header ) {
+	public function status_header( $status_header, $status_code ) {
 		$this->status_header = $status_header;
+		$this->status_code   = $status_code;
 
 		return $status_header;
 	}
 
-	function redirect_status( $status, $location ) {
+	public function redirect_status( $status, $location ) {
 		if ( $this->cache_redirects ) {
-			$this->redirect_status = $status;
+			$this->redirect_status   = $status;
 			$this->redirect_location = $location;
 		}
 
 		return $status;
 	}
 
-	function configure_groups() {
-		// Configure the memcached client
-		if ( ! $this->remote )
-			if ( function_exists('wp_cache_add_no_remote_groups') )
-				wp_cache_add_no_remote_groups(array($this->group));
-		if ( function_exists('wp_cache_add_global_groups') )
-			wp_cache_add_global_groups(array($this->group));
+	public function do_headers( $headers1, $headers2 = array() ) {
+
+		// Merge the arrays of headers into one
+		$headers = array();
+		$keys    = array_unique( array_merge( array_keys( $headers1 ), array_keys( $headers2 ) ) );
+
+		foreach ( $keys as $k ) {
+			$headers[ $k ] = array();
+
+			if ( isset( $headers1[ $k ] ) && isset( $headers2[ $k ] ) ) {
+				$headers[ $k ] = array_merge( (array) $headers2[ $k ], (array) $headers1[ $k ] );
+			} elseif ( isset( $headers2[ $k ] ) ) {
+				$headers[ $k ] = (array) $headers2[ $k ];
+			} else {
+				$headers[ $k ] = (array) $headers1[ $k ];
+			}
+
+			$headers[ $k ] = array_unique( $headers[ $k ] );
+		}
+
+		// These headers take precedence over any previously sent with the same names
+		foreach ( $headers as $k => $values ) {
+			$clobber = true;
+			foreach ( $values as $v ) {
+				header( "$k: $v", $clobber );
+				$clobber = false;
+			}
+		}
 	}
 
-	// Defined here because timer_stop() calls number_format_i18n()
-	function timer_stop($display = 0, $precision = 3) {
+	/**
+	 * Configure the memcached client
+	 */
+	public function configure_groups() {
+
+		if ( ! $this->remote ) {
+			if ( function_exists( 'wp_cache_add_no_remote_groups' ) ) {
+				wp_cache_add_no_remote_groups( array( $this->group ) );
+			}
+		}
+
+		if ( function_exists( 'wp_cache_add_global_groups' ) ) {
+			wp_cache_add_global_groups( array( $this->group ) );
+		}
+	}
+
+	/**
+	 * Defined here because timer_stop() calls number_format_i18n()
+	 */
+	public function timer_stop( $display = 0, $precision = 3 ) {
 		global $timestart, $timeend;
-		$mtime = microtime();
-		$mtime = explode(' ',$mtime);
-		$mtime = $mtime[1] + $mtime[0];
-		$timeend = $mtime;
+
+		$mtime     = microtime();
+		$mtime     = explode( ' ',$mtime );
+		$mtime     = $mtime[1] + $mtime[0];
+		$timeend   = $mtime;
 		$timetotal = $timeend-$timestart;
-		$r = number_format($timetotal, $precision);
-		if ( $display )
+		$r         = number_format( $timetotal, $precision );
+
+		if ( ! empty( $display ) ) {
 			echo $r;
+		}
+
 		return $r;
 	}
 
-	function ob($output) {
-		if ( $this->cancel !== false )
+	public function ob( $output ) {
+
+		if ( false !== $this->cancel ) {
 			return $output;
+		}
 
 		// PHP5 and objects disappearing before output buffers?
 		wp_cache_init();
@@ -104,106 +336,221 @@ class batcache {
 		// Remember, $wp_object_cache was clobbered in wp-settings.php so we have to repeat this.
 		$this->configure_groups();
 
+		// Unlock regeneration
+		wp_cache_delete( "{$this->url_key}_genlock", $this->group );
+
 		// Do not batcache blank pages unless they are HTTP redirects
-		$output = trim($output);
-		if ( $output === '' && (!$this->redirect_status || !$this->redirect_location) )
+		$output = trim( $output );
+		if ( ( $output === '' ) && ( ! $this->redirect_status || ! $this->redirect_location ) ) {
 			return;
+		}
+
+		// Do not cache 5xx responses
+		if ( isset( $this->status_code ) && intval( $this->status_code / 100 ) == 5 ) {
+			return $output;
+		}
+
+		$this->do_variants( $this->vary );
+		$this->generate_keys();
 
 		// Construct and save the batcache
-		$cache = array(
-			'output' => $output,
-			'time' => time(),
-			'timer' => $this->timer_stop(false, 3),
-			'status_header' => $this->status_header,
-			'redirect_status' => $this->redirect_status,
+		$this->cache = array(
+			'output'            => $output,
+			'time'              => time(),
+			'headers'           => array(),
+			'timer'             => $this->timer_stop( false, 3 ),
+			'status_header'     => $this->status_header,
+			'redirect_status'   => $this->redirect_status,
 			'redirect_location' => $this->redirect_location,
-			'version' => $this->url_version
+			'version'           => $this->url_version
 		);
 
 		if ( function_exists( 'headers_list' ) ) {
 			foreach ( headers_list() as $header ) {
-				list($k, $v) = array_map('trim', explode(':', $header, 2));
-				$cache['headers'][$k] = $v;
+				list( $k, $v ) = array_map( 'trim', explode( ':', $header, 2 ) );
+				$cache['headers'][ $k ] = $v;
 			}
 		} elseif ( function_exists( 'apache_response_headers' ) ) {
 			$cache['headers'] = apache_response_headers();
 		}
 
-		if ( $cache['headers'] && !empty( $this->uncached_headers ) ) {
-			foreach ( $cache['headers'] as $header => $value ) {
-				if ( in_array( strtolower( $header ), $this->uncached_headers ) )
-					unset( $cache['headers'][$header] );
+		if ( ! empty( $this->cache['headers'] ) && ! empty( $this->uncached_headers ) ) {
+			foreach ( $this->uncached_headers as $header ) {
+				unset( $this->cache['headers'][ $header ] );
 			}
 		}
 
-		wp_cache_set($this->key, $cache, $this->group, $this->max_age + $this->seconds + 30);
+		foreach ( $this->cache['headers'] as $header => $values ) {
 
-		// Unlock regeneration
-		wp_cache_delete("{$this->url_key}_genlock", $this->group);
+			// Do not cache if cookies were set
+			if ( strtolower( $header ) === 'set-cookie' ) {
+				return $output;
+			}
+
+			foreach ( (array) $values as $value ) {
+				if ( preg_match( '/^Cache-Control:.*max-?age=(\d+)/i', "$header: $value", $matches ) ) {
+					$this->max_age = intval( $matches[1] );
+				}
+			}
+		}
+
+		$this->cache['max_age'] = $this->max_age;
+
+		wp_cache_set( $this->key, $this->cache, $this->group, $this->max_age + $this->seconds + 30 );
 
 		if ( $this->cache_control ) {
-			header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $cache['time'] ) . ' GMT', true );
-			header("Cache-Control: max-age=$this->max_age, must-revalidate", false);
-		}
 
-		if ( !empty($this->headers) ) foreach ( $this->headers as $k => $v ) {
-			if ( is_array( $v ) )
-				header("{$v[0]}: {$v[1]}", false);
-			else
-				header("$k: $v", true);
-		}
-
-		// Add some debug info just before </head>
-		if ( $this->debug ) {
-			$tag = "<!--\n\tgenerated in " . $cache['timer'] . " seconds\n\t" . strlen(serialize($cache)) . " bytes batcached for " . $this->max_age . " seconds\n-->\n";
-			if ( false !== $tag_position = strpos($output, '</head>') ) {
-				$tag = "<!--\n\tgenerated in " . $cache['timer'] . " seconds\n\t" . strlen(serialize($cache)) . " bytes batcached for " . $this->max_age . " seconds\n-->\n";
-				$output = substr($output, 0, $tag_position) . $tag . substr($output, $tag_position);
+			// Don't clobber Last-Modified header if already set, e.g. by WP::send_headers()
+			if ( ! isset( $this->cache['headers']['Last-Modified'] ) ) {
+				header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $this->cache['time'] ) . ' GMT', true );
 			}
+
+			if ( ! isset($this->cache['headers']['Cache-Control']) ) {
+				header( "Cache-Control: max-age={$this->max_age}, must-revalidate", false );
+			}
+		}
+
+		$this->do_headers( $this->headers );
+
+		// Add some debug info just before <head
+		if ( true === $this->debug ) {
+			$this->add_debug_just_cached();
 		}
 
 		// Pass output to next ob handler
-		return $output;
+		batcache_stats( 'batcache', 'total_page_views' );
+		return $this->cache['output'];
+	}
+
+	public function add_variant( $function ) {
+		$key = md5( $function );
+		$this->vary[ $key ] = $function;
+	}
+
+	public function do_variants( $dimensions = false ) {
+		// This function is called without arguments early in the page load, then with arguments during the OB handler.
+		if ( false === $dimensions ) {
+			$dimensions = wp_cache_get( "{$this->url_key}_vary", $this->group );
+		} else {
+			wp_cache_set( "{$this->url_key}_vary", $dimensions, $this->group, $this->max_age + 10 );
+		}
+
+		if ( is_array( $dimensions ) ) {
+			ksort( $dimensions );
+			foreach ( $dimensions as $key => $function ) {
+				$fun   = create_function( '', $function );
+				$value = $fun();
+				$this->keys[ $key ] = $value;
+			}
+		}
+	}
+
+	public function generate_keys() {
+		//ksort($this->keys); // uncomment this when traffic is slow
+		$this->key     = md5( serialize( $this->keys ) );
+		$this->req_key = $this->key . '_req';
+	}
+
+	public function add_debug_just_cached() {
+		$generation = $this->cache['timer'];
+		$bytes      = strlen( serialize( $this->cache ) );
+		$html       = <<<HTML
+<!--
+	generated in $generation seconds
+	$bytes bytes batcached for {$this->max_age} seconds
+-->
+
+HTML;
+		$this->add_debug_html_to_output( $html );
+	}
+
+	public function add_debug_from_cache() {
+		$seconds_ago = time() - $this->cache['time'];
+		$generation  = $this->cache['timer'];
+		$serving     = $this->timer_stop( false, 3 );
+		$expires     = $this->cache['max_age'] - time() + $this->cache['time'];
+		$html        = <<<HTML
+<!--
+	generated $seconds_ago seconds ago
+	generated in $generation seconds
+	served from batcache in $serving seconds
+	expires in $expires seconds
+-->
+
+HTML;
+		$this->add_debug_html_to_output( $html );
+	}
+
+	public function add_debug_html_to_output( $debug_html ) {
+		// Casing on the Content-Type header is inconsistent
+		foreach ( array( 'Content-Type', 'Content-type' ) as $key ) {
+			if ( isset( $this->cache['headers'][ $key ][0] ) && 0 !== strpos( $this->cache['headers'][ $key ][0], 'text/html' ) ) {
+				return;
+			}
+		}
+
+		$head_position = strpos( $this->cache['output'], '<head' );
+		if ( false === $head_position ) {
+			return;
+		}
+		$this->cache['output'] = substr_replace( $this->cache['output'], $debug_html, $head_position, 0 );
 	}
 }
-global $batcache;
-// Pass in the global variable which may be an array of settings to override defaults.
-$batcache = new batcache($batcache);
 
-if ( ! defined( 'WP_CONTENT_DIR' ) )
+/** Runtime *******************************************************************/
+
+global $batcache;
+
+// Pass in the global variable which may be an array of settings to override defaults.
+$batcache = new batcache( $batcache );
+
+// Bail if no content directory
+if ( ! defined( 'WP_CONTENT_DIR' ) ) {
 	return;
+}
 
 // Never batcache interactive scripts or API endpoints.
-if ( in_array(
-		basename( $_SERVER['SCRIPT_FILENAME'] ),
-		array(
-			'wp-app.php',
-			'xmlrpc.php',
-			'ms-files.php',
-		) ) )
+if ( in_array( basename( $_SERVER['SCRIPT_FILENAME'] ), array(
+	'wp-app.php',
+	'xmlrpc.php',
+	'ms-files.php',
+	'wp-cron.php'
+) ) ) {
 	return;
+}
 
 // Never batcache WP javascript generators
-if ( strstr( $_SERVER['SCRIPT_FILENAME'], 'wp-includes/js' ) )
+if ( strstr( $_SERVER['SCRIPT_FILENAME'], 'wp-includes/js' ) ) {
 	return;
+}
 
 // Never batcache when POST data is present.
-if ( ! empty( $GLOBALS['HTTP_RAW_POST_DATA'] ) || ! empty( $_POST ) )
+if ( ! empty( $GLOBALS['HTTP_RAW_POST_DATA'] ) || ! empty( $_POST ) ) {
 	return;
+}
 
 // Never batcache when cookies indicate a cache-exempt visitor.
-if ( is_array( $_COOKIE) && ! empty( $_COOKIE ) )
-	foreach ( array_keys( $_COOKIE ) as $batcache->cookie )
-		if ( $batcache->cookie != 'wordpress_test_cookie' && ( substr( $batcache->cookie, 0, 2 ) == 'wp' || substr( $batcache->cookie, 0, 9 ) == 'wordpress' || substr( $batcache->cookie, 0, 14 ) == 'comment_author' ) )
+if ( is_array( $_COOKIE ) && ! empty( $_COOKIE ) ) {
+	$cookie_keys = array_keys( $_COOKIE );
+	foreach ( $cookie_keys as $batcache->cookie ) {
+		if ( ! in_array( $batcache->cookie, $batcache->noskip_cookies ) && ( substr( $batcache->cookie, 0, 2 ) == 'wp' || substr( $batcache->cookie, 0, 9 ) == 'wordpress' || substr( $batcache->cookie, 0, 14 ) == 'comment_author' ) ) {
+			batcache_stats( 'batcache', 'cookie_skip' );
 			return;
+		}
+	}
+}
 
-if ( ! include_once( WP_CONTENT_DIR . '/object-cache.php' ) )
+// Bail if no persistent object cache
+if ( ! include_once( WP_CONTENT_DIR . '/object-cache.php' ) ) {
 	return;
+}
 
-wp_cache_init(); // Note: wp-settings.php calls wp_cache_init() which clobbers the object made here.
+// Note: wp-settings.php calls wp_cache_init() which clobbers the object made here.
+wp_cache_init();
 
-if ( ! is_object( $wp_object_cache ) )
+if ( empty( $wp_object_cache ) || ! is_object( $wp_object_cache ) ) {
 	return;
+}
 
 // Now that the defaults are set, you might want to use different settings under certain conditions.
 
@@ -217,10 +564,8 @@ if ( $_SERVER['HTTP_HOST'] == 'do-not-batcache-me.com' )
 */
 
 /* Example: batcache everything on this host regardless of traffic level
-if ( $_SERVER['HTTP_HOST'] == 'always-batcache-me.com' ) {
-	$batcache->max_age = 600; // Cache for 10 minutes
-	$batcache->seconds = $batcache->times = 0; // No need to wait till n number of people have accessed the page, cache instantly
-}
+if ( $_SERVER['HTTP_HOST'] == 'always-batcache-me.com' )
+	return;
 */
 
 /* Example: If you sometimes serve variants dynamically (e.g. referrer search term highlighting) you probably don't want to batcache those variants. Remember this code is run very early in wp-settings.php so plugins are not yet loaded. You will get a fatal error if you try to call an undefined function. Either include your plugin now or define a test function in this file.
@@ -229,78 +574,92 @@ if ( include_once( 'plugins/searchterm-highlighter.php') && referrer_has_search_
 */
 
 // Disabled
-if ( $batcache->max_age < 1 )
+if ( $batcache->max_age < 1 ) {
 	return;
+}
 
 // Make sure we can increment. If not, turn off the traffic sensor.
-if ( ! method_exists( $GLOBALS['wp_object_cache'], 'incr' ) )
+if ( ! method_exists( $GLOBALS['wp_object_cache'], 'incr' ) ) {
 	$batcache->times = 0;
+}
 
-// Necessary to prevent clients using cached version after login cookies set. If this is a problem, comment it out and remove all Last-Modified headers.
-header('Vary: Cookie', false);
+// Necessary to prevent clients using cached version after login cookies set.
+// If this is a problem, comment it out and remove all Last-Modified headers.
+header( 'Vary: Cookie', false );
 
 // Things that define a unique page.
-if ( isset( $_SERVER['QUERY_STRING'] ) )
-	parse_str($_SERVER['QUERY_STRING'], $batcache->query);
+if ( isset( $_SERVER['QUERY_STRING'] ) ) {
+	parse_str( $_SERVER['QUERY_STRING'], $batcache->query );
+}
+
 $batcache->keys = array(
-	'host' => $_SERVER['HTTP_HOST'],
+	'host'   => $_SERVER['HTTP_HOST'],
 	'method' => $_SERVER['REQUEST_METHOD'],
-	'path' => ( $batcache->pos = strpos($_SERVER['REQUEST_URI'], '?') ) ? substr($_SERVER['REQUEST_URI'], 0, $batcache->pos) : $_SERVER['REQUEST_URI'],
-	'query' => $batcache->query,
-	'extra' => $batcache->unique
+	'path'   => ( $batcache->pos = strpos( $_SERVER['REQUEST_URI'], '?' ) ) ? substr( $_SERVER['REQUEST_URI'], 0, $batcache->pos ) : $_SERVER['REQUEST_URI'],
+	'query'  => $batcache->query,
+	'extra'  => $batcache->unique
 );
 
-if ( $batcache->is_ssl() )
+if ( $batcache->is_ssl() ) {
 	$batcache->keys['ssl'] = true;
+}
 
+// Recreate the permalink from the URL
+$protocol              = ( isset( $batcache->keys['ssl'] ) && true === $batcache->keys['ssl'] ) ? 'https://' : 'http://';
+$batcache->permalink   = $protocol . $batcache->keys['host'] . $batcache->keys['path'] . ( isset( $batcache->keys['query']['p'] ) ? "?p=" . $batcache->keys['query']['p'] : '' );
+$batcache->url_key     = md5( $batcache->permalink );
+$batcache->url_version = (int) wp_cache_get( "{$batcache->url_key}_version", $batcache->group );
 $batcache->configure_groups();
-
-// Generate the batcache key
-$batcache->key = md5(serialize($batcache->keys));
-
-// Generate the traffic threshold measurement key
-$batcache->req_key = $batcache->key . '_req';
+$batcache->do_variants();
+$batcache->generate_keys();
 
 // Get the batcache
-$batcache->cache = wp_cache_get($batcache->key, $batcache->group);
+$batcache->cache = wp_cache_get( $batcache->key, $batcache->group );
 
 // Are we only caching frequently-requested pages?
 if ( $batcache->seconds < 1 || $batcache->times < 2 ) {
 	$batcache->do = true;
 } else {
-	// No batcache item found, or ready to sample traffic again at the end of the batcache life?
-	if ( !is_array($batcache->cache) || time() >= $batcache->cache['time'] + $batcache->max_age - $batcache->seconds ) {
-		wp_cache_add($batcache->req_key, 0, $batcache->group);
-		$batcache->requests = wp_cache_incr($batcache->req_key, 1, $batcache->group);
 
-		if ( $batcache->requests >= $batcache->times )
+	// No batcache item found, or ready to sample traffic again at the end of the batcache life?
+	if ( ! is_array( $batcache->cache ) || ( time() >= $batcache->cache['time'] + $batcache->max_age - $batcache->seconds ) ) {
+		wp_cache_add( $batcache->req_key, 0, $batcache->group );
+		$batcache->requests = wp_cache_incr( $batcache->req_key, 1, $batcache->group );
+
+		if ( $batcache->requests >= $batcache->times ) {
 			$batcache->do = true;
-		else
+		} else {
 			$batcache->do = false;
+		}
 	}
 }
 
-// Recreate the permalink from the URL
-$batcache->permalink = 'http://' . $batcache->keys['host'] . $batcache->keys['path'] . ( isset($batcache->keys['query']['p']) ? "?p=" . $batcache->keys['query']['p'] : '' );
-$batcache->url_key = md5($batcache->permalink);
-$batcache->url_version = (int) wp_cache_get("{$batcache->url_key}_version", $batcache->group);
-
 // If the document has been updated and we are the first to notice, regenerate it.
-if ( $batcache->do !== false && isset($batcache->cache['version']) && $batcache->cache['version'] < $batcache->url_version )
-	$batcache->genlock = wp_cache_add("{$batcache->url_key}_genlock", 1, $batcache->group);
+if ( $batcache->do !== false && isset( $batcache->cache['version'] ) && $batcache->cache['version'] < $batcache->url_version ) {
+	$batcache->genlock = wp_cache_add( "{$batcache->url_key}_genlock", 1, $batcache->group, 10 );
+}
+
+// Temporary: remove after 2010-11-12. I added max_age to the cache. This upgrades older caches on the fly.
+if ( ! isset( $batcache->cache['max_age'] ) ) {
+	$batcache->cache['max_age'] = $batcache->max_age;
+}
 
 // Did we find a batcached page that hasn't expired?
-if ( isset($batcache->cache['time']) && ! $batcache->genlock && time() < $batcache->cache['time'] + $batcache->max_age ) {
+if ( isset( $batcache->cache['time'] ) && empty( $batcache->genlock ) && ( time() < $batcache->cache['time'] + $batcache->cache['max_age'] ) ) {
+
 	// Issue redirect if cached and enabled
 	if ( $batcache->cache['redirect_status'] && $batcache->cache['redirect_location'] && $batcache->cache_redirects ) {
-		$status = $batcache->cache['redirect_status'];
+		$status   = $batcache->cache['redirect_status'];
 		$location = $batcache->cache['redirect_location'];
+
 		// From vars.php
-		$is_IIS = (strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false || strpos($_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer') !== false);
-		if ( $is_IIS ) {
-			header("Refresh: 0;url=$location");
+		$is_IIS = ( strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) !== false || strpos( $_SERVER['SERVER_SOFTWARE'], 'ExpressionDevServer' ) !== false );
+
+		$batcache->do_headers( $batcache->headers );
+		if ( ! empty( $is_IIS ) ) {
+			header( "Refresh: 0;url={$location}" );
 		} else {
-			if ( php_sapi_name() != 'cgi-fcgi' ) {
+			if ( php_sapi_name() !== 'cgi-fcgi' ) {
 				$texts = array(
 					300 => 'Multiple Choices',
 					301 => 'Moved Permanently',
@@ -311,70 +670,75 @@ if ( isset($batcache->cache['time']) && ! $batcache->genlock && time() < $batcac
 					306 => 'Reserved',
 					307 => 'Temporary Redirect',
 				);
+
 				$protocol = $_SERVER["SERVER_PROTOCOL"];
-				if ( 'HTTP/1.1' != $protocol && 'HTTP/1.0' != $protocol )
+				if ( 'HTTP/1.1' !== $protocol && 'HTTP/1.0' !== $protocol ) {
 					$protocol = 'HTTP/1.0';
-				if ( isset($texts[$status]) )
-					header("$protocol $status " . $texts[$status]);
-				else
-					header("$protocol 302 Found");
+				}
+
+				if ( isset( $texts[ $status ] ) ) {
+					header( "{$protocol} {$status} " . $texts[ $status ] );
+				} else {
+					header( "{$protocol} 302 Found");
+				}
 			}
-			header("Location: $location");
+			header( "Location: {$location}" );
 		}
 		exit;
 	}
 
-	// Issue "304 Not Modified" only if the dates match exactly.
-	if ( $batcache->cache_control && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ) {
-		$since = strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-		if ( isset($batcache->cache['headers']['Last-Modified']) )
-			$batcache->cache['time'] = strtotime( $batcache->cache['headers']['Last-Modified'] );
-		if ( $batcache->cache['time'] == $since ) {
-			header('Last-Modified: ' . $_SERVER['HTTP_IF_MODIFIED_SINCE'], true, 304);
-			exit;
+	// Respect ETags served with feeds.
+	$three04 = false;
+	if ( isset( $SERVER['HTTP_IF_NONE_MATCH'] ) && isset( $batcache->cache['headers']['ETag'][0] ) && $_SERVER['HTTP_IF_NONE_MATCH'] == $batcache->cache['headers']['ETag'][0] ) {
+		$three04 = true;
+
+	// Respect If-Modified-Since.
+	} elseif ( $batcache->cache_control && isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ) {
+		$client_time = strtotime( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
+		if ( isset( $batcache->cache['headers']['Last-Modified'][0] ) ) {
+			$cache_time = strtotime( $batcache->cache['headers']['Last-Modified'][0] );
+		} else {
+			$cache_time = $batcache->cache['time'];
+		}
+
+		if ( $client_time >= $cache_time ) {
+			$three04 = true;
 		}
 	}
 
-	// Use the batcache save time for Last-Modified so we can issue "304 Not Modified"
-	if ( $batcache->cache_control ) {
+	// Use the batcache save time for Last-Modified so we can issue
+	// "304 Not Modified" but don't clobber a cached Last-Modified header.
+	if ( $batcache->cache_control && ! isset( $batcache->cache['headers']['Last-Modified'][0] ) ) {
 		header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $batcache->cache['time'] ) . ' GMT', true );
-		header('Cache-Control: max-age=' . ($batcache->max_age - time() + $batcache->cache['time']) . ', must-revalidate', true);
+		header( 'Cache-Control: max-age=' . ( $batcache->cache['max_age'] - time() + $batcache->cache['time'] ) . ', must-revalidate', true );
 	}
 
 	// Add some debug info just before </head>
-	if ( $batcache->debug ) {
-		if ( false !== $tag_position = strpos($batcache->cache['output'], '</head>') ) {
-			$tag = "<!--\n\tgenerated " . (time() - $batcache->cache['time']) . " seconds ago\n\tgenerated in " . $batcache->cache['timer'] . " seconds\n\tserved from batcache in " . $batcache->timer_stop(false, 3) . " seconds\n\texpires in " . ($batcache->max_age - time() + $batcache->cache['time']) . " seconds\n-->\n";
-			$batcache->cache['output'] = substr($batcache->cache['output'], 0, $tag_position) . $tag . substr($batcache->cache['output'], $tag_position);
-		}
+	if ( true === $batcache->debug ) {
+		$batcache->add_debug_from_cache();
 	}
 
-	if ( !empty($batcache->cache['headers']) ) foreach ( $batcache->cache['headers'] as $k => $v )
-		header("$k: $v", true);
+	$batcache->do_headers( $batcache->headers, $batcache->cache['headers'] );
 
-	if ( !empty($batcache->headers) ) foreach ( $batcache->headers as $k => $v ) {
-		if ( is_array( $v ) )
-			header("{$v[0]}: {$v[1]}", false);
-		else
-			header("$k: $v", true);
+	if ( true === $three04 ) {
+		header( "HTTP/1.1 304 Not Modified", true, 304 );
+		die;
 	}
 
-	if ( !empty($batcache->cache['status_header']) )
-		header($batcache->cache['status_header'], true);
+	if ( ! empty( $batcache->cache['status_header'] ) ) {
+		header( $batcache->cache['status_header'], true );
+	}
 
 	// Have you ever heard a death rattle before?
-	die($batcache->cache['output']);
+	die( $batcache->cache['output'] );
 }
 
 // Didn't meet the minimum condition?
-if ( !$batcache->do && !$batcache->genlock )
+if ( ! $batcache->do && ! $batcache->genlock ) {
 	return;
+}
 
-$wp_filter['status_header'][10]['batcache'] = array( 'function' => array(&$batcache, 'status_header'), 'accepted_args' => 1 );
-$wp_filter['wp_redirect_status'][10]['batcache'] = array( 'function' => array(&$batcache, 'redirect_status'), 'accepted_args' => 2 );
+$wp_filter['status_header'][10]['batcache']      = array( 'function' => array( &$batcache, 'status_header'   ), 'accepted_args' => 2 );
+$wp_filter['wp_redirect_status'][10]['batcache'] = array( 'function' => array( &$batcache, 'redirect_status' ), 'accepted_args' => 2 );
 
-ob_start(array(&$batcache, 'ob'));
-
-// It is safer to omit the final PHP closing tag.
-
-
+ob_start( array( &$batcache, 'ob' ) );
