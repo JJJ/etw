@@ -7,6 +7,14 @@
 	box-sizing: content-box;
 }
 
+.media-frame input,
+.media-frame select,
+.media-frame textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
 .media-modal,
 .media-frame {
 	font-family: "Open Sans", sans-serif;
@@ -56,9 +64,6 @@
 .media-frame select {
 	font-family: "Open Sans", sans-serif;
 	font-size: 12px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
 	border-width: 1px;
 	border-style: solid;
 	border-color: #dfdfdf;
@@ -99,21 +104,18 @@
 	display: none;
 }
 
-/* Enable draggable on IE10 touch events until it's rolled into jQuery UI core */
-.ui-sortable,
-.ui-draggable {
+/*!
+ * jQuery UI Draggable/Sortable 1.11.2
+ * http://jqueryui.com
+ *
+ * Copyright 2014 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+.ui-draggable-handle,
+.ui-sortable-handle {
 	-ms-touch-action: none;
-	touch-action: none;
-}
-
-.meta-box-sortables.ui-sortable {
-	-ms-touch-action: auto;
-	touch-action: auto;
-}
-
-.meta-box-sortables.ui-sortable .hndle {
-	-ms-touch-action: none;
-	touch-action: none;
+	touch-action:     none;
 }
 
 /**
@@ -321,6 +323,11 @@
 	margin-right: 4%;
 	font-size: 12px;
 	text-align: right;
+	word-wrap: break-word;
+}
+
+.media-sidebar .setting .name {
+	max-width: 80px;
 }
 
 .media-sidebar .setting select,
@@ -918,7 +925,7 @@
 }
 
 .attachment .close {
-	display: none;
+	display: block;
 	position: absolute;
 	top: 5px;
 	right: 5px;
@@ -937,15 +944,18 @@
 	border-radius: 3px;
 	-webkit-box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.3 );
 	box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.3 );
+	-webkit-transition-duration: none;
+	transition-duration: none;
+	-webkit-transition-property: none;
+	transition-property: none;
 }
 
-.attachment .close:hover {
+.attachment a.close:hover,
+.attachment a.close:focus {
 	-webkit-box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.6 );
 	box-shadow: 0 0 0 1px rgba( 0, 0, 0, 0.6 );
-}
+	background-position: -36px 4px;
 
-.attachment:hover .close {
-	display: block;
 }
 
 .attachment .check {
@@ -1421,18 +1431,18 @@
 }
 
 .media-selection .attachment {
-	width: 48px;
+	width: 40px;
 	padding: 0;
-	margin: 0;
+	margin: 4px;
 	-webkit-box-shadow: none;
 	box-shadow: none;
 }
 
 .media-selection .attachment .thumbnail {
-	top: 4px;
-	right: 4px;
-	bottom: 4px;
-	left: 4px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 }
 
 .media-selection .attachment .icon {

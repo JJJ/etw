@@ -388,7 +388,7 @@ if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create
 	echo ' <a href="' . esc_url( admin_url( $post_new_file ) ) . '" class="add-new-h2">' . esc_html( $post_type_object->labels->add_new ) . '</a>';
 ?></h2>
 <?php if ( $notice ) : ?>
-<div id="notice" class="error"><p id="has-newer-autosave"><?php echo $notice ?></p></div>
+<div id="notice" class="notice notice-warning"><p id="has-newer-autosave"><?php echo $notice ?></p></div>
 <?php endif; ?>
 <?php if ( $message ) : ?>
 <div id="message" class="updated"><p><?php echo $message; ?></p></div>
@@ -398,16 +398,16 @@ if ( isset( $post_new_file ) && current_user_can( $post_type_object->cap->create
 	<span class="hide-if-no-sessionstorage"><?php _e( 'We&#8217;re backing up this post in your browser, just in case.' ); ?></span>
 	</p>
 </div>
-<?php
+<form name="post" action="post.php" method="post" id="post"<?php
 /**
- * Fires inside the post editor <form> tag.
+ * Fires inside the post editor form tag.
  *
  * @since 3.0.0
  *
  * @param WP_Post $post Post object.
  */
-?>
-<form name="post" action="post.php" method="post" id="post"<?php do_action( 'post_edit_form_tag', $post ); ?>>
+do_action( 'post_edit_form_tag', $post );
+?>>
 <?php wp_nonce_field($nonce_action); ?>
 <input type="hidden" id="user-id" name="user_ID" value="<?php echo (int) $user_ID ?>" />
 <input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
@@ -459,8 +459,18 @@ do_action( 'edit_form_top', $post ); ?>
 	 */
 	?>
 	<label class="screen-reader-text" id="title-prompt-text" for="title"><?php echo apply_filters( 'enter_title_here', __( 'Enter title here' ), $post ); ?></label>
-	<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" />
+	<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" spellcheck="true" autocomplete="off" />
 </div>
+<?php
+/**
+ * Fires before the permalink field.
+ *
+ * @since 4.1.0
+ *
+ * @param WP_Post $post Post object.
+ */
+do_action( 'edit_form_before_permalink', $post );
+?>
 <div class="inside">
 <?php
 $sample_permalink_html = $post_type_object->public ? get_sample_permalink_html($post->ID) : '';
@@ -502,9 +512,8 @@ if ( post_type_supports($post_type, 'editor') ) {
 <div id="postdivrich" class="postarea<?php if ( $_wp_editor_expand ) { echo ' wp-editor-expand'; } ?>">
 
 <?php wp_editor( $post->post_content, 'content', array(
-	'dfw' => true,
 	'drag_drop_upload' => true,
-	'tabfocus_elements' => 'insert-media-button,save-post',
+	'tabfocus_elements' => 'content-html,save-post',
 	'editor_height' => 300,
 	'tinymce' => array(
 		'resize' => false,

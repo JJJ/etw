@@ -51,8 +51,9 @@ class WP_oEmbed {
 			'#https?://poll\.fm/.*#i'                             => array( 'https://polldaddy.com/oembed/',                      true  ),
 			'#https?://(www\.)?funnyordie\.com/videos/.*#i'       => array( 'http://www.funnyordie.com/oembed',                   true  ),
 			'#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i' => array( 'https://api.twitter.com/1/statuses/oembed.{format}', true  ),
+			'#https?://vine.co/v/.*#i'                            => array( 'https://vine.co/oembed.{format}',                    true  ),
  			'#https?://(www\.)?soundcloud\.com/.*#i'              => array( 'http://soundcloud.com/oembed',                       true  ),
-			'#https?://(www\.)?slideshare\.net/.*#i'              => array( 'https://www.slideshare.net/api/oembed/2',            true  ),
+			'#https?://(.+?\.)?slideshare\.net/.*#i'              => array( 'https://www.slideshare.net/api/oembed/2',            true  ),
 			'#http://instagr(\.am|am\.com)/p/.*#i'                => array( 'http://api.instagram.com/oembed',                    true  ),
 			'#https?://(www\.)?rdio\.com/.*#i'                    => array( 'http://www.rdio.com/api/oembed/',                    true  ),
 			'#https?://rd\.io/x/.*#i'                             => array( 'http://www.rdio.com/api/oembed/',                    true  ),
@@ -132,6 +133,8 @@ class WP_oEmbed {
 		 * | Polldaddy    | poll.fm              |  Yes  | 4.0.0     |
 		 * | TED          | ted.com              |  Yes  | 4.0.0     |
 		 * | YouTube      | youtube.com/playlist |  Yes  | 4.0.0     |
+		 * | ------------ | -------------------- | ----- | --------- |
+		 * | Vine         | vine.co              |  Yes  | 4.1.0     |
 		 * | ------------ | -------------------- | ----- | --------- |
 		 *
 		 * No longer supported providers:
@@ -288,9 +291,9 @@ class WP_oEmbed {
 	}
 
 	/**
-	 * Attempts to find oEmbed provider discovery <link> tags at the given URL.
+	 * Attempts to discover link tags at the given URL for an oEmbed provider.
 	 *
-	 * @param string $url The URL that should be inspected for discovery <link> tags.
+	 * @param string $url The URL that should be inspected for discovery `<link>` tags.
 	 * @return bool|string False on failure, otherwise the oEmbed provider URL.
 	 */
 	public function discover( $url ) {
@@ -544,13 +547,13 @@ class WP_oEmbed {
 	/**
 	 * Strip any new lines from the HTML.
 	 *
-	 * @access private
+	 * @access public
 	 * @param string $html Existing HTML.
 	 * @param object $data Data object from WP_oEmbed::data2html()
 	 * @param string $url The original URL passed to oEmbed.
 	 * @return string Possibly modified $html
 	 */
-	private function _strip_newlines( $html, $data, $url ) {
+	public function _strip_newlines( $html, $data, $url ) {
 		if ( false !== strpos( $html, "\n" ) )
 			$html = str_replace( array( "\r\n", "\n" ), '', $html );
 
@@ -565,7 +568,6 @@ class WP_oEmbed {
  * @access private
  *
  * @see WP_oEmbed
- * @uses WP_oEmbed
  *
  * @return WP_oEmbed object.
  */

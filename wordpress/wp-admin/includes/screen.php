@@ -177,7 +177,6 @@ function get_current_screen() {
  * Set the current screen object
  *
  * @since 3.0.0
- * @uses $current_screen
  *
  * @param mixed $hook_name Optional. The hook name (also known as the hook suffix) used to determine the screen,
  *	or an existing screen object.
@@ -648,8 +647,10 @@ final class WP_Screen {
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $option Option ID.
-	 * @param mixed $key Optional. Specific array key for when the option is an array.
+	 * @param string $option Option name.
+	 * @param string $key    Optional. Specific array key for when the option is an array.
+	 *                       Default false.
+	 * @return mixed The option value if set, null otherwise.
 	 */
 	public function get_option( $option, $key = false ) {
 		if ( ! isset( $this->_options[ $option ] ) )

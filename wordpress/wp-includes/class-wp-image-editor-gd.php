@@ -15,8 +15,10 @@
  * @uses WP_Image_Editor Extends class
  */
 class WP_Image_Editor_GD extends WP_Image_Editor {
-
-	protected $image = false; // GD Resource
+	/**
+	 * @var resource
+	 */
+	protected $image; // GD Resource
 
 	public function __destruct() {
 		if ( $this->image ) {
@@ -114,7 +116,7 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 		$this->update_size( $size[0], $size[1] );
 		$this->mime_type = $size['mime'];
 
-		return true;
+		return $this->set_quality();
 	}
 
 	/**

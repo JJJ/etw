@@ -94,7 +94,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 	);
 
 	$post_body = array(
-		'translations' => json_encode( $translations ),
+		'translations' => wp_json_encode( $translations ),
 	);
 
 	if ( is_array( $extra_stats ) )
@@ -142,7 +142,7 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 				$offer[ $offer_key ] = esc_html( $value );
 		}
 		$offer = (object) array_intersect_key( $offer, array_fill_keys( array( 'response', 'download', 'locale',
-			'packages', 'current', 'version', 'php_version', 'mysql_version', 'new_bundled', 'partial_version', 'notify_email', 'support_email' ), '' ) );
+			'packages', 'current', 'version', 'php_version', 'mysql_version', 'new_bundled', 'partial_version', 'notify_email', 'support_email', 'new_files' ), '' ) );
 	}
 
 	$updates = new stdClass();
@@ -274,16 +274,16 @@ function wp_update_plugins( $extra_stats = array() ) {
 	$options = array(
 		'timeout' => $timeout,
 		'body' => array(
-			'plugins'      => json_encode( $to_send ),
-			'translations' => json_encode( $translations ),
-			'locale'       => json_encode( $locales ),
-			'all'          => json_encode( true ),
+			'plugins'      => wp_json_encode( $to_send ),
+			'translations' => wp_json_encode( $translations ),
+			'locale'       => wp_json_encode( $locales ),
+			'all'          => wp_json_encode( true ),
 		),
 		'user-agent' => 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' )
 	);
 
 	if ( $extra_stats ) {
-		$options['body']['update_stats'] = json_encode( $extra_stats );
+		$options['body']['update_stats'] = wp_json_encode( $extra_stats );
 	}
 
 	$url = $http_url = 'http://api.wordpress.org/plugins/update-check/1.1/';
@@ -437,15 +437,15 @@ function wp_update_themes( $extra_stats = array() ) {
 	$options = array(
 		'timeout' => $timeout,
 		'body' => array(
-			'themes'       => json_encode( $request ),
-			'translations' => json_encode( $translations ),
-			'locale'       => json_encode( $locales ),
+			'themes'       => wp_json_encode( $request ),
+			'translations' => wp_json_encode( $translations ),
+			'locale'       => wp_json_encode( $locales ),
 		),
 		'user-agent'	=> 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' )
 	);
 
 	if ( $extra_stats ) {
-		$options['body']['update_stats'] = json_encode( $extra_stats );
+		$options['body']['update_stats'] = wp_json_encode( $extra_stats );
 	}
 
 	$url = $http_url = 'http://api.wordpress.org/themes/update-check/1.1/';

@@ -4,7 +4,7 @@
  *
  * This set of classes are designed to be used to upgrade/install a local set of files on the filesystem via the Filesystem Abstraction classes.
  *
- * @link http://trac.wordpress.org/ticket/7875 consolidate plugin/theme/core upgrade/install functions
+ * @link https://core.trac.wordpress.org/ticket/7875 consolidate plugin/theme/core upgrade/install functions
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -24,6 +24,8 @@ class WP_Upgrader {
 	public $strings = array();
 	public $skin = null;
 	public $result = array();
+	public $update_count = 0;
+	public $update_current = 0;
 
 	public function __construct($skin = null) {
 		if ( null == $skin )
@@ -59,17 +61,19 @@ class WP_Upgrader {
 		$this->strings['maintenance_end'] = __('Disabling Maintenance mode&#8230;');
 	}
 
-	public function fs_connect( $directories = array() ) {
+	public function fs_connect( $directories = array(), $allow_relaxed_file_ownership = false ) {
 		global $wp_filesystem;
 
-		if ( false === ($credentials = $this->skin->request_filesystem_credentials()) )
+		if ( false === ( $credentials = $this->skin->request_filesystem_credentials( false, $directories[0], $allow_relaxed_file_ownership ) ) ) {
 			return false;
+		}
 
-		if ( ! WP_Filesystem($credentials) ) {
+		if ( ! WP_Filesystem( $credentials, $directories[0], $allow_relaxed_file_ownership ) ) {
 			$error = true;
 			if ( is_object($wp_filesystem) && $wp_filesystem->errors->get_error_code() )
 				$error = $wp_filesystem->errors;
-			$this->skin->request_filesystem_credentials($error); //Failed to connect, Error and request again
+			// Failed to connect, Error and request again
+			$this->skin->request_filesystem_credentials( $error, $directories[0], $allow_relaxed_file_ownership );
 			return false;
 		}
 
@@ -1454,6 +1458,7 @@ class Core_Upgrader extends WP_Upgrader {
 			'pre_check_md5'    => true,
 			'attempt_rollback' => false,
 			'do_rollback'      => false,
+			'allow_relaxed_file_ownership' => false,
 		);
 		$parsed_args = wp_parse_args( $args, $defaults );
 
@@ -1464,7 +1469,7 @@ class Core_Upgrader extends WP_Upgrader {
 		if ( !isset( $current->response ) || $current->response == 'latest' )
 			return new WP_Error('up_to_date', $this->strings['up_to_date']);
 
-		$res = $this->fs_connect( array(ABSPATH, WP_CONTENT_DIR) );
+		$res = $this->fs_connect( array( ABSPATH, WP_CONTENT_DIR ), $parsed_args['allow_relaxed_file_ownership'] );
 		if ( ! $res || is_wp_error( $res ) ) {
 			return $res;
 		}
@@ -1909,8 +1914,14 @@ class WP_Automatic_Updater {
 		if ( $this->is_disabled() )
 			return false;
 
+		// Only relax the filesystem checks when the update doesn't include new files
+		$allow_relaxed_file_ownership = false;
+		if ( 'core' == $type && isset( $item->new_files ) && ! $item->new_files ) {
+			$allow_relaxed_file_ownership = true;
+		}
+
 		// If we can't do an auto core update, we may still be able to email the user.
-		if ( ! $skin->request_filesystem_credentials( false, $context ) || $this->is_vcs_checkout( $context ) ) {
+		if ( ! $skin->request_filesystem_credentials( false, $context, $allow_relaxed_file_ownership ) || $this->is_vcs_checkout( $context ) ) {
 			if ( 'core' == $type )
 				$this->send_core_update_notification_email( $item );
 			return false;
@@ -2070,6 +2081,11 @@ class WP_Automatic_Updater {
 				break;
 		}
 
+		$allow_relaxed_file_ownership = false;
+		if ( 'core' == $type && isset( $item->new_files ) && ! $item->new_files ) {
+			$allow_relaxed_file_ownership = true;
+		}
+
 		// Boom, This sites about to get a whole new splash of paint!
 		$upgrade_result = $upgrader->upgrade( $upgrader_item, array(
 			'clear_update_cache' => false,
@@ -2077,6 +2093,9 @@ class WP_Automatic_Updater {
 			'pre_check_md5'      => false,
 			// Only available for core updates.
 			'attempt_rollback'   => true,
+			// Allow relaxed file ownership in some scenarios
+			'allow_relaxed_file_ownership' => $allow_relaxed_file_ownership,
+			
 		) );
 
 		// If the filesystem is unavailable, false is returned.
@@ -2596,7 +2615,7 @@ This debugging email is sent when you are using a development version of WordPre
 
 If you think these failures might be due to a bug in WordPress, could you report it?
  * Open a thread in the support forums: https://wordpress.org/support/forum/alphabeta
- * Or, if you're comfortable writing a bug report: http://core.trac.wordpress.org/
+ * Or, if you're comfortable writing a bug report: https://core.trac.wordpress.org/
 
 Thanks! -- The WordPress Team" ) );
 			$body[] = '';

@@ -257,10 +257,12 @@ function get_post_permalink( $id = 0, $leavename = false, $sample = false ) {
 
 	$post_type = get_post_type_object($post->post_type);
 
+	if ( $post_type->hierarchical ) {
+		$slug = get_page_uri( $id );
+	}
+
 	if ( !empty($post_link) && ( !$draft_or_pending || $sample ) ) {
 		if ( ! $leavename ) {
-			if ( $post_type->hierarchical )
-				$slug = get_page_uri($id);
 			$post_link = str_replace("%$post->post_type%", $slug, $post_link);
 		}
 		$post_link = home_url( user_trailingslashit($post_link) );
@@ -1511,7 +1513,7 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 		}
 
 		if ( ! empty( $excluded_terms ) ) {
-			$where .= " AND p.ID NOT IN ( SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id IN (" . implode( $excluded_terms, ',' ) . ') )';
+			$where .= " AND p.ID NOT IN ( SELECT tr.object_id FROM $wpdb->term_relationships tr LEFT JOIN $wpdb->term_taxonomy tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id) WHERE tt.term_id IN (" . implode( $excluded_terms, ',' ) . ') )';
 		}
 	}
 
@@ -1878,7 +1880,6 @@ function get_adjacent_post_link( $format, $link, $in_same_term = false, $exclude
  * Can be either next post link or previous.
  *
  * @since 2.5.0
- * @uses get_adjacent_post_link()
  *
  * @param string       $format         Link anchor format.
  * @param string       $link           Link permalink format.
@@ -2046,7 +2047,6 @@ function get_next_posts_link( $label = null, $max_page = 0 ) {
  * Display the next posts page link.
  *
  * @since 0.71
- * @uses get_next_posts_link()
  *
  * @param string $label Content for link text.
  * @param int $max_page Optional. Max pages.
@@ -2124,7 +2124,6 @@ function get_previous_posts_link( $label = null ) {
  * Display the previous posts page link.
  *
  * @since 0.71
- * @uses get_previous_posts_link()
  *
  * @param string $label Optional. Previous page link text.
  */
@@ -2183,6 +2182,180 @@ function get_posts_nav_link( $args = array() ) {
 function posts_nav_link( $sep = '', $prelabel = '', $nxtlabel = '' ) {
 	$args = array_filter( compact('sep', 'prelabel', 'nxtlabel') );
 	echo get_posts_nav_link($args);
+}
+
+/**
+ * Return navigation to next/previous post when applicable.
+ *
+ * @since 4.1.0
+ *
+ * @param array $args {
+ *     Optional. Default post navigation arguments.
+ *
+ *     @type string $prev_text          Anchor text to display in the previous post link. Default: `%title`.
+ *     @type string $next_text          Anchor text to display in the next post link. Default: `%title`.
+ *     @type string $screen_reader_text Screen reader text for nav element. Default: 'Post navigation'.
+ * }
+ * @return string Markup for post links.
+ */
+function get_the_post_navigation( $args = array() ) {
+	$args = wp_parse_args( $args, array(
+		'prev_text'          => '%title',
+		'next_text'          => '%title',
+		'screen_reader_text' => __( 'Post navigation' ),
+	) );
+
+	$navigation = '';
+	$previous   = get_previous_post_link( '<div class="nav-previous">%link</div>', $args['prev_text'] );
+	$next       = get_next_post_link( '<div class="nav-next">%link</div>', $args['next_text'] );
+
+	// Only add markup if there's somewhere to navigate to.
+	if ( $previous || $next ) {
+		$navigation = _navigation_markup( $previous . $next, 'post-navigation', $args['screen_reader_text'] );
+	}
+
+	return $navigation;
+}
+
+/**
+ * Display navigation to next/previous post when applicable.
+ *
+ * @since 4.1.0
+ *
+ * @param array $args See {@see get_the_post_navigation()} for available arguments.
+ */
+function the_post_navigation( $args = array() ) {
+	echo get_the_post_navigation( $args );
+}
+
+/**
+ * Return navigation to next/previous set of posts when applicable.
+ *
+ * @since 4.1.0
+ *
+ * @global WP_Query $wp_query WordPress Query object.
+ *
+ * @param array $args {
+ *     Optional. Default paging navigation arguments.
+ *
+ *     @type string $prev_text          Anchor text to display in the previous posts link. Default: `Older posts`.
+ *     @type string $next_text          Anchor text to display in the next posts link. Default: `Newer posts`.
+ *     @type string $screen_reader_text Screen reader text for nav element. Default: 'Posts navigation'.
+ * }
+ * @return string Markup for paging links.
+ */
+function get_the_posts_navigation( $args = array() ) {
+	$navigation = '';
+
+	// Don't print empty markup if there's only one page.
+	if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
+		$args = wp_parse_args( $args, array(
+			'prev_text'          => __( 'Older posts' ),
+			'next_text'          => __( 'Newer posts' ),
+			'screen_reader_text' => __( 'Posts navigation' ),
+		) );
+
+		$next_link = get_previous_posts_link( $args['next_text'] );
+		$prev_link = get_next_posts_link( $args['prev_text'] );
+
+		if ( $prev_link ) {
+			$navigation .= '<div class="nav-previous">' . $prev_link . '</div>';
+		}
+
+		if ( $next_link ) {
+			$navigation .= '<div class="nav-next">' . $next_link . '</div>';
+		}
+
+		$navigation = _navigation_markup( $navigation, 'paging-navigation', $args['screen_reader_text'] );
+	}
+
+	return $navigation;
+}
+
+/**
+ * Display navigation to next/previous set of posts when applicable.
+ *
+ * @since 4.1.0
+ *
+ * @param array $args See {@see get_the_posts_navigation()} for available arguments.
+ */
+function the_posts_navigation( $args = array() ) {
+	echo get_the_posts_navigation( $args );
+}
+
+/**
+ * Return a paginated navigation to next/previous set of posts,
+ * when applicable.
+ *
+ * @since 4.1.0
+ *
+ * @param array $args {
+ *     Optional. Default pagination arguments. {@see paginate_links()}
+ *
+ *     @type string $screen_reader_text Screen reader text for navigation element. Default: 'Posts navigation'.
+ * }
+ * @return string Markup for pagination links.
+ */
+function get_the_pagination( $args = array() ) {
+	$navigation = '';
+
+	// Don't print empty markup if there's only one page.
+	if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
+		$args = wp_parse_args( $args, array(
+			'mid_size'           => 1,
+			'prev_text'          => __( 'Previous' ),
+			'next_text'          => __( 'Next' ),
+			'screen_reader_text' => __( 'Posts navigation' ),
+		) );
+		// Make sure we get plain links, so we can work with it.
+		$args['type'] = 'plain';
+
+		// Set up paginated links.
+		$links = paginate_links( $args );
+
+		if ( $links ) {
+			$navigation = _navigation_markup( $links, 'pagination', $args['screen_reader_text'] );
+		}
+	}
+
+	return $navigation;
+}
+
+/**
+ * Display a paginated navigation to next/previous set of posts,
+ * when applicable.
+ *
+ * @since 4.1.0
+ *
+ * @param array $args See {@see get_the_pagination()} for available arguments.
+ */
+function the_pagination( $args = array() ) {
+	echo get_the_pagination( $args );
+}
+
+/**
+ * Wraps passed links in navigational markup.
+ *
+ * @since 4.1.0
+ * @access private
+ *
+ * @param string $links              Navigational links.
+ * @param string $class              Optional. Custom class for nav element. Default: 'paging-navigation'.
+ * @param string $screen_reader_text Optional. Screen reader text for nav element. Default: 'Posts navigation'.
+ * @return string Navigation template tag.
+ */
+function _navigation_markup( $links, $class = 'paging-navigation', $screen_reader_text = '' ) {
+	if ( empty( $screen_reader_text ) ) {
+		$screen_reader_text = __( 'Posts navigation' );
+	}
+
+	$template = '
+	<nav class="navigation %1$s" role="navigation">
+		<h2 class="screen-reader-text">%2$s</h2>
+		<div class="nav-links">%3$s</div>
+	</nav>';
+
+	return sprintf( $template, sanitize_html_class( $class ), esc_html( $screen_reader_text ), $links );
 }
 
 /**
@@ -2410,8 +2583,6 @@ function get_shortcut_link() {
  *
  * @since 3.0.0
  *
- * @uses get_home_url()
- *
  * @param  string $path   (optional) Path relative to the home url.
  * @param  string $scheme (optional) Scheme to give the home url context. Currently 'http', 'https', or 'relative'.
  * @return string Home url link with optional path appended.
@@ -2478,8 +2649,6 @@ function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
  * overridden.
  *
  * @since 3.0.0
- *
- * @uses get_site_url()
  *
  * @param string $path Optional. Path relative to the site url.
  * @param string $scheme Optional. Scheme to give the site url context. See set_url_scheme().
@@ -3062,8 +3231,6 @@ function wp_get_shortlink($id = 0, $context = 'post', $allow_slugs = true) {
  *  Attached to the wp_head action.
  *
  * @since 3.0.0
- *
- * @uses wp_get_shortlink()
  */
 function wp_shortlink_wp_head() {
 	$shortlink = wp_get_shortlink( 0, 'query' );
@@ -3080,8 +3247,6 @@ function wp_shortlink_wp_head() {
  * Attached to the wp action.
  *
  * @since 3.0.0
- *
- * @uses wp_get_shortlink()
  */
 function wp_shortlink_header() {
 	if ( headers_sent() )

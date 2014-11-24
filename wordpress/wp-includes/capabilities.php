@@ -13,14 +13,12 @@
  * the name in value of the 'name' key. The capabilities are stored as an array
  * in the value of the 'capability' key.
  *
- * <code>
- * array (
- *		'rolename' => array (
- *			'name' => 'rolename',
- *			'capabilities' => array()
- *		)
- * )
- * </code>
+ *     array (
+ *    		'rolename' => array (
+ *    			'name' => 'rolename',
+ *    			'capabilities' => array()
+ *    		)
+ *     )
  *
  * @since 2.0.0
  * @package WordPress
@@ -104,7 +102,8 @@ class WP_Roles {
 	 *
 	 * @since 2.1.0
 	 * @access protected
-	 * @uses $wpdb Used to get the database prefix.
+	 *
+	 * @global wpdb  $wpdb          WordPress database abstraction object.
 	 * @global array $wp_user_roles Used to set the 'roles' property value.
 	 */
 	protected function _init() {
