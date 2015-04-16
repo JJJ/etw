@@ -8,12 +8,12 @@
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Renders the page mapping admin panel.
  *
- * @since BuddyPress (1.6)
+ * @since BuddyPress (1.6.0)
  * @todo Use settings API
  * @uses bp_core_admin_component_options()
  */
@@ -44,11 +44,11 @@ function bp_core_admin_slugs_settings() {
  * Creates reusable markup for page setup on the Components and Pages dashboard panel.
  *
  * @package BuddyPress
- * @since BuddyPress (1.6)
+ * @since BuddyPress (1.6.0)
  * @todo Use settings API
  */
 function bp_core_admin_slugs_options() {
-	global $bp;
+	$bp = buddypress();
 
 	// Get the existing WP pages
 	$existing_pages = bp_core_get_directory_page_ids();
@@ -72,6 +72,13 @@ function bp_core_admin_slugs_options() {
 
 	/** Directory Display *****************************************************/
 
+	/**
+	 * Filters the loaded components needing directory page association to a WordPress page.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param array $directory_pages Array of available components to set associations for.
+	 */
 	$directory_pages = apply_filters( 'bp_directory_pages', $directory_pages );
 
 	if ( !empty( $directory_pages ) ) : ?>
@@ -101,9 +108,6 @@ function bp_core_admin_slugs_options() {
 								'selected'         => !empty( $existing_pages[$name] ) ? $existing_pages[$name] : false
 							) ); ?>
 
-							<a href="<?php echo admin_url( add_query_arg( array( 'post_type' => 'page' ), 'post-new.php' ) ); ?>" class="button-secondary"><?php _e( 'New Page', 'buddypress' ); ?></a>
-							<input class="button-primary" type="submit" name="bp-admin-pages-single" value="<?php esc_attr_e( 'Save', 'buddypress' ) ?>" />
-
 							<?php if ( !empty( $existing_pages[$name] ) ) : ?>
 
 								<a href="<?php echo get_permalink( $existing_pages[$name] ); ?>" class="button-secondary" target="_bp"><?php _e( 'View', 'buddypress' ); ?></a>
@@ -118,7 +122,16 @@ function bp_core_admin_slugs_options() {
 
 				<?php endforeach ?>
 
-				<?php do_action( 'bp_active_external_directories' ); ?>
+				<?php
+
+				/**
+				 * Fires after the display of default directories.
+				 *
+				 * Allows plugins to add their own directory associations.
+				 *
+				 * @since BuddyPress (1.5.0)
+				 */
+				do_action( 'bp_active_external_directories' ); ?>
 
 			</tbody>
 		</table>
@@ -135,6 +148,13 @@ function bp_core_admin_slugs_options() {
 		'activate' => __( 'Activate', 'buddypress' ),
 	);
 
+	/**
+	 * Filters the default static pages for BuddyPress setup.
+	 *
+	 * @since BuddyPress (1.6.0)
+	 *
+	 * @param array $static_pages Array of static default static pages.
+	 */
 	$static_pages = apply_filters( 'bp_static_pages', $static_pages );
 
 	if ( !empty( $static_pages ) ) : ?>
@@ -164,9 +184,6 @@ function bp_core_admin_slugs_options() {
 								'selected'         => !empty( $existing_pages[$name] ) ? $existing_pages[$name] : false
 							) ) ?>
 
-							<a href="<?php echo admin_url( add_query_arg( array( 'post_type' => 'page' ), 'post-new.php' ) ); ?>" class="button-secondary"><?php _e( 'New Page', 'buddypress' ); ?></a>
-							<input class="button-primary" type="submit" name="bp-admin-pages-single" value="<?php esc_attr_e( 'Save', 'buddypress' ) ?>" />
-
 							<?php if ( !empty( $existing_pages[$name] ) ) : ?>
 
 								<a href="<?php echo get_permalink( $existing_pages[$name] ); ?>" class="button-secondary" target="_bp"><?php _e( 'View', 'buddypress' ); ?></a>
@@ -180,7 +197,14 @@ function bp_core_admin_slugs_options() {
 
 				<?php endforeach ?>
 
-				<?php do_action( 'bp_active_external_pages' ); ?>
+				<?php
+
+				/**
+				 * Fires after the display of default static pages for BuddyPress setup.
+				 *
+				 * @since BuddyPress (1.5.0)
+				 */
+				do_action( 'bp_active_external_pages' ); ?>
 
 			</tbody>
 		</table>
@@ -192,12 +216,12 @@ function bp_core_admin_slugs_options() {
 /**
  * Handle saving of the BuddyPress slugs
  *
- * @since BuddyPress (1.6)
+ * @since BuddyPress (1.6.0)
  * @todo Use settings API
  */
 function bp_core_admin_slugs_setup_handler() {
 
-	if ( isset( $_POST['bp-admin-pages-submit'] ) || isset( $_POST['bp-admin-pages-single'] ) ) {
+	if ( isset( $_POST['bp-admin-pages-submit'] ) ) {
 		if ( !check_admin_referer( 'bp-admin-pages-setup' ) )
 			return false;
 

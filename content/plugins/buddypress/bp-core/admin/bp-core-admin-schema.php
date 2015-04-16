@@ -8,7 +8,7 @@
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Get the DB schema to use for BuddyPress components
@@ -38,8 +38,12 @@ function bp_core_set_charset() {
  */
 function bp_core_install( $active_components = false ) {
 
+	bp_pre_schema_upgrade();
+
 	// If no components passed, get all the active components from the main site
 	if ( empty( $active_components ) ) {
+
+		/** This filter is documented in bp-core/admin/bp-core-admin-components.php */
 		$active_components = apply_filters( 'bp_active_components', bp_get_option( 'bp-active-components' ) );
 	}
 
@@ -84,7 +88,7 @@ function bp_core_install( $active_components = false ) {
  * Install database tables for the Notifications component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -112,6 +116,15 @@ function bp_core_install_notifications() {
 				KEY useritem (user_id,is_new)
 			) {$charset_collate};";
 
+	$sql[] = "CREATE TABLE {$bp_prefix}bp_notifications_meta (
+				id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				notification_id bigint(20) NOT NULL,
+				meta_key varchar(255) DEFAULT NULL,
+				meta_value longtext DEFAULT NULL,
+				KEY notification_id (notification_id),
+				KEY meta_key (meta_key(191))
+			) {$charset_collate};";
+
 	dbDelta( $sql );
 }
 
@@ -119,7 +132,7 @@ function bp_core_install_notifications() {
  * Install database tables for the Activity component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -136,7 +149,7 @@ function bp_core_install_activity_streams() {
 				type varchar(75) NOT NULL,
 				action text NOT NULL,
 				content longtext NOT NULL,
-				primary_link varchar(255) NOT NULL,
+				primary_link text NOT NULL,
 				item_id bigint(20) NOT NULL,
 				secondary_item_id bigint(20) DEFAULT NULL,
 				date_recorded datetime NOT NULL,
@@ -162,7 +175,7 @@ function bp_core_install_activity_streams() {
 				meta_key varchar(255) DEFAULT NULL,
 				meta_value longtext DEFAULT NULL,
 				KEY activity_id (activity_id),
-				KEY meta_key (meta_key)
+				KEY meta_key (meta_key(191))
 			) {$charset_collate};";
 
 	dbDelta( $sql );
@@ -172,7 +185,7 @@ function bp_core_install_activity_streams() {
  * Install database tables for the Notifications component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -200,7 +213,7 @@ function bp_core_install_friends() {
  * Install database tables for the Groups component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -250,17 +263,17 @@ function bp_core_install_groups() {
 				meta_key varchar(255) DEFAULT NULL,
 				meta_value longtext DEFAULT NULL,
 				KEY group_id (group_id),
-				KEY meta_key (meta_key)
+				KEY meta_key (meta_key(191))
 			) {$charset_collate};";
 
 	dbDelta( $sql );
 }
 
 /**
- * Install database tables for the Messsages component
+ * Install database tables for the Messages component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -304,6 +317,15 @@ function bp_core_install_private_messaging() {
 				KEY is_active (is_active)
 			) {$charset_collate};";
 
+	$sql[] = "CREATE TABLE {$bp_prefix}bp_messages_meta (
+				id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				message_id bigint(20) NOT NULL,
+				meta_key varchar(255) DEFAULT NULL,
+				meta_value longtext DEFAULT NULL,
+				KEY message_id (message_id),
+				KEY meta_key (meta_key(191))
+			) {$charset_collate};";
+
 	dbDelta( $sql );
 }
 
@@ -311,7 +333,7 @@ function bp_core_install_private_messaging() {
  * Install database tables for the Profiles component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -378,7 +400,7 @@ function bp_core_install_extended_profiles() {
 				meta_key varchar(255) DEFAULT NULL,
 				meta_value longtext DEFAULT NULL,
 				KEY object_id (object_id),
-				KEY meta_key (meta_key)
+				KEY meta_key (meta_key(191))
 			) {$charset_collate};";
 
 	dbDelta( $sql );
@@ -401,7 +423,7 @@ function bp_core_install_extended_profiles() {
  * Install database tables for the Sites component
  *
  * @since BuddyPress (1.0.0)
- * 
+ *
  * @uses bp_core_set_charset()
  * @uses bp_core_get_table_prefix()
  * @uses dbDelta()
@@ -425,7 +447,7 @@ function bp_core_install_blog_tracking() {
 				meta_key varchar(255) DEFAULT NULL,
 				meta_value longtext DEFAULT NULL,
 				KEY blog_id (blog_id),
-				KEY meta_key (meta_key)
+				KEY meta_key (meta_key(191))
 			) {$charset_collate};";
 
 	dbDelta( $sql );
@@ -445,7 +467,7 @@ function bp_core_install_signups() {
 	global $wpdb;
 
 	// Signups is not there and we need it so let's create it
-	require_once( buddypress()->plugin_dir . '/bp-core/admin/bp-core-schema.php' );
+	require_once( buddypress()->plugin_dir . '/bp-core/admin/bp-core-admin-schema.php' );
 	require_once( ABSPATH                  . 'wp-admin/includes/upgrade.php'     );
 
 	// Never use bp_core_get_table_prefix() for any global users tables

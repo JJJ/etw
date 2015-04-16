@@ -9,7 +9,7 @@
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /** Theme Setup ***************************************************************/
 
@@ -80,6 +80,9 @@ class BP_Legacy extends BP_Theme_Compat {
 		// Template Output
 		add_filter( 'bp_get_activity_action_pre_meta', array( $this, 'secondary_avatars' ), 10, 2 );
 
+		// Filter BuddyPress template hierarchy and look for page templates
+		add_filter( 'bp_get_buddypress_template', array( $this, 'theme_compat_page_templates' ), 10, 1 );
+
 		/** Scripts ***********************************************************/
 
 		add_action( 'bp_enqueue_scripts', array( $this, 'enqueue_styles'   ) ); // Enqueue theme CSS
@@ -87,7 +90,8 @@ class BP_Legacy extends BP_Theme_Compat {
 		add_filter( 'bp_enqueue_scripts', array( $this, 'localize_scripts' ) ); // Enqueue theme script localization
 		add_action( 'bp_head',            array( $this, 'head_scripts'     ) ); // Output some extra JS in the <head>
 
-		/** Body no-js Class ********************************************************/
+		/** Body no-js Class **************************************************/
+
 		add_filter( 'body_class', array( $this, 'add_nojs_body_class' ), 20, 1 );
 
 		/** Buttons ***********************************************************/
@@ -108,17 +112,17 @@ class BP_Legacy extends BP_Theme_Compat {
 
 			// Group buttons
 			if ( bp_is_active( 'groups' ) ) {
-				add_action( 'bp_group_header_actions',     'bp_group_join_button',           5 );
-				add_action( 'bp_group_header_actions',     'bp_group_new_topic_button',      20 );
-				add_action( 'bp_directory_groups_actions', 'bp_group_join_button' );
-				add_filter( 'bp_groups_directory_header',  'bp_legacy_theme_group_create_button' );
-				add_filter( 'bp_blogs_directory_header',   'bp_legacy_theme_blog_create_button' );
+				add_action( 'bp_group_header_actions',          'bp_group_join_button',               5 );
+				add_action( 'bp_group_header_actions',          'bp_group_new_topic_button',         20 );
+				add_action( 'bp_directory_groups_actions',      'bp_group_join_button'                  );
+				add_action( 'bp_groups_directory_group_filter', 'bp_legacy_theme_group_create_nav', 999 );
 			}
 
 			// Blog button
-			if ( bp_is_active( 'blogs' ) )
-				add_action( 'bp_directory_blogs_actions',  'bp_blogs_visit_blog_button' );
-
+			if ( bp_is_active( 'blogs' ) ) {
+				add_action( 'bp_directory_blogs_actions',    'bp_blogs_visit_blog_button'           );
+				add_action( 'bp_blogs_directory_blog_types', 'bp_legacy_theme_blog_create_nav', 999 );
+			}
 		}
 
 		/** Notices ***********************************************************/
@@ -202,13 +206,35 @@ class BP_Legacy extends BP_Theme_Compat {
 		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
 		// Locate the BP stylesheet
-		$asset = $this->locate_asset_in_stack( "buddypress{$min}.css", 'css' );
+		$ltr = $this->locate_asset_in_stack( "buddypress{$min}.css",     'css' );
+		$rtl = $this->locate_asset_in_stack( "buddypress-rtl{$min}.css", 'css' );
 
-		// Enqueue BuddyPress-specific styling, if found
-		if ( isset( $asset['location'], $asset['handle'] ) ) {
+		// LTR
+		if ( ! is_rtl() && isset( $ltr['location'], $ltr['handle'] ) ) {
+			wp_enqueue_style( $ltr['handle'], $ltr['location'], array(), $this->version, 'screen' );
+
+			if ( $min ) {
+				wp_style_add_data( $ltr['handle'], 'suffix', $min );
+			}
+		}
+
+		// RTL
+		if ( is_rtl() && isset( $rtl['location'], $rtl['handle'] ) ) {
+			$rtl['handle'] = str_replace( '-css', '-css-rtl', $rtl['handle'] );  // Backwards compatibility
+			wp_enqueue_style( $rtl['handle'], $rtl['location'], array(), $this->version, 'screen' );
+
+			if ( $min ) {
+				wp_style_add_data( $rtl['handle'], 'suffix', $min );
+			}
+		}
+
+		// Compatibility stylesheets for specific themes.
+		$asset = $this->locate_asset_in_stack( get_stylesheet() . "{$min}.css", 'css' );
+		if ( isset( $asset['location'] ) ) {
+			// use a unique handle
+			$asset['handle'] = 'bp-' . get_stylesheet();
 			wp_enqueue_style( $asset['handle'], $asset['location'], array(), $this->version, 'screen' );
 
-			wp_style_add_data( $asset['handle'], 'rtl', true );
 			if ( $min ) {
 				wp_style_add_data( $asset['handle'], 'suffix', $min );
 			}
@@ -216,7 +242,7 @@ class BP_Legacy extends BP_Theme_Compat {
 	}
 
 	/**
-	 * Enqueue the required Javascript files
+	 * Enqueue the required JavaScript files
 	 *
 	 * @since BuddyPress (1.7)
 	 */
@@ -260,7 +286,7 @@ class BP_Legacy extends BP_Theme_Compat {
 		if ( bp_is_register_page() || ( function_exists( 'bp_is_user_settings_general' ) && bp_is_user_settings_general() ) ) {
 
 			// Locate the Register Page JS file
-			$asset = $this->locate_asset_in_stack( "password-verify{$min}.js", 'js' );
+			$asset = $this->locate_asset_in_stack( "password-verify{$min}.js", 'js', 'bp-legacy-password-verify' );
 
 			$dependencies = array_merge( bp_core_get_js_dependencies(), array(
 				'password-strength-meter',
@@ -295,35 +321,40 @@ class BP_Legacy extends BP_Theme_Compat {
 	 *
 	 * @since BuddyPress (1.8)
 	 * @access private
-	 * @param string $file A filename like buddypress.cs
-	 * @param string $type css|js
+	 * @param string $file A filename like buddypress.css
+	 * @param string $type Optional. Either "js" or "css" (the default).
+	 * @param string $script_handle Optional. If set, used as the script name in `wp_enqueue_script`.
 	 * @return array An array of data for the wp_enqueue_* function:
 	 *   'handle' (eg 'bp-child-css') and a 'location' (the URI of the
 	 *   asset)
 	 */
-	private function locate_asset_in_stack( $file, $type = 'css' ) {
-		// Child, parent, theme compat
+	private function locate_asset_in_stack( $file, $type = 'css', $script_handle = '' ) {
 		$locations = array();
+
+		// Ensure the assets can be located when running from /src/.
+		if ( defined( 'BP_SOURCE_SUBDIRECTORY' ) && BP_SOURCE_SUBDIRECTORY === 'src' ) {
+			$file = str_replace( '.min', '', $file );
+		}
 
 		// No need to check child if template == stylesheet
 		if ( is_child_theme() ) {
 			$locations['bp-child'] = array(
 				'dir'  => get_stylesheet_directory(),
 				'uri'  => get_stylesheet_directory_uri(),
-				'file' => str_replace( '.min', '', $file )
+				'file' => $file,
 			);
 		}
 
 		$locations['bp-parent'] = array(
 			'dir'  => get_template_directory(),
 			'uri'  => get_template_directory_uri(),
-			'file' => str_replace( '.min', '', $file )
+			'file' => $file,
 		);
 
 		$locations['bp-legacy'] = array(
 			'dir'  => bp_get_theme_compat_dir(),
 			'uri'  => bp_get_theme_compat_url(),
-			'file' => $file
+			'file' => $file,
 		);
 
 		// Subdirectories within the top-level $locations directories
@@ -339,7 +370,8 @@ class BP_Legacy extends BP_Theme_Compat {
 			foreach ( $subdirs as $subdir ) {
 				if ( file_exists( trailingslashit( $location['dir'] ) . trailingslashit( $subdir ) . $location['file'] ) ) {
 					$retval['location'] = trailingslashit( $location['uri'] ) . trailingslashit( $subdir ) . $location['file'];
-					$retval['handle']   = $location_type . '-' . $type;
+					$retval['handle']   = ( $script_handle ) ? $script_handle : "{$location_type}-{$type}";
+
 					break 2;
 				}
 			}
@@ -438,6 +470,75 @@ class BP_Legacy extends BP_Theme_Compat {
 
 		return $action;
 	}
+
+	/**
+	 * Filter the default theme compatibility root template hierarchy, and prepend
+	 * a page template to the front if it's set.
+	 *
+	 * @see https://buddypress.trac.wordpress.org/ticket/6065
+	 *
+	 * @since BuddyPress (2.2.0)
+	 *
+	 * @param  array $templates
+	 * @uses   apply_filters() call 'bp_legacy_theme_compat_page_templates_directory_only' and return false
+	 *                         to use the defined page template for component's directory and its single items
+	 * @return array
+	 */
+	public function theme_compat_page_templates( $templates = array() ) {
+
+		// Bail if not looking at a directory
+		if ( true === (bool) apply_filters( 'bp_legacy_theme_compat_page_templates_directory_only', ! bp_is_directory() ) ) {
+			return $templates;
+		}
+
+		// No page ID yet
+		$page_id = 0;
+
+		// Get the WordPress Page ID for the current view.
+		foreach ( (array) buddypress()->pages as $component => $bp_page ) {
+
+			// Handles the majority of components.
+			if ( bp_is_current_component( $component ) ) {
+				$page_id = (int) $bp_page->id;
+			}
+
+			// Stop if not on a user page.
+			if ( ! bp_is_user() && ! empty( $page_id ) ) {
+				break;
+			}
+
+			// The Members component requires an explicit check due to overlapping components.
+			if ( bp_is_user() && ( 'members' === $component ) ) {
+				$page_id = (int) $bp_page->id;
+				break;
+			}
+		}
+
+		// Bail if no directory page set
+		if ( 0 === $page_id ) {
+			return $templates;
+		}
+
+		// Check for page template
+		$page_template = get_page_template_slug( $page_id );
+
+		// Add it to the beginning of the templates array so it takes precedence
+		// over the default hierarchy.
+		if ( ! empty( $page_template ) ) {
+
+			/**
+			 * Check for existence of template before adding it to template
+			 * stack to avoid accidentally including an unintended file.
+			 *
+			 * @see: https://buddypress.trac.wordpress.org/ticket/6190
+			 */
+			if ( '' !== locate_template( $page_template ) ) {
+				array_unshift( $templates, $page_template );
+			}
+		}
+
+		return $templates;
+	}
 }
 new BP_Legacy();
 endif;
@@ -449,6 +550,7 @@ endif;
  * the behavior of bp-default.
  *
  * @since BuddyPress (2.0.0)
+ * @todo Deprecate
  *
  * @param string $title Groups directory title.
  * @return string
@@ -458,12 +560,28 @@ function bp_legacy_theme_group_create_button( $title ) {
 }
 
 /**
+ * Add the Create a Group nav to the Groups directory navigation.
+ *
+ * bp-legacy puts the Create a Group nav at the last position of
+ * the Groups directory navigation.
+ *
+ * @since BuddyPress (2.2.0)
+ *
+ * @uses   bp_group_create_nav_item() to output the create a Group nav item
+ * @return string
+ */
+function bp_legacy_theme_group_create_nav() {
+	bp_group_create_nav_item();
+}
+
+/**
  * Add the Create a Site button to the Sites directory title.
  *
  * bp-legacy puts the Create a Site button into the page title, to mimic
  * the behavior of bp-default.
  *
  * @since BuddyPress (2.0.0)
+ * @todo Deprecate
  *
  * @param string $title Sites directory title.
  * @return string
@@ -471,6 +589,22 @@ function bp_legacy_theme_group_create_button( $title ) {
 function bp_legacy_theme_blog_create_button( $title ) {
 	return $title . ' ' . bp_get_blog_create_button();
 }
+
+/**
+ * Add the Create a Site nav to the Sites directory navigation.
+ *
+ * bp-legacy puts the Create a Site nav at the last position of
+ * the Sites directory navigation.
+ *
+ * @since BuddyPress (2.2.0)
+ *
+ * @uses   bp_blog_create_nav_item() to output the Create a Site nav item
+ * @return string
+ */
+function bp_legacy_theme_blog_create_nav() {
+	bp_blog_create_nav_item();
+}
+
 /**
  * This function looks scarier than it actually is. :)
  * Each object loop (activity/members/groups/blogs/forums) contains default
@@ -526,7 +660,7 @@ function bp_legacy_theme_ajax_querystring( $query_string, $object ) {
 	if ( ! empty( $_POST['page'] ) && '-1' != $_POST['page'] )
 		$qs[] = 'page=' . absint( $_POST['page'] );
 
-	// exludes activity just posted and avoids duplicate ids
+	// excludes activity just posted and avoids duplicate ids
 	if ( ! empty( $_POST['exclude_just_posted'] ) ) {
 		$just_posted = wp_parse_id_list( $_POST['exclude_just_posted'] );
 		$qs[] = 'exclude=' . implode( ',', $just_posted );
@@ -708,7 +842,7 @@ function bp_legacy_theme_post_update() {
 		exit( '-1' );
 
 	if ( empty( $_POST['content'] ) )
-		exit( '-1<div id="message" class="error"><p>' . __( 'Please enter some content to post.', 'buddypress' ) . '</p></div>' );
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . __( 'Please enter some content to post.', 'buddypress' ) . '</p></div>' );
 
 	$activity_id = 0;
 	if ( empty( $_POST['object'] ) && bp_is_active( 'activity' ) ) {
@@ -719,11 +853,11 @@ function bp_legacy_theme_post_update() {
 			$activity_id = groups_post_update( array( 'content' => $_POST['content'], 'group_id' => $_POST['item_id'] ) );
 
 	} else {
-		$activity_id = apply_filters( 'bp_activity_custom_update', $_POST['object'], $_POST['item_id'], $_POST['content'] );
+		$activity_id = apply_filters( 'bp_activity_custom_update', false, $_POST['object'], $_POST['item_id'], $_POST['content'] );
 	}
 
 	if ( empty( $activity_id ) )
-		exit( '-1<div id="message" class="error"><p>' . __( 'There was a problem posting your update; please try again.', 'buddypress' ) . '</p></div>' );
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . __( 'There was a problem posting your update. Please try again.', 'buddypress' ) . '</p></div>' );
 
 	$last_recorded = ! empty( $_POST['since'] ) ? date( 'Y-m-d H:i:s', intval( $_POST['since'] ) ) : 0;
 	if ( $last_recorded ) {
@@ -758,21 +892,29 @@ function bp_legacy_theme_post_update() {
 function bp_legacy_theme_new_activity_comment() {
 	global $activities_template;
 
+	$bp = buddypress();
+
 	// Bail if not a POST action
-	if ( 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) )
+	if ( 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) ) {
 		return;
+	}
 
 	// Check the nonce
 	check_admin_referer( 'new_activity_comment', '_wpnonce_new_activity_comment' );
 
-	if ( ! is_user_logged_in() )
+	if ( ! is_user_logged_in() ) {
 		exit( '-1' );
+	}
 
-	if ( empty( $_POST['content'] ) )
-		exit( '-1<div id="message" class="error"><p>' . __( 'Please do not leave the comment area blank.', 'buddypress' ) . '</p></div>' );
+	$feedback = __( 'There was an error posting your reply. Please try again.', 'buddypress' );
 
-	if ( empty( $_POST['form_id'] ) || empty( $_POST['comment_id'] ) || ! is_numeric( $_POST['form_id'] ) || ! is_numeric( $_POST['comment_id'] ) )
-		exit( '-1<div id="message" class="error"><p>' . __( 'There was an error posting that reply, please try again.', 'buddypress' ) . '</p></div>' );
+	if ( empty( $_POST['content'] ) ) {
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . esc_html__( 'Please do not leave the comment area blank.', 'buddypress' ) . '</p></div>' );
+	}
+
+	if ( empty( $_POST['form_id'] ) || empty( $_POST['comment_id'] ) || ! is_numeric( $_POST['form_id'] ) || ! is_numeric( $_POST['comment_id'] ) ) {
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . esc_html( $feedback ) . '</p></div>' );
+	}
 
 	$comment_id = bp_activity_new_comment( array(
 		'activity_id' => $_POST['form_id'],
@@ -780,8 +922,14 @@ function bp_legacy_theme_new_activity_comment() {
 		'parent_id'   => $_POST['comment_id'],
 	) );
 
-	if ( ! $comment_id )
-		exit( '-1<div id="message" class="error"><p>' . __( 'There was an error posting that reply, please try again.', 'buddypress' ) . '</p></div>' );
+	if ( ! $comment_id ) {
+		if ( ! empty( $bp->activity->errors['new_comment'] ) && is_wp_error( $bp->activity->errors['new_comment'] ) ) {
+			$feedback = $bp->activity->errors['new_comment']->get_error_message();
+			unset( $bp->activity->errors['new_comment'] );
+		}
+
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . esc_html( $feedback ) . '</p></div>' );
+	}
 
 	// Load the new activity item into the $activities_template global
 	bp_has_activities( 'display_comments=stream&hide_spam=false&show_hidden=true&include=' . $comment_id );
@@ -841,7 +989,7 @@ function bp_legacy_theme_delete_activity() {
 	do_action( 'bp_activity_before_action_delete_activity', $activity->id, $activity->user_id );
 
 	if ( ! bp_activity_delete( array( 'id' => $activity->id, 'user_id' => $activity->user_id ) ) )
-		exit( '-1<div id="message" class="error"><p>' . __( 'There was a problem when deleting. Please try again.', 'buddypress' ) . '</p></div>' );
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . __( 'There was a problem when deleting. Please try again.', 'buddypress' ) . '</p></div>' );
 
 	do_action( 'bp_activity_action_delete_activity', $activity->id, $activity->user_id );
 	exit;
@@ -877,7 +1025,7 @@ function bp_legacy_theme_delete_activity_comment() {
 	do_action( 'bp_activity_before_action_delete_activity', $_POST['id'], $comment->user_id );
 
 	if ( ! bp_activity_delete_comment( $comment->item_id, $comment->id ) )
-		exit( '-1<div id="message" class="error"><p>' . __( 'There was a problem when deleting. Please try again.', 'buddypress' ) . '</p></div>' );
+		exit( '-1<div id="message" class="error bp-ajax-message"><p>' . __( 'There was a problem when deleting. Please try again.', 'buddypress' ) . '</p></div>' );
 
 	do_action( 'bp_activity_action_delete_activity', $_POST['id'], $comment->user_id );
 	exit;
@@ -1030,7 +1178,7 @@ function bp_legacy_theme_ajax_invite_user() {
 			$user_status = 'is_pending';
 
 		// Create the user invitation
-		} else if ( groups_invite_user( array( 'user_id' => $friend_id, 'group_id' => $group_id ) ) ) {
+		} elseif ( groups_invite_user( array( 'user_id' => $friend_id, 'group_id' => $group_id ) ) ) {
 			$user_status = 'is_invited';
 
 		// Miscellaneous failure
@@ -1040,9 +1188,11 @@ function bp_legacy_theme_ajax_invite_user() {
 
 		$user = new BP_Core_User( $friend_id );
 
-		$uninvite_url = bp_is_current_action( 'create' ) ? bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/create/step/group-invites/?user_id=' . $friend_id : bp_get_group_permalink( $group ) . 'send-invites/remove/' . $friend_id;
+		$uninvite_url = bp_is_current_action( 'create' )
+			? bp_get_groups_directory_permalink() . 'create/step/group-invites/?user_id=' . $friend_id
+			: bp_get_group_permalink( $group )    . 'send-invites/remove/' . $friend_id;
 
-		echo '<li id="uid-' . $user->id . '">';
+		echo '<li id="uid-' . esc_attr( $user->id ) . '">';
 		echo $user->avatar_thumb;
 		echo '<h4>' . $user->user_link . '</h4>';
 		echo '<span class="activity">' . esc_attr( $user->last_active ) . '</span>';
@@ -1284,6 +1434,8 @@ function bp_legacy_theme_ajax_messages_send_reply() {
 
 		bp_thread_has_messages( array( 'thread_id' => (int) $_REQUEST['thread_id'] ) );
 
+		bp_thread_the_message();
+
 		if ( $thread_template->message_count % 2 == 1 ) {
 			$class = 'odd';
 		} else {
@@ -1423,7 +1575,7 @@ function bp_legacy_theme_ajax_messages_autocomplete_results() {
 		foreach ( $suggestions as $user ) {
 
 			// Note that the final line break acts as a delimiter for the
-			// autocomplete javascript and thus should not be removed
+			// autocomplete JavaScript and thus should not be removed
 			printf( '<span id="%s" href="#"></span><img src="%s" style="width: 15px"> &nbsp; %s (%s)' . "\n",
 				esc_attr( 'link-' . $user->ID ),
 				esc_url( $user->image ),

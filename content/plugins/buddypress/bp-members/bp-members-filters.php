@@ -10,13 +10,16 @@
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Escape commonly used fullname output functions.
  */
 add_filter( 'bp_displayed_user_fullname',    'esc_html' );
 add_filter( 'bp_get_loggedin_user_fullname', 'esc_html' );
+
+// Filter the user registration URL to point to BuddyPress's registration page.
+add_filter( 'register_url', 'bp_get_signup_page' );
 
 /**
  * Load additional sign-up sanitization filters on bp_loaded.
@@ -111,6 +114,15 @@ function bp_members_edit_profile_url( $url, $user_id, $scheme = 'admin' ) {
 		$profile_link = $url;
 	}
 
+	/**
+	 * Filters the user profile URL to point to BuddyPress profile edit.
+	 *
+	 * @since BuddyPress (1.5.2)
+	 *
+	 * @param string $url WP profile edit URL.
+	 * @param int    $user_id ID of the user.
+	 * @param string $scheme Scheme to use.
+	 */
 	return apply_filters( 'bp_members_edit_profile_url', $profile_link, $url, $user_id, $scheme );
 }
 add_filter( 'edit_profile_url', 'bp_members_edit_profile_url', 10, 3 );

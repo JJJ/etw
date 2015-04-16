@@ -5,7 +5,7 @@
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 /***
  * Set up the constants we need for avatar support.
@@ -31,10 +31,11 @@ function bp_core_set_avatar_constants() {
 
 	if ( !defined( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE' ) ) {
 
-		if ( !isset( $bp->site_options['fileupload_maxk'] ) ) {
+		$fileupload_maxk = bp_core_get_root_option( 'fileupload_maxk' );
+		if ( '' === $fileupload_maxk ) {
 			define( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE', 5120000 ); // 5mb
 		} else {
-			define( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE', $bp->site_options['fileupload_maxk'] * 1024 );
+			define( 'BP_AVATAR_ORIGINAL_MAX_FILESIZE', $fileupload_maxk * 1024 );
 		}
 	}
 
@@ -86,6 +87,11 @@ function bp_core_set_avatar_globals() {
 	if ( ! defined( 'BP_AVATAR_URL' ) )
 		define( 'BP_AVATAR_URL', $bp->avatar->url );
 
+	/**
+	 * Fires at the end of the core avatar globals setup.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 */
 	do_action( 'bp_core_set_avatar_globals' );
 }
 add_action( 'bp_setup_globals', 'bp_core_set_avatar_globals' );
@@ -174,184 +180,283 @@ add_action( 'bp_setup_globals', 'bp_core_set_avatar_globals' );
  * @return string Formatted HTML <img> element, or raw avatar URL based on $html arg.
  */
 function bp_core_fetch_avatar( $args = '' ) {
+	$bp = buddypress();
 
 	// If avatars are disabled for the root site, obey that request and bail
-	if ( ! buddypress()->avatar->show_avatars )
+	if ( ! $bp->avatar->show_avatars ) {
 		return;
+	}
 
 	global $current_blog;
 
-	$bp = buddypress();
-
-	// Set a few default variables
-	$def_object = 'user';
-	$def_type   = 'thumb';
-	$def_class  = 'avatar';
-
-	// Set the default variables array
+	// Set the default variables array and parse it against incoming $args array.
 	$params = wp_parse_args( $args, array(
 		'item_id'    => false,
-		'object'     => $def_object, // user/group/blog/custom type (if you use filters)
-		'type'       => $def_type,   // thumb or full
-		'avatar_dir' => false,       // Specify a custom avatar directory for your object
-		'width'      => false,       // Custom width (int)
-		'height'     => false,       // Custom height (int)
-		'class'      => $def_class,  // Custom <img> class (string)
-		'css_id'     => false,       // Custom <img> ID (string)
-		'alt'        => '',    	     // Custom <img> alt (string)
-		'email'      => false,       // Pass the user email (for gravatar) to prevent querying the DB for it
-		'no_grav'    => false,       // If there is no avatar found, return false instead of a grav?
-		'html'       => true,        // Wrap the return img URL in <img />
-		'title'      => ''           // Custom <img> title (string)
+		'object'     => 'user',
+		'type'       => 'thumb',
+		'avatar_dir' => false,
+		'width'      => false,
+		'height'     => false,
+		'class'      => 'avatar',
+		'css_id'     => false,
+		'alt'        => '',
+		'email'      => false,
+		'no_grav'    => false,
+		'html'       => true,
+		'title'      => '',
 	) );
-	extract( $params, EXTR_SKIP );
 
 	/** Set item_id ***********************************************************/
 
-	if ( empty( $item_id ) ) {
+	if ( empty( $params['item_id'] ) ) {
 
-		switch ( $object ) {
+		switch ( $params['object'] ) {
 
 			case 'blog'  :
-				$item_id = $current_blog->id;
+				$params['item_id'] = $current_blog->id;
 				break;
 
 			case 'group' :
 				if ( bp_is_active( 'groups' ) ) {
-					$item_id = $bp->groups->current_group->id;
+					$params['item_id'] = $bp->groups->current_group->id;
 				} else {
-					$item_id = false;
+					$params['item_id'] = false;
 				}
 
 				break;
 
 			case 'user'  :
 			default      :
-				$item_id = bp_displayed_user_id();
+				$params['item_id'] = bp_displayed_user_id();
 				break;
 		}
 
-		$item_id = apply_filters( 'bp_core_avatar_item_id', $item_id, $object, $params );
+		/**
+		 * Filters the ID of the item being requested.
+		 *
+		 * @since BuddyPress (1.1.0)
+		 *
+		 * @param string $value  ID of avatar item being requested.
+		 * @param string $value  Avatar type being requested.
+		 * @param array  $params Array of parameters for the request.
+		 */
+		$params['item_id'] = apply_filters( 'bp_core_avatar_item_id', $params['item_id'], $params['object'], $params );
 
-		if ( empty( $item_id ) ) {
+		if ( empty( $params['item_id'] ) ) {
 			return false;
 		}
 	}
 
-	$class = apply_filters( 'bp_core_avatar_class', $class, $item_id, $object, $params );
-
 	/** Set avatar_dir ********************************************************/
 
-	if ( empty( $avatar_dir ) ) {
+	if ( empty( $params['avatar_dir'] ) ) {
 
-		switch ( $object ) {
+		switch ( $params['object'] ) {
 
 			case 'blog'  :
-				$avatar_dir = 'blog-avatars';
+				$params['avatar_dir'] = 'blog-avatars';
 				break;
 
 			case 'group' :
 				if ( bp_is_active( 'groups' ) ) {
-					$avatar_dir = 'group-avatars';
+					$params['avatar_dir'] = 'group-avatars';
 				} else {
-					$avatar_dir = false;
+					$params['avatar_dir'] = false;
 				}
 
 				break;
 
 			case 'user'  :
 			default      :
-				$avatar_dir = 'avatars';
+				$params['avatar_dir'] = 'avatars';
 				break;
 		}
 
-		$avatar_dir = apply_filters( 'bp_core_avatar_dir', $avatar_dir, $object, $params );
+		/**
+		 * Filters the avatar directory to use.
+		 *
+		 * @since BuddyPress (1.1.0)
+		 *
+		 * @param string $value  Name of the subdirectory where the requested avatar should be found.
+		 * @param string $value  Avatar type being requested.
+		 * @param array  $params Array of parameters for the request.
+		 */
+		$params['avatar_dir'] = apply_filters( 'bp_core_avatar_dir', $params['avatar_dir'], $params['object'], $params );
 
-		if ( empty( $avatar_dir ) ) {
+		if ( empty( $params['avatar_dir'] ) ) {
 			return false;
 		}
 	}
 
 	/** <img> alt *************************************************************/
 
-	if ( false !== strpos( $alt, '%s' ) || false !== strpos( $alt, '%1$s' ) ) {
+	if ( false !== strpos( $params['alt'], '%s' ) || false !== strpos( $params['alt'], '%1$s' ) ) {
 
-		switch ( $object ) {
+		switch ( $params['object'] ) {
 
 			case 'blog'  :
-				$item_name = get_blog_option( $item_id, 'blogname' );
+				$item_name = get_blog_option( $params['item_id'], 'blogname' );
 				break;
 
 			case 'group' :
-				$item_name = bp_get_group_name( groups_get_group( array( 'group_id' => $item_id ) ) );
+				$item_name = bp_get_group_name( groups_get_group( array( 'group_id' => $params['item_id'] ) ) );
 				break;
 
 			case 'user'  :
 			default :
-				$item_name = bp_core_get_user_displayname( $item_id );
+				$item_name = bp_core_get_user_displayname( $params['item_id'] );
 				break;
 		}
 
-		$item_name = apply_filters( 'bp_core_avatar_alt', $item_name, $item_id, $object, $params );
-		$alt       = sprintf( $alt, $item_name );
+		/**
+		 * Filters the alt attribute value to be applied to avatar.
+		 *
+		 * @since BuddyPress (1.5.0)
+		 *
+		 * @param string $value  alt to be applied to avatar.
+		 * @param string $value  ID of avatar item being requested.
+		 * @param string $value  Avatar type being requested.
+		 * @param array  $params Array of parameters for the request.
+		 */
+		$item_name = apply_filters( 'bp_core_avatar_alt', $item_name, $params['item_id'], $params['object'], $params );
+		$params['alt'] = sprintf( $params['alt'], $item_name );
 	}
 
 	/** Sanity Checks *********************************************************/
 
-	// Get a fallback for the 'alt' parameter
-	if ( empty( $alt ) )
-		$alt = __( 'Profile Photo', 'buddypress' );
+	// Get a fallback for the 'alt' parameter, create html output
+	if ( empty( $params['alt'] ) ) {
+		$params['alt'] = __( 'Profile Photo', 'buddypress' );
+	}
+	$html_alt = ' alt="' . esc_attr( $params['alt'] ) . '"';
 
-	$html_alt = ' alt="' . esc_attr( $alt ) . '"';
+	// Filter image title and create html string
+	$html_title = '';
 
-	// Set title tag, if it's been provided
-	if ( !empty( $title ) ) {
-		$title = " title='" . esc_attr( apply_filters( 'bp_core_avatar_title', $title, $item_id, $object, $params ) ) . "'";
+	/**
+	 * Filters the title attribute value to be applied to avatar.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param string $value  Title to be applied to avatar.
+	 * @param string $value  ID of avatar item being requested.
+	 * @param string $value  Avatar type being requested.
+	 * @param array  $params Array of parameters for the request.
+	 */
+	$params['title'] = apply_filters( 'bp_core_avatar_title', $params['title'], $params['item_id'], $params['object'], $params );
+
+	if ( ! empty( $params['title'] ) ) {
+		$html_title = ' title="' . esc_attr( $params['title'] ) . '"';
 	}
 
-	// Set CSS ID if passed
-	if ( !empty( $css_id ) ) {
-		$css_id = ' id="' . esc_attr( $css_id ) . '"';
+	// Set CSS ID and create html string
+	$html_css_id = '';
+
+	/**
+	 * Filters the ID attribute to be applied to avatar.
+	 *
+	 * @since BuddyPress (2.2.0)
+	 *
+	 * @param string $value  ID to be applied to avatar.
+	 * @param string $value  ID of avatar item being requested.
+	 * @param string $value  Avatar type being requested.
+	 * @param array  $params Array of parameters for the request.
+	 */
+	$params['css_id'] = apply_filters( 'bp_core_css_id', $params['css_id'], $params['item_id'], $params['object'], $params );
+
+	if ( ! empty( $params['css_id'] ) ) {
+		$html_css_id = ' id="' . esc_attr( $params['css_id'] ) . '"';
 	}
 
 	// Set image width
-	if ( false !== $width ) {
-		$html_width = ' width="' . $width . '"';
-	} elseif ( 'thumb' == $type ) {
-		$html_width = ' width="' . bp_core_avatar_thumb_width() . '"';
+	if ( false !== $params['width'] ) {
+		// Width has been specified. No modification necessary.
+	} elseif ( 'thumb' == $params['type'] ) {
+		$params['width'] = bp_core_avatar_thumb_width();
 	} else {
-		$html_width = ' width="' . bp_core_avatar_full_width() . '"';
+		$params['width'] = bp_core_avatar_full_width();
 	}
+	$html_width = ' width="' . $params['width'] . '"';
 
 	// Set image height
-	if ( false !== $height ) {
-		$html_height = ' height="' . $height . '"';
-	} elseif ( 'thumb' == $type ) {
-		$html_height = ' height="' . bp_core_avatar_thumb_height() . '"';
+	if ( false !== $params['height'] ) {
+		// Height has been specified. No modification necessary.
+	} elseif ( 'thumb' == $params['type'] ) {
+		$params['height'] = bp_core_avatar_thumb_height();
 	} else {
-		$html_height = ' height="' . bp_core_avatar_full_height() . '"';
+		$params['height'] = bp_core_avatar_full_height();
 	}
+	$html_height = ' height="' . $params['height'] . '"';
+
+	/**
+	 * Filters the classes to be applied to the avatar.
+	 *
+	 * @since BuddyPress (1.6.0)
+	 *
+	 * @param array|string $value  Class(es) to be applied to the avatar.
+	 * @param string       $value  ID of the avatar item being requested.
+	 * @param string       $value  Avatar type being requested.
+	 * @param array        $params Array of parameters for the request.
+	 */
+	$params['class'] = apply_filters( 'bp_core_avatar_class', $params['class'], $params['item_id'], $params['object'], $params );
+
+	// Use an alias to leave the param unchanged
+	$avatar_classes = $params['class'];
+	if ( ! is_array( $avatar_classes ) ) {
+		$avatar_classes = explode( ' ', $avatar_classes );
+	}
+
+	// merge classes
+	$avatar_classes = array_merge( $avatar_classes, array(
+		$params['object'] . '-' . $params['item_id'] . '-avatar',
+		'avatar-' . $params['width'],
+	) );
+
+	// Sanitize each class
+	$avatar_classes = array_map( 'sanitize_html_class', $avatar_classes );
+
+	// populate the class attribute
+	$html_class = ' class="' . join( ' ', $avatar_classes ) . ' photo"';
 
 	// Set img URL and DIR based on prepopulated constants
 	$avatar_loc        = new stdClass();
 	$avatar_loc->path  = trailingslashit( bp_core_avatar_upload_path() );
 	$avatar_loc->url   = trailingslashit( bp_core_avatar_url() );
 
-	$avatar_loc->dir   = trailingslashit( $avatar_dir );
-	$avatar_folder_url = apply_filters( 'bp_core_avatar_folder_url', ( $avatar_loc->url  . $avatar_loc->dir . $item_id ), $item_id, $object, $avatar_dir );
-	$avatar_folder_dir = apply_filters( 'bp_core_avatar_folder_dir', ( $avatar_loc->path . $avatar_loc->dir . $item_id ), $item_id, $object, $avatar_dir );
+	$avatar_loc->dir   = trailingslashit( $params['avatar_dir'] );
 
-	// Add an identifying class
-	$class .= ' ' . $object . '-' . $item_id . '-avatar ' . sanitize_html_class( "avatar-$width" ) . ' photo';
+	/**
+	 * Filters the avatar folder directory URL.
+	 *
+	 * @since BuddyPress (1.1.0)
+	 *
+	 * @param string $value Path to the avatar folder URL.
+	 * @param int    $value ID of the avatar item being requested.
+	 * @param string $value Avatar type being requested.
+	 * @param string $value Subdirectory where the requested avatar should be found.
+	 */
+	$avatar_folder_url = apply_filters( 'bp_core_avatar_folder_url', ( $avatar_loc->url  . $avatar_loc->dir . $params['item_id'] ), $params['item_id'], $params['object'], $params['avatar_dir'] );
+
+	/**
+	 * Filters the avatar folder directory path.
+	 *
+	 * @since BuddyPress (1.1.0)
+	 *
+	 * @param string $value Path to the avatar folder directory.
+	 * @param int    $value ID of the avatar item being requested.
+	 * @param string $value Avatar type being requested.
+	 * @param string $value Subdirectory where the requested avatar should be found.
+	 */
+	$avatar_folder_dir = apply_filters( 'bp_core_avatar_folder_dir', ( $avatar_loc->path . $avatar_loc->dir . $params['item_id'] ), $params['item_id'], $params['object'], $params['avatar_dir'] );
 
 	/**
 	 * Look for uploaded avatar first. Use it if it exists.
 	 * Set the file names to search for, to select the full size
 	 * or thumbnail image.
 	 */
-	$avatar_size              = ( 'full' == $type ) ? '-bpfull' : '-bpthumb';
-	$legacy_user_avatar_name  = ( 'full' == $type ) ? '-avatar2' : '-avatar1';
-	$legacy_group_avatar_name = ( 'full' == $type ) ? '-groupavatar-full' : '-groupavatar-thumb';
+	$avatar_size              = ( 'full' == $params['type'] ) ? '-bpfull' : '-bpthumb';
+	$legacy_user_avatar_name  = ( 'full' == $params['type'] ) ? '-avatar2' : '-avatar1';
+	$legacy_group_avatar_name = ( 'full' == $params['type'] ) ? '-groupavatar-full' : '-groupavatar-thumb';
 
 	// Check for directory
 	if ( file_exists( $avatar_folder_dir ) ) {
@@ -405,57 +510,99 @@ function bp_core_fetch_avatar( $args = '' ) {
 		if ( isset( $avatar_url ) ) {
 
 			// Return it wrapped in an <img> element
-			if ( true === $html ) {
-				return apply_filters( 'bp_core_fetch_avatar', '<img src="' . $avatar_url . '" class="' . esc_attr( $class ) . '"' . $css_id . $html_width . $html_height . $html_alt . $title . ' />', $params, $item_id, $avatar_dir, $css_id, $html_width, $html_height, $avatar_folder_url, $avatar_folder_dir );
+			if ( true === $params['html'] ) {
+
+				/**
+				 * Filters an avatar URL wrapped in an <img> element.
+				 *
+				 * @since BuddyPress (1.1.0)
+				 *
+				 * @param string $value             Full <img> element for an avatar.
+				 * @param array  $params            Array of parameters for the request.
+				 * @param string $value             ID of the item requested.
+				 * @param string $value             Subdirectory where the requested avatar should be found.
+				 * @param string $html_css_id       ID attribute for avatar.
+				 * @param string $html_width        Width attribute for avatar.
+				 * @param string $html_height       Height attribtue for avatar.
+				 * @param string $avatar_folder_url Avatar URL path.
+				 * @param string $avatar_folder_dir Avatar dir path.
+				 */
+				return apply_filters( 'bp_core_fetch_avatar', '<img src="' . $avatar_url . '"' . $html_class . $html_css_id  . $html_width . $html_height . $html_alt . $html_title . ' />', $params, $params['item_id'], $params['avatar_dir'], $html_css_id, $html_width, $html_height, $avatar_folder_url, $avatar_folder_dir );
 
 			// ...or only the URL
 			} else {
+
+				/**
+				 * Filters a locally uploaded avatar URL.
+				 *
+				 * @since BuddyPress (1.2.5)
+				 *
+				 * @param string $avatar_url URL for a locally uploaded avatar.
+				 * @param array  $params     Array of parameters for the request.
+				 */
 				return apply_filters( 'bp_core_fetch_avatar_url', $avatar_url, $params );
 			}
 		}
 	}
 
-	// If no avatars could be found, try to display a gravatar
-
-	// Skips gravatar check if $no_grav is passed
-	if ( ! apply_filters( 'bp_core_fetch_avatar_no_grav', $no_grav ) ) {
-
-		// Set gravatar size
-		if ( false !== $width ) {
-			$grav_size = $width;
-		} else if ( 'full' == $type ) {
-			$grav_size = bp_core_avatar_full_width();
-		} else if ( 'thumb' == $type ) {
-			$grav_size = bp_core_avatar_thumb_width();
-		}
+	/**
+	 * Filters whether or not to skip Gravatar check.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param bool  $value  Whether or not to skip Gravatar.
+	 * @param array $params Array of parameters for the avatar request.
+	 */
+	if ( ! apply_filters( 'bp_core_fetch_avatar_no_grav', $params['no_grav'], $params ) ) {
 
 		// Set gravatar type
-		if ( empty( $bp->grav_default->{$object} ) ) {
+		if ( empty( $bp->grav_default->{$params['object']} ) ) {
 			$default_grav = 'wavatar';
-		} else if ( 'mystery' == $bp->grav_default->{$object} ) {
-			$default_grav = apply_filters( 'bp_core_mysteryman_src', 'mm', $grav_size );
+		} elseif ( 'mystery' == $bp->grav_default->{$params['object']} ) {
+
+			/**
+			 * Filters the Mysteryman avatar src value.
+			 *
+			 * @since BuddyPress (1.2.0)
+			 *
+			 * @param string $value Avatar value.
+			 * @param string $value Width to display avatar at.
+			 */
+			$default_grav = apply_filters( 'bp_core_mysteryman_src', 'mm', $params['width'] );
 		} else {
-			$default_grav = $bp->grav_default->{$object};
+			$default_grav = $bp->grav_default->{$params['object']};
 		}
 
 		// Set gravatar object
-		if ( empty( $email ) ) {
-			if ( 'user' == $object ) {
-				$email = bp_core_get_user_email( $item_id );
-			} else if ( 'group' == $object || 'blog' == $object ) {
-				$email = "{$item_id}-{$object}@{bp_get_root_domain()}";
+		if ( empty( $params['email'] ) ) {
+			if ( 'user' == $params['object'] ) {
+				$params['email'] = bp_core_get_user_email( $params['item_id'] );
+			} elseif ( 'group' == $params['object'] || 'blog' == $params['object'] ) {
+				$params['email'] = $params['item_id'] . '-' . $params['object'] . '@' . bp_get_root_domain();
 			}
 		}
 
-		// Set host based on if using ssl
-		$host = 'http://gravatar.com/avatar/';
-		if ( is_ssl() ) {
-			$host = 'https://secure.gravatar.com/avatar/';
-		}
+		$host = '//www.gravatar.com/avatar/';
 
-		// Filter gravatar vars
-		$email    = apply_filters( 'bp_core_gravatar_email', $email, $item_id, $object );
-		$gravatar = apply_filters( 'bp_gravatar_url', $host ) . md5( strtolower( $email ) ) . '?d=' . $default_grav . '&amp;s=' . $grav_size;
+		/**
+		 * Filters the Gravatar email to use.
+		 *
+		 * @since BuddyPress (1.1.0)
+		 *
+		 * @param string $value Email to use in Gravatar request.
+		 * @param string $value ID of the item being requested.
+		 * @param string $value Object type being requested.
+		 */
+		$params['email'] = apply_filters( 'bp_core_gravatar_email', $params['email'], $params['item_id'], $params['object'] );
+
+		/**
+		 * Filters the Gravatar URL path.
+		 *
+		 * @since BuddyPress (1.0.2)
+		 *
+		 * @param string $value Gravatar URL path.
+		 */
+		$gravatar = apply_filters( 'bp_gravatar_url', $host ) . md5( strtolower( $params['email'] ) ) . '?d=' . $default_grav . '&amp;s=' . $params['width'];
 
 		// Gravatar rating; http://bit.ly/89QxZA
 		$rating = get_option( 'avatar_rating' );
@@ -465,12 +612,27 @@ function bp_core_fetch_avatar( $args = '' ) {
 
 	// No avatar was found, and we've been told not to use a gravatar.
 	} else {
-		$gravatar = apply_filters( "bp_core_default_avatar_$object", bp_core_avatar_default( 'local' ), $params );
+
+		/**
+		 * Filters the avatar default when Gravatar is not used.
+		 *
+		 * This is a variable filter dependent on the avatar type being requested.
+		 *
+		 * @since BuddyPress (1.5.0)
+		 *
+		 * @param string $value  Default avatar for non-gravatar requests.
+		 * @param array  $params Array of parameters for the avatar request.
+		 */
+		$gravatar = apply_filters( 'bp_core_default_avatar_' . $params['object'], bp_core_avatar_default( 'local' ), $params );
 	}
 
-	if ( true === $html ) {
-		return apply_filters( 'bp_core_fetch_avatar', '<img src="' . $gravatar . '" class="' . esc_attr( $class ) . '"' . $css_id . $html_width . $html_height . $html_alt . $title . ' />', $params, $item_id, $avatar_dir, $css_id, $html_width, $html_height, $avatar_folder_url, $avatar_folder_dir );
+	if ( true === $params['html'] ) {
+
+		/** This filter is documented in bp-core/bp-core-avatars.php */
+		return apply_filters( 'bp_core_fetch_avatar', '<img src="' . $gravatar . '"' . $html_css_id . $html_class . $html_width . $html_height . $html_alt . $html_title . ' />', $params, $params['item_id'], $params['avatar_dir'], $html_css_id, $html_width, $html_height, $avatar_folder_url, $avatar_folder_dir );
 	} else {
+
+		/** This filter is documented in bp-core/bp-core-avatars.php */
 		return apply_filters( 'bp_core_fetch_avatar_url', $gravatar, $params );
 	}
 }
@@ -504,11 +666,12 @@ function bp_core_delete_existing_avatar( $args = '' ) {
 	if ( empty( $item_id ) ) {
 		if ( 'user' == $object )
 			$item_id = bp_displayed_user_id();
-		else if ( 'group' == $object )
+		elseif ( 'group' == $object )
 			$item_id = buddypress()->groups->current_group->id;
-		else if ( 'blog' == $object )
+		elseif ( 'blog' == $object )
 			$item_id = $current_blog->id;
 
+		/** This filter is documented in bp-core/bp-core-avatars.php */
 		$item_id = apply_filters( 'bp_core_avatar_item_id', $item_id, $object );
 
 		if ( !$item_id ) return false;
@@ -517,16 +680,18 @@ function bp_core_delete_existing_avatar( $args = '' ) {
 	if ( empty( $avatar_dir ) ) {
 		if ( 'user' == $object )
 			$avatar_dir = 'avatars';
-		else if ( 'group' == $object )
+		elseif ( 'group' == $object )
 			$avatar_dir = 'group-avatars';
-		else if ( 'blog' == $object )
+		elseif ( 'blog' == $object )
 			$avatar_dir = 'blog-avatars';
 
+		/** This filter is documented in bp-core/bp-core-avatars.php */
 		$avatar_dir = apply_filters( 'bp_core_avatar_dir', $avatar_dir, $object );
 
 		if ( !$avatar_dir ) return false;
 	}
 
+	/** This filter is documented in bp-core/bp-core-avatars.php */
 	$avatar_folder_dir = apply_filters( 'bp_core_avatar_folder_dir', bp_core_avatar_upload_path() . '/' . $avatar_dir . '/' . $item_id, $item_id, $object, $avatar_dir );
 
 	if ( !file_exists( $avatar_folder_dir ) )
@@ -542,6 +707,13 @@ function bp_core_delete_existing_avatar( $args = '' ) {
 
 	@rmdir( $avatar_folder_dir );
 
+	/**
+	 * Fires after deleting an existing avatar.
+	 *
+	 * @since BuddyPress (1.1.0)
+	 *
+	 * @param array $args Array of arguments used for avatar deletion.
+	 */
 	do_action( 'bp_core_delete_existing_avatar', $args );
 
 	return true;
@@ -559,108 +731,53 @@ function bp_core_delete_existing_avatar( $args = '' ) {
  * @see bp_core_check_avatar_upload()
  * @see bp_core_check_avatar_type()
  *
- * @param array $file The appropriate entry the from $_FILES superglobal.
+ * @param array  $file              The appropriate entry the from $_FILES superglobal.
  * @param string $upload_dir_filter A filter to be applied to 'upload_dir'.
+ *
  * @return bool True on success, false on failure.
  */
 function bp_core_avatar_handle_upload( $file, $upload_dir_filter ) {
 
-	/***
-	 * You may want to hook into this filter if you want to override this function.
-	 * Make sure you return false.
+	/**
+	 * Filters whether or not to handle uploading.
+	 *
+	 * If you want to override this function, make sure you return false.
+	 *
+	 * @since BuddyPress (1.2.4)
+	 *
+	 * @param bool   $value             Whether or not to crop.
+	 * @param array  $file              Appropriate entry from $_FILES superglobal.
+	 * @parma string $upload_dir_filter A filter to be applied to 'upload_dir'.
 	 */
-	if ( !apply_filters( 'bp_core_pre_avatar_handle_upload', true, $file, $upload_dir_filter ) )
+	if ( ! apply_filters( 'bp_core_pre_avatar_handle_upload', true, $file, $upload_dir_filter ) ) {
 		return true;
-
-	require_once( ABSPATH . '/wp-admin/includes/file.php' );
-
-	$uploadErrors = array(
-		0 => __( 'The image was uploaded successfully', 'buddypress' ),
-		1 => __( 'The image exceeds the maximum allowed file size of: ', 'buddypress' ) . size_format( bp_core_avatar_original_max_filesize() ),
-		2 => __( 'The image exceeds the maximum allowed file size of: ', 'buddypress' ) . size_format( bp_core_avatar_original_max_filesize() ),
-		3 => __( 'The uploaded file was only partially uploaded.', 'buddypress' ),
-		4 => __( 'The image was not uploaded.', 'buddypress' ),
-		6 => __( 'Missing a temporary folder.', 'buddypress' )
-	);
-
-	if ( ! bp_core_check_avatar_upload( $file ) ) {
-		bp_core_add_message( sprintf( __( 'Your upload failed, please try again. Error was: %s', 'buddypress' ), $uploadErrors[$file['file']['error']] ), 'error' );
-		return false;
 	}
 
-	if ( ! bp_core_check_avatar_size( $file ) ) {
-		bp_core_add_message( sprintf( __( 'The file you uploaded is too big. Please upload a file under %s', 'buddypress' ), size_format( bp_core_avatar_original_max_filesize() ) ), 'error' );
-		return false;
-	}
+	// Setup some variables
+	$bp          = buddypress();
+	$upload_path = bp_core_avatar_upload_path();
 
-	if ( ! bp_core_check_avatar_type( $file ) ) {
-		bp_core_add_message( __( 'Please upload only JPG, GIF or PNG photos.', 'buddypress' ), 'error' );
-		return false;
-	}
+	// Upload the file
+	$avatar_attachment = new BP_Attachment_Avatar();
+	$bp->avatar_admin->original = $avatar_attachment->upload( $file, $upload_dir_filter );
 
-	// Filter the upload location
-	add_filter( 'upload_dir', $upload_dir_filter, 10, 0 );
-
-	$bp = buddypress();
-
-	$bp->avatar_admin->original = wp_handle_upload( $file['file'], array( 'action'=> 'bp_avatar_upload' ) );
-
-	// Remove the upload_dir filter, so that other upload URLs on the page
-	// don't break
-	remove_filter( 'upload_dir', $upload_dir_filter, 10, 0 );
-
-	// Move the file to the correct upload location.
-	if ( !empty( $bp->avatar_admin->original['error'] ) ) {
+	// In case of an error, stop the process and display a feedback to the user
+	if ( ! empty( $bp->avatar_admin->original['error'] ) ) {
 		bp_core_add_message( sprintf( __( 'Upload Failed! Error was: %s', 'buddypress' ), $bp->avatar_admin->original['error'] ), 'error' );
 		return false;
 	}
 
-	// Get image size
-	$size  = @getimagesize( $bp->avatar_admin->original['file'] );
-	$error = false;
-
-	// Check image size and shrink if too large
-	if ( $size[0] > bp_core_avatar_original_max_width() ) {
-		$editor = wp_get_image_editor( $bp->avatar_admin->original['file'] );
-
-		if ( ! is_wp_error( $editor ) ) {
-			$editor->set_quality( 100 );
-
-			$resized = $editor->resize( bp_core_avatar_original_max_width(), bp_core_avatar_original_max_width(), false );
-			if ( ! is_wp_error( $resized ) ) {
-				$thumb = $editor->save( $editor->generate_filename() );
-			} else {
-				$error = $resized;
-			}
-
-			// Check for thumbnail creation errors
-			if ( false === $error && is_wp_error( $thumb ) ) {
-				$error = $thumb;
-			}
-
-			// Thumbnail is good so proceed
-			if ( false === $error ) {
-				$bp->avatar_admin->resized = $thumb;
-			}
-
-		} else {
-			$error = $editor;
-		}
-
-		if ( false !== $error ) {
-			bp_core_add_message( sprintf( __( 'Upload Failed! Error was: %s', 'buddypress' ), $error->get_error_message() ), 'error' );
-			return false;
-		}
-	}
-
-	if ( ! isset( $bp->avatar_admin->image ) )
-		$bp->avatar_admin->image = new stdClass();
+	// Maybe resize
+	$bp->avatar_admin->resized = $avatar_attachment->shrink( $bp->avatar_admin->original['file'] );
+	$bp->avatar_admin->image   = new stdClass();
 
 	// We only want to handle one image after resize.
 	if ( empty( $bp->avatar_admin->resized ) ) {
-		$bp->avatar_admin->image->dir = str_replace( bp_core_avatar_upload_path(), '', $bp->avatar_admin->original['file'] );
+		$bp->avatar_admin->image->file = $bp->avatar_admin->original['file'];
+		$bp->avatar_admin->image->dir  = str_replace( $upload_path, '', $bp->avatar_admin->original['file'] );
 	} else {
-		$bp->avatar_admin->image->dir = str_replace( bp_core_avatar_upload_path(), '', $bp->avatar_admin->resized['path'] );
+		$bp->avatar_admin->image->file = $bp->avatar_admin->resized['path'];
+		$bp->avatar_admin->image->dir  = str_replace( $upload_path, '', $bp->avatar_admin->resized['path'] );
 		@unlink( $bp->avatar_admin->original['file'] );
 	}
 
@@ -670,13 +787,9 @@ function bp_core_avatar_handle_upload( $file, $upload_dir_filter ) {
 		return false;
 	}
 
-	// If the uploaded image is smaller than the "full" dimensions, throw
-	// a warning
-	$uploaded_image = @getimagesize( bp_core_avatar_upload_path() . buddypress()->avatar_admin->image->dir );
-	$full_width     = bp_core_avatar_full_width();
-	$full_height    = bp_core_avatar_full_height();
-	if ( isset( $uploaded_image[0] ) && $uploaded_image[0] < $full_width || $uploaded_image[1] < $full_height ) {
-		bp_core_add_message( sprintf( __( 'You have selected an image that is smaller than recommended. For best results, upload a picture larger than %d x %d pixels.', 'buddypress' ), $full_width, $full_height ), 'error' );
+	// If the uploaded image is smaller than the "full" dimensions, throw a warning
+	if ( $avatar_attachment->is_too_small( $bp->avatar_admin->image->file ) ) {
+		bp_core_add_message( sprintf( __( 'You have selected an image that is smaller than recommended. For best results, upload a picture larger than %d x %d pixels.', 'buddypress' ), bp_core_avatar_full_width(), bp_core_avatar_full_height() ), 'error' );
 	}
 
 	// Set the url value for the image
@@ -705,7 +818,7 @@ function bp_core_avatar_handle_upload( $file, $upload_dir_filter ) {
  *     @type string $avatar_dir Subdirectory where avatar should be stored.
  *           Default: 'avatars'.
  *     @type bool|int $item_id ID of the item that the avatar belongs to.
- *     @type bool|string $original_file Absolute papth to the original avatar
+ *     @type bool|string $original_file Absolute path to the original avatar
  *           file.
  *     @type int $crop_w Crop width. Default: the global 'full' avatar width,
  *           as retrieved by bp_core_avatar_full_width().
@@ -729,83 +842,28 @@ function bp_core_avatar_handle_crop( $args = '' ) {
 		'crop_y'        => 0
 	) );
 
-	/***
-	 * You may want to hook into this filter if you want to override this function.
-	 * Make sure you return false.
+	/**
+	 * Filters whether or not to handle cropping.
+	 *
+	 * If you want to override this function, make sure you return false.
+	 *
+	 * @since BuddyPress (1.2.4)
+	 *
+	 * @param bool  $value Whether or not to crop.
+	 * @param array $r     Array of parsed arguments for function
 	 */
-	if ( !apply_filters( 'bp_core_pre_avatar_handle_crop', true, $r ) )
+	if ( ! apply_filters( 'bp_core_pre_avatar_handle_crop', true, $r ) ) {
 		return true;
-
-	extract( $r, EXTR_SKIP );
-
-	if ( empty( $original_file ) )
-		return false;
-
-	$original_file = bp_core_avatar_upload_path() . $original_file;
-
-	if ( !file_exists( $original_file ) )
-		return false;
-
-	if ( empty( $item_id ) ) {
-		$avatar_folder_dir = apply_filters( 'bp_core_avatar_folder_dir', dirname( $original_file ), $item_id, $object, $avatar_dir );
-	} else {
-		$avatar_folder_dir = apply_filters( 'bp_core_avatar_folder_dir', bp_core_avatar_upload_path() . '/' . $avatar_dir . '/' . $item_id, $item_id, $object, $avatar_dir );
 	}
 
-	if ( !file_exists( $avatar_folder_dir ) )
-		return false;
-
-	require_once( ABSPATH . '/wp-admin/includes/image.php' );
-	require_once( ABSPATH . '/wp-admin/includes/file.php' );
-
-	// Delete the existing avatar files for the object
-	$existing_avatar = bp_core_fetch_avatar( array(
-		'object'  => $object,
-		'item_id' => $item_id,
-		'html' => false,
-	) );
-
-	if ( ! empty( $existing_avatar ) ) {
-		// Check that the new avatar doesn't have the same name as the
-		// old one before deleting
-		$upload_dir           = wp_upload_dir();
-		$existing_avatar_path = str_replace( $upload_dir['baseurl'], '', $existing_avatar );
-		$new_avatar_path      = str_replace( $upload_dir['basedir'], '', $original_file );
-
-		if ( $existing_avatar_path !== $new_avatar_path ) {
-			bp_core_delete_existing_avatar( array( 'object' => $object, 'item_id' => $item_id, 'avatar_path' => $avatar_folder_dir ) );
-		}
-	}
-
-
-
-	// Make sure we at least have a width and height for cropping
-	if ( empty( $crop_w ) ) {
-		$crop_w = bp_core_avatar_full_width();
-	}
-
-	if ( empty( $crop_h ) ) {
-		$crop_h = bp_core_avatar_full_height();
-	}
-
-	// Get the file extension
-	$data = @getimagesize( $original_file );
-	$ext  = $data['mime'] == 'image/png' ? 'png' : 'jpg';
-
-	// Set the full and thumb filenames
-	$full_filename  = wp_hash( $original_file . time() ) . '-bpfull.'  . $ext;
-	$thumb_filename = wp_hash( $original_file . time() ) . '-bpthumb.' . $ext;
-
-	// Crop the image
-	$full_cropped  = wp_crop_image( $original_file, (int) $crop_x, (int) $crop_y, (int) $crop_w, (int) $crop_h, bp_core_avatar_full_width(),  bp_core_avatar_full_height(),  false, $avatar_folder_dir . '/' . $full_filename  );
-	$thumb_cropped = wp_crop_image( $original_file, (int) $crop_x, (int) $crop_y, (int) $crop_w, (int) $crop_h, bp_core_avatar_thumb_width(), bp_core_avatar_thumb_height(), false, $avatar_folder_dir . '/' . $thumb_filename );
+	// Crop the file
+	$avatar_attachment = new BP_Attachment_Avatar();
+	$cropped           = $avatar_attachment->crop( $r );
 
 	// Check for errors
-	if ( empty( $full_cropped ) || empty( $thumb_cropped ) || is_wp_error( $full_cropped ) || is_wp_error( $thumb_cropped ) )
+	if ( empty( $cropped['full'] ) || empty( $cropped['thumb'] ) || is_wp_error( $cropped['full'] ) || is_wp_error( $cropped['thumb'] ) ) {
 		return false;
-
-	// Remove the original
-	@unlink( $original_file );
+	}
 
 	return true;
 }
@@ -838,7 +896,7 @@ function bp_core_fetch_avatar_filter( $avatar, $user, $size, $default, $alt = ''
 		}
 
 	// If passed a number, assume it was a $user_id
-	} else if ( is_numeric( $user ) ) {
+	} elseif ( is_numeric( $user ) ) {
 		$id = $user;
 
 	// If passed a string and that string returns a user, get the $id
@@ -921,15 +979,7 @@ function bp_core_check_avatar_type($file) {
 /**
  * Fetch data from the BP root blog's upload directory.
  *
- * Handy for multisite instances because all uploads are made on the BP root
- * blog and we need to query the BP root blog for the upload directory data.
- *
- * This function ensures that we only need to use {@link switch_to_blog()}
- * once to get what we need.
- *
  * @since BuddyPress (1.8.0)
- *
- * @uses wp_upload_dir()
  *
  * @param string $type The variable we want to return from the $bp->avatars
  *        object. Only 'upload_path' and 'url' are supported. Default: 'upload_path'.
@@ -972,16 +1022,9 @@ function bp_core_get_upload_dir( $type = 'upload_path' ) {
 
 			// No cache, so query for it
 			} else {
-				// We need to switch to the root blog on multisite installs
-				if ( is_multisite() ) {
-					switch_to_blog( bp_get_root_blog_id() );
-				}
 
 				// Get upload directory information from current site
-				$upload_dir = wp_upload_dir();
-
-				// Will bail if not switched
-				restore_current_blog();
+				$upload_dir = bp_upload_dir();
 
 				// Stash upload directory data for later use
 				$bp->avatar->upload_dir = $upload_dir;
@@ -1013,22 +1056,38 @@ function bp_core_get_upload_dir( $type = 'upload_path' ) {
 /**
  * Get the absolute upload path for the WP installation.
  *
- * @uses wp_upload_dir To get upload directory info
+ * @uses bp_core_get_upload_dir() To get upload directory info
  *
  * @return string Absolute path to WP upload directory.
  */
 function bp_core_avatar_upload_path() {
+
+	/**
+	 * Filters the absolute upload path for the WP installation.
+	 *
+	 * @since BuddyPress (1.2.0)
+	 *
+	 * @param string $value Absolute upload path for the WP installation.
+	 */
 	return apply_filters( 'bp_core_avatar_upload_path', bp_core_get_upload_dir() );
 }
 
 /**
  * Get the raw base URL for root site upload location.
  *
- * @uses wp_upload_dir To get upload directory info.
+ * @uses bp_core_get_upload_dir() To get upload directory info.
  *
  * @return string Full URL to current upload location.
  */
 function bp_core_avatar_url() {
+
+	/**
+	 * Filters the raw base URL for root site upload location.
+	 *
+	 * @since BuddyPress (1.2.0)
+	 *
+	 * @param string $value Raw base URL for the root site upload location.
+	 */
 	return apply_filters( 'bp_core_avatar_url', bp_core_get_upload_dir( 'url' ) );
 }
 
@@ -1049,6 +1108,14 @@ function bp_get_user_has_avatar( $user_id = 0 ) {
 	if ( bp_core_fetch_avatar( array( 'item_id' => $user_id, 'no_grav' => true, 'html' => false ) ) != bp_core_avatar_default( 'local' ) )
 		$retval = true;
 
+	/**
+	 * Filters whether or not a user has an uploaded avatar.
+	 *
+	 * @since BuddyPress (1.6.0)
+	 *
+	 * @param bool $retval  Whether or not a user has an uploaded avatar.
+	 * @param int  $user_id ID of the user being checked.
+	 */
 	return (bool) apply_filters( 'bp_get_user_has_avatar', $retval, $user_id );
 }
 
@@ -1067,6 +1134,15 @@ function bp_core_avatar_dimension( $type = 'thumb', $h_or_w = 'height' ) {
 	$bp  = buddypress();
 	$dim = isset( $bp->avatar->{$type}->{$h_or_w} ) ? (int) $bp->avatar->{$type}->{$h_or_w} : false;
 
+	/**
+	 * Filters the avatar dimension setting.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int    $dim    Dimension setting for the type.
+	 * @param string $type   The type of avatar whose dimensions are requested. Default 'thumb'.
+	 * @param string $h_or_w The dimension parameter being requested. Default 'height'.
+	 */
 	return apply_filters( 'bp_core_avatar_dimension', $dim, $type, $h_or_w );
 }
 
@@ -1078,6 +1154,14 @@ function bp_core_avatar_dimension( $type = 'thumb', $h_or_w = 'height' ) {
  * @return int The 'thumb' width.
  */
 function bp_core_avatar_thumb_width() {
+
+	/**
+	 * Filters the 'thumb' avatar width setting.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int $value Value for the 'thumb' avatar width setting.
+	 */
 	return apply_filters( 'bp_core_avatar_thumb_width', bp_core_avatar_dimension( 'thumb', 'width' ) );
 }
 
@@ -1089,6 +1173,14 @@ function bp_core_avatar_thumb_width() {
  * @return int The 'thumb' height.
  */
 function bp_core_avatar_thumb_height() {
+
+	/**
+	 * Filters the 'thumb' avatar height setting.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int $value Value for the 'thumb' avatar height setting.
+	 */
 	return apply_filters( 'bp_core_avatar_thumb_height', bp_core_avatar_dimension( 'thumb', 'height' ) );
 }
 
@@ -1100,6 +1192,14 @@ function bp_core_avatar_thumb_height() {
  * @return int The 'full' width.
  */
 function bp_core_avatar_full_width() {
+
+	/**
+	 * Filters the 'full' avatar width setting.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int $value Value for the 'full' avatar width setting.
+	 */
 	return apply_filters( 'bp_core_avatar_full_width', bp_core_avatar_dimension( 'full', 'width' ) );
 }
 
@@ -1111,6 +1211,14 @@ function bp_core_avatar_full_width() {
  * @return int The 'full' height.
  */
 function bp_core_avatar_full_height() {
+
+	/**
+	 * Filters the 'full' avatar height setting.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int $value Value for the 'full' avatar height setting.
+	 */
 	return apply_filters( 'bp_core_avatar_full_height', bp_core_avatar_dimension( 'full', 'height' ) );
 }
 
@@ -1122,6 +1230,14 @@ function bp_core_avatar_full_height() {
  * @return int The max width for original avatar uploads.
  */
 function bp_core_avatar_original_max_width() {
+
+	/**
+	 * Filters the max width for original avatar uploads.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int $value Value for the max width.
+	 */
 	return apply_filters( 'bp_core_avatar_original_max_width', (int) buddypress()->avatar->original_max_width );
 }
 
@@ -1133,6 +1249,14 @@ function bp_core_avatar_original_max_width() {
  * @return int The max filesize for original avatar uploads.
  */
 function bp_core_avatar_original_max_filesize() {
+
+	/**
+	 * Filters the max filesize for original avatar uploads.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param int $value Value for the max filesize.
+	 */
 	return apply_filters( 'bp_core_avatar_original_max_filesize', (int) buddypress()->avatar->original_max_filesize );
 }
 
@@ -1152,20 +1276,21 @@ function bp_core_avatar_default( $type = 'gravatar' ) {
 		$avatar = BP_AVATAR_DEFAULT;
 
 	// Use the local default image
-	} else if ( 'local' === $type ) {
+	} elseif ( 'local' === $type ) {
 		$avatar = buddypress()->plugin_url . 'bp-core/images/mystery-man.jpg';
 
 	// Use Gravatar's mystery man as fallback
 	} else {
-		if ( is_ssl() ) {
-			$host = 'https://secure.gravatar.com';
-		} else {
-			$host = 'http://www.gravatar.com';
-		}
-
-		$avatar = $host . '/avatar/00000000000000000000000000000000?d=mm&amp;s=' . bp_core_avatar_full_width();
+		$avatar = '//www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=' . bp_core_avatar_full_width();
 	}
 
+	/**
+	 * Filters the URL of the 'full' default avatar.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param string $avatar URL of the default avatar.
+	 */
 	return apply_filters( 'bp_core_avatar_default', $avatar );
 }
 
@@ -1188,19 +1313,63 @@ function bp_core_avatar_default_thumb( $type = 'gravatar' ) {
 		$avatar = BP_AVATAR_DEFAULT_THUMB;
 
 	// Use the local default image
-	} else if ( 'local' === $type ) {
+	} elseif ( 'local' === $type ) {
 		$avatar = buddypress()->plugin_url . 'bp-core/images/mystery-man-50.jpg';
 
 	// Use Gravatar's mystery man as fallback
 	} else {
-		if ( is_ssl() ) {
-			$host = 'https://secure.gravatar.com';
-		} else {
-			$host = 'http://www.gravatar.com';
-		}
-
-		$avatar = $host . '/avatar/00000000000000000000000000000000?d=mm&amp;s=' . bp_core_avatar_thumb_width();
+		$avatar = '//www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=' . bp_core_avatar_thumb_width();
 	}
 
+	/**
+	 * Filters the URL of the 'thumb' default avatar.
+	 *
+	 * @since BuddyPress (1.5.0)
+	 *
+	 * @param string $avatar URL of the default avatar.
+	 */
 	return apply_filters( 'bp_core_avatar_thumb', $avatar );
 }
+
+/**
+ * Reset the week parameter of the WordPress main query if needed
+ *
+ * When cropping an avatar, a $_POST['w'] var is sent, setting the 'week'
+ * parameter of the WordPress main query to this posted var. To avoid
+ * notices, we need to make sure this 'week' query var is reset to 0
+ *
+ * @since  BuddyPress (2.2.0)
+ *
+ * @param  WP_Query $posts_query the main query object
+ * @uses   bp_is_group_create()
+ * @uses   bp_is_group_admin_page()
+ * @uses   bp_is_group_admin_screen() to check for a group admin screen
+ * @uses   bp_action_variable() to check for the group's avatar creation step
+ * @uses   bp_is_user_change_avatar() to check for the user's change profile screen
+ */
+function bp_core_avatar_reset_query( $posts_query = null ) {
+	$reset_w = false;
+
+	// Group's avatar edit screen
+	if ( bp_is_group_admin_page() ) {
+		$reset_w = bp_is_group_admin_screen( 'group-avatar' );
+
+	// Group's avatar create screen
+	} elseif ( bp_is_group_create() ) {
+		/**
+		 * we can't use bp_get_groups_current_create_step()
+		 * as it's not set yet
+		 */
+		$reset_w = 'group-avatar' === bp_action_variable( 1 );
+
+	// User's change avatar screen
+	} else {
+		$reset_w = bp_is_user_change_avatar();
+	}
+
+	// A user or a group is cropping an avatar
+	if ( true === $reset_w && isset( $_POST['avatar-crop-submit'] ) ) {
+		$posts_query->set( 'w', 0 );
+	}
+}
+add_action( 'bp_parse_query', 'bp_core_avatar_reset_query', 10, 1 );
