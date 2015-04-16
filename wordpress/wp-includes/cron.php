@@ -13,7 +13,7 @@
  * WordPress site, if the schedule time has passed.
  *
  * @since 2.1.0
- * @link http://codex.wordpress.org/Function_Reference/wp_schedule_single_event
+ * @link https://codex.wordpress.org/Function_Reference/wp_schedule_single_event
  *
  * @param int $timestamp Timestamp for when to run the event.
  * @param string $hook Action hook to execute when cron is run.
@@ -66,7 +66,7 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array()) {
  * @param string $recurrence How often the event should recur.
  * @param string $hook Action hook to execute when cron is run.
  * @param array $args Optional. Arguments to pass to the hook's callback function.
- * @return bool|null False on failure, null when complete with scheduling event.
+ * @return false|null False on failure, null when complete with scheduling event.
  */
 function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array()) {
 	$crons = _get_cron_array();
@@ -99,7 +99,7 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array()) {
  * @param string $recurrence How often the event should recur.
  * @param string $hook Action hook to execute when cron is run.
  * @param array $args Optional. Arguments to pass to the hook's callback function.
- * @return bool|null False on failure. Null when event is rescheduled.
+ * @return false|null False on failure. Null when event is rescheduled.
  */
 function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array() ) {
 	$crons = _get_cron_array();

@@ -1,4 +1,4 @@
-/* global ajaxurl, pwsL10n, _wpSessionMangager */
+/* global ajaxurl, pwsL10n */
 (function($){
 
 	function check_pass_strength() {
@@ -34,8 +34,8 @@
 		var $colorpicker, $stylesheet, user_id, current_user_id,
 			select = $( '#display_name' );
 
-		$('#pass1').val('').keyup( check_pass_strength );
-		$('#pass2').val('').keyup( check_pass_strength );
+		$('#pass1').val('').on( 'input propertychange', check_pass_strength );
+		$('#pass2').val('').on( 'input propertychange', check_pass_strength );
 		$('#pass-strength-result').show();
 		$('.color-palette').click( function() {
 			$(this).siblings('input[name="admin_color"]').prop('checked', true);
@@ -119,31 +119,29 @@
 					action:       'save-user-color-scheme',
 					color_scheme: $this.children( 'input[name="admin_color"]' ).val(),
 					nonce:        $('#color-nonce').val()
+				}).done( function( response ) {
+					if ( response.success ) {
+						$( 'body' ).removeClass( response.data.previousScheme ).addClass( response.data.currentScheme );
+					}
 				});
 			}
 		});
 	});
 
 	$( '#destroy-sessions' ).on( 'click', function( e ) {
-
 		var $this = $(this);
-		var data = {
-			action      : 'destroy-sessions',
-			_ajax_nonce : _wpSessionMangager.nonce,
-			user_id     : _wpSessionMangager.user_id,
-			token       : $(this).data('token')
-		};
 
-		$.post( ajaxurl, data, function( response ) {
-
-			if ( response.success ) {
-				$this.prop( 'disabled', true );
-				$this.before( '<div class="updated inline"><p>' + response.data.message + '</p></div>' );
-			} else {
-				$this.before( '<div class="error inline"><p>' + response.data.message + '</p></div>' );
-			}
-
-		}, 'json' );
+		wp.ajax.post( 'destroy-sessions', {
+			nonce: $( '#_wpnonce' ).val(),
+			user_id: $( '#user_id' ).val()
+		}).done( function( response ) {
+			$this.prop( 'disabled', true );
+			$this.siblings( '.notice' ).remove();
+			$this.before( '<div class="notice notice-success inline"><p>' + response.message + '</p></div>' );
+		}).fail( function( response ) {
+			$this.siblings( '.notice' ).remove();
+			$this.before( '<div class="notice notice-error inline"><p>' + response.message + '</p></div>' );
+		});
 
 		e.preventDefault();
 	});

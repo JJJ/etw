@@ -85,7 +85,7 @@ class Walker_Nav_Menu extends Walker {
 		$classes[] = 'menu-item-' . $item->ID;
 
 		/**
-		 * Filter the CSS class(es) applied to a menu item's li element.
+		 * Filter the CSS class(es) applied to a menu item's list item element.
 		 *
 		 * @since 3.0.0
 		 * @since 4.1.0 The `$depth` parameter was added.
@@ -95,11 +95,11 @@ class Walker_Nav_Menu extends Walker {
 		 * @param array  $args    An array of {@see wp_nav_menu()} arguments.
 		 * @param int    $depth   Depth of menu item. Used for padding.
 		 */
-		$class_names = join( ' ', (array) apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
+		$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth ) );
 		$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
 
 		/**
-		 * Filter the ID applied to a menu item's li element.
+		 * Filter the ID applied to a menu item's list item element.
 		 *
 		 * @since 3.0.1
 		 * @since 4.1.0 The `$depth` parameter was added.
@@ -121,7 +121,7 @@ class Walker_Nav_Menu extends Walker {
 		$atts['href']   = ! empty( $item->url )        ? $item->url        : '';
 
 		/**
-		 * Filter the HTML attributes applied to a menu item's 'a' element.
+		 * Filter the HTML attributes applied to a menu item's anchor element.
 		 *
 		 * @since 3.6.0
 		 * @since 4.1.0 The `$depth` parameter was added.
@@ -673,4 +673,3 @@ function _nav_menu_item_id_use_once( $id, $item ) {
 	$_used_ids[] = $item->ID;
 	return $id;
 }
-add_filter( 'nav_menu_item_id', '_nav_menu_item_id_use_once', 10, 2 );

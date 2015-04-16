@@ -276,7 +276,7 @@ function comment_guid($comment_id = null) {
  * @since 2.5.0
  *
  * @param int|object $comment_id Optional comment object or id. Defaults to global comment object.
- * @return bool|string false on failure or guid for comment on success.
+ * @return false|string false on failure or guid for comment on success.
  */
 function get_comment_guid($comment_id = null) {
 	$comment = get_comment($comment_id);
@@ -648,4 +648,17 @@ function fetch_feed( $url ) {
 		return new WP_Error( 'simplepie-error', $feed->error() );
 
 	return $feed;
+}
+
+/**
+ * Convert emoji characters in a feed into static images.
+ *
+ * @ignore
+ * @since 4.2.0
+ *
+ * @param string $content The content to convert.
+ * @return The converted content.
+ */
+function _wp_staticize_emoji_for_feeds( $content ) {
+	return wp_staticize_emoji( $content, true );
 }

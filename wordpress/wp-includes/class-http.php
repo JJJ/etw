@@ -182,7 +182,9 @@ class WP_Http {
 		if ( function_exists( 'wp_kses_bad_protocol' ) ) {
 			if ( $r['reject_unsafe_urls'] )
 				$url = wp_http_validate_url( $url );
-			$url = wp_kses_bad_protocol( $url, array( 'http', 'https', 'ssl' ) );
+			if ( $url ) {
+				$url = wp_kses_bad_protocol( $url, array( 'http', 'https', 'ssl' ) );
+			}
 		}
 
 		$arrURL = @parse_url( $url );
@@ -226,7 +228,7 @@ class WP_Http {
 			$r['headers'] = array();
 
 		if ( ! is_array( $r['headers'] ) ) {
-			$processedHeaders = WP_Http::processHeaders( $r['headers'], $url );
+			$processedHeaders = self::processHeaders( $r['headers'], $url );
 			$r['headers'] = $processedHeaders['headers'];
 		}
 
@@ -245,7 +247,7 @@ class WP_Http {
 		}
 
 		// Construct Cookie: header if any cookies are set.
-		WP_Http::buildCookieHeader( $r );
+		self::buildCookieHeader( $r );
 
 		// Avoid issues where mbstring.func_overload is enabled.
 		mbstring_binary_safe_encoding();
@@ -299,7 +301,7 @@ class WP_Http {
 	 * @param array $args Request arguments
 	 * @param string $url URL to Request
 	 *
-	 * @return string|bool Class name for the first transport that claims to support the request. False if no transport claims to support the request.
+	 * @return string|false Class name for the first transport that claims to support the request. False if no transport claims to support the request.
 	 */
 	public function _get_first_available_transport( $args, $url = null ) {
 		/**
@@ -676,16 +678,18 @@ class WP_Http {
 	 * A wrapper for PHP's parse_url() function that handles edgecases in < PHP 5.4.7
 	 *
 	 * PHP 5.4.7 expanded parse_url()'s ability to handle non-absolute url's, including
-	 * schemeless and relative url's with :// in the path, this works around those limitations
-	 * providing a standard output on PHP 5.2~5.4+.
+	 * schemeless and relative url's with :// in the path, this works around those
+	 * limitations providing a standard output on PHP 5.2~5.4+.
 	 *
-	 * Error suppression is used as prior to PHP 5.3.3, an E_WARNING would be generated when URL parsing failed.
+	 * Error suppression is used as prior to PHP 5.3.3, an E_WARNING would be generated
+	 * when URL parsing failed.
 	 *
 	 * @since 4.1.0
-	 *
 	 * @access protected
-	 * @param  string $url The URL to parse
-	 * @return bool|array False on failure; Array of URL components on success; See parse_url()'s return values.
+	 *
+	 * @param string $url The URL to parse.
+	 * @return bool|array False on failure; Array of URL components on success;
+	 *                    See parse_url()'s return values.
 	 */
 	protected static function parse_url( $url ) {
 		$parts = @parse_url( $url );
@@ -891,12 +895,12 @@ class WP_Http_Streams {
 
 		$r = wp_parse_args( $args, $defaults );
 
-		if ( isset($r['headers']['User-Agent']) ) {
+		if ( isset( $r['headers']['User-Agent'] ) ) {
 			$r['user-agent'] = $r['headers']['User-Agent'];
-			unset($r['headers']['User-Agent']);
-		} else if ( isset($r['headers']['user-agent']) ) {
+			unset( $r['headers']['User-Agent'] );
+		} elseif ( isset( $r['headers']['user-agent'] ) ) {
 			$r['user-agent'] = $r['headers']['user-agent'];
-			unset($r['headers']['user-agent']);
+			unset( $r['headers']['user-agent'] );
 		}
 
 		// Construct Cookie: header if any cookies are set.
@@ -1331,7 +1335,7 @@ class WP_Http_Curl {
 	 * The total bytes written in the current request.
 	 *
 	 * @since 4.1.0
-	 * @access prviate
+	 * @access private
 	 * @var int
 	 */
 	private $bytes_written_total = 0;
@@ -1356,12 +1360,12 @@ class WP_Http_Curl {
 
 		$r = wp_parse_args( $args, $defaults );
 
-		if ( isset($r['headers']['User-Agent']) ) {
+		if ( isset( $r['headers']['User-Agent'] ) ) {
 			$r['user-agent'] = $r['headers']['User-Agent'];
-			unset($r['headers']['User-Agent']);
-		} else if ( isset($r['headers']['user-agent']) ) {
+			unset( $r['headers']['User-Agent'] );
+		} elseif ( isset( $r['headers']['user-agent'] ) ) {
 			$r['user-agent'] = $r['headers']['user-agent'];
-			unset($r['headers']['user-agent']);
+			unset( $r['headers']['user-agent'] );
 		}
 
 		// Construct Cookie: header if any cookies are set.
@@ -1518,10 +1522,16 @@ class WP_Http_Curl {
 
 		// If an error occurred, or, no response.
 		if ( $curl_error || ( 0 == strlen( $theBody ) && empty( $theHeaders['headers'] ) ) ) {
-			if ( CURLE_WRITE_ERROR /* 23 */ == $curl_error && $r['stream'] ) {
+			if ( CURLE_WRITE_ERROR /* 23 */ == $curl_error ) {
 				if ( ! $this->max_body_length || $this->max_body_length != $bytes_written_total ) {
-					fclose( $this->stream_handle );
-					return new WP_Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
+					if ( $r['stream'] ) {
+						curl_close( $handle );
+						fclose( $this->stream_handle );
+						return new WP_Error( 'http_request_failed', __( 'Failed to write request to temporary file.' ) );
+					} else {
+						curl_close( $handle );
+						return new WP_Error( 'http_request_failed', curl_error( $handle ) );
+					}
 				}
 			} else {
 				if ( $curl_error = curl_error( $handle ) ) {
@@ -1959,7 +1969,7 @@ class WP_Http_Cookie {
 			}
 		} else {
 			if ( !isset( $data['name'] ) )
-				return false;
+				return;
 
 			// Set properties based directly on parameters.
 			foreach ( array( 'name', 'value', 'path', 'domain', 'port' ) as $field ) {
@@ -2078,7 +2088,7 @@ class WP_Http_Encoding {
 	 * @param string $raw String to compress.
 	 * @param int $level Optional, default is 9. Compression level, 9 is highest.
 	 * @param string $supports Optional, not used. When implemented it will choose the right compression based on what the server supports.
-	 * @return string|bool False on failure.
+	 * @return string|false False on failure.
 	 */
 	public static function compress( $raw, $level = 9, $supports = null ) {
 		return gzdeflate( $raw, $level );
@@ -2106,7 +2116,7 @@ class WP_Http_Encoding {
 		if ( false !== ( $decompressed = @gzinflate( $compressed ) ) )
 			return $decompressed;
 
-		if ( false !== ( $decompressed = WP_Http_Encoding::compatible_gzinflate( $compressed ) ) )
+		if ( false !== ( $decompressed = self::compatible_gzinflate( $compressed ) ) )
 			return $decompressed;
 
 		if ( false !== ( $decompressed = @gzuncompress( $compressed ) ) )
@@ -2178,11 +2188,13 @@ class WP_Http_Encoding {
 	 *
 	 * @since 2.8.0
 	 *
+	 * @param string $url
+	 * @param array  $args
 	 * @return string Types of encoding to accept.
 	 */
 	public static function accept_encoding( $url, $args ) {
 		$type = array();
-		$compression_enabled = WP_Http_Encoding::is_available();
+		$compression_enabled = self::is_available();
 
 		if ( ! $args['decompress'] ) // Decompression specifically disabled.
 			$compression_enabled = false;
@@ -2240,7 +2252,7 @@ class WP_Http_Encoding {
 		if ( is_array( $headers ) ) {
 			if ( array_key_exists('content-encoding', $headers) && ! empty( $headers['content-encoding'] ) )
 				return true;
-		} else if ( is_string( $headers ) ) {
+		} elseif ( is_string( $headers ) ) {
 			return ( stripos($headers, 'content-encoding:') !== false );
 		}
 

@@ -22,7 +22,7 @@
  *     Author URI: Link to the author's web site
  *     Version: Must be set in the plugin for WordPress 2.3+
  *     Text Domain: Optional. Unique identifier, should be same as the one used in
- *    		plugin_text_domain()
+ *    		load_plugin_textdomain()
  *     Domain Path: Optional. Only useful if the translations are located in a
  *    		folder above the plugin's base path. For example, if .mo files are
  *    		located in the locale folder then Domain Path will be "/locale/" and
@@ -561,8 +561,8 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 			 * Fires as a specific plugin is being activated.
 			 *
 			 * This hook is the "activation" hook used internally by
-			 * register_activation_hook(). The dynamic portion of the
-			 * hook name, $plugin, refers to the plugin basename.
+			 * {@see register_activation_hook()}. The dynamic portion of the
+			 * hook name, `$plugin`, refers to the plugin basename.
 			 *
 			 * If a plugin is silently activated (such as during an update),
 			 * this hook does not fire.
@@ -674,8 +674,8 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 			 * Fires as a specific plugin is being deactivated.
 			 *
 			 * This hook is the "deactivation" hook used internally by
-			 * register_deactivation_hook(). The dynamic portion of the
-			 * hook name, $plugin, refers to the plugin basename.
+			 * {@see register_deactivation_hook()}. The dynamic portion of the
+			 * hook name, `$plugin`, refers to the plugin basename.
 			 *
 			 * If a plugin is silently deactivated (such as during an update),
 			 * this hook does not fire.
@@ -805,9 +805,6 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 
 	$plugins_dir = trailingslashit( $plugins_dir );
 
-	$translations_dir = $wp_filesystem->wp_lang_dir();
-	$translations_dir = trailingslashit( $translations_dir );
-
 	$plugin_translations = wp_get_installed_translations( 'plugins' );
 
 	$errors = array();
@@ -884,7 +881,7 @@ function validate_active_plugins() {
 	}
 
 	if ( empty( $plugins ) )
-		return;
+		return array();
 
 	$invalid = array();
 
@@ -1119,7 +1116,7 @@ function add_utility_page( $page_title, $menu_title, $capability, $menu_slug, $f
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	global $submenu;
@@ -1189,7 +1186,7 @@ function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, 
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_management_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'tools.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1210,7 +1207,7 @@ function add_management_page( $page_title, $menu_title, $capability, $menu_slug,
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'options-general.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1231,7 +1228,7 @@ function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $f
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'themes.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1252,7 +1249,7 @@ function add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $fun
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_plugins_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'plugins.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1273,7 +1270,7 @@ function add_plugins_page( $page_title, $menu_title, $capability, $menu_slug, $f
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_users_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	if ( current_user_can('edit_users') )
@@ -1297,7 +1294,7 @@ function add_users_page( $page_title, $menu_title, $capability, $menu_slug, $fun
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_dashboard_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'index.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1318,7 +1315,7 @@ function add_dashboard_page( $page_title, $menu_title, $capability, $menu_slug, 
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_posts_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'edit.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1339,7 +1336,7 @@ function add_posts_page( $page_title, $menu_title, $capability, $menu_slug, $fun
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_media_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'upload.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1360,7 +1357,7 @@ function add_media_page( $page_title, $menu_title, $capability, $menu_slug, $fun
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
  */
 function add_links_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'link-manager.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1381,7 +1378,7 @@ function add_links_page( $page_title, $menu_title, $capability, $menu_slug, $fun
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
 */
 function add_pages_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'edit.php?post_type=page', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1402,7 +1399,7 @@ function add_pages_page( $page_title, $menu_title, $capability, $menu_slug, $fun
  * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu)
  * @param callback $function The function to be called to output the content for this page.
  *
- * @return string|bool The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required.
 */
 function add_comments_page( $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
 	return add_submenu_page( 'edit-comments.php', $page_title, $menu_title, $capability, $menu_slug, $function );
@@ -1542,11 +1539,10 @@ function get_admin_page_parent( $parent = '' ) {
 			} elseif ( $submenu_array[2] == $pagenow && empty($typenow) && ( empty($parent_file) || false === strpos($parent_file, '?') ) ) {
 				$parent_file = $parent;
 				return $parent;
-			} else
-				if ( isset( $plugin_page ) && ($plugin_page == $submenu_array[2] ) ) {
-					$parent_file = $parent;
-					return $parent;
-				}
+			} elseif ( isset( $plugin_page ) && ($plugin_page == $submenu_array[2] ) ) {
+				$parent_file = $parent;
+				return $parent;
+			}
 		}
 	}
 
@@ -1576,11 +1572,10 @@ function get_admin_page_title() {
 				if ( $menu_array[2] == $pagenow ) {
 					$title = $menu_array[3];
 					return $menu_array[3];
-				} else
-					if ( isset( $plugin_page ) && ($plugin_page == $menu_array[2] ) && ($hook == $menu_array[3] ) ) {
-						$title = $menu_array[3];
-						return $menu_array[3];
-					}
+				} elseif ( isset( $plugin_page ) && ($plugin_page == $menu_array[2] ) && ($hook == $menu_array[3] ) ) {
+					$title = $menu_array[3];
+					return $menu_array[3];
+				}
 			} else {
 				$title = $menu_array[0];
 				return $title;
@@ -1647,12 +1642,12 @@ function get_plugin_page_hookname( $plugin_page, $parent_page ) {
 
 	$page_type = 'admin';
 	if ( empty ( $parent_page ) || 'admin.php' == $parent_page || isset( $admin_page_hooks[$plugin_page] ) ) {
-		if ( isset( $admin_page_hooks[$plugin_page] ) )
+		if ( isset( $admin_page_hooks[$plugin_page] ) ) {
 			$page_type = 'toplevel';
-		else
-			if ( isset( $admin_page_hooks[$parent] ))
-				$page_type = $admin_page_hooks[$parent];
-	} else if ( isset( $admin_page_hooks[$parent] ) ) {
+		} elseif ( isset( $admin_page_hooks[$parent] )) {
+			$page_type = $admin_page_hooks[$parent];
+		}
+	} elseif ( isset( $admin_page_hooks[$parent] ) ) {
 		$page_type = $admin_page_hooks[$parent];
 	}
 
@@ -1713,7 +1708,7 @@ function user_can_access_admin_page() {
 					return true;
 				else
 					return false;
-			} else if ( $submenu_array[2] == $pagenow ) {
+			} elseif ( $submenu_array[2] == $pagenow ) {
 				if ( current_user_can( $submenu_array[1] ))
 					return true;
 				else

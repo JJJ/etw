@@ -58,7 +58,7 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		/**
 		 * Contextually filter a post revision field.
 		 *
-		 * The dynamic portion of the hook name, $field, corresponds to each of the post
+		 * The dynamic portion of the hook name, `$field`, corresponds to each of the post
 		 * fields of the revision object being iterated over in a foreach statement.
 		 *
 		 * @since 3.6.0
@@ -66,7 +66,8 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		 * @param string  $compare_from->$field The current revision field to compare to or from.
 		 * @param string  $field                The current revision field.
 		 * @param WP_Post $compare_from         The revision post object to compare to or from.
-		 * @param string  null                  The context of whether the current revision is the old or the new one. Values are 'to' or 'from'.
+		 * @param string  null                  The context of whether the current revision is the old
+		 *                                      or the new one. Values are 'to' or 'from'.
 		 */
 		$content_from = $compare_from ? apply_filters( "_wp_post_revision_field_$field", $compare_from->$field, $field, $compare_from, 'from' ) : '';
 
@@ -74,7 +75,7 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		$content_to = apply_filters( "_wp_post_revision_field_$field", $compare_to->$field, $field, $compare_to, 'to' );
 
 		$args = array(
-			'show_split_view' => false
+			'show_split_view' => true
 		);
 
 		/**
@@ -87,8 +88,8 @@ function wp_get_revision_ui_diff( $post, $compare_from, $compare_to ) {
 		 * @param array   $args {
 		 *     Associative array of options to pass to {@see wp_text_diff()}.
 		 *
-		 *     @type bool $show_split_view False for split view (two columns), true for
-		 *                                 un-split view (single column). Default false.
+		 *     @type bool $show_split_view True for split view (two columns), false for
+		 *                                 un-split view (single column). Default true.
 		 * }
 		 * @param string  $field        The current revision field.
 		 * @param WP_Post $compare_from The revision post to compare from.
@@ -202,8 +203,8 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 			'id'         => $revision->ID,
 			'title'      => get_the_title( $post->ID ),
 			'author'     => $authors[ $revision->post_author ],
-			'date'       => date_i18n( __( 'M j, Y @ G:i' ), $modified ),
-			'dateShort'  => date_i18n( _x( 'j M @ G:i', 'revision date short format' ), $modified ),
+			'date'       => date_i18n( __( 'M j, Y @ H:i' ), $modified ),
+			'dateShort'  => date_i18n( _x( 'j M @ H:i', 'revision date short format' ), $modified ),
 			'timeAgo'    => sprintf( __( '%s ago' ), human_time_diff( $modified_gmt, $now_gmt ) ),
 			'autosave'   => $autosave,
 			'current'    => $current,
@@ -220,8 +221,8 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 			'id'         => $post->ID,
 			'title'      => get_the_title( $post->ID ),
 			'author'     => $authors[ $post->post_author ],
-			'date'       => date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->modified ) ),
-			'dateShort'  => date_i18n( _x( 'j M @ G:i', 'revision date short format' ), strtotime( $post->modified ) ),
+			'date'       => date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_modified ) ),
+			'dateShort'  => date_i18n( _x( 'j M @ H:i', 'revision date short format' ), strtotime( $post->post_modified ) ),
 			'timeAgo'    => sprintf( __( '%s ago' ), human_time_diff( strtotime( $post->post_modified_gmt ), $now_gmt ) ),
 			'autosave'   => false,
 			'current'    => true,
@@ -281,9 +282,11 @@ function wp_prepare_revisions_for_js( $post, $selected_revision_id, $from = null
 }
 
 /**
- * Print Javascript templates required for the revisions experience.
+ * Print JavaScript templates required for the revisions experience.
  *
  * @since 4.1.0
+ *
+ * @global WP_Post $post The global `$post` object.
  */
 function wp_print_revision_templates() {
 	global $post;

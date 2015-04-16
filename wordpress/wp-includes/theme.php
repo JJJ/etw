@@ -406,6 +406,7 @@ function search_theme_directories( $force = false ) {
 	$found_themes = array();
 
 	$wp_theme_directories = (array) $wp_theme_directories;
+	$relative_theme_roots = array();
 
 	// Set up maybe-relative, maybe-absolute array of theme directories.
 	// We always want to return absolute, but we need to cache relative
@@ -675,7 +676,6 @@ function preview_theme() {
 
 	ob_start( 'preview_theme_ob_filter' );
 }
-add_action('setup_theme', 'preview_theme');
 
 /**
  * Private function to modify the current template when previewing a theme
@@ -871,7 +871,7 @@ function validate_current_theme() {
  *
  * @since 3.1.0
  *
- * @return array Theme modifications.
+ * @return array|null Theme modifications.
  */
 function get_theme_mods() {
 	$theme_slug = get_option( 'stylesheet' );
@@ -909,7 +909,7 @@ function get_theme_mod( $name, $default = false ) {
 		/**
 		 * Filter the theme modification, or 'theme_mod', value.
 		 *
-		 * The dynamic portion of the hook name, $name, refers to
+		 * The dynamic portion of the hook name, `$name`, refers to
 		 * the key name of the modification array. For example,
 		 * 'header_textcolor', 'header_image', and so on depending
 		 * on the theme options.
@@ -934,7 +934,7 @@ function get_theme_mod( $name, $default = false ) {
  * @since 2.1.0
  *
  * @param string $name Theme modification name.
- * @param string $value theme modification value.
+ * @param mixed  $value theme modification value.
  */
 function set_theme_mod( $name, $value ) {
 	$mods = get_theme_mods();
@@ -943,7 +943,7 @@ function set_theme_mod( $name, $value ) {
 	/**
 	 * Filter the theme mod value on save.
 	 *
-	 * The dynamic portion of the hook name, $name, refers to the key name of
+	 * The dynamic portion of the hook name, `$name`, refers to the key name of
 	 * the modification array. For example, 'header_textcolor', 'header_image',
 	 * and so on depending on the theme options.
 	 *
@@ -1035,11 +1035,24 @@ function display_header_text() {
 }
 
 /**
+ * Check whether a header image is set or not.
+ *
+ * @since 4.2.0
+ *
+ * @see get_header_image()
+ *
+ * @return bool Whether a header image is set or not.
+ */
+function has_header_image() {
+	return (bool) get_header_image();
+}
+
+/**
  * Retrieve header image for custom header.
  *
  * @since 2.1.0
  *
- * @return string
+ * @return string|false
  */
 function get_header_image() {
 	$url = get_theme_mod( 'header_image', get_theme_support( 'custom-header', 'default-image' ) );
@@ -1142,7 +1155,10 @@ function is_random_header_image( $type = 'any' ) {
  * @since 2.1.0
  */
 function header_image() {
-	echo esc_url( get_header_image() );
+	$image = get_header_image();
+	if ( $image ) {
+		echo esc_url( $image );
+	}
 }
 
 /**
@@ -1364,7 +1380,7 @@ body.custom-background { <?php echo trim( $style ); ?> }
  *
  * @since 3.0.0
  *
- * @param mixed $stylesheet Optional. Stylesheet name or array thereof, relative to theme root.
+ * @param array|string $stylesheet Optional. Stylesheet name or array thereof, relative to theme root.
  * 	Defaults to 'editor-style.css'
  */
 function add_editor_style( $stylesheet = 'editor-style.css' ) {
@@ -1615,7 +1631,9 @@ function add_theme_support( $feature ) {
 		case 'title-tag' :
 			// Can be called in functions.php but must happen before wp_loaded, i.e. not in header.php.
 			if ( did_action( 'wp_loaded' ) ) {
-				_doing_it_wrong( "add_theme_support( 'title-tag' )", sprintf( _x( 'You need to add theme support before %s.', 'action name' ), '<code>wp_loaded</code>' ), '4.1.0' );
+				/* translators: 1: Theme support 2: hook name */
+				_doing_it_wrong( "add_theme_support( 'title-tag' )", sprintf( __( 'Theme support for %1$s should be registered before the %2$s hook.' ),
+					'<code>title-tag</code>', '<code>wp_loaded</code>' ), '4.1' );
 
 				return false;
 			}
@@ -1660,7 +1678,6 @@ function _custom_header_background_just_in_time() {
 		}
 	}
 }
-add_action( 'wp_loaded', '_custom_header_background_just_in_time' );
 
 /**
  * Gets the theme support arguments passed when registering that support
@@ -1700,7 +1717,7 @@ function get_theme_support( $feature ) {
  * @since 3.0.0
  * @see add_theme_support()
  * @param string $feature the feature being added
- * @return bool Whether feature was removed.
+ * @return null|bool Whether feature was removed.
  */
 function remove_theme_support( $feature ) {
 	// Blacklist: for internal registrations not used directly by themes.
@@ -1715,6 +1732,7 @@ function remove_theme_support( $feature ) {
  *
  * @access private
  * @since 3.1.0
+ * @param string $feature
  */
 function _remove_theme_support( $feature ) {
 	global $_wp_theme_features;
@@ -1816,10 +1834,9 @@ function current_theme_supports( $feature ) {
 	/**
 	 * Filter whether the current theme supports a specific feature.
 	 *
-	 * The dynamic portion of the hook name, $feature, refers to
-	 * the specific theme feature. Possible values include 'post-formats',
-	 * 'post-thumbnails', 'custom-background', 'custom-header', 'menus',
-	 * 'automatic-feed-links', and 'html5'.
+	 * The dynamic portion of the hook name, `$feature`, refers to the specific theme
+	 * feature. Possible values include 'post-formats', 'post-thumbnails', 'custom-background',
+	 * 'custom-header', 'menus', 'automatic-feed-links', and 'html5'.
 	 *
 	 * @since 3.4.0
 	 *
@@ -1868,8 +1885,6 @@ function _delete_attachment_theme_mod( $id ) {
 	if ( $background_image && $background_image == $attachment_image )
 		remove_theme_mod( 'background_image' );
 }
-
-add_action( 'delete_attachment', '_delete_attachment_theme_mod' );
 
 /**
  * Checks if a theme has been changed and runs 'after_switch_theme' hook on the next WP load
@@ -1927,7 +1942,6 @@ function _wp_customize_include() {
 	// Init Customize class
 	$GLOBALS['wp_customize'] = new WP_Customize_Manager;
 }
-add_action( 'plugins_loaded', '_wp_customize_include' );
 
 /**
  * Adds settings for the customize-loader script.
@@ -1951,7 +1965,8 @@ function _wp_customize_loader_settings() {
 		'isCrossDomain' => $cross_domain,
 		'browser'       => $browser,
 		'l10n'          => array(
-			'saveAlert' => __( 'The changes you made will be lost if you navigate away from this page.' ),
+			'saveAlert'       => __( 'The changes you made will be lost if you navigate away from this page.' ),
+			'mainIframeTitle' => __( 'Customizer' ),
 		),
 	);
 
@@ -1963,7 +1978,6 @@ function _wp_customize_loader_settings() {
 
 	$wp_scripts->add_data( 'customize-loader', 'data', $script );
 }
-add_action( 'admin_enqueue_scripts', '_wp_customize_loader_settings' );
 
 /**
  * Returns a URL to load the Customizer.
@@ -2030,5 +2044,5 @@ function wp_customize_support_script() {
 function is_customize_preview() {
 	global $wp_customize;
 
-	return is_a( $wp_customize, 'WP_Customize_Manager' ) && $wp_customize->is_preview();
+	return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
 }

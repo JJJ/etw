@@ -231,8 +231,9 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 			}
 
 			$image = $this->_resize( $size_data['width'], $size_data['height'], $size_data['crop'] );
+			$duplicate = ( ( $orig_size['width'] == $size_data['width'] ) && ( $orig_size['height'] == $size_data['height'] ) );
 
-			if( ! is_wp_error( $image ) ) {
+			if ( ! is_wp_error( $image ) && ! $duplicate ) {
 				$resized = $this->_save( $image );
 
 				imagedestroy( $image );
@@ -255,7 +256,6 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @since 3.5.0
 	 * @access public
 	 *
-	 * @param string|int $src The source file or Attachment ID.
 	 * @param int $src_x The start x position to crop from.
 	 * @param int $src_y The start y position to crop from.
 	 * @param int $src_w The width to crop.
@@ -307,9 +307,12 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 */
 	public function rotate( $angle ) {
 		if ( function_exists('imagerotate') ) {
-			$rotated = imagerotate( $this->image, $angle, 0 );
+			$transparency = imagecolorallocatealpha( $this->image, 255, 255, 255, 127 );
+			$rotated = imagerotate( $this->image, $angle, $transparency );
 
 			if ( is_resource( $rotated ) ) {
+				imagealphablending( $rotated, true );
+				imagesavealpha( $rotated, true );
 				imagedestroy( $this->image );
 				$this->image = $rotated;
 				$this->update_size();
@@ -355,8 +358,8 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 	 * @since 3.5.0
 	 * @access public
 	 *
-	 * @param string $destfilename
-	 * @param string $mime_type
+	 * @param string|null $filename
+	 * @param string|null $mime_type
 	 * @return array|WP_Error {'path'=>string, 'file'=>string, 'width'=>int, 'height'=>int, 'mime-type'=>string}
 	 */
 	public function save( $filename = null, $mime_type = null ) {
@@ -370,6 +373,12 @@ class WP_Image_Editor_GD extends WP_Image_Editor {
 		return $saved;
 	}
 
+	/**
+	 * @param resource $image
+	 * @param string|null $filename
+	 * @param string|null $mime_type
+	 * @return WP_Error|array
+	 */
 	protected function _save( $image, $filename = null, $mime_type = null ) {
 		list( $filename, $extension, $mime_type ) = $this->get_output_format( $filename, $mime_type );
 

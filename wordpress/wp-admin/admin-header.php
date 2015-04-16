@@ -164,16 +164,20 @@ $admin_body_class .= ' no-customize-support no-svg';
 /**
  * Filter the CSS classes for the body tag in the admin.
  *
- * This filter differs from the post_class or body_class filters in two important ways:
- * 1. $classes is a space-separated string of class names instead of an array.
- * 2. Not all core admin classes are filterable, notably: wp-admin, wp-core-ui, and no-js cannot be removed.
+ * This filter differs from the {@see 'post_class'} and {@see 'body_class'} filters
+ * in two important ways:
+ *
+ * 1. `$classes` is a space-separated string of class names instead of an array.
+ * 2. Not all core admin classes are filterable, notably: wp-admin, wp-core-ui,
+ *    and no-js cannot be removed.
  *
  * @since 2.3.0
  *
- * @param string $classes Space-separated string of CSS classes.
+ * @param string $classes Space-separated list of CSS classes.
  */
+$admin_body_classes = apply_filters( 'admin_body_class', '' );
 ?>
-<body class="wp-admin wp-core-ui no-js <?php echo apply_filters( 'admin_body_class', '' ) . " $admin_body_class"; ?>">
+<body class="wp-admin wp-core-ui no-js <?php echo $admin_body_classes . ' ' . $admin_body_class; ?>">
 <script type="text/javascript">
 	document.body.className = document.body.className.replace('no-js','js');
 </script>
@@ -186,7 +190,6 @@ if ( current_user_can( 'customize' ) ) {
 ?>
 
 <div id="wpwrap">
-<a tabindex="1" href="#wpbody-content" class="screen-reader-shortcut"><?php _e('Skip to main content'); ?></a>
 <?php require(ABSPATH . 'wp-admin/menu-header.php'); ?>
 <div id="wpcontent">
 
@@ -199,7 +202,7 @@ if ( current_user_can( 'customize' ) ) {
 do_action( 'in_admin_header' );
 ?>
 
-<div id="wpbody">
+<div id="wpbody" role="main">
 <?php
 unset($title_class, $blog_name, $total_update_count, $update_title);
 

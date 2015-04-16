@@ -441,7 +441,7 @@ function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item
 	 *
 	 * @since 3.0.0
 	 *
-	 * @see wp_update_nav_menu_items()
+	 * @see wp_update_nav_menu_item()
 	 *
 	 * @param int   $menu_id         ID of the updated menu.
 	 * @param int   $menu_item_db_id ID of the updated menu item.
@@ -456,10 +456,12 @@ function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item
  * Returns all navigation menu objects.
  *
  * @since 3.0.0
- * @since 4.1.0 Default 'orderby' argument changed from 'none' to 'name'.
+ * @since 4.1.0 Default value of the 'orderby' argument was changed from 'none'
+ *              to 'name'.
  *
- * @param array $args Array of arguments passed on to get_terms().
- * @return array menu objects
+ * @param array $args Optional. Array of arguments passed on to {@see get_terms()}.
+ *                    Default empty array.
+ * @return array Menu objects.
  */
 function wp_get_nav_menus( $args = array() ) {
 	$defaults = array( 'hide_empty' => false, 'orderby' => 'name' );
@@ -686,7 +688,7 @@ function wp_setup_nav_menu_item( $menu_item ) {
 				$menu_item->title = '' == $menu_item->post_title ? $original_title : $menu_item->post_title;
 
 			} else {
-				$menu_item->type_label = __('Custom');
+				$menu_item->type_label = __('Custom Link');
 				$menu_item->title = $menu_item->post_title;
 				$menu_item->url = empty( $menu_item->url ) ? get_post_meta( $menu_item->ID, '_menu_item_url', true ) : $menu_item->url;
 			}
@@ -804,7 +806,7 @@ function wp_get_associated_nav_menu_items( $object_id = 0, $object_type = 'post_
 				'post_type' == $menu_item_type
 			) {
 				$menu_item_ids[] = (int) $menu_item->ID;
-			} else if (
+			} elseif (
 				'taxonomy' == $object_type &&
 				'taxonomy' == $menu_item_type &&
 				get_post_meta( $menu_item->ID, '_menu_item_object', true ) == $taxonomy

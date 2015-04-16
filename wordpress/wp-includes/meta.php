@@ -54,7 +54,7 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
 	/**
 	 * Filter whether to add metadata of a specific type.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user). Returning a non-null value
 	 * will effectively short-circuit the function.
 	 *
@@ -82,7 +82,7 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
 	/**
 	 * Fires immediately before meta of a specific type is added.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user).
 	 *
 	 * @since 3.1.0
@@ -109,7 +109,7 @@ function add_metadata($meta_type, $object_id, $meta_key, $meta_value, $unique = 
 	/**
 	 * Fires immediately after meta of a specific type is added.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user).
 	 *
 	 * @since 2.9.0
@@ -169,7 +169,7 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
 	/**
 	 * Filter whether to update metadata of a specific type.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user). Returning a non-null value
 	 * will effectively short-circuit the function.
 	 *
@@ -216,7 +216,7 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
 		/**
 		 * Fires immediately before updating metadata of a specific type.
 		 *
-		 * The dynamic portion of the hook, $meta_type, refers to the meta
+		 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 		 * object type (comment, post, or user).
 		 *
 		 * @since 2.9.0
@@ -255,7 +255,7 @@ function update_metadata($meta_type, $object_id, $meta_key, $meta_value, $prev_v
 		/**
 		 * Fires immediately after updating metadata of a specific type.
 		 *
-		 * The dynamic portion of the hook, $meta_type, refers to the meta
+		 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 		 * object type (comment, post, or user).
 		 *
 		 * @since 2.9.0
@@ -330,7 +330,7 @@ function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $d
 	/**
 	 * Filter whether to delete metadata of a specific type.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user). Returning a non-null value
 	 * will effectively short-circuit the function.
 	 *
@@ -369,7 +369,7 @@ function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $d
 	/**
 	 * Fires immediately before deleting metadata of a specific type.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user).
 	 *
 	 * @since 3.1.0
@@ -411,7 +411,7 @@ function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $d
 	/**
 	 * Fires immediately after deleting metadata of a specific type.
 	 *
-	 * The dynamic portion of the hook name, $meta_type, refers to the meta
+	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user).
 	 *
 	 * @since 2.9.0
@@ -449,7 +449,7 @@ function delete_metadata($meta_type, $object_id, $meta_key, $meta_value = '', $d
  * 		the specified object.
  * @param bool $single Optional, default is false. If true, return only the first value of the
  * 		specified meta_key. This parameter has no effect if meta_key is not specified.
- * @return string|array Single metadata value, or array of values
+ * @return mixed Single metadata value, or array of values
  */
 function get_metadata($meta_type, $object_id, $meta_key = '', $single = false) {
 	if ( ! $meta_type || ! is_numeric( $object_id ) ) {
@@ -464,7 +464,7 @@ function get_metadata($meta_type, $object_id, $meta_key = '', $single = false) {
 	/**
 	 * Filter whether to retrieve metadata of a specific type.
 	 *
-	 * The dynamic portion of the hook, $meta_type, refers to the meta
+	 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 	 * object type (comment, post, or user). Returning a non-null value
 	 * will effectively short-circuit the function.
 	 *
@@ -493,10 +493,6 @@ function get_metadata($meta_type, $object_id, $meta_key = '', $single = false) {
 	}
 
 	if ( ! $meta_key ) {
-		foreach ( $meta_cache as &$meta_values ) {
-			$meta_values = array_map( 'maybe_unserialize', $meta_values );
-		}
-
 		return $meta_cache;
 	}
 
@@ -724,7 +720,7 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 			/**
 			 * Fires immediately before deleting post or comment metadata of a specific type.
 			 *
-			 * The dynamic portion of the hook, $meta_type, refers to the meta
+			 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 			 * object type (post or comment).
 			 *
 			 * @since 3.4.0
@@ -748,7 +744,7 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 			/**
 			 * Fires immediately after deleting post or comment metadata of a specific type.
 			 *
-			 * The dynamic portion of the hook, $meta_type, refers to the meta
+			 * The dynamic portion of the hook, `$meta_type`, refers to the meta
 			 * object type (post or comment).
 			 *
 			 * @since 3.4.0
@@ -844,18 +840,18 @@ function update_meta_cache($meta_type, $object_ids) {
 }
 
 /**
- * Given a meta query, generates SQL clauses to be appended to a main query
+ * Given a meta query, generates SQL clauses to be appended to a main query.
  *
  * @since 3.2.0
  *
  * @see WP_Meta_Query
  *
- * @param array $meta_query A meta query
- * @param string $type Type of meta
- * @param string $primary_table
- * @param string $primary_id_column
- * @param object $context (optional) The main query object
- * @return array( 'join' => $join_sql, 'where' => $where_sql )
+ * @param array $meta_query         A meta query.
+ * @param string $type              Type of meta.
+ * @param string $primary_table     Primary database table name.
+ * @param string $primary_id_column Primary ID column name.
+ * @param object $context           Optional. The main query object
+ * @return array Associative array of `JOIN` and `WHERE` SQL.
  */
 function get_meta_sql( $meta_query, $type, $primary_table, $primary_id_column, $context = null ) {
 	$meta_query_obj = new WP_Meta_Query( $meta_query );
@@ -938,13 +934,25 @@ class WP_Meta_Query {
 	protected $table_aliases = array();
 
 	/**
+	 * A flat list of clauses, keyed by clause 'name'.
+	 *
+	 * @since 4.2.0
+	 * @access protected
+	 * @var array
+	 */
+	protected $clauses = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.2.0
+	 * @since 4.2.0 Introduced support for naming query clauses by associative array keys.
+	 *
 	 * @access public
 	 *
 	 * @param array $meta_query {
-	 *     Array of meta query clauses.
+	 *     Array of meta query clauses. When first-order clauses use strings as their array keys, they may be
+	 *     referenced in the 'orderby' parameter of the parent query.
 	 *
 	 *     @type string $relation Optional. The MySQL keyword used to join
 	 *                            the clauses of the query. Accepts 'AND', or 'OR'. Default 'AND'.
@@ -978,7 +986,7 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Ensure the `meta_query` argument passed to the class constructor is well-formed.
+	 * Ensure the 'meta_query' argument passed to the class constructor is well-formed.
 	 *
 	 * Eliminates empty items and ensures that a 'relation' is set.
 	 *
@@ -999,23 +1007,23 @@ class WP_Meta_Query {
 			if ( 'relation' === $key ) {
 				$relation = $query;
 
-			} else if ( ! is_array( $query ) ) {
+			} elseif ( ! is_array( $query ) ) {
 				continue;
 
 			// First-order clause.
-			} else if ( $this->is_first_order_clause( $query ) ) {
+			} elseif ( $this->is_first_order_clause( $query ) ) {
 				if ( isset( $query['value'] ) && array() === $query['value'] ) {
 					unset( $query['value'] );
 				}
 
-				$clean_queries[] = $query;
+				$clean_queries[ $key ] = $query;
 
 			// Otherwise, it's a nested query, so we recurse.
 			} else {
 				$cleaned_query = $this->sanitize_query( $query );
 
 				if ( ! empty( $cleaned_query ) ) {
-					$clean_queries[] = $cleaned_query;
+					$clean_queries[ $key ] = $cleaned_query;
 				}
 			}
 		}
@@ -1033,7 +1041,7 @@ class WP_Meta_Query {
 		 * This value will not actually be used to join clauses, but it
 		 * simplifies the logic around combining key-only queries.
 		 */
-		} else if ( 1 === count( $clean_queries ) ) {
+		} elseif ( 1 === count( $clean_queries ) ) {
 			$clean_queries['relation'] = 'OR';
 
 		// Default to AND.
@@ -1097,11 +1105,11 @@ class WP_Meta_Query {
 				$primary_meta_query,
 				$existing_meta_query,
 			);
-		} else if ( ! empty( $primary_meta_query ) ) {
+		} elseif ( ! empty( $primary_meta_query ) ) {
 			$meta_query = array(
 				$primary_meta_query,
 			);
-		} else if ( ! empty( $existing_meta_query ) ) {
+		} elseif ( ! empty( $existing_meta_query ) ) {
 			$meta_query = $existing_meta_query;
 		}
 
@@ -1150,8 +1158,6 @@ class WP_Meta_Query {
 	 * }
 	 */
 	public function get_sql( $type, $primary_table, $primary_id_column, $context = null ) {
-		global $wpdb;
-
 		if ( ! $meta_table = _get_meta_table( $type ) ) {
 			return false;
 		}
@@ -1231,9 +1237,9 @@ class WP_Meta_Query {
 	 * @since 4.1.0
 	 * @access protected
 	 *
-	 * @param array $query Query to parse.
+	 * @param array $query Query to parse, passed by reference.
 	 * @param int   $depth Optional. Number of tree levels deep we currently are.
-	 *               Used to calculate indentation.
+	 *                     Used to calculate indentation. Default 0.
 	 * @return array {
 	 *     Array containing JOIN and WHERE SQL clauses to append to a single query array.
 	 *
@@ -1260,16 +1266,16 @@ class WP_Meta_Query {
 		foreach ( $query as $key => &$clause ) {
 			if ( 'relation' === $key ) {
 				$relation = $query['relation'];
-			} else if ( is_array( $clause ) ) {
+			} elseif ( is_array( $clause ) ) {
 
 				// This is a first-order clause.
 				if ( $this->is_first_order_clause( $clause ) ) {
-					$clause_sql = $this->get_sql_for_clause( $clause, $query );
+					$clause_sql = $this->get_sql_for_clause( $clause, $query, $key );
 
 					$where_count = count( $clause_sql['where'] );
 					if ( ! $where_count ) {
 						$sql_chunks['where'][] = '';
-					} else if ( 1 === $where_count ) {
+					} elseif ( 1 === $where_count ) {
 						$sql_chunks['where'][] = $clause_sql['where'][0];
 					} else {
 						$sql_chunks['where'][] = '( ' . implode( ' AND ', $clause_sql['where'] ) . ' )';
@@ -1315,8 +1321,10 @@ class WP_Meta_Query {
 	 * @since 4.1.0
 	 * @access public
 	 *
-	 * @param array $clause       Query clause.
-	 * @param array $parent_query Parent query array.
+	 * @param array  $clause       Query clause, passed by reference.
+	 * @param array  $parent_query Parent query array.
+	 * @param string $clause_key   Optional. The array key used to name the clause in the original `$meta_query`
+	 *                             parameters. If not provided, a key will be generated automatically.
 	 * @return array {
 	 *     Array containing JOIN and WHERE SQL clauses to append to a first-order query.
 	 *
@@ -1324,7 +1332,7 @@ class WP_Meta_Query {
 	 *     @type string $where SQL fragment to append to the main WHERE clause.
 	 * }
 	 */
-	public function get_sql_for_clause( &$clause, $parent_query ) {
+	public function get_sql_for_clause( &$clause, $parent_query, $clause_key = '' ) {
 		global $wpdb;
 
 		$sql_chunks = array(
@@ -1380,6 +1388,27 @@ class WP_Meta_Query {
 		// Save the alias to this clause, for future siblings to find.
 		$clause['alias'] = $alias;
 
+		// Determine the data type.
+		$_meta_type = isset( $clause['type'] ) ? $clause['type'] : '';
+		$meta_type  = $this->get_cast_for_type( $_meta_type );
+		$clause['cast'] = $meta_type;
+
+		// Fallback for clause keys is the table alias.
+		if ( ! $clause_key ) {
+			$clause_key = $clause['alias'];
+		}
+
+		// Ensure unique clause keys, so none are overwritten.
+		$iterator = 1;
+		$clause_key_base = $clause_key;
+		while ( isset( $this->clauses[ $clause_key ] ) ) {
+			$clause_key = $clause_key_base . '-' . $iterator;
+			$iterator++;
+		}
+
+		// Store the clause in our flat array.
+		$this->clauses[ $clause_key ] =& $clause;
+
 		// Next, build the WHERE clause.
 
 		// meta_key.
@@ -1394,7 +1423,6 @@ class WP_Meta_Query {
 		// meta_value.
 		if ( array_key_exists( 'value', $clause ) ) {
 			$meta_value = $clause['value'];
-			$meta_type = $this->get_cast_for_type( isset( $clause['type'] ) ? $clause['type'] : '' );
 
 			if ( in_array( $meta_compare, array( 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' ) ) ) {
 				if ( ! is_array( $meta_value ) ) {
@@ -1423,6 +1451,17 @@ class WP_Meta_Query {
 					$where = $wpdb->prepare( '%s', $meta_value );
 					break;
 
+				// EXISTS with a value is interpreted as '='.
+				case 'EXISTS' :
+					$meta_compare = '=';
+					$where = $wpdb->prepare( '%s', $meta_value );
+					break;
+
+				// 'value' is ignored for NOT EXISTS.
+				case 'NOT EXISTS' :
+					$where = '';
+					break;
+
 				default :
 					$where = $wpdb->prepare( '%s', $meta_value );
 					break;
@@ -1446,15 +1485,33 @@ class WP_Meta_Query {
 	}
 
 	/**
-	 * Identify an existing table alias that is compatible with the current query clause.
+	 * Get a flattened list of sanitized meta clauses.
+	 *
+	 * This array should be used for clause lookup, as when the table alias and CAST type must be determined for
+	 * a value of 'orderby' corresponding to a meta clause.
+	 *
+	 * @since 4.2.0
+	 * @access public
+	 *
+	 * @return array Meta clauses.
+	 */
+	public function get_clauses() {
+		return $this->clauses;
+	}
+
+	/**
+	 * Identify an existing table alias that is compatible with the current
+	 * query clause.
 	 *
 	 * We avoid unnecessary table joins by allowing each clause to look for
 	 * an existing table alias that is compatible with the query that it
-	 * needs to perform. An existing alias is compatible if (a) it is a
-	 * sibling of $clause (ie, it's under the scope of the same relation),
-	 * and (b) the combination of operator and relation between the clauses
-	 * allows for a shared table join. In the case of WP_Meta_Query, this
-	 * only applies to IN clauses that are connected by the relation OR.
+	 * needs to perform.
+	 *
+	 * An existing alias is compatible if (a) it is a sibling of `$clause`
+	 * (ie, it's under the scope of the same relation), and (b) the combination
+	 * of operator and relation between the clauses allows for a shared table join.
+	 * In the case of {@see WP_Meta_Query}, this only applies to 'IN' clauses that
+	 * are connected by the relation 'OR'.
 	 *
 	 * @since 4.1.0
 	 * @access protected
@@ -1484,7 +1541,7 @@ class WP_Meta_Query {
 				$compatible_compares = array( '=', 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=' );
 
 			// Clauses joined by AND with "negative" operators share a join only if they also share a key.
-			} else if ( isset( $sibling['key'] ) && isset( $clause['key'] ) && $sibling['key'] === $clause['key'] ) {
+			} elseif ( isset( $sibling['key'] ) && isset( $clause['key'] ) && $sibling['key'] === $clause['key'] ) {
 				$compatible_compares = array( '!=', 'NOT IN', 'NOT LIKE' );
 			}
 
@@ -1536,7 +1593,8 @@ function _get_meta_table($type) {
  *
  * @since 3.1.3
  *
- * @param string $meta_key Meta key
+ * @param string      $meta_key Meta key
+ * @param string|null $meta_type
  * @return bool True if the key is protected, false otherwise.
  */
 function is_protected_meta( $meta_key, $meta_type = null ) {
@@ -1569,8 +1627,9 @@ function sanitize_meta( $meta_key, $meta_value, $meta_type ) {
 	/**
 	 * Filter the sanitization of a specific meta key of a specific meta type.
 	 *
-	 * The dynamic portions of the hook name, $meta_type and $meta_key, refer to the
-	 * metadata object type (comment, post, or user) and the meta key value,
+	 * The dynamic portions of the hook name, `$meta_type`, and `$meta_key`,
+	 * refer to the metadata object type (comment, post, or user) and the meta
+	 * key value,
 	 * respectively.
 	 *
 	 * @since 3.3.0
@@ -1591,7 +1650,6 @@ function sanitize_meta( $meta_key, $meta_value, $meta_type ) {
  * @param string $meta_key Meta key
  * @param string|array $sanitize_callback A function or method to call when sanitizing the value of $meta_key.
  * @param string|array $auth_callback Optional. A function or method to call when performing edit_post_meta, add_post_meta, and delete_post_meta capability checks.
- * @param array $args Arguments
  */
 function register_meta( $meta_type, $meta_key, $sanitize_callback, $auth_callback = null ) {
 	if ( is_callable( $sanitize_callback ) )

@@ -25,15 +25,6 @@ elseif ( ! get_userdata( $user_id ) )
 
 wp_enqueue_script('user-profile');
 
-wp_localize_script(
-	'user-profile',
-	'_wpSessionMangager',
-	array(
-		'user_id' => $user_id,
-		'nonce'   => wp_create_nonce( sprintf( 'destroy_sessions_%d', $user_id ) ),
-	)
-);
-
 $title = IS_PROFILE_PAGE ? __('Profile') : __('Edit User');
 if ( current_user_can('edit_users') && !IS_PROFILE_PAGE )
 	$submenu_file = 'users.php';
@@ -48,6 +39,7 @@ else
 $profile_help = '<p>' . __('Your profile contains information about you (your &#8220;account&#8221;) as well as some personal options related to using WordPress.') . '</p>' .
 	'<p>' . __('You can change your password, turn on keyboard shortcuts, change the color scheme of your WordPress administration screens, and turn off the WYSIWYG (Visual) editor, among other things. You can hide the Toolbar (formerly called the Admin Bar) from the front end of your site, however it cannot be disabled on the admin screens.') . '</p>' .
 	'<p>' . __('Your username cannot be changed, but you can use other fields to enter your real name or a nickname, and change which name to display on your posts.') . '</p>' .
+	'<p>' . __( 'You can log out of other devices, such as your phone or a public computer, by clicking the Log Out of All Other Sessions button.' ) . '</p>' .
 	'<p>' . __('Required fields are indicated; the rest are optional. Profile information will only be displayed if your theme is set up to do so.') . '</p>' .
 	'<p>' . __('Remember to click the Update Profile button when you are finished.') . '</p>';
 
@@ -59,7 +51,7 @@ get_current_screen()->add_help_tab( array(
 
 get_current_screen()->set_help_sidebar(
     '<p><strong>' . __('For more information:') . '</strong></p>' .
-    '<p>' . __('<a href="http://codex.wordpress.org/Users_Your_Profile_Screen" target="_blank">Documentation on User Profiles</a>') . '</p>' .
+    '<p>' . __('<a href="https://codex.wordpress.org/Users_Your_Profile_Screen" target="_blank">Documentation on User Profiles</a>') . '</p>' .
     '<p>' . __('<a href="https://wordpress.org/support/" target="_blank">Support Forums</a>') . '</p>'
 );
 
@@ -154,32 +146,21 @@ if ( IS_PROFILE_PAGE ) {
 	do_action( 'edit_user_profile_update', $user_id );
 }
 
-if ( !is_multisite() ) {
-	$errors = edit_user($user_id);
-} else {
+// Update the email address in signups, if present.
+if ( is_multisite() ) {
 	$user = get_userdata( $user_id );
 
-	// Update the email address in signups, if present.
-	if ( $user->user_login && isset( $_POST[ 'email' ] ) && is_email( $_POST[ 'email' ] ) && $wpdb->get_var( $wpdb->prepare( "SELECT user_login FROM {$wpdb->signups} WHERE user_login = %s", $user->user_login ) ) )
+	if ( $user->user_login && isset( $_POST[ 'email' ] ) && is_email( $_POST[ 'email' ] ) && $wpdb->get_var( $wpdb->prepare( "SELECT user_login FROM {$wpdb->signups} WHERE user_login = %s", $user->user_login ) ) ) {
 		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->signups} SET user_email = %s WHERE user_login = %s", $_POST[ 'email' ], $user_login ) );
-
-	// We must delete the user from the current blog if WP added them after editing.
-	$delete_role = false;
-	$blog_prefix = $wpdb->get_blog_prefix();
-	if ( $user_id != $current_user->ID ) {
-		$cap = $wpdb->get_var( "SELECT meta_value FROM {$wpdb->usermeta} WHERE user_id = '{$user_id}' AND meta_key = '{$blog_prefix}capabilities' AND meta_value = 'a:0:{}'" );
-		if ( !is_network_admin() && null == $cap && $_POST[ 'role' ] == '' ) {
-			$_POST[ 'role' ] = 'contributor';
-			$delete_role = true;
-		}
 	}
-	if ( !isset( $errors ) || ( isset( $errors ) && is_object( $errors ) && false == $errors->get_error_codes() ) )
-		$errors = edit_user($user_id);
-	if ( $delete_role ) // stops users being added to current blog when they are edited
-		delete_user_meta( $user_id, $blog_prefix . 'capabilities' );
+}
 
-	if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && !isset($super_admins) && empty( $_POST['super_admin'] ) == is_super_admin( $user_id ) )
-		empty( $_POST['super_admin'] ) ? revoke_super_admin( $user_id ) : grant_super_admin( $user_id );
+// Update the user.
+$errors = edit_user( $user_id );
+
+// Grant or revoke super admin status if requested.
+if ( is_multisite() && is_network_admin() && !IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && !isset($super_admins) && empty( $_POST['super_admin'] ) == is_super_admin( $user_id ) ) {
+	empty( $_POST['super_admin'] ) ? revoke_super_admin( $user_id ) : grant_super_admin( $user_id );
 }
 
 if ( !is_wp_error( $errors ) ) {
@@ -205,7 +186,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 	<div class="updated"><p><strong><?php _e('Important:'); ?></strong> <?php _e('This user has super admin privileges.'); ?></p></div>
 <?php } ?>
 <?php if ( isset($_GET['updated']) ) : ?>
-<div id="message" class="updated">
+<div id="message" class="updated notice is-dismissible">
 	<?php if ( IS_PROFILE_PAGE ) : ?>
 	<p><strong><?php _e('Profile updated.') ?></strong></p>
 	<?php else: ?>
@@ -232,14 +213,14 @@ if ( ! IS_PROFILE_PAGE ) {
 	<?php }
 } ?>
 </h2>
-<?php
-/**
- * Fires inside the your-profile form tag on the user editing screen.
- *
- * @since 3.0.0
- */
-?>
-<form id="your-profile" action="<?php echo esc_url( self_admin_url( IS_PROFILE_PAGE ? 'profile.php' : 'user-edit.php' ) ); ?>" method="post" novalidate="novalidate"<?php do_action( 'user_edit_form_tag' ); ?>>
+<form id="your-profile" action="<?php echo esc_url( self_admin_url( IS_PROFILE_PAGE ? 'profile.php' : 'user-edit.php' ) ); ?>" method="post" novalidate="novalidate"<?php
+	/**
+	 * Fires inside the your-profile form tag on the user editing screen.
+	 *
+	 * @since 3.0.0
+	 */
+	do_action( 'user_edit_form_tag' );
+?>>
 <?php wp_nonce_field('update-user_' . $user_id) ?>
 <?php if ( $wp_http_referer ) : ?>
 	<input type="hidden" name="wp_http_referer" value="<?php echo esc_url($wp_http_referer); ?>" />
@@ -254,35 +235,38 @@ if ( ! IS_PROFILE_PAGE ) {
 <table class="form-table">
 <?php if ( ! ( IS_PROFILE_PAGE && ! $user_can_edit ) ) : ?>
 	<tr class="user-rich-editing-wrap">
-		<th scope="row"><label for="rich_editing"><?php _e( 'Visual Editor' )?></label></th>
+		<th scope="row"><?php _e( 'Visual Editor' ); ?></th>
 		<td><label for="rich_editing"><input name="rich_editing" type="checkbox" id="rich_editing" value="false" <?php if ( ! empty( $profileuser->rich_editing ) ) checked( 'false', $profileuser->rich_editing ); ?> /> <?php _e( 'Disable the visual editor when writing' ); ?></label></td>
 	</tr>
 <?php endif; ?>
 <?php if ( count($_wp_admin_css_colors) > 1 && has_action('admin_color_scheme_picker') ) : ?>
 <tr class="user-admin-color-wrap">
 <th scope="row"><?php _e('Admin Color Scheme')?></th>
-<?php
-/**
- * Fires in the 'Admin Color Scheme' section of the user editing screen.
- *
- * The section is only enabled if a callback is hooked to the action,
- * and if there is more than one defined color scheme for the admin.
- *
- * @since 3.0.0
- */
-?>
-<td><?php do_action( 'admin_color_scheme_picker', $user_id ); ?></td>
+<td><?php
+	/**
+	 * Fires in the 'Admin Color Scheme' section of the user editing screen.
+	 *
+	 * The section is only enabled if a callback is hooked to the action,
+	 * and if there is more than one defined color scheme for the admin.
+	 *
+	 * @since 3.0.0
+	 * @since 3.8.1 Added `$user_id` parameter.
+	 *
+	 * @param int $user_id The user ID.
+	 */
+	do_action( 'admin_color_scheme_picker', $user_id );
+?></td>
 </tr>
 <?php
 endif; // $_wp_admin_css_colors
 if ( !( IS_PROFILE_PAGE && !$user_can_edit ) ) : ?>
 <tr class="user-comment-shortcuts-wrap">
-<th scope="row"><label for="comment_shortcuts"><?php _e( 'Keyboard Shortcuts' ); ?></label></th>
-<td><label for="comment_shortcuts"><input type="checkbox" name="comment_shortcuts" id="comment_shortcuts" value="true" <?php if ( ! empty( $profileuser->comment_shortcuts ) ) checked( 'true', $profileuser->comment_shortcuts ); ?> /> <?php _e('Enable keyboard shortcuts for comment moderation.'); ?></label> <?php _e('<a href="http://codex.wordpress.org/Keyboard_Shortcuts" target="_blank">More information</a>'); ?></td>
+<th scope="row"><?php _e( 'Keyboard Shortcuts' ); ?></th>
+<td><label for="comment_shortcuts"><input type="checkbox" name="comment_shortcuts" id="comment_shortcuts" value="true" <?php if ( ! empty( $profileuser->comment_shortcuts ) ) checked( 'true', $profileuser->comment_shortcuts ); ?> /> <?php _e('Enable keyboard shortcuts for comment moderation.'); ?></label> <?php _e('<a href="https://codex.wordpress.org/Keyboard_Shortcuts" target="_blank">More information</a>'); ?></td>
 </tr>
 <?php endif; ?>
 <tr class="show-admin-bar user-admin-bar-front-wrap">
-<th scope="row"><label for="admin_bar_front"><?php _e( 'Toolbar' )?></label></th>
+<th scope="row"><?php _e( 'Toolbar' ); ?></th>
 <td><fieldset><legend class="screen-reader-text"><span><?php _e('Toolbar') ?></span></legend>
 <label for="admin_bar_front">
 <input name="admin_bar_front" type="checkbox" id="admin_bar_front" value="1"<?php checked( _get_admin_bar_pref( 'front', $profileuser->ID ) ); ?> />
@@ -331,7 +315,7 @@ do_action( 'personal_options', $profileuser );
 <?php
 // Compare user role against currently editable roles
 $user_roles = array_intersect( array_values( $profileuser->roles ), array_keys( get_editable_roles() ) );
-$user_role  = array_shift( $user_roles );
+$user_role  = reset( $user_roles );
 
 // print the full list of roles with the primary one selected.
 wp_dropdown_roles($user_role);
@@ -433,19 +417,21 @@ if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_c
 	foreach ( wp_get_user_contact_methods( $profileuser ) as $name => $desc ) {
 ?>
 <tr class="user-<?php echo $name; ?>-wrap">
-	<?php
-	/**
-	 * Filter a user contactmethod label.
-	 *
-	 * The dynamic portion of the filter hook, $name, refers to
-	 * each of the keys in the contactmethods array.
-	 *
-	 * @since 2.9.0
-	 *
-	 * @param string $desc The translatable label for the contactmethod.
-	 */
-	?>
-	<th><label for="<?php echo $name; ?>"><?php echo apply_filters( "user_{$name}_label", $desc ); ?></label></th>
+	<th><label for="<?php echo $name; ?>">
+		<?php
+		/**
+		 * Filter a user contactmethod label.
+		 *
+		 * The dynamic portion of the filter hook, `$name`, refers to
+		 * each of the keys in the contactmethods array.
+		 *
+		 * @since 2.9.0
+		 *
+		 * @param string $desc The translatable label for the contactmethod.
+		 */
+		echo apply_filters( "user_{$name}_label", $desc );
+		?>
+	</label></th>
 	<td><input type="text" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="<?php echo esc_attr($profileuser->$name) ?>" class="regular-text" /></td>
 </tr>
 <?php
@@ -482,26 +468,37 @@ if ( $show_password_fields ) :
 	<p class="description"><?php _e( 'Type your new password again.' ); ?></p>
 	<br />
 	<div id="pass-strength-result"><?php _e( 'Strength indicator' ); ?></div>
-	<p class="description indicator-hint"><?php echo _wp_get_password_hint(); ?></p>
+	<p class="description indicator-hint"><?php echo wp_get_password_hint(); ?></p>
 	</td>
 </tr>
 <?php endif; ?>
 
-<?php if ( IS_PROFILE_PAGE && ( count( $sessions->get_all() ) > 1 ) ) { ?>
+<?php
+if ( IS_PROFILE_PAGE && count( $sessions->get_all() ) === 1 ) : ?>
 	<tr class="user-sessions-wrap hide-if-no-js">
 		<th>&nbsp;</th>
 		<td aria-live="assertive">
-			<div class="destroy-sessions"><button class="button button-secondary" id="destroy-sessions" data-token="<?php echo esc_attr( wp_get_session_token() ); ?>"><?php _e( 'Log Out of All Other Sessions' ); ?></button></div>
+			<div class="destroy-sessions"><button type="button" disabled class="button button-secondary"><?php _e( 'Log Out of All Other Sessions' ); ?></button></div>
+			<p class="description">
+				<?php _e( 'You are only logged in at this location.' ); ?>
+			</p>
+		</td>
+	</tr>
+<?php elseif ( IS_PROFILE_PAGE && count( $sessions->get_all() ) > 1 ) : ?>
+	<tr class="user-sessions-wrap hide-if-no-js">
+		<th>&nbsp;</th>
+		<td aria-live="assertive">
+			<div class="destroy-sessions"><button type="button" class="button button-secondary" id="destroy-sessions"><?php _e( 'Log Out of All Other Sessions' ); ?></button></div>
 			<p class="description">
 				<?php _e( 'Left your account logged in at a public computer? Lost your phone? This will log you out everywhere except your current browser.' ); ?>
 			</p>
 		</td>
 	</tr>
-<?php } else if ( ! IS_PROFILE_PAGE && ( count( $sessions->get_all() ) > 0 ) ) { ?>
+<?php elseif ( ! IS_PROFILE_PAGE && $sessions->get_all() ) : ?>
 	<tr class="user-sessions-wrap hide-if-no-js">
 		<th>&nbsp;</th>
 		<td>
-			<p><button class="button button-secondary" id="destroy-sessions"><?php _e( 'Log Out of All Sessions' ); ?></button></p>
+			<p><button type="button" class="button button-secondary" id="destroy-sessions"><?php _e( 'Log Out of All Sessions' ); ?></button></p>
 			<p class="description">
 				<?php
 				/* translators: 1: User's display name. */
@@ -510,7 +507,7 @@ if ( $show_password_fields ) :
 			</p>
 		</td>
 	</tr>
-<?php } ?>
+<?php endif; ?>
 
 </table>
 

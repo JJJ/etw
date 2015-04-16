@@ -11,6 +11,8 @@ class WP_Embed {
 	public $post_ID;
 	public $usecache = true;
 	public $linkifunknown = true;
+	public $last_attr = array();
+	public $last_url = '';
 
 	/**
 	 * When an URL cannot be embedded, return false instead of returning a link
@@ -77,11 +79,9 @@ class WP_Embed {
 
 ?>
 <script type="text/javascript">
-/* <![CDATA[ */
 	jQuery(document).ready(function($){
 		$.get("<?php echo admin_url( 'admin-ajax.php?action=oembed-cache&post=' . $post->ID, 'relative' ); ?>");
 	});
-/* ]]> */
 </script>
 <?php
 	}
@@ -126,7 +126,8 @@ class WP_Embed {
 	 *     @type int $height Height of the embed in pixels.
 	 * }
 	 * @param string $url The URL attempting to be embedded.
-	 * @return string The embed HTML on success, otherwise the original URL.
+	 * @return string|false The embed HTML on success, otherwise the original URL.
+	 *                      `->maybe_make_link()` can return false on failure.
 	 */
 	public function shortcode( $attr, $url = '' ) {
 		$post = get_post();
@@ -135,11 +136,17 @@ class WP_Embed {
 			$url = $attr['src'];
 		}
 
-		if ( empty( $url ) )
+		$this->last_url = $url;
+
+		if ( empty( $url ) ) {
+			$this->last_attr = $attr;
 			return '';
+		}
 
 		$rawattr = $attr;
 		$attr = wp_parse_args( $attr, wp_embed_defaults( $url ) );
+
+		$this->last_attr = $attr;
 
 		// kses converts & into &amp; and we need to undo this
 		// See https://core.trac.wordpress.org/ticket/11311
@@ -312,7 +319,7 @@ class WP_Embed {
 	 * @return string Potentially modified $content.
 	 */
 	public function autoembed( $content ) {
-		return preg_replace_callback( '|^\s*(https?://[^\s"]+)\s*$|im', array( $this, 'autoembed_callback' ), $content );
+		return preg_replace_callback( '|^(\s*)(https?://[^\s"]+)(\s*)$|im', array( $this, 'autoembed_callback' ), $content );
 	}
 
 	/**
@@ -324,17 +331,17 @@ class WP_Embed {
 	public function autoembed_callback( $match ) {
 		$oldval = $this->linkifunknown;
 		$this->linkifunknown = false;
-		$return = $this->shortcode( array(), $match[1] );
+		$return = $this->shortcode( array(), $match[2] );
 		$this->linkifunknown = $oldval;
 
-		return "\n$return\n";
+		return $match[1] . $return . $match[3];
 	}
 
 	/**
 	 * Conditionally makes a hyperlink based on an internal class variable.
 	 *
 	 * @param string $url URL to potentially be linked.
-	 * @return string|bool Linked URL or the original URL. False if 'return_false_on_fail' is true.
+	 * @return false|string Linked URL or the original URL. False if 'return_false_on_fail' is true.
 	 */
 	public function maybe_make_link( $url ) {
 		if ( $this->return_false_on_fail ) {

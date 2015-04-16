@@ -36,7 +36,7 @@
 			pinnedToolsTop = 56,
 			sidebarBottom = 20,
 			autoresizeMinHeight = 300,
-			initialMode = window.getUserSetting( 'editor' ),
+			initialMode = $contentWrap.hasClass( 'tmce-active' ) ? 'tinymce' : 'html',
 			advanced = !! parseInt( window.getUserSetting( 'hidetb' ), 10 ),
 			// These are corrected when adjust() runs, except on scrolling if already set.
 			heights = {
@@ -177,7 +177,7 @@
 				var node = editor.selection.getNode(),
 					range, view, offset;
 
-				if ( editor.plugins.wpview && ( view = editor.plugins.wpview.getView( node ) ) ) {
+				if ( editor.wp && editor.wp.getView && ( view = editor.wp.getView( node ) ) ) {
 					offset = view.getBoundingClientRect();
 				} else {
 					range = editor.selection.getRng();
@@ -242,6 +242,12 @@
 				}
 			}
 
+			function mceFullscreenToggled( event ) {
+				if ( ! event.state ) {
+					adjust();
+				}
+			}
+
 			// Adjust when switching editor modes.
 			function mceShow() {
 				$window.on( 'scroll.mce-float-panels', hideFloatPanels );
@@ -280,8 +286,10 @@
 				editor.on( 'wp-toolbar-toggle', toggleAdvanced );
 				// Adjust when the editor resizes.
 				editor.on( 'setcontent wp-autoresize wp-toolbar-toggle', adjust );
-				// Don't hide the caret after undo/redo
+				// Don't hide the caret after undo/redo.
 				editor.on( 'undo redo', mceScroll );
+				// Adjust when exiting TinyMCE's fullscreen mode.
+				editor.on( 'FullscreenStateChanged', mceFullscreenToggled );
 
 				$window.off( 'scroll.mce-float-panels' ).on( 'scroll.mce-float-panels', hideFloatPanels );
 			};
@@ -293,6 +301,7 @@
 				editor.off( 'wp-toolbar-toggle', toggleAdvanced );
 				editor.off( 'setcontent wp-autoresize wp-toolbar-toggle', adjust );
 				editor.off( 'undo redo', mceScroll );
+				editor.off( 'FullscreenStateChanged', mceFullscreenToggled );
 
 				$window.off( 'scroll.mce-float-panels' );
 			};
@@ -306,16 +315,15 @@
 
 		// Adjust the toolbars based on the active editor mode.
 		function adjust( event ) {
-			var type = event && event.type;
-
 			// Make sure we're not in fullscreen mode.
 			if ( fullscreen && fullscreen.settings.visible ) {
 				return;
 			}
 
 			var windowPos = $window.scrollTop(),
+				type = event && event.type,
 				resize = type !== 'scroll',
-				visual = ( mceEditor && ! mceEditor.isHidden() ),
+				visual = mceEditor && ! mceEditor.isHidden(),
 				buffer = autoresizeMinHeight,
 				postBodyTop = $postBody.offset().top,
 				borderWidth = 1,
@@ -340,6 +348,11 @@
 				$top = $textTop;
 				$editor = $textEditor;
 				topHeight = heights.textTopHeight;
+			}
+
+			// TinyMCE still intializing.
+			if ( ! visual && ! $top.length ) {
+				return;
 			}
 
 			topPos = $top.parent().offset().top;
@@ -372,7 +385,8 @@
 						width: contentWrapWidth - ( borderWidth * 2 ) - ( visual ? 0 : ( $top.outerWidth() - $top.width() ) )
 					} );
 
-					$statusBar.add( $bottom ).attr( 'style', '' );
+					$statusBar.attr( 'style', advanced ? '' : 'visibility: hidden;' );
+					$bottom.attr( 'style', '' );
 				}
 			} else {
 				// Maybe pin the top.
@@ -458,7 +472,7 @@
 						// +[n] for the border around the .wp-editor-container.
 						( windowPos + heights.windowHeight ) <= ( editorPos + editorHeight + heights.bottomHeight + heights.statusBarHeight + borderWidth ) ) {
 
-					if ( event && event.deltaHeight > 0 ) {
+					if ( event && event.deltaHeight > 0 && event.deltaHeight < 100 ) {
 						window.scrollBy( 0, event.deltaHeight );
 					} else if ( advanced ) {
 						fixedBottom = true;
@@ -481,9 +495,8 @@
 						( windowPos + heights.windowHeight ) > ( editorPos + editorHeight + heights.bottomHeight + heights.statusBarHeight - borderWidth ) ) ) {
 					fixedBottom = false;
 
-					$statusBar.add( $bottom ).attr( 'style', '' );
-
-					! advanced && $statusBar.css( 'visibility', 'hidden' );
+					$statusBar.attr( 'style', advanced ? '' : 'visibility: hidden;' );
+					$bottom.attr( 'style', '' );
 				}
 			}
 
@@ -672,7 +685,13 @@
 		}
 
 		function off() {
-			var height = window.getUserSetting('ed_size');
+			var height = parseInt( window.getUserSetting( 'ed_size', 300 ), 10 );
+
+			if ( height < 50 ) {
+				height = 50;
+			} else if ( height > 5000 ) {
+				height = 5000;
+			}
 
 			// Scroll to the top when triggering this from JS.
 			// Ensures toolbars are reset properly.
@@ -765,7 +784,7 @@
 			$editorWindow = $(),
 			$editorIframe = $(),
 			_isActive = window.getUserSetting( 'editor_expand', 'on' ) === 'on',
-			_isOn = _isActive ? !! parseInt( window.getUserSetting( 'dfw', '1' ), 10 ) : false,
+			_isOn = _isActive ? window.getUserSetting( 'post_dfw' ) === 'on' : false,
 			traveledX = 0,
 			traveledY = 0,
 			buffer = 20,
@@ -793,11 +812,18 @@
 			mouseY = event.pageY;
 		} );
 
+		function recalcEditorRect() {
+			editorRect = $editor.offset();
+			editorRect.right = editorRect.left + $editor.outerWidth();
+			editorRect.bottom = editorRect.top + $editor.outerHeight();
+		}
+
 		function activate() {
 			if ( ! _isActive ) {
 				_isActive = true;
 
 				$document.trigger( 'dfw-activate' );
+				$content.on( 'keydown.focus-shortcut', toggleViaKeyboard );
 			}
 		}
 
@@ -808,6 +834,7 @@
 				_isActive = false;
 
 				$document.trigger( 'dfw-deactivate' );
+				$content.off( 'keydown.focus-shortcut' );
 			}
 		}
 
@@ -825,7 +852,7 @@
 
 				fadeOut();
 
-				window.setUserSetting( 'dfw', '1' );
+				window.setUserSetting( 'post_dfw', 'on' );
 
 				$document.trigger( 'dfw-on' );
 			}
@@ -841,14 +868,18 @@
 
 				$editor.off( '.focus' );
 
-				window.setUserSetting( 'dfw', '0' );
+				window.setUserSetting( 'post_dfw', 'off' );
 
 				$document.trigger( 'dfw-off' );
 			}
 		}
 
 		function toggle() {
-			( _isOn ? off : on )();
+			if ( _isOn ) {
+				off();
+			} else {
+				on();
+			}
 		}
 
 		function isOn() {
@@ -858,12 +889,13 @@
 		function fadeOut( event ) {
 			var key = event && event.keyCode;
 
-			if ( key === 27 ) {
-				fadeIn();
+			// fadeIn and return on Escape and keyboard shortcut Alt+Shift+W.
+			if ( key === 27 || ( key === 87 && event.altKey && event.shiftKey ) ) {
+				fadeIn( event );
 				return;
 			}
 
-			if ( event && ( event.metaKey || ( event.ctrlKey && ! event.altKey ) || ( key && (
+			if ( event && ( event.metaKey || ( event.ctrlKey && ! event.altKey ) || ( event.altKey && event.shiftKey ) || ( key && (
 				// Special keys ( tab, ctrl, alt, esc, arrow keys... )
 				( key <= 47 && key !== 8 && key !== 13 && key !== 32 && key !== 46 ) ||
 				// Windows keys
@@ -892,9 +924,7 @@
 				$overlay
 					// Always recalculate the editor area entering the overlay with the mouse.
 					.on( 'mouseenter.focus', function() {
-						editorRect = $editor.offset();
-						editorRect.right = editorRect.left + $editor.outerWidth();
-						editorRect.bottom = editorRect.top + $editor.outerHeight();
+						recalcEditorRect();
 
 						$window.on( 'scroll.focus', function() {
 							var nScrollY = window.pageYOffset;
@@ -920,24 +950,26 @@
 					} )
 					// Fade in when the mouse moves away form the editor area.
 					.on( 'mousemove.focus', function( event ) {
-						var nx = event.pageX,
-							ny = event.pageY;
+						var nx = event.clientX,
+							ny = event.clientY,
+							pageYOffset = window.pageYOffset,
+							pageXOffset = window.pageXOffset;
 
 						if ( x && y && ( nx !== x || ny !== y ) ) {
 							if (
-								( ny <= y && ny < editorRect.top ) ||
-								( ny >= y && ny > editorRect.bottom ) ||
-								( nx <= x && nx < editorRect.left ) ||
-								( nx >= x && nx > editorRect.right )
+								( ny <= y && ny < editorRect.top - pageYOffset ) ||
+								( ny >= y && ny > editorRect.bottom - pageYOffset ) ||
+								( nx <= x && nx < editorRect.left - pageXOffset ) ||
+								( nx >= x && nx > editorRect.right - pageXOffset )
 							) {
 								traveledX += Math.abs( x - nx );
 								traveledY += Math.abs( y - ny );
 
 								if ( (
-									ny <= editorRect.top - buffer ||
-									ny >= editorRect.bottom + buffer ||
-									nx <= editorRect.left - buffer ||
-									nx >= editorRect.right + buffer
+									ny <= editorRect.top - buffer - pageYOffset ||
+									ny >= editorRect.bottom + buffer - pageYOffset ||
+									nx <= editorRect.left - buffer - pageXOffset ||
+									nx >= editorRect.right + buffer - pageXOffset
 								) && (
 									traveledX > 10 ||
 									traveledY > 10
@@ -977,7 +1009,7 @@
 			fadeOutSlug();
 		}
 
-		function fadeIn() {
+		function fadeIn( event ) {
 			if ( faded ) {
 				faded = false;
 
@@ -991,11 +1023,18 @@
 
 				$overlay.off( 'mouseenter.focus mouseleave.focus mousemove.focus touchstart.focus' );
 
-				$editor.on( 'mouseenter.focus', function() {
-					if ( $.contains( $editor.get( 0 ), document.activeElement ) || editorHasFocus ) {
-						fadeOut();
-					}
-				} );
+				/*
+				 * When fading in, temporarily watch for refocus and fade back out - helps
+				 * with 'accidental' editor exits with the mouse. When fading in and the event
+				 * is a key event (Escape or Alt+Shift+W) don't watch for refocus.
+				 */
+				if ( 'undefined' === typeof event ) {
+					$editor.on( 'mouseenter.focus', function() {
+						if ( $.contains( $editor.get( 0 ), document.activeElement ) || editorHasFocus ) {
+							fadeOut();
+						}
+					} );
+				}
 
 				focusLostTimer = setTimeout( function() {
 					focusLostTimer = null;
@@ -1017,7 +1056,7 @@
 					return $.contains( $el.get( 0 ), document.activeElement );
 				}
 
-				// The focussed node is before or behind the editor area, and not ouside the wrap.
+				// The focused node is before or behind the editor area, and not outside the wrap.
 				if ( ( position === 2 || position === 4 ) && ( hasFocus( $menuWrap ) || hasFocus( $wrap ) || hasFocus( $footer ) ) ) {
 					fadeIn();
 				}
@@ -1066,6 +1105,16 @@
 			}
 		}
 
+		function toggleViaKeyboard( event ) {
+			if ( event.altKey && event.shiftKey && 87 === event.keyCode ) {
+				toggle();
+			}
+		}
+
+		if ( $( '#postdivrich' ).hasClass( 'wp-editor-expand' ) ) {
+			$content.on( 'keydown.focus-shortcut', toggleViaKeyboard );
+		}
+
 		$document.on( 'tinymce-editor-setup.focus', function( event, editor ) {
 			editor.addButton( 'dfw', {
 				active: _isOn,
@@ -1089,8 +1138,12 @@
 						button.active( false );
 					} );
 				},
-				tooltip: 'Distraction Free Writing'
+				tooltip: 'Distraction-free writing mode',
+				shortcut: 'Alt+Shift+W'
 			} );
+
+			editor.addCommand( 'wpToggleDFW', toggle );
+			editor.addShortcut( 'alt+shift+w', '', 'wpToggleDFW' );
 		} );
 
 		$document.on( 'tinymce-editor-init.focus', function( event, editor ) {
@@ -1113,6 +1166,7 @@
 					editor.on( 'blur', maybeFadeIn );
 					editor.on( 'focus', focus );
 					editor.on( 'blur', blur );
+					editor.on( 'wp-autoresize', recalcEditorRect );
 				};
 
 				mceUnbind = function() {
@@ -1120,6 +1174,7 @@
 					editor.off( 'blur', maybeFadeIn );
 					editor.off( 'focus', focus );
 					editor.off( 'blur', blur );
+					editor.off( 'wp-autoresize', recalcEditorRect );
 				};
 
 				if ( _isOn ) {
@@ -1128,7 +1183,7 @@
 
 				$document.on( 'dfw-on.focus', mceBind ).on( 'dfw-off.focus', mceUnbind );
 
-				// Make sure the body focusses when clicking outside it.
+				// Make sure the body focuses when clicking outside it.
 				editor.on( 'click', function( event ) {
 					if ( event.target === editor.getDoc().documentElement ) {
 						editor.focus();
