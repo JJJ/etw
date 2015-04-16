@@ -15,6 +15,7 @@ Description: Used to style the TinyMCE editor.
  * 6.0 - Galleries
  * 7.0 - Audio / Video
  * 8.0 - RTL
+ * 9.0 - Media Queries
  */
 
 
@@ -352,7 +353,7 @@ a {
 	margin: 0 0 28px 0;
 	max-width: 660px;
 	padding: 0;
-	text-align: center;
+	text-align: inherit;
 }
 
 .wp-caption.alignleft {
@@ -378,10 +379,6 @@ a {
 /**
  * 6.0 Galleries
  */
-
-.gallery {
-	margin-bottom: 28px;
-}
 
 .gallery-item {
 	display: inline-block;
@@ -457,6 +454,10 @@ a {
  * 8.0 RTL
  */
 
+body.rtl {
+	font-family: Arial, Tahoma, sans-serif;
+}
+
 .rtl blockquote {
 	border-left: none;
 	border-right: 4px solid #707070;
@@ -478,4 +479,19 @@ a {
 .rtl table th,
 .rtl table caption {
 	text-align: right;
+}
+
+
+/**
+ * 9.0 Media Queries
+ */
+
+@media screen and (max-width: 740px) {
+	body, img, .wp-caption {
+		max-width: 100%;
+	}
+
+	img, .wp-caption {
+		width: auto !important;
+	}
 }
