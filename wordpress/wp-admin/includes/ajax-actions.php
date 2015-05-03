@@ -2721,6 +2721,8 @@ function wp_ajax_parse_embed() {
 		$url = $matches[5];
 	} elseif ( ! empty( $atts['src'] ) ) {
 		$url = $atts['src'];
+	} else {
+		$url = '';
 	}
 
 	$parsed = false;
@@ -2739,7 +2741,7 @@ function wp_ajax_parse_embed() {
 		}
 	}
 
-	if ( ! $parsed ) {
+	if ( $url && ! $parsed ) {
 		$parsed = $wp_embed->run_shortcode( $shortcode );
 	}
 

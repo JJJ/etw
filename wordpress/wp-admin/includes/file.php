@@ -146,7 +146,7 @@ function wp_tempnam( $filename = '', $dir = '' ) {
 		$dir = get_temp_dir();
 	}
 
-	if ( empty( $filename ) || '.' == $filename ) {
+	if ( empty( $filename ) || '.' == $filename || '/' == $filename ) {
 		$filename = time();
 	}
 
@@ -1120,7 +1120,7 @@ jQuery(function($){
 	jQuery("#ftp, #ftps").click(function () {
 		jQuery("#ssh_keys").hide();
 	});
-	jQuery('form input[value=""]:first').focus();
+	jQuery('#request-filesystem-credentials-form input[value=""]:first').focus();
 });
 -->
 </script>

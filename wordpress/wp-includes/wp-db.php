@@ -171,6 +171,16 @@ class wpdb {
 	protected $check_current_query = true;
 
 	/**
+	 * Flag to ensure we don't run into recursion problems when checking the collation.
+	 *
+	 * @since 4.2.0
+	 * @access private
+	 * @see wpdb::check_safe_collation()
+	 * @var boolean
+	 */
+	private $checking_collation = false;
+
+	/**
 	 * Saved info on the table column
 	 *
 	 * @since 0.71
@@ -1936,7 +1946,16 @@ class wpdb {
 	 */
 	protected function process_fields( $table, $data, $format ) {
 		$data = $this->process_field_formats( $data, $format );
+		if ( false === $data ) {
+			return false;
+		}
+
 		$data = $this->process_field_charsets( $data, $table );
+		if ( false === $data ) {
+			return false;
+		}
+
+		$data = $this->process_field_lengths( $data, $table );
 		if ( false === $data ) {
 			return false;
 		}
@@ -2022,6 +2041,40 @@ class wpdb {
 	}
 
 	/**
+	 * For string fields, record the maximum string length that field can safely save.
+	 *
+	 * @since 4.2.1
+	 * @access protected
+	 *
+	 * @param array  $data  As it comes from the wpdb::process_field_charsets() method.
+	 * @param string $table Table name.
+	 * @return array|False The same array as $data with additional 'length' keys, or false if
+	 *                     any of the values were too long for their corresponding field.
+	 */
+	protected function process_field_lengths( $data, $table ) {
+		foreach ( $data as $field => $value ) {
+			if ( '%d' === $value['format'] || '%f' === $value['format'] ) {
+				// We can skip this field if we know it isn't a string.
+				// This checks %d/%f versus ! %s because it's sprintf() could take more.
+				$value['length'] = false;
+			} else {
+				$value['length'] = $this->get_col_length( $table, $field );
+				if ( is_wp_error( $value['length'] ) ) {
+					return false;
+				}
+			}
+
+			if ( false !== $value['length'] && mb_strlen( $value['value'] ) > $value['length'] ) {
+				return false;
+			}
+
+			$data[ $field ] = $value;
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Retrieve one variable from the database.
 	 *
 	 * Executes a SQL query and returns the value from the SQL result.
@@ -2037,6 +2090,10 @@ class wpdb {
 	 */
 	public function get_var( $query = null, $x = 0, $y = 0 ) {
 		$this->func_call = "\$db->get_var(\"$query\", $x, $y)";
+
+		if ( $this->check_safe_collation( $query ) ) {
+			$this->check_current_query = false;
+		}
 
 		if ( $query ) {
 			$this->query( $query );
@@ -2066,6 +2123,11 @@ class wpdb {
 	 */
 	public function get_row( $query = null, $output = OBJECT, $y = 0 ) {
 		$this->func_call = "\$db->get_row(\"$query\",$output,$y)";
+
+		if ( $this->check_safe_collation( $query ) ) {
+			$this->check_current_query = false;
+		}
+
 		if ( $query ) {
 			$this->query( $query );
 		} else {
@@ -2103,6 +2165,10 @@ class wpdb {
 	 * @return array Database query result. Array indexed from 0 by SQL result row number.
 	 */
 	public function get_col( $query = null , $x = 0 ) {
+		if ( $this->check_safe_collation( $query ) ) {
+			$this->check_current_query = false;
+		}
+
 		if ( $query ) {
 			$this->query( $query );
 		}
@@ -2130,6 +2196,10 @@ class wpdb {
 	 */
 	public function get_results( $query = null, $output = OBJECT ) {
 		$this->func_call = "\$db->get_results(\"$query\", $output)";
+
+		if ( $this->check_safe_collation( $query ) ) {
+			$this->check_current_query = false;
+		}
 
 		if ( $query ) {
 			$this->query( $query );
@@ -2335,6 +2405,77 @@ class wpdb {
 	}
 
 	/**
+	 * Retrieve the maximum string length allowed in a given column.
+	 *
+	 * @since 4.2.1
+	 * @access public
+	 *
+	 * @param string $table  Table name.
+	 * @param string $column Column name.
+	 * @return mixed Max column length as an int. False if the column has no
+	 *               length. WP_Error object if there was an error.
+	 */
+	public function get_col_length( $table, $column ) {
+		$tablekey = strtolower( $table );
+		$columnkey = strtolower( $column );
+
+		// Skip this entirely if this isn't a MySQL database.
+		if ( false === $this->is_mysql ) {
+			return false;
+		}
+
+		if ( empty( $this->col_meta[ $tablekey ] ) ) {
+			// This primes column information for us.
+			$table_charset = $this->get_table_charset( $table );
+			if ( is_wp_error( $table_charset ) ) {
+				return $table_charset;
+			}
+		}
+
+		if ( empty( $this->col_meta[ $tablekey ][ $columnkey ] ) ) {
+			return false;
+		}
+
+		$typeinfo = explode( '(', $this->col_meta[ $tablekey ][ $columnkey ]->Type );
+
+		$type = strtolower( $typeinfo[0] );
+		if ( ! empty( $typeinfo[1] ) ) {
+			$length = trim( $typeinfo[1], ')' );
+		} else {
+			$length = false;
+		}
+
+		switch( $type ) {
+			case 'binary':
+			case 'char':
+			case 'varbinary':
+			case 'varchar':
+				return $length;
+				break;
+			case 'tinyblob':
+			case 'tinytext':
+				return 255; // 2^8 - 1
+				break;
+			case 'blob':
+			case 'text':
+				return 65535; // 2^16 - 1
+				break;
+			case 'mediumblob':
+			case 'mediumtext':
+				return 16777215; // 2^24 - 1
+				break;
+			case 'longblob':
+			case 'longtext':
+				return 4294967295; // 2^32 - 1
+				break;
+			default:
+				return false;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Check if a string is ASCII.
 	 *
 	 * The negative regex is faster for non-ASCII strings, as it allows
@@ -2356,6 +2497,64 @@ class wpdb {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if the query is accessing a collation considered safe on the current version of MySQL.
+	 *
+	 * @since 4.2.0
+	 * @access protected
+	 *
+	 * @param string $query The query to check.
+	 * @return bool True if the collation is safe, false if it isn't.
+	 */
+	protected function check_safe_collation( $query ) {
+		if ( $this->checking_collation ) {
+			return true;
+		}
+
+		// We don't need to check the collation for queries that don't read data.
+		$query = ltrim( $query, "\r\n\t (" );
+		if ( preg_match( '/^(?:SHOW|DESCRIBE|DESC|EXPLAIN)\s/i', $query ) ) {
+			return true;
+		}
+
+		// All-ASCII queries don't need extra checking.
+		if ( $this->check_ascii( $query ) ) {
+			return true;
+		}
+
+		$table = $this->get_table_from_query( $query );
+		if ( ! $table ) {
+			return false;
+		}
+
+		$this->checking_collation = true;
+		$collation = $this->get_table_charset( $table );
+		$this->checking_collation = false;
+
+		// Tables with no collation, or latin1 only, don't need extra checking.
+		if ( false === $collation || 'latin1' === $collation ) {
+			return true;
+		}
+
+		$table = strtolower( $table );
+		if ( empty( $this->col_meta[ $table ] ) ) {
+			return false;
+		}
+
+		// If any of the columns don't have one of these collations, it needs more sanity checking.
+		foreach( $this->col_meta[ $table ] as $col ) {
+			if ( empty( $col->Collation ) ) {
+				continue;
+			}
+
+			if ( ! in_array( $col->Collation, array( 'utf8_general_ci', 'utf8_bin', 'utf8mb4_general_ci', 'utf8mb4_bin' ), true ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -2457,6 +2656,7 @@ class wpdb {
 
 					// Split the CONVERT() calls by charset, so we can make sure the connection is right
 					$queries[ $value['charset'] ][ $col ] = $this->prepare( "CONVERT( %s USING {$value['charset']} )", $value['value'] );
+					unset( $data[ $col ]['db'] );
 				}
 			}
 

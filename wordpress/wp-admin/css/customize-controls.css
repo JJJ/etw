@@ -1050,6 +1050,12 @@ p.customize-section-description {
 	overflow: visible; /* Prevent the top-level Customizer controls from becoming visible when elements on the right of the details modal are focused. */
 }
 
+.ie8 .wp-customizer .theme-overlay .theme-header,
+.ie8 .wp-customizer .theme-overlay .theme-about,
+.ie8 .wp-customizer .theme-overlay .theme-actions {
+	position: static;
+}
+
 /* Small Screens */
 @media (max-width:850px), (max-height:472px) {
 	.wp-customizer .theme-overlay .theme-wrap {
@@ -1088,6 +1094,10 @@ body.cheatin p {
 	.wp-customizer .theme:not(.active):hover .theme-actions,
 	.wp-customizer .theme:not(.active):focus .theme-actions {
 		display: block;
+	}
+
+	.wp-customizer .theme-browser .theme.active .theme-name span {
+		display: inline;
 	}
 }
 

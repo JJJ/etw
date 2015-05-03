@@ -363,7 +363,7 @@ $can_delete = current_user_can( 'delete_themes' );
 		<div class="theme-header">
 			<button class="left dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Show previous theme' ); ?></span></button>
 			<button class="right dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Show next theme' ); ?></span></button>
-			<button class="close dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Close overlay' ); ?></span></button>
+			<button class="close dashicons dashicons-no"><span class="screen-reader-text"><?php _e( 'Close details dialog' ); ?></span></button>
 		</div>
 		<div class="theme-about">
 			<div class="theme-screenshots">
@@ -378,7 +378,7 @@ $can_delete = current_user_can( 'delete_themes' );
 				<# if ( data.active ) { #>
 					<span class="current-label"><?php _e( 'Current Theme' ); ?></span>
 				<# } #>
-				<h3 class="theme-name">{{{ data.name }}}<span class="theme-version"><?php printf( __( 'Version: %s' ), '{{{ data.version }}}' ); ?></span></h3>
+				<h3 class="theme-name">{{{ data.name }}}<span class="theme-version"><?php printf( __( 'Version: %s' ), '{{ data.version }}' ); ?></span></h3>
 				<h4 class="theme-author"><?php printf( __( 'By %s' ), '{{{ data.authorAndUri }}}' ); ?></h4>
 
 				<# if ( data.hasUpdate ) { #>

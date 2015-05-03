@@ -2053,7 +2053,7 @@ function wp_check_filetype( $filename, $mimes = null ) {
 	$ext = false;
 
 	foreach ( $mimes as $ext_preg => $mime_match ) {
-		$ext_preg = '!\.(' . $ext_preg . ')(\?.*)?$!i';
+		$ext_preg = '!\.(' . $ext_preg . ')$!i';
 		if ( preg_match( $ext_preg, $filename, $ext_matches ) ) {
 			$type = $mime_match;
 			$ext = $ext_matches[1];
@@ -3755,7 +3755,7 @@ function wp_guess_url() {
 			if ( false !== strpos( $_SERVER['SCRIPT_FILENAME'], $abspath_fix ) ) {
 				// Request is hitting a file inside ABSPATH
 				$directory = str_replace( ABSPATH, '', $script_filename_dir );
-				// Strip off the sub directory, and any file/query paramss
+				// Strip off the sub directory, and any file/query params
 				$path = preg_replace( '#/' . preg_quote( $directory, '#' ) . '/[^/]*$#i', '' , $_SERVER['REQUEST_URI'] );
 			} elseif ( false !== strpos( $abspath_fix, $script_filename_dir ) ) {
 				// Request is hitting a file above ABSPATH
