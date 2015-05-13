@@ -1,0 +1,1026 @@
+# Copyright (C) 2015 The Theme Foundry
+# This file is distributed under the same license as the Make Plus package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Make Plus 1.5.1\n"
+"Report-Msgid-Bugs-To: https://thethemefoundry.com/support/\n"
+"POT-Creation-Date: 2015-02-26 02:24:35+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: The Theme Foundry\n"
+"Language-Team: The Theme Foundry\n"
+"X-Generator: grunt-wp-i18n 0.4.7\n"
+
+#: components/edd/class-section-definitions.php:200
+#: components/post-list/class-section-definitions.php:216
+#: components/woocommerce/class-section-definitions.php:206
+msgid "1"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:201
+#: components/post-list/class-section-definitions.php:217
+#: components/woocommerce/class-section-definitions.php:207
+msgid "2"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:202
+#: components/post-list/class-section-definitions.php:218
+#: components/woocommerce/class-section-definitions.php:208
+msgid "3"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:203
+#: components/post-list/class-section-definitions.php:219
+#: components/woocommerce/class-section-definitions.php:209
+msgid "4"
+msgstr ""
+
+#: components/builder-tweaks/builder-tweaks.php:163
+msgid "Remove space below section"
+msgstr ""
+
+#: components/duplicator/page.php:79 components/duplicator/page.php:252
+msgid "Duplicate Page"
+msgstr ""
+
+#: components/duplicator/page.php:79 components/duplicator/section.php:122
+msgid "Duplicate"
+msgstr ""
+
+#: components/duplicator/page.php:111
+msgid "Your page was successfully copied."
+msgstr ""
+
+#: components/duplicator/page.php:128
+msgid "Error occurred while trying to create a page copy. Please try again."
+msgstr ""
+
+#: components/duplicator/page.php:133
+msgid ""
+"An unexpected error occurred while trying to create a page copy. Please try "
+"again."
+msgstr ""
+
+#: components/duplicator/section.php:97 components/duplicator/section.php:231
+#: components/duplicator/section.php:238
+msgid "An unexpected error occurred."
+msgstr ""
+
+#: components/duplicator/section.php:123
+msgid "Duplicate section"
+msgstr ""
+
+#: components/duplicator/section.php:210 components/duplicator/section.php:217
+msgid " (Copy)"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:72
+msgid "Downloads"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:74
+msgid "Display your Easy Digital Downloads products in a grid layout."
+msgstr ""
+
+#: components/edd/class-section-definitions.php:84
+#: components/post-list/class-section-definitions.php:80
+#: components/woocommerce/class-section-definitions.php:80
+msgid "Enter section title"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:208
+msgid "All download categories/tags"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:217
+msgid "Download categories"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:229
+msgid "Download tags"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:236
+#: components/post-list/class-section-definitions.php:242
+msgid "Date: newest first"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:237
+#: components/post-list/class-section-definitions.php:243
+msgid "Date: oldest first"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:238
+msgid "Name: A to Z"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:239
+msgid "Name: Z to A"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:240
+#: components/woocommerce/class-section-definitions.php:225
+msgid "Price: low to high"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:241
+#: components/woocommerce/class-section-definitions.php:226
+msgid "Price: high to low"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:242
+#: components/post-list/class-section-definitions.php:248
+msgid "Random"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:247
+msgid "Full content"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:248
+msgid "Excerpt"
+msgstr ""
+
+#: components/edd/class-section-definitions.php:249
+#: components/post-list/class-section-definitions.php:284
+msgid "None"
+msgstr ""
+
+#: components/edd/edd.php:239
+msgid ""
+"For Easy Digital Downloads, this view consists of download archives and "
+"related category and tag archives."
+msgstr ""
+
+#: components/edd/edd.php:257
+msgid "For Easy Digital Downloads, this view consists of single downloads."
+msgstr ""
+
+#: components/edd/edd.php:324
+msgid "For Easy Digital Downloads, used for prices and alerts."
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:26
+#: components/post-list/sections/builder-templates/post-list.php:44
+#: components/woocommerce/sections/builder-templates/product-grid.php:38
+msgid "From"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:37
+#: components/post-list/sections/builder-templates/post-list.php:55
+#: components/woocommerce/sections/builder-templates/product-grid.php:49
+msgid "Sort"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:50
+#: components/post-list/sections/builder-templates/post-list.php:73
+#: components/woocommerce/sections/builder-templates/product-grid.php:62
+msgid "Columns"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:61
+#: components/post-list/sections/builder-templates/post-list.php:84
+#: components/woocommerce/sections/builder-templates/product-grid.php:73
+msgid "Number to show"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:64
+#: components/post-list/sections/builder-templates/post-list.php:87
+#: components/woocommerce/sections/builder-templates/product-grid.php:76
+msgid "To show all, set to <code>-1</code>."
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:68
+#: components/post-list/sections/builder-templates/post-list.php:105
+#: components/woocommerce/sections/builder-templates/product-grid.php:81
+msgid "Display"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:72
+msgid "Show thumbnail image"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:78
+#: components/woocommerce/sections/builder-templates/product-grid.php:100
+msgid "Show price"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:84
+msgid "Show purchase button"
+msgstr ""
+
+#: components/edd/sections/builder-templates/downloads.php:89
+msgid "Details"
+msgstr ""
+
+#: components/per-page/class-metabox.php:111
+msgid "Layout Settings"
+msgstr ""
+
+#: components/per-page/class-metabox.php:137
+msgid "Check the box next to a global setting to override it."
+msgstr ""
+
+#: components/per-page/class-metabox.php:166
+#: components/per-page/class-metabox.php:224
+#: components/per-page/class-metabox.php:282
+#: components/per-page/class-metabox.php:316
+#: shared/shop-settings/layout-product.php:48
+#: shared/shop-settings/layout-shop.php:48
+#: shared/shop-settings/shop-settings.php:169
+#: shared/shop-settings/shop-settings.php:226
+msgid "Header, Footer, Sidebars"
+msgstr ""
+
+#: components/per-page/class-metabox.php:167
+#: components/per-page/class-metabox.php:226
+#: components/per-page/class-metabox.php:283
+#: components/per-page/class-metabox.php:317
+#: shared/shop-settings/layout-product.php:69
+#: shared/shop-settings/layout-shop.php:69
+#: shared/shop-settings/shop-settings.php:177
+#: shared/shop-settings/shop-settings.php:234
+msgid "Hide site header"
+msgstr ""
+
+#: components/per-page/class-metabox.php:168
+#: components/per-page/class-metabox.php:227
+#: components/per-page/class-metabox.php:284
+#: components/per-page/class-metabox.php:318
+#: shared/shop-settings/layout-product.php:90
+#: shared/shop-settings/layout-shop.php:90
+#: shared/shop-settings/shop-settings.php:186
+#: shared/shop-settings/shop-settings.php:243
+msgid "Hide site footer"
+msgstr ""
+
+#: components/per-page/class-metabox.php:169
+#: components/per-page/class-metabox.php:228
+#: components/per-page/class-metabox.php:285
+#: components/per-page/class-metabox.php:319
+#: shared/shop-settings/layout-product.php:111
+#: shared/shop-settings/layout-shop.php:111
+#: shared/shop-settings/shop-settings.php:195
+#: shared/shop-settings/shop-settings.php:252
+msgid "Show left sidebar"
+msgstr ""
+
+#: components/per-page/class-metabox.php:170
+#: components/per-page/class-metabox.php:229
+#: components/per-page/class-metabox.php:286
+#: components/per-page/class-metabox.php:320
+#: shared/shop-settings/layout-product.php:132
+#: shared/shop-settings/layout-shop.php:132
+#: shared/shop-settings/shop-settings.php:204
+#: shared/shop-settings/shop-settings.php:261
+msgid "Show right sidebar"
+msgstr ""
+
+#: components/per-page/class-metabox.php:173
+#: components/per-page/class-metabox.php:232
+#: components/per-page/class-metabox.php:289
+#: components/per-page/class-metabox.php:323
+#: shared/shop-settings/class-shop-sidebar.php:201
+msgid "Shop Sidebar Location"
+msgstr ""
+
+#: components/per-page/class-metabox.php:178
+#: components/per-page/class-metabox.php:237
+#: components/per-page/class-metabox.php:294
+#: components/per-page/class-metabox.php:328
+msgid "Padding"
+msgstr ""
+
+#: components/per-page/class-metabox.php:179
+#: components/per-page/class-metabox.php:238
+#: components/per-page/class-metabox.php:295
+#: components/per-page/class-metabox.php:329
+msgid "Remove padding beneath header"
+msgstr ""
+
+#: components/per-page/class-metabox.php:180
+#: components/per-page/class-metabox.php:239
+#: components/per-page/class-metabox.php:296
+#: components/per-page/class-metabox.php:330
+msgid "Remove padding above footer"
+msgstr ""
+
+#: components/per-page/class-metabox.php:183
+#: components/per-page/class-metabox.php:245
+msgid "Featured Images"
+msgstr ""
+
+#: components/per-page/class-metabox.php:185
+#: components/per-page/class-metabox.php:247
+msgid "Featured Images Alignment"
+msgstr ""
+
+#: components/per-page/class-metabox.php:188
+#: components/per-page/class-metabox.php:250
+msgid "Post Date"
+msgstr ""
+
+#: components/per-page/class-metabox.php:190
+#: components/per-page/class-metabox.php:252
+msgid "Post Date Location"
+msgstr ""
+
+#: components/per-page/class-metabox.php:193
+#: components/per-page/class-metabox.php:255
+msgid "Post Author"
+msgstr ""
+
+#: components/per-page/class-metabox.php:195
+#: components/per-page/class-metabox.php:257
+msgid "Post Author Location"
+msgstr ""
+
+#: components/per-page/class-metabox.php:198
+msgid "Post Meta"
+msgstr ""
+
+#: components/per-page/class-metabox.php:199
+#: components/post-list/sections/builder-templates/post-list.php:134
+msgid "Show categories"
+msgstr ""
+
+#: components/per-page/class-metabox.php:200
+#: components/post-list/sections/builder-templates/post-list.php:140
+msgid "Show tags"
+msgstr ""
+
+#: components/per-page/class-metabox.php:202
+#: components/per-page/class-metabox.php:260
+msgid "Comment Count"
+msgstr ""
+
+#: components/per-page/class-metabox.php:204
+#: components/per-page/class-metabox.php:262
+msgid "Comment Count Location"
+msgstr ""
+
+#: components/per-page/class-metabox.php:225
+msgid "Header, Footer"
+msgstr ""
+
+#: components/per-page/class-metabox.php:242
+msgid "Page Title"
+msgstr ""
+
+#: components/per-page/class-metabox.php:243
+msgid "Hide title"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:68
+#: components/post-list/class-widget.php:23
+msgid "Posts List"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:70
+msgid "Display your posts or pages in a list or grid layout."
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:244
+msgid "Title: A to Z"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:245
+msgid "Title: Z to A"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:246
+msgid "Most comments"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:247
+msgid "Page order"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:253
+msgid "All categories/tags"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:262
+msgid "Categories"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:274
+msgid "Tags"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:281
+msgid "Top"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:282
+msgid "Left"
+msgstr ""
+
+#: components/post-list/class-section-definitions.php:283
+msgid "Right"
+msgstr ""
+
+#: components/post-list/class-widget.php:21
+msgid "List posts or pages based on specific criteria. (%s)"
+msgstr ""
+
+#: components/post-list/class-widget.php:116
+msgid "Title:"
+msgstr ""
+
+#: components/post-list/class-widget.php:120
+msgid "Type:"
+msgstr ""
+
+#: components/post-list/class-widget.php:131
+msgid "Sort by:"
+msgstr ""
+
+#: components/post-list/class-widget.php:142
+msgid "Keyword:"
+msgstr ""
+
+#: components/post-list/class-widget.php:146
+msgid "Number of items to show:"
+msgstr ""
+
+#: components/post-list/class-widget.php:147
+msgid "To show all items, set to <code>-1</code>."
+msgstr ""
+
+#: components/post-list/class-widget.php:151
+msgid "Item offset:"
+msgstr ""
+
+#: components/post-list/class-widget.php:155
+msgid "From:"
+msgstr ""
+
+#: components/post-list/class-widget.php:165
+msgid "Item display:"
+msgstr ""
+
+#: components/post-list/class-widget.php:169
+#: components/post-list/sections/builder-templates/post-list.php:110
+msgid "Show item title"
+msgstr ""
+
+#: components/post-list/class-widget.php:173
+#: components/post-list/sections/builder-templates/post-list.php:116
+msgid "Show date"
+msgstr ""
+
+#: components/post-list/class-widget.php:177
+#: components/post-list/sections/builder-templates/post-list.php:122
+msgid "Show excerpt"
+msgstr ""
+
+#: components/post-list/class-widget.php:181
+#: components/post-list/sections/builder-templates/post-list.php:128
+msgid "Show author"
+msgstr ""
+
+#: components/post-list/class-widget.php:185
+#: components/post-list/sections/builder-templates/post-list.php:146
+msgid "Show comment count"
+msgstr ""
+
+#: components/post-list/class-widget.php:189
+msgid "Show thumbnail:"
+msgstr ""
+
+#: components/post-list/sections/builder-templates/post-list.php:33
+msgid "Type"
+msgstr ""
+
+#: components/post-list/sections/builder-templates/post-list.php:66
+msgid "Keyword"
+msgstr ""
+
+#: components/post-list/sections/builder-templates/post-list.php:68
+msgid "e.g. coffee"
+msgstr ""
+
+#: components/post-list/sections/builder-templates/post-list.php:89
+msgid "Item offset"
+msgstr ""
+
+#: components/post-list/sections/builder-templates/post-list.php:93
+msgid "Show thumbnail"
+msgstr ""
+
+#: components/post-list/templates/post-list-item.php:84
+msgid "<i class=\"fa fa-file\"></i> "
+msgstr ""
+
+#: components/post-list/templates/post-list-item.php:89
+msgid "<i class=\"fa fa-tag\"></i> "
+msgstr ""
+
+#: components/post-list/templates/post-list-item.php:104
+msgid "%d comment"
+msgid_plural "%d comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: components/quick-start/define-templates.php:9
+msgid "800x600 pixel placeholder"
+msgstr ""
+
+#: components/quick-start/define-templates.php:16
+msgid "800x800 pixel placeholder"
+msgstr ""
+
+#: components/quick-start/define-templates.php:23
+msgid "800x1067 pixel placeholder"
+msgstr ""
+
+#: components/quick-start/define-templates.php:30
+msgid "960x540 pixel placeholder"
+msgstr ""
+
+#: components/quick-start/define-templates.php:37
+msgid "1440x750 pixel placeholder"
+msgstr ""
+
+#: components/quick-start/define-templates.php:297
+msgid "About"
+msgstr ""
+
+#: components/quick-start/define-templates.php:571
+msgid "Business"
+msgstr ""
+
+#: components/quick-start/define-templates.php:886
+msgid "Landing"
+msgstr ""
+
+#: components/quick-start/define-templates.php:1112
+#: components/style-kits/definitions.php:216
+msgid "Creative"
+msgstr ""
+
+#: components/quick-start/define-templates.php:1324
+msgid "Photography"
+msgstr ""
+
+#: components/quick-start/define-templates.php:1563
+#: shared/shop-settings/shop-settings.php:160
+msgid "Shop"
+msgstr ""
+
+#: components/quick-start/quick-start.php:133
+msgid "Quick Start"
+msgstr ""
+
+#: components/quick-start/quick-start.php:134
+msgid "Import content into this page. To begin, select a category&hellip;"
+msgstr ""
+
+#: components/quick-start/quick-start.php:148
+msgid "Import content"
+msgstr ""
+
+#: components/style-kits/definitions.php:17
+msgid "Light"
+msgstr ""
+
+#: components/style-kits/definitions.php:88
+msgid "Dark"
+msgstr ""
+
+#: components/style-kits/definitions.php:152
+msgid "Modern"
+msgstr ""
+
+#: components/style-kits/definitions.php:280
+msgid "Vintage"
+msgstr ""
+
+#: components/style-kits/definitions.php:349
+msgid "Hello"
+msgstr ""
+
+#: components/style-kits/style-kits.php:134
+#: components/style-kits/style-kits.php:181
+msgid "Style Kits"
+msgstr ""
+
+#: components/style-kits/style-kits.php:135
+#: components/style-kits/stylekit.php:30
+msgid ""
+"Use a style kit to quickly apply designer-picked style choices (fonts, "
+"layout, colors) to your website."
+msgstr ""
+
+#: components/style-kits/style-kits.php:141
+#: components/style-kits/stylekit.php:45
+msgid "Kits"
+msgstr ""
+
+#: components/style-kits/style-kits.php:159
+#: components/style-kits/stylekit.php:78 components/typekit/customizer.php:114
+#: components/typekit/customizer.php:174
+msgid "Reset"
+msgstr ""
+
+#: components/style-kits/style-kits.php:159
+#: components/style-kits/stylekit.php:78
+msgid "Load Kit"
+msgstr ""
+
+#: components/style-kits/style-kits.php:282
+msgid "Choose a kit"
+msgstr ""
+
+#: components/style-kits/style-kits.php:436
+msgid "Default"
+msgstr ""
+
+#: components/text-column-layout/text-column-layout.php:149
+msgid "Layout:"
+msgstr ""
+
+#: components/text-column-layout/text-column-layout.php:182
+msgid "Column layout"
+msgstr ""
+
+#: components/text-column-layout/text-column-layout.php:322
+#: components/text-column-layout/text-column-layout.php:327
+msgid "Equal Width"
+msgstr ""
+
+#: components/text-column-layout/text-column-layout.php:323
+msgid "Wide | Narrow"
+msgstr ""
+
+#: components/text-column-layout/text-column-layout.php:324
+msgid "Wider | Narrower"
+msgstr ""
+
+#: components/text-column-layout/text-column-layout.php:328
+msgid "Wide | Narrow | Narrow"
+msgstr ""
+
+#: components/typekit/customizer.php:97
+msgid "Typekit"
+msgstr ""
+
+#: components/typekit/customizer.php:98
+msgid ""
+"Enter your Kit ID into the field below and click the \"Load\" button to "
+"retrieve the fonts from your kit."
+msgstr ""
+
+#: components/typekit/customizer.php:106 components/typekit/customizer.php:161
+msgid "Typekit Kit ID"
+msgstr ""
+
+#: components/typekit/customizer.php:114 components/typekit/customizer.php:174
+msgid "Load Typekit Fonts"
+msgstr ""
+
+#: components/typekit/customizer.php:122
+msgid "For more information about Typekit integration, please see the %s."
+msgstr ""
+
+#: components/typekit/customizer.php:126
+msgid "documentation"
+msgstr ""
+
+#: components/typekit/customizer.php:187
+msgid ""
+"For more information about Typekit integration, please see <a "
+"href=\"%s\">Make Plus' documentation</a>."
+msgstr ""
+
+#: components/typekit/customizer.php:312 components/typekit/customizer.php:382
+msgid "Typekit Fonts"
+msgstr ""
+
+#: components/typekit/customizer.php:313
+msgid "Please enter your Typekit Kit ID"
+msgstr ""
+
+#: components/typekit/customizer.php:314
+msgid "Typekit fonts could not be found. Please try again"
+msgstr ""
+
+#: components/typekit/customizer.php:315
+msgid "Fonts loaded successfully."
+msgstr ""
+
+#: components/typekit/customizer.php:316
+msgid "Fonts reset."
+msgstr ""
+
+#: components/white-label/white-label.php:51
+#: components/white-label/white-label.php:123
+msgid "White Label"
+msgstr ""
+
+#: components/white-label/white-label.php:58
+#: components/white-label/white-label.php:144
+msgid "Hide theme credit"
+msgstr ""
+
+#: components/widget-area/sidebar-management.php:106
+msgid "Sidebar"
+msgstr ""
+
+#: components/widget-area/widget-area.php:163
+#: components/widget-area/widget-area.php:198
+#: components/widget-area/widget-area.php:221
+msgid "Convert to widget area"
+msgstr ""
+
+#: components/widget-area/widget-area.php:164
+#: components/widget-area/widget-area.php:269
+#: components/widget-area/widget-area.php:271
+msgid "Revert to column"
+msgstr ""
+
+#: components/widget-area/widget-area.php:196
+msgid "Revert to regular column"
+msgstr ""
+
+#: components/widget-area/widget-area.php:218
+msgid "Convert text column to widget area"
+msgstr ""
+
+#: components/widget-area/widget-area.php:268
+msgid "Enter name here"
+msgstr ""
+
+#: components/widget-area/widget-area.php:281
+msgid ""
+"No widgets added yet. To add widgets, save this page, then go to the <a "
+"href=\"%s\">Customizer</a>."
+msgstr ""
+
+#: components/widget-area/widget-area.php:290
+msgid "To add new widgets, please go to the <a href=\"%s\">Customizer</a>."
+msgstr ""
+
+#: components/widget-area/widget-area.php:298
+msgid "Drag-and-drop this widget into place"
+msgstr ""
+
+#: components/widget-area/widget-area.php:303
+#: components/widget-area/widget-area.php:305
+msgid "Configure widget"
+msgstr ""
+
+#: components/widget-area/widget-area.php:308
+#: components/widget-area/widget-area.php:310
+msgid "Delete widget"
+msgstr ""
+
+#: components/widget-area/widget-area.php:345
+msgid "Configure "
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:68
+msgid "Products"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:70
+msgid "Display your WooCommerce products in a grid layout."
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:214
+msgid "All products"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:215
+msgid "Featured products"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:216
+msgid "Sale products"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:221
+msgid "Default sorting"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:222
+msgid "Popularity"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:223
+msgid "Average rating"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:224
+msgid "Newness"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:234
+msgid "All product categories/tags"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:243
+msgid "Product categories"
+msgstr ""
+
+#: components/woocommerce/class-section-definitions.php:255
+msgid "Product tags"
+msgstr ""
+
+#: components/woocommerce/legacy/class-legacy-color.php:95
+msgid "Frontend Styles"
+msgstr ""
+
+#: components/woocommerce/legacy/class-legacy-color.php:111
+msgid ""
+"These styles can be customized in the Color Scheme &rarr; General section "
+"of the %s."
+msgstr ""
+
+#: components/woocommerce/legacy/class-legacy-color.php:115
+msgid "Customizer"
+msgstr ""
+
+#: components/woocommerce/legacy/class-legacy-color.php:119
+msgid ""
+"To edit colours <code>woocommerce/assets/css/woocommerce-base.less</code> "
+"and <code>woocommerce.css</code> need to be writable. See <a "
+"href=\"http://codex.wordpress.org/Changing_File_Permissions\">the Codex</a> "
+"for more information."
+msgstr ""
+
+#: components/woocommerce/legacy/class-legacy-color.php:261
+msgid "Could not compile woocommerce.less:"
+msgstr ""
+
+#: components/woocommerce/legacy/class-legacy-color.php:330
+msgid "For WooCommerce, used for prices, in stock labels, and sales flash."
+msgstr ""
+
+#: components/woocommerce/sections/builder-templates/product-grid.php:27
+msgid "Show"
+msgstr ""
+
+#: components/woocommerce/sections/builder-templates/product-grid.php:84
+msgid "Show product image"
+msgstr ""
+
+#: components/woocommerce/sections/builder-templates/product-grid.php:92
+msgid "Show rating"
+msgstr ""
+
+#: components/woocommerce/sections/builder-templates/product-grid.php:107
+msgid "Show <em>Add to cart</em> button"
+msgstr ""
+
+#: components/woocommerce/woocommerce.php:262
+msgid ""
+"For WooCommerce, this view consists of product archives and other shop "
+"utility pages such as Checkout."
+msgstr ""
+
+#: components/woocommerce/woocommerce.php:280
+msgid "For WooCommerce, this view consists of single products."
+msgstr ""
+
+#: components/woocommerce/woocommerce.php:328
+msgid ""
+"Make's color scheme no longer applies to WooCommerce shop elements. Please "
+"install the %s plugin to customize your shop's colors."
+msgstr ""
+
+#: components/woocommerce/woocommerce.php:332
+msgid "WooCommerce Colors"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:86
+msgid "Shop Sidebar"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:159
+msgid "Left Sidebar"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:160
+msgid "Right Sidebar"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:161
+msgid "Neither"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:239
+msgid "the %1$s in the %2$s view"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:249
+msgid ""
+"This widget area is currently disabled. Enable it in the \"Layout\" section "
+"of the Theme Customizer."
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:252
+msgid ""
+"This widget area is currently used in place of: %s. Change this in the "
+"\"Layout\" section of the Theme Customizer."
+msgstr ""
+
+#: shared/shop-settings/shop-settings.php:217
+msgid "Product"
+msgstr ""
+
+#: shared/shop-settings/shop-settings.php:286
+msgid "Layout: Shop"
+msgstr ""
+
+#: shared/shop-settings/shop-settings.php:289
+msgid "Layout: Product"
+msgstr ""
+
+#: shared/shop-settings/shop-settings.php:428
+msgid "Highlight Color"
+msgstr ""
+
+#: updater/api-key.php:52 updater/api-key.php:53
+msgid "Updater API Key"
+msgstr ""
+
+#: updater/api-key.php:71
+msgid "Updater Authorization"
+msgstr ""
+
+#: updater/api-key.php:97
+msgid "Authorize Site and Complete Update"
+msgstr ""
+
+#: updater/api-key.php:97
+msgid "Authorize Site"
+msgstr ""
+
+#: updater/api-key.php:153
+msgid "E-mail Address"
+msgstr ""
+
+#: updater/api-key.php:162
+msgid "Password"
+msgstr ""
+
+#: updater/api-key.php:182
+msgid "API Key:"
+msgstr ""
+
+#: updater/api-key.php:187
+msgid "Problems? <a href=\"#\" class=\"updater-re-auth\">Try authorizing again</a>."
+msgstr ""
+
+#: updater/api-key.php:192
+msgid ""
+"Please authorize your theme for automatic updates with the same credentials "
+"you use to sign into The Theme Foundry website. If you have trouble logging "
+"in, please <a href=\"https://thethemefoundry.com/support/\">contact us in "
+"the Help Center</a>. The authorization process will send your current "
+"domain and product information to authorize this site."
+msgstr ""
+
+#: updater/api-key.php:268
+msgid "Your site is authorized for automatic updates from The Theme Foundry."
+msgstr ""
+
+#: updater/api-key.php:285 updater/api-key.php:309
+msgid ""
+"There was an error authorizing your site for automatic updates from The "
+"Theme Foundry."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Make Plus"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://thethemefoundry.com/make/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A powerful paid companion plugin for the Make WordPress theme."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "The Theme Foundry"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://thethemefoundry.com"
+msgstr ""
+
+#: components/duplicator/page.php:151
+msgctxt "label for a duplicated page"
+msgid "Copy"
+msgstr ""
+
+#: shared/shop-settings/class-shop-sidebar.php:234
+msgctxt "list item separator"
+msgid ";"
+msgstr ""

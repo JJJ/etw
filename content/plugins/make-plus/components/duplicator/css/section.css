@@ -1,0 +1,21 @@
+/*---------------------------------------------------------
+ Duplicator spinner GIF (section.css)
+ Spinner GIF created with: http://preloaders.net
+-------------------------------------------------------- */
+.ttfmake-section .ttfmp-spinner.ttfmp-duplicate-section:before,
+.ttfmake-section-open .ttfmp-spinner.ttfmp-duplicate-section:before {
+	display: inline-block;
+	min-width: 20px;
+}
+/*---------------------------------------------------------
+ Duplicator spinner GIF closed header (section.css)
+-------------------------------------------------------- */
+.ttfmake-section .ttfmp-spinner.ttfmp-duplicate-section:before {
+	content: url(images/spinner-close.gif);
+}
+/*---------------------------------------------------------
+ Duplicator spinner GIF opened header (section.css)
+-------------------------------------------------------- */
+.ttfmake-section-open .ttfmp-spinner.ttfmp-duplicate-section:before {
+	content: url(images/spinner-open.gif);
+}
