@@ -17,16 +17,18 @@
 
 /**
  * Plugin Name: WP Multi-Network
- * Plugin URI:  http://wordpress.org/extend/plugins/wp-multi-network/
+ * Plugin URI:  https://wordpress.org/plugins/wp-multi-network/
  * Description: Adds a Network Management UI for super admins in a WordPress Multisite environment
- * Version:     1.5.1
- * Author:      johnjamesjacoby, ddean, BrianLayman
+ * Version:     1.6.0
+ * Author:      johnjamesjacoby, ddean, BrianLayman, rmccue
  * Author URI:  http://jjj.me
- * Tags:        multi, networks, site, network, blog, domain, subdomain, path, multisite, MS
+ * Tags:        network, networks, network, blog, site, multisite, domain, subdomain, path
+ * Network:     true
+ * Text Domain: wp-multi-network
  */
 
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 class WPMN_Loader {
 
@@ -55,7 +57,7 @@ class WPMN_Loader {
 	private function constants() {
 
 		// Enable the holding network. Must be true to save orphaned blogs.
-		if ( !defined( 'ENABLE_NETWORK_ZERO' ) ) {
+		if ( ! defined( 'ENABLE_NETWORK_ZERO' ) ) {
 			define( 'ENABLE_NETWORK_ZERO', false );
 		}
 
@@ -65,7 +67,7 @@ class WPMN_Loader {
 		 *
 		 * false = Allow blogs belonging to deleted networks to be deleted.
 		 */
-		if ( !defined( 'RESCUE_ORPHANED_BLOGS' ) ) {
+		if ( ! defined( 'RESCUE_ORPHANED_BLOGS' ) ) {
 			define( 'RESCUE_ORPHANED_BLOGS', false );
 		}
 
@@ -97,12 +99,24 @@ class WPMN_Loader {
 	 * @uses is_network_admin() To only include admin code when needed
 	 */
 	private function includes() {
-		require( $this->plugin_dir . 'wpmn-functions.php' );
-		require( $this->plugin_dir . 'wpmn-actions.php'   );
 
+		// Functions & actions
+		require $this->plugin_dir . 'includes/functions-wp-ms-networks.php';
+
+		// WordPress Admin
 		if ( is_network_admin() || is_admin() ) {
-			require( $this->plugin_dir . 'wpmn-admin.php' );
+			require( $this->plugin_dir . 'includes/class-wp-ms-networks-admin.php' );
 			new WPMN_Admin();
+		}
+
+		// Deprecated functions & classes
+		if ( defined( 'WPMN_DEPRECATED' ) && WPMN_DEPRECATED ) {
+			require $this->plugin_dir . 'includes/deprecated.php';
+		}
+
+		// Command line
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			require $this->plugin_dir . 'includes/class-wp-ms-networks-cli.php';
 		}
 	}
 }
@@ -115,4 +129,4 @@ class WPMN_Loader {
 function setup_multi_network() {
 	new WPMN_Loader();
 }
-add_action( 'plugins_loaded', 'setup_multi_network' );
+add_action( 'muplugins_loaded', 'setup_multi_network' );
