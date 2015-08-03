@@ -1,6 +1,6 @@
 <?php
 /**
- * BuddyPress Groups component admin screen
+ * BuddyPress Groups component admin screen.
  *
  * Props to WordPress core for the Comments admin screen, and its contextual
  * help text, on which this implementation is heavily based.
@@ -51,6 +51,7 @@ add_action( bp_core_admin_hook(), 'bp_groups_add_admin_menu' );
  * @since BuddyPress (1.7.0)
  *
  * @param array $custom_menus Array of BP top-level menu items.
+ *
  * @return array Menu item array, with Groups added.
  */
 function bp_groups_admin_menu_order( $custom_menus = array() ) {
@@ -246,7 +247,6 @@ function bp_groups_admin_load() {
 		$allowed_status = apply_filters( 'groups_allowed_status', array( 'public', 'private', 'hidden' ) );
 		$status         = ( in_array( $_POST['group-status'], (array) $allowed_status ) ) ? $_POST['group-status'] : 'public';
 
-		// Invite status
 		/**
 		 * Filters the allowed invite status values for the group.
 		 *
@@ -433,9 +433,10 @@ function bp_groups_admin_load() {
  *
  * @since BuddyPress (1.7.0)
  *
- * @param string $value Will always be false unless another plugin filters it first.
- * @param string $option Screen option name.
+ * @param string $value     Will always be false unless another plugin filters it first.
+ * @param string $option    Screen option name.
  * @param string $new_value Screen option form value.
+ *
  * @return string Option value. False to abandon update.
  */
 function bp_groups_admin_screen_options( $value, $option, $new_value ) {
@@ -560,7 +561,7 @@ function bp_groups_admin_edit() {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param BP_Groups_Group Instance of the current group being edited. Passed by reference.
+	 * @param BP_Groups_Group $this Instance of the current group being edited. Passed by reference.
 	 */
 	do_action_ref_array( 'bp_groups_admin_edit', array( &$group ) ); ?>
 
@@ -581,7 +582,7 @@ function bp_groups_admin_edit() {
 
 		<?php if ( ! empty( $group ) ) : ?>
 
-			<form action="<?php echo esc_attr( $form_url ); ?>" id="bp-groups-edit-form" method="post">
+			<form action="<?php echo esc_url( $form_url ); ?>" id="bp-groups-edit-form" method="post">
 				<div id="poststuff">
 
 					<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
@@ -673,7 +674,7 @@ function bp_groups_admin_delete() {
 
 		<p><strong><?php _e( 'This action cannot be undone.', 'buddypress' ) ?></strong></p>
 
-		<a class="button-primary" href="<?php echo wp_nonce_url( add_query_arg( array( 'action' => 'do_delete', 'gid' => implode( ',', $gids ) ), $base_url ), 'bp-groups-delete' ) ?>"><?php _e( 'Delete Permanently', 'buddypress' ) ?></a>
+		<a class="button-primary" href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'action' => 'do_delete', 'gid' => implode( ',', $gids ) ), $base_url ), 'bp-groups-delete' ) ); ?>"><?php _e( 'Delete Permanently', 'buddypress' ) ?></a>
 		<a class="button" href="<?php echo esc_attr( $base_url ); ?>"><?php _e( 'Cancel', 'buddypress' ) ?></a>
 	</div>
 
@@ -687,7 +688,7 @@ function bp_groups_admin_delete() {
  *
  * @since BuddyPress (1.7.0)
  *
- * @global BP_Group_List_Table $bp_groups_list_table Group screen list table.
+ * @global BP_Groups_List_Table $bp_groups_list_table Group screen list table.
  * @global string $plugin_page Currently viewed plugin page.
  */
 function bp_groups_admin_index() {
@@ -813,8 +814,7 @@ function bp_groups_admin_edit_metabox_add_new_members( $item ) {
  *
  * @since BuddyPress (1.7.0)
  *
- * @param BP_Groups_Group $item The BP_Groups_Group object for the current
- *        group.
+ * @param BP_Groups_Group $item The BP_Groups_Group object for the current group.
  */
 function bp_groups_admin_edit_metabox_members( $item ) {
 
@@ -980,7 +980,7 @@ function bp_groups_admin_edit_metabox_status( $item ) {
 	<div id="submitcomment" class="submitbox">
 		<div id="major-publishing-actions">
 			<div id="delete-action">
-				<a class="submitdelete deletion" href="<?php echo wp_nonce_url( add_query_arg( 'action', 'delete', $base_url ), 'bp-groups-delete' ) ?>"><?php _e( 'Delete Group', 'buddypress' ) ?></a>
+				<a class="submitdelete deletion" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'action', 'delete', $base_url ), 'bp-groups-delete' ) ); ?>"><?php _e( 'Delete Group', 'buddypress' ) ?></a>
 			</div>
 
 			<div id="publishing-action">
@@ -1004,8 +1004,9 @@ function bp_groups_admin_edit_metabox_status( $item ) {
  *
  * @since BuddyPress (1.8.0)
  *
- * @param BP_Group_Member_Query $query A BP_Group_Member_Query object.
- * @param string $member_type member|mod|admin|banned.
+ * @param BP_Group_Member_Query $query       A BP_Group_Member_Query object.
+ * @param string                $member_type member|mod|admin|banned.
+ *
  * @return string Pagination links HTML.
  */
 function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, $member_type ) {
@@ -1039,12 +1040,16 @@ function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, 
 		'current'   => $page,
 	) );
 
-	$viewing_text = sprintf(
-		_n( 'Viewing 1 member', 'Viewing %1$s - %2$s of %3$s members', $query->total_users, 'buddypress' ),
-		number_format_i18n( $current_page_start ),
-		number_format_i18n( $current_page_end ),
-		(int) $query->total_users
-	);
+	if ( 1 == $query->total_users ) {
+		$viewing_text = __( 'Viewing 1 member', 'buddypress' );
+	} else {
+		$viewing_text = sprintf(
+			_n( 'Viewing %1$s - %2$s of %3$s member', 'Viewing %1$s - %2$s of %3$s members', $query->total_users, 'buddypress' ),
+			bp_core_number_format( $current_page_start ),
+			bp_core_number_format( $current_page_end ),
+			bp_core_number_format( $query->total_users )
+		);
+	}
 
 	$pagination .= '<span class="bp-group-admin-pagination-viewing">' . $viewing_text . '</span>';
 	$pagination .= '<span class="bp-group-admin-pagination-links">' . $pag_links . '</span>';
@@ -1058,6 +1063,7 @@ function bp_groups_admin_create_pagination_links( BP_Group_Member_Query $query, 
  * @since BuddyPress (1.7.0)
  *
  * @param array $user_ids Array of user IDs.
+ *
  * @return array Array of user_logins corresponding to $user_ids.
  */
 function bp_groups_admin_get_usernames_from_ids( $user_ids = array() ) {
@@ -1128,6 +1134,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 * e.g. "All", "Pending", "Approved", "Spam"...
 	 *
 	 * @since BuddyPress (1.7.0)
+	 *
 	 * @access public
 	 * @var string
 	 */
@@ -1137,6 +1144,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 * Group counts for each group type.
 	 *
 	 * @since BuddyPress (1.7.0)
+	 *
 	 * @access public
 	 * @var int
 	 */
@@ -1334,7 +1342,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param object $item The current group item in the loop.
+	 * @param object|array $item The current group item in the loop.
 	 */
 	public function single_row( $item = array() ) {
 		static $even = false;
@@ -1374,10 +1382,10 @@ class BP_Groups_List_Table extends WP_List_Table {
 		$url_base = bp_get_admin_url( 'admin.php?page=bp-groups' ); ?>
 
 		<ul class="subsubsub">
-			<li class="all"><a href="<?php echo esc_attr( esc_url( $url_base ) ); ?>" class="<?php if ( 'all' == $this->view ) echo 'current'; ?>"><?php _e( 'All', 'buddypress' ); ?></a> |</li>
-			<li class="public"><a href="<?php echo esc_attr( esc_url( add_query_arg( 'group_status', 'public', $url_base ) ) ); ?>" class="<?php if ( 'public' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Public <span class="count">(%s)</span>', 'Public <span class="count">(%s)</span>', $this->group_counts['public'], 'buddypress' ), number_format_i18n( $this->group_counts['public'] ) ); ?></a> |</li>
-			<li class="private"><a href="<?php echo esc_attr( esc_url( add_query_arg( 'group_status', 'private', $url_base ) ) ); ?>" class="<?php if ( 'private' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Private <span class="count">(%s)</span>', 'Private <span class="count">(%s)</span>', $this->group_counts['private'], 'buddypress' ), number_format_i18n( $this->group_counts['private'] ) ); ?></a> |</li>
-			<li class="hidden"><a href="<?php echo esc_attr( esc_url( add_query_arg( 'group_status', 'hidden', $url_base ) ) ); ?>" class="<?php if ( 'hidden' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Hidden <span class="count">(%s)</span>', 'Hidden <span class="count">(%s)</span>', $this->group_counts['hidden'], 'buddypress' ), number_format_i18n( $this->group_counts['hidden'] ) ); ?></a></li>
+			<li class="all"><a href="<?php echo esc_url( $url_base ); ?>" class="<?php if ( 'all' == $this->view ) echo 'current'; ?>"><?php _e( 'All', 'buddypress' ); ?></a> |</li>
+			<li class="public"><a href="<?php echo esc_url( add_query_arg( 'group_status', 'public', $url_base ) ); ?>" class="<?php if ( 'public' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Public <span class="count">(%s)</span>', 'Public <span class="count">(%s)</span>', $this->group_counts['public'], 'buddypress' ), number_format_i18n( $this->group_counts['public'] ) ); ?></a> |</li>
+			<li class="private"><a href="<?php echo esc_url( add_query_arg( 'group_status', 'private', $url_base ) ); ?>" class="<?php if ( 'private' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Private <span class="count">(%s)</span>', 'Private <span class="count">(%s)</span>', $this->group_counts['private'], 'buddypress' ), number_format_i18n( $this->group_counts['private'] ) ); ?></a> |</li>
+			<li class="hidden"><a href="<?php echo esc_url( add_query_arg( 'group_status', 'hidden', $url_base ) ); ?>" class="<?php if ( 'hidden' == $this->view ) echo 'current'; ?>"><?php printf( _n( 'Hidden <span class="count">(%s)</span>', 'Hidden <span class="count">(%s)</span>', $this->group_counts['hidden'], 'buddypress' ), number_format_i18n( $this->group_counts['hidden'] ) ); ?></a></li>
 
 			<?php
 
@@ -1444,7 +1452,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the column names for sortable columns
+	 * Get the column names for sortable columns.
 	 *
 	 * Note: It's not documented in WP, but the second item in the
 	 * nested arrays below is $desc_first. Normally, we would set
@@ -1580,7 +1588,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_description( $item = array() ) {
 
@@ -1600,7 +1608,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_status( $item = array() ) {
 		$status      = $item['status'];
@@ -1636,7 +1644,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_members( $item = array() ) {
 		$count = groups_get_groupmeta( $item['id'], 'total_member_count' );
@@ -1657,7 +1665,7 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (1.7.0)
 	 *
-	 * @param array Information about the current row.
+	 * @param array $item Information about the current row.
 	 */
 	public function column_last_active( $item = array() ) {
 		$last_active = groups_get_groupmeta( $item['id'], 'last_activity' );
@@ -1678,8 +1686,8 @@ class BP_Groups_List_Table extends WP_List_Table {
 	 *
 	 * @since BuddyPress (2.0.0)
 	 *
-	 * @param array Information about the current row.
-	 * @param string the column name.
+	 * @param array  $item        Information about the current row.
+	 * @param string $column_name The column name.
 	 *
 	 * @return string
 	 */

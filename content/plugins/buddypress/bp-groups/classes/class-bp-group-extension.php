@@ -289,10 +289,16 @@ class BP_Group_Extension {
 	 * methods that it needs for its purposes.
 	 */
 
-	// The content of the group tab
+	/**
+	 * The content of the group tab
+	 *
+	 * @param int|null $group_id
+	 */
 	public function display( $group_id = null ) {}
 
-	// Content displayed in a widget sidebar, if applicable
+	/**
+	 * Content displayed in a widget sidebar, if applicable
+	 */
 	public function widget_display() {}
 
 	// *_screen() displays the settings form for the given context
@@ -356,17 +362,21 @@ class BP_Group_Extension {
 	 *     @type array $screens A multi-dimensional array of configuration
 	 *           information for the extension screens. See docblock of
 	 *           {@link BP_Group_Extension} for more details.
-	 *     @type string $access Which users can visit the plugin's tab.
+	 *     @type string|array $access Which users can visit the plugin's tab.
 	 *			 Possible values: 'anyone', 'loggedin', 'member',
-	 *        	 'mod', 'admin' or 'noone'
-	 *			 ('member', 'mod', 'admin' refer to user's role in group.)
+	 *        	 'mod', 'admin' or 'noone'. ('member', 'mod', 'admin'
+	 *           refer to user's role in group.) Note that 'mod' targets only
+	 *           group moderators. If you want to allow access to group
+	 *           moderators and admins, specify `array( 'mod', 'admin' )`.
 	 * 			 Defaults to 'anyone' for public groups and 'member' for
 	 *			 private groups.
-	 *     @type string $show_tab Which users can see the plugin's navigation
-	 *			 tab.
+	 *     @type string|array $show_tab Which users can see the plugin's
+	 *           navigation tab.
 	 *			 Possible values: 'anyone', 'loggedin', 'member',
-	 *        	 'mod', 'admin' or 'noone'
-	 *			 ('member', 'mod', 'admin' refer to user's role in group.)
+	 *        	 'mod', 'admin' or 'noone'. ('member', 'mod', 'admin'
+	 *           refer to user's role in group.) Note that 'mod' targets only
+	 *           group moderators. If you want to show the tab to group
+	 *           moderators and admins, specify `array( 'mod', 'admin' )`.
 	 * 			 Defaults to 'anyone' for public groups and 'member' for
 	 *			 private groups.
 	 * }
@@ -1079,8 +1089,9 @@ class BP_Group_Extension {
 	 * @since BuddyPress (1.8.0)
 	 *
 	 * @param string $screen The screen markup, captured in the output
-	 *        buffer.
-	 * @param string $screen The same markup, with a submit button added.
+	 *                       buffer.
+	 *
+	 * @return string $screen The same markup, with a submit button added.
 	 */
 	protected function maybe_add_submit_button( $screen = '' ) {
 		if ( $this->has_submit_button( $screen ) ) {
@@ -1114,7 +1125,8 @@ class BP_Group_Extension {
 	 *
 	 * @since BuddyPress (2.1.0)
 	 *
-	 * @param string $location
+	 * @param string $redirect
+	 *
 	 * @return string
 	 */
 	public function detect_post_save_redirect( $redirect = '' ) {
@@ -1669,7 +1681,7 @@ class BP_Group_Extension {
  * Register a new Group Extension.
  *
  * @param string Name of the Extension class.
- * @return bool|null Returns false on failure, otherwise null.
+ * @return false|null Returns false on failure, otherwise null.
  */
 function bp_register_group_extension( $group_extension_class = '' ) {
 

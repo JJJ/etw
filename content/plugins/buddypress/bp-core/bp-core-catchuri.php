@@ -315,10 +315,10 @@ function bp_core_set_uri_globals() {
 					$bp_uri                = array_merge( array(), array_slice( $bp_uri, $uri_offset + 2 ) );
 					$bp->current_component = '';
 				}
-			}
 
-			// Reset the offset
-			$uri_offset = 0;
+				// Reset the offset
+				$uri_offset = 0;
+			}
 		}
 	}
 
@@ -584,8 +584,9 @@ function bp_core_no_access( $args = '' ) {
 		default :
 
 			$url = $root;
-			if ( !empty( $redirect ) )
+			if ( !empty( $redirect ) ) {
 				$url = add_query_arg( 'redirect_to', urlencode( $redirect ), $root );
+			}
 
 			if ( !empty( $message ) ) {
 				bp_core_add_message( $message, 'error' );

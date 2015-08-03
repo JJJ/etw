@@ -14,7 +14,7 @@
  * Description: BuddyPress helps you run any kind of social network on your WordPress, with member profiles, activity streams, user groups, messaging, and more.
  * Author:      The BuddyPress Community
  * Author URI:  https://buddypress.org/
- * Version:     2.3-alpha
+ * Version:     2.3.2.1
  * Text Domain: buddypress
  * Domain Path: /bp-languages/
  * License:     GPLv2 or later (license.txt)
@@ -309,8 +309,8 @@ class BuddyPress {
 
 		/** Versions **********************************************************/
 
-		$this->version    = '2.3-alpha';
-		$this->db_version = 9695;
+		$this->version    = '2.3.2.1';
+		$this->db_version = 9951;
 
 		/** Loading ***********************************************************/
 
@@ -451,26 +451,27 @@ class BuddyPress {
 		require( $this->plugin_dir . 'bp-core/bp-core-theme-compatibility.php' );
 
 		// Require all of the BuddyPress core libraries
-		require( $this->plugin_dir . 'bp-core/bp-core-dependency.php' );
-		require( $this->plugin_dir . 'bp-core/bp-core-actions.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-caps.php'       );
-		require( $this->plugin_dir . 'bp-core/bp-core-cache.php'      );
-		require( $this->plugin_dir . 'bp-core/bp-core-cssjs.php'      );
-		require( $this->plugin_dir . 'bp-core/bp-core-update.php'     );
-		require( $this->plugin_dir . 'bp-core/bp-core-options.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-classes.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-taxonomy.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-filters.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-avatars.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-widgets.php'    );
-		require( $this->plugin_dir . 'bp-core/bp-core-template.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-adminbar.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-buddybar.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-catchuri.php'   );
-		require( $this->plugin_dir . 'bp-core/bp-core-component.php'  );
-		require( $this->plugin_dir . 'bp-core/bp-core-functions.php'  );
-		require( $this->plugin_dir . 'bp-core/bp-core-moderation.php' );
-		require( $this->plugin_dir . 'bp-core/bp-core-loader.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-dependency.php'  );
+		require( $this->plugin_dir . 'bp-core/bp-core-actions.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-caps.php'        );
+		require( $this->plugin_dir . 'bp-core/bp-core-cache.php'       );
+		require( $this->plugin_dir . 'bp-core/bp-core-cssjs.php'       );
+		require( $this->plugin_dir . 'bp-core/bp-core-update.php'      );
+		require( $this->plugin_dir . 'bp-core/bp-core-options.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-classes.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-taxonomy.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-filters.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-attachments.php' );
+		require( $this->plugin_dir . 'bp-core/bp-core-avatars.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-widgets.php'     );
+		require( $this->plugin_dir . 'bp-core/bp-core-template.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-adminbar.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-buddybar.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-catchuri.php'    );
+		require( $this->plugin_dir . 'bp-core/bp-core-component.php'   );
+		require( $this->plugin_dir . 'bp-core/bp-core-functions.php'   );
+		require( $this->plugin_dir . 'bp-core/bp-core-moderation.php'  );
+		require( $this->plugin_dir . 'bp-core/bp-core-loader.php'      );
 
 		// Skip or load deprecated content
 		if ( false !== $this->load_deprecated ) {

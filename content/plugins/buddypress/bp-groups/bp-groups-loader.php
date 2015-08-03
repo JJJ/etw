@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BuddyPress Groups Loader
+ * BuddyPress Groups Loader.
  *
  * A groups component, for users to group themselves together. Includes a
  * robust sub-component API that allows Groups to be extended.
@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 class BP_Groups_Component extends BP_Component {
 
 	/**
-	 * Auto-join group when non group member performs group activity
+	 * Auto-join group when non group member performs group activity.
 	 *
 	 * @since BuddyPress (1.5.0)
 	 * @access public
@@ -298,7 +298,7 @@ class BP_Groups_Component extends BP_Component {
 		) );
 
 		// If avatar uploads are not disabled, add avatar option
-		$disabled_avatar_uploads = (int) bp_core_get_root_option( 'bp-disable-avatar-uploads' );
+		$disabled_avatar_uploads = (int) bp_disable_group_avatar_uploads();
 		if ( ! $disabled_avatar_uploads && $bp->avatar->show_avatars ) {
 			$this->group_creation_steps['group-avatar'] = array(
 				'name'     => _x( 'Photo', 'Group screen nav', 'buddypress' ),
@@ -386,10 +386,8 @@ class BP_Groups_Component extends BP_Component {
 	 *
 	 * @see BP_Component::setup_nav() for a description of arguments.
 	 *
-	 * @param array $main_nav Optional. See BP_Component::setup_nav() for
-	 *        description.
-	 * @param array $sub_nav Optional. See BP_Component::setup_nav() for
-	 *        description.
+	 * @param array $main_nav Optional. See BP_Component::setup_nav() for description.
+	 * @param array $sub_nav  Optional. See BP_Component::setup_nav() for description.
 	 */
 	public function setup_nav( $main_nav = array(), $sub_nav = array() ) {
 
@@ -574,7 +572,7 @@ class BP_Groups_Component extends BP_Component {
 					'position'        => 10,
 				), $default_params );
 
-				if ( ! (int) bp_get_option( 'bp-disable-avatar-uploads' ) && buddypress()->avatar->show_avatars ) {
+				if ( ! bp_disable_group_avatar_uploads() && buddypress()->avatar->show_avatars ) {
 					$sub_nav[] = array_merge( array(
 						'name'        => __( 'Photo', 'buddypress' ),
 						'slug'        => 'group-avatar',
@@ -629,8 +627,7 @@ class BP_Groups_Component extends BP_Component {
 	 * @see BP_Component::setup_nav() for a description of the $wp_admin_nav
 	 *      parameter array.
 	 *
-	 * @param array $wp_admin_nav See BP_Component::setup_admin_bar() for a
-	 *        description.
+	 * @param array $wp_admin_nav See BP_Component::setup_admin_bar() for a description.
 	 */
 	public function setup_admin_bar( $wp_admin_nav = array() ) {
 		$bp = buddypress();

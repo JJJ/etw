@@ -196,6 +196,7 @@ abstract class BP_Attachment {
 	 *
 	 * @param  array $file               The appropriate entry the from $_FILES superglobal.
 	 * @param  string $upload_dir_filter A specific filter to be applied to 'upload_dir' (optional).
+	 * @param  string $time              Optional. Time formatted in 'yyyy/mm'. Default null.
 	 * @uses   wp_handle_upload()        To upload the file
 	 * @uses   add_filter()              To temporarly overrides WordPress uploads data
 	 * @uses   remove_filter()           To stop overriding WordPress uploads data
@@ -205,7 +206,7 @@ abstract class BP_Attachment {
 	 *                                   On failure, returns an array containing the error message
 	 *                                   (eg: array( 'error' => $message ) )
 	 */
-	public function upload( $file, $upload_dir_filter = '' ) {
+	public function upload( $file, $upload_dir_filter = '', $time = null ) {
 		/**
 		 * Upload action and the file input name are required parameters
 		 * @see BP_Attachment:__construct()
@@ -218,6 +219,13 @@ abstract class BP_Attachment {
 		 * Add custom rules before enabling the file upload
 		 */
 		add_filter( "{$this->action}_prefilter", array( $this, 'validate_upload' ), 10, 1 );
+
+		/**
+		 * The above dynamic filter was introduced in WordPress 4.0, as we support WordPress
+		 * back to 3.6, we need to also use the pre 4.0 static filter and remove it after
+		 * the upload was processed.
+		 */
+		add_filter( 'wp_handle_upload_prefilter', array( $this, 'validate_upload' ), 10, 1 );
 
 		// Set Default overrides
 		$overrides = array(
@@ -257,13 +265,20 @@ abstract class BP_Attachment {
 		}
 
 		// Make sure the file will be uploaded in the attachment directory
-		add_filter( 'upload_dir', $upload_dir_filter, 10, 0 );
+		if ( ! empty( $upload_dir_filter ) ) {
+			add_filter( 'upload_dir', $upload_dir_filter, 10, 0 );
+		}
 
 		// Upload the attachment
-		$this->attachment = wp_handle_upload( $file[ $this->file_input ], $overrides );
+		$this->attachment = wp_handle_upload( $file[ $this->file_input ], $overrides, $time );
 
 		// Restore WordPress Uploads data
-		remove_filter( 'upload_dir', $upload_dir_filter, 10, 0 );
+		if ( ! empty( $upload_dir_filter ) ) {
+			remove_filter( 'upload_dir', $upload_dir_filter, 10, 0 );
+		}
+
+		// Remove the pre WordPress 4.0 static filter
+		remove_filter( 'wp_handle_upload_prefilter', array( $this, 'validate_upload' ), 10, 1 );
 
 		// Finally return the uploaded file or the error
 		return $this->attachment;
@@ -476,5 +491,28 @@ abstract class BP_Attachment {
 
 		// Finally crop the image
 		return wp_crop_image( $r['original_file'], (int) $r['crop_x'], (int) $r['crop_y'], (int) $r['crop_w'], (int) $r['crop_h'], (int) $r['dst_w'], (int) $r['dst_h'], $r['src_abs'], $r['dst_file'] );
+	}
+
+	/**
+	 * Build script datas for the Uploader UI
+	 *
+	 * Override this method from your child class to build the script datas
+	 *
+	 * @since BuddyPress (2.3.0)
+	 *
+	 * @return array the javascript localization data
+	 */
+	public function script_data() {
+		$script_data = array(
+			'action'            => $this->action,
+			'file_data_name'    => $this->file_input,
+			'max_file_size'     => $this->original_max_filesize,
+			'feedback_messages' => array(
+				1 => __( 'Sorry, uploading the file failed.', 'buddypress' ),
+				2 => __( 'File successfully uploaded.', 'buddypress' ),
+			),
+		);
+
+		return $script_data;
 	}
 }

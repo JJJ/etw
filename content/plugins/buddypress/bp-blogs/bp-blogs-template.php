@@ -76,7 +76,7 @@ function bp_blogs_root_slug() {
  * @uses bp_get_blogs_directory_permalink()
  */
 function bp_blogs_directory_permalink() {
-	echo bp_get_blogs_directory_permalink();
+	echo esc_url( bp_get_blogs_directory_permalink() );
 }
 	/**
 	 * Return blog directory permalink.
@@ -472,7 +472,13 @@ function bp_blogs_pagination_count() {
 	$to_num    = bp_core_number_format( ( $start_num + ( $blogs_template->pag_num - 1 ) > $blogs_template->total_blog_count ) ? $blogs_template->total_blog_count : $start_num + ( $blogs_template->pag_num - 1 ) );
 	$total     = bp_core_number_format( $blogs_template->total_blog_count );
 
-	echo sprintf( _n( 'Viewing 1 site', 'Viewing %1$s - %2$s of %3$s sites', $total, 'buddypress' ), $from_num, $to_num, $total );
+	if ( 1 == $blogs_template->total_blog_count ) {
+		$message = __( 'Viewing 1 site', 'buddypress' );
+	} else {
+		$message = sprintf( _n( 'Viewing %1$s - %2$s of %3$s site', 'Viewing %1$s - %2$s of %3$s sites', $blogs_template->total_blog_count, 'buddypress' ), $from_num, $to_num, $total );
+	}
+
+	echo $message;
 }
 
 /**
@@ -706,9 +712,11 @@ function bp_blog_description() {
  * Output the row class of the current blog in the loop.
  *
  * @since BuddyPress (1.7.0)
+ *
+ * @param array $classes Array of custom classes
  */
-function bp_blog_class() {
-	echo bp_get_blog_class();
+function bp_blog_class( $classes = array() ) {
+	echo bp_get_blog_class( $classes );
 }
 	/**
 	 * Return the row class of the current blog in the loop.
@@ -716,20 +724,22 @@ function bp_blog_class() {
 	 * @since BuddyPress (1.7.0)
 	 *
 	 * @global BP_Blogs_Template $blogs_template
+	 * @param array $classes Array of custom classes
 	 *
 	 * @return string Row class of the site.
 	 */
-	function bp_get_blog_class() {
+	function bp_get_blog_class( $classes = array() ) {
 		global $blogs_template;
 
-		$classes     = array();
-		$pos_in_loop = (int) $blogs_template->current_blog;
+		// Add even/odd classes, but only if there's more than 1 group
+		if ( $blogs_template->blog_count > 1 ) {
+			$pos_in_loop = (int) $blogs_template->current_blog;
+			$classes[]   = ( $pos_in_loop % 2 ) ? 'even' : 'odd';
 
-		// If we've only one site in the loop, don't bother with odd and even.
-		if ( $blogs_template->blog_count > 1 )
-			$classes[] = ( $pos_in_loop % 2 ) ? 'even' : 'odd';
-		else
+		// If we've only one site in the loop, don't bother with odd and even
+		} else {
 			$classes[] = 'bp-single-blog';
+		}
 
 		/**
 		 * Filters the row class of the current blog in the loop.
@@ -740,8 +750,8 @@ function bp_blog_class() {
 		 */
 		$classes = apply_filters( 'bp_get_blog_class', $classes );
 		$classes = array_merge( $classes, array() );
+		$retval  = 'class="' . join( ' ', $classes ) . '"';
 
-		$retval = 'class="' . join( ' ', $classes ) . '"';
 		return $retval;
 	}
 
@@ -901,7 +911,7 @@ function bp_blog_latest_post_title() {
  * @see bp_get_blog_latest_post_title()
  */
 function bp_blog_latest_post_permalink() {
-	echo bp_get_blog_latest_post_permalink();
+	echo esc_url( bp_get_blog_latest_post_permalink() );
 }
 	/**
 	 * Return the permalink of the latest post on the current blog in the loop.
