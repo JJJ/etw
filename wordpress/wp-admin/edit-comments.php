@@ -140,7 +140,7 @@ require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
 
 <div class="wrap">
-<h2><?php
+<h1><?php
 if ( $post_id )
 	echo sprintf( __( 'Comments on &#8220;%s&#8221;' ),
 		sprintf( '<a href="%s">%s</a>',
@@ -149,11 +149,11 @@ if ( $post_id )
 		)
 	);
 else
-	echo __('Comments');
+	_e( 'Comments' );
 
 if ( isset($_REQUEST['s']) && $_REQUEST['s'] )
 	echo '<span class="subtitle">' . sprintf( __( 'Search results for &#8220;%s&#8221;' ), wp_html_excerpt( esc_html( wp_unslash( $_REQUEST['s'] ) ), 50, '&hellip;' ) ) . '</span>'; ?>
-</h2>
+</h1>
 
 <?php
 if ( isset( $_REQUEST['error'] ) ) {
@@ -161,7 +161,7 @@ if ( isset( $_REQUEST['error'] ) ) {
 	$error_msg = '';
 	switch ( $error ) {
 		case 1 :
-			$error_msg = __( 'Oops, no comment with this ID.' );
+			$error_msg = __( 'Invalid comment ID.' );
 			break;
 		case 2 :
 			$error_msg = __( 'You are not allowed to edit comments on this post.' );

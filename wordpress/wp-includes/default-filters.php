@@ -87,6 +87,7 @@ add_filter( 'post_mime_type', 'sanitize_mime_type' );
 
 // Places to balance tags on input
 foreach ( array( 'content_save_pre', 'excerpt_save_pre', 'comment_save_pre', 'pre_comment_content' ) as $filter ) {
+	add_filter( $filter, 'convert_invalid_entities' );
 	add_filter( $filter, 'balanceTags', 50 );
 }
 
@@ -218,8 +219,9 @@ add_action( 'wp_head',             'wp_print_styles',                  8    );
 add_action( 'wp_head',             'wp_print_head_scripts',            9    );
 add_action( 'wp_head',             'wp_generator'                           );
 add_action( 'wp_head',             'rel_canonical'                          );
-add_action( 'wp_footer',           'wp_print_footer_scripts',         20    );
 add_action( 'wp_head',             'wp_shortlink_wp_head',            10, 0 );
+add_action( 'wp_head',             'wp_site_icon',                    99    );
+add_action( 'wp_footer',           'wp_print_footer_scripts',         20    );
 add_action( 'template_redirect',   'wp_shortlink_header',             11, 0 );
 add_action( 'wp_print_footer_scripts', '_wp_footer_scripts'                 );
 add_action( 'init',                'check_theme_switched',            99    );
@@ -238,6 +240,11 @@ add_action( 'login_init',          'send_frame_options_header',     10, 0 );
 foreach ( array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' ) as $action ) {
 	add_action( $action, 'the_generator' );
 }
+
+// Feed Site Icon
+add_action( 'atom_head', 'atom_site_icon' );
+add_action( 'rss2_head', 'rss2_site_icon' );
+
 
 // WP Cron
 if ( !defined( 'DOING_CRON' ) )
@@ -290,6 +297,9 @@ add_action( 'post_updated',      'wp_check_for_changed_slugs', 12, 3 );
 // Nonce check for Post Previews
 add_action( 'init', '_show_post_preview' );
 
+// Output JS to reset window.name for previews
+add_action( 'wp_head', 'wp_post_preview_js', 1 );
+
 // Timezone
 add_filter( 'pre_option_gmt_offset','wp_timezone_override_offset' );
 
@@ -325,7 +335,6 @@ add_action( 'split_shared_term', '_wp_check_split_terms_in_menus', 10, 4 );
  * Filters formerly mixed into wp-includes
  */
 // Theme
-add_action( 'setup_theme', 'preview_theme' );
 add_action( 'wp_loaded', '_custom_header_background_just_in_time' );
 add_action( 'plugins_loaded', '_wp_customize_include' );
 add_action( 'admin_enqueue_scripts', '_wp_customize_loader_settings' );
@@ -381,6 +390,9 @@ add_action( 'customize_controls_enqueue_scripts', 'wp_plupload_default_settings'
 
 // Nav menu
 add_filter( 'nav_menu_item_id', '_nav_menu_item_id_use_once', 10, 2 );
+
+// Widgets
+add_action( 'init', 'wp_widgets_init', 1 );
 
 // Admin Bar
 // Don't remove. Wrong way to disable.
