@@ -1,4 +1,4 @@
 <?php
 
 // No credit
-apply_filters( 'make_show_footer_credit', '__return_false' );
+add_filter( 'make_show_footer_credit', '__return_false' );
