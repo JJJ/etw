@@ -148,7 +148,6 @@ require( ABSPATH . WPINC . '/shortcodes.php' );
 require( ABSPATH . WPINC . '/class-wp-embed.php' );
 require( ABSPATH . WPINC . '/media.php' );
 require( ABSPATH . WPINC . '/http.php' );
-require( ABSPATH . WPINC . '/class-http.php' );
 require( ABSPATH . WPINC . '/widgets.php' );
 require( ABSPATH . WPINC . '/nav-menu.php' );
 require( ABSPATH . WPINC . '/nav-menu-template.php' );
@@ -175,7 +174,7 @@ unset( $mu_plugin );
 
 // Load network activated plugins.
 if ( is_multisite() ) {
-	foreach( wp_get_active_network_plugins() as $network_plugin ) {
+	foreach ( wp_get_active_network_plugins() as $network_plugin ) {
 		wp_register_plugin_realpath( $network_plugin );
 		include_once( $network_plugin );
 	}

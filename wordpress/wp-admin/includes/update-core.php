@@ -43,7 +43,6 @@ $_old_files = array(
 'wp-admin/link-categories.php',
 'wp-admin/list-manipulation.js',
 'wp-admin/list-manipulation.php',
-'wp-includes/comment-functions.php',
 'wp-includes/feed-functions.php',
 'wp-includes/functions-compat.php',
 'wp-includes/functions-formatting.php',
@@ -694,7 +693,12 @@ $_old_files = array(
 'wp-includes/js/jquery/ui/jquery.ui.tabs.min.js',
 'wp-includes/js/jquery/ui/jquery.ui.tooltip.min.js',
 'wp-includes/js/jquery/ui/jquery.ui.widget.min.js',
-'wp-includes/js/tinymce/skins/wordpress/images/dashicon-no-alt.png'
+'wp-includes/js/tinymce/skins/wordpress/images/dashicon-no-alt.png',
+// 4.3
+'wp-admin/js/wp-fullscreen.js',
+'wp-admin/js/wp-fullscreen.min.js',
+'wp-includes/js/tinymce/wp-mce-help.php',
+'wp-includes/js/tinymce/plugins/wpfullscreen',
 );
 
 /**
@@ -876,7 +880,7 @@ function update_core($from, $to) {
 		if ( is_array( $checksums ) && isset( $checksums[ $wp_version ] ) )
 			$checksums = $checksums[ $wp_version ]; // Compat code for 3.7-beta2
 		if ( is_array( $checksums ) ) {
-			foreach( $checksums as $file => $checksum ) {
+			foreach ( $checksums as $file => $checksum ) {
 				if ( 'wp-content' == substr( $file, 0, 10 ) )
 					continue;
 				if ( ! file_exists( ABSPATH . $file ) )

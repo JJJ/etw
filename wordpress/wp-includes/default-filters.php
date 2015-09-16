@@ -233,6 +233,7 @@ if ( isset( $_GET['replytocom'] ) )
 
 // Login actions
 add_action( 'login_head',          'wp_print_head_scripts',         9     );
+add_action( 'login_head',          'wp_site_icon',                  99    );
 add_action( 'login_footer',        'wp_print_footer_scripts',       20    );
 add_action( 'login_init',          'send_frame_options_header',     10, 0 );
 
@@ -328,8 +329,16 @@ add_filter( 'determine_current_user', 'wp_validate_auth_cookie'          );
 add_filter( 'determine_current_user', 'wp_validate_logged_in_cookie', 20 );
 
 // Split term updates.
+add_action( 'admin_init',        '_wp_check_for_scheduled_split_terms' );
 add_action( 'split_shared_term', '_wp_check_split_default_terms',  10, 4 );
 add_action( 'split_shared_term', '_wp_check_split_terms_in_menus', 10, 4 );
+add_action( 'split_shared_term', '_wp_check_split_nav_menu_terms', 10, 4 );
+add_action( 'wp_split_shared_term_batch', '_wp_batch_split_terms' );
+
+// Email notifications.
+add_action( 'comment_post', 'wp_new_comment_notify_moderator', 10, 2 );
+add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
+add_action( 'after_password_reset', 'wp_password_change_notification' );
 
 /**
  * Filters formerly mixed into wp-includes
@@ -400,5 +409,10 @@ add_action( 'template_redirect', '_wp_admin_bar_init', 0 );
 add_action( 'admin_init', '_wp_admin_bar_init' );
 add_action( 'wp_footer', 'wp_admin_bar_render', 1000 );
 add_action( 'in_admin_header', 'wp_admin_bar_render', 0 );
+
+// Former admin filters that can also be hooked on the front end
+add_action( 'media_buttons', 'media_buttons' );
+add_filter( 'image_send_to_editor', 'image_add_caption', 20, 8 );
+add_filter( 'media_send_to_editor', 'image_media_send_to_editor', 10, 3 );
 
 unset( $filter, $action );

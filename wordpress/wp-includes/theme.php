@@ -688,15 +688,15 @@ function switch_theme( $stylesheet ) {
 		set_theme_mod( 'sidebars_widgets', array( 'time' => time(), 'data' => $_sidebars_widgets ) );
 	}
 
-	$old_theme  = wp_get_theme();
-	$new_theme = wp_get_theme( $stylesheet );
+	$nav_menu_locations = get_theme_mod( 'nav_menu_locations' );
 
 	if ( func_num_args() > 1 ) {
-		$template = $stylesheet;
 		$stylesheet = func_get_arg( 1 );
-	} else {
-		$template = $new_theme->get_template();
 	}
+
+	$old_theme = wp_get_theme();
+	$new_theme = wp_get_theme( $stylesheet );
+	$template  = $new_theme->get_template();
 
 	update_option( 'template', $template );
 	update_option( 'stylesheet', $stylesheet );
@@ -716,6 +716,9 @@ function switch_theme( $stylesheet ) {
 	// Migrate from the old mods_{name} option to theme_mods_{slug}.
 	if ( is_admin() && false === get_option( 'theme_mods_' . $stylesheet ) ) {
 		$default_theme_mods = (array) get_option( 'mods_' . $new_name );
+		if ( ! empty( $nav_menu_locations ) && empty( $default_theme_mods['nav_menu_locations'] ) ) {
+			$default_theme_mods['nav_menu_locations'] = $nav_menu_locations;
+		}
 		add_option( "theme_mods_$stylesheet", $default_theme_mods );
 	} else {
 		/*
@@ -725,6 +728,13 @@ function switch_theme( $stylesheet ) {
 		 */
 		if ( 'wp_ajax_customize_save' === current_action() ) {
 			remove_theme_mod( 'sidebars_widgets' );
+		}
+
+		if ( ! empty( $nav_menu_locations ) ) {
+			$nav_mods = get_theme_mod( 'nav_menu_locations' );
+			if ( empty( $nav_mods ) ) {
+				set_theme_mod( 'nav_menu_locations', $nav_menu_locations );
+			}
 		}
 	}
 
@@ -1878,6 +1888,7 @@ function check_theme_switched() {
 			/** This action is documented in wp-includes/theme.php */
 			do_action( 'after_switch_theme', $stylesheet );
 		}
+		flush_rewrite_rules();
 
 		update_option( 'theme_switched', false );
 	}
@@ -1886,7 +1897,8 @@ function check_theme_switched() {
 /**
  * Includes and instantiates the WP_Customize_Manager class.
  *
- * Fires when ?wp_customize=on or on wp-admin/customize.php.
+ * Fires on a preview frame request (when ?wp_customize=on is in the URL) and
+ * on the Customizer interface page (wp-admin/customize.php).
  *
  * @since 3.4.0
  *

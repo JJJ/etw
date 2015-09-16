@@ -12,6 +12,10 @@ require_once( dirname( __FILE__ ) . '/admin.php' );
 if ( ! $typenow )
 	wp_die( __( 'Invalid post type' ) );
 
+if ( ! in_array( $typenow, get_post_types( array( 'show_ui' => true ) ) ) ) {
+	wp_die( __( 'You are not allowed to edit posts in this post type.' ) );
+}
+
 if ( 'attachment' === $typenow ) {
 	if ( wp_redirect( admin_url( 'upload.php' ) ) ) {
 		exit;
@@ -30,8 +34,13 @@ $post_type_object = get_post_type_object( $post_type );
 if ( ! $post_type_object )
 	wp_die( __( 'Invalid post type' ) );
 
-if ( ! current_user_can( $post_type_object->cap->edit_posts ) )
-	wp_die( __( 'Cheatin&#8217; uh?' ), 403 );
+if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
+	wp_die(
+		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+		'<p>' . __( 'You are not allowed to edit posts in this post type.' ) . '</p>',
+		403
+	);
+}
 
 $wp_list_table = _get_list_table('WP_Posts_List_Table');
 $pagenum = $wp_list_table->get_pagenum();
@@ -92,7 +101,7 @@ if ( $doaction ) {
 		case 'trash':
 			$trashed = $locked = 0;
 
-			foreach( (array) $post_ids as $post_id ) {
+			foreach ( (array) $post_ids as $post_id ) {
 				if ( !current_user_can( 'delete_post', $post_id) )
 					wp_die( __('You are not allowed to move this item to the Trash.') );
 
@@ -111,7 +120,7 @@ if ( $doaction ) {
 			break;
 		case 'untrash':
 			$untrashed = 0;
-			foreach( (array) $post_ids as $post_id ) {
+			foreach ( (array) $post_ids as $post_id ) {
 				if ( !current_user_can( 'delete_post', $post_id) )
 					wp_die( __('You are not allowed to restore this item from the Trash.') );
 
@@ -124,7 +133,7 @@ if ( $doaction ) {
 			break;
 		case 'delete':
 			$deleted = 0;
-			foreach( (array) $post_ids as $post_id ) {
+			foreach ( (array) $post_ids as $post_id ) {
 				$post_del = get_post($post_id);
 
 				if ( !current_user_can( 'delete_post', $post_id ) )

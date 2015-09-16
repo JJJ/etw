@@ -135,7 +135,7 @@ CREATE TABLE $wpdb->links (
 ) $charset_collate;
 CREATE TABLE $wpdb->options (
   option_id bigint(20) unsigned NOT NULL auto_increment,
-  option_name varchar(64) NOT NULL default '',
+  option_name varchar(191) NOT NULL default '',
   option_value longtext NOT NULL,
   autoload varchar(20) NOT NULL default 'yes',
   PRIMARY KEY  (option_id),
@@ -467,7 +467,7 @@ function populate_options() {
 	// 2.7
 	'large_size_w' => 1024,
 	'large_size_h' => 1024,
-	'image_default_link_type' => 'file',
+	'image_default_link_type' => 'none',
 	'image_default_size' => '',
 	'image_default_align' => '',
 	'close_comments_for_old_posts' => 0,
@@ -496,6 +496,9 @@ function populate_options() {
 
 	// 3.5
 	'link_manager_enabled' => 0,
+
+	// 4.3.0
+	'finished_splitting_shared_terms' => 1,
 	);
 
 	// 3.3
@@ -892,7 +895,7 @@ function populate_network( $network_id = 1, $domain = '', $email = '', $site_nam
 
 	$site_user = get_user_by( 'email', $email );
 	if ( ! is_email( $email ) )
-		$errors->add( 'invalid_email', __( 'You must provide a valid e-mail address.' ) );
+		$errors->add( 'invalid_email', __( 'You must provide a valid email address.' ) );
 
 	if ( $errors->get_error_code() )
 		return $errors;

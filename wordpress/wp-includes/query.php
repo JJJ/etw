@@ -1425,6 +1425,7 @@ class WP_Query {
 			, 'preview'
 			, 's'
 			, 'sentence'
+			, 'title'
 			, 'fields'
 			, 'menu_order'
 		);
@@ -1434,7 +1435,7 @@ class WP_Query {
 				$array[$key] = '';
 		}
 
-		$array_keys = array( 'category__in', 'category__not_in', 'category__and', 'post__in', 'post__not_in',
+		$array_keys = array( 'category__in', 'category__not_in', 'category__and', 'post__in', 'post__not_in', 'post_name__in',
 			'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and', 'post_parent__in', 'post_parent__not_in',
 			'author__in', 'author__not_in' );
 
@@ -1451,6 +1452,7 @@ class WP_Query {
 	 * @since 1.5.0
 	 * @since 4.2.0 Introduced the ability to order by specific clauses of a `$meta_query`, by passing the clause's
 	 *              array key to `$orderby`.
+	 * @since 4.4.0 Introduced `$post_name__in` and `$title` parameters.
 	 * @access public
 	 *
 	 * @param string|array $query {
@@ -1527,6 +1529,7 @@ class WP_Query {
 	 *     @type int          $posts_per_page          The number of posts to query for. Use -1 to request all posts.
 	 *     @type int          $posts_per_archive_page  The number of posts to query for by archive page. Overrides
 	 *                                                 'posts_per_page' when is_archive(), or is_search() are true.
+	 *     @type array        $post_name__in           An array of post slugs that results must match.
 	 *     @type string       $s                       Search keyword.
 	 *     @type int          $second                  Second of the minute. Default empty. Accepts numbers 0-60.
 	 *     @type array        $search_terms            Array of search terms.
@@ -1542,6 +1545,7 @@ class WP_Query {
 	 *                                                 true. Note: a string of comma-separated IDs will NOT work.
 	 *     @type array        $tax_query               An associative array of WP_Tax_Query arguments.
 	 *                                                 {@see WP_Tax_Query->queries}
+	 *     @type string       $title                   Post title.
 	 *     @type bool         $update_post_meta_cache  Whether to update the post meta cache. Default true.
 	 *     @type bool         $update_post_term_cache  Whether to update the post term cache. Default true.
 	 *     @type int          $w                       The week number of the year. Default empty. Accepts numbers 0-53.
@@ -1575,6 +1579,7 @@ class WP_Query {
 		$qv['author'] = preg_replace( '|[^0-9,-]|', '', $qv['author'] ); // comma separated list of positive or negative integers
 		$qv['pagename'] = trim( $qv['pagename'] );
 		$qv['name'] = trim( $qv['name'] );
+		$qv['title'] = trim( $qv['title'] );
 		if ( '' !== $qv['hour'] ) $qv['hour'] = absint($qv['hour']);
 		if ( '' !== $qv['minute'] ) $qv['minute'] = absint($qv['minute']);
 		if ( '' !== $qv['second'] ) $qv['second'] = absint($qv['second']);
@@ -1886,6 +1891,11 @@ class WP_Query {
 			}
 		}
 
+		// If querystring 'cat' is an array, implode it.
+		if ( is_array( $q['cat'] ) ) {
+			$q['cat'] = implode( ',', $q['cat'] );
+		}
+
 		// Category stuff
 		if ( ! empty( $q['cat'] ) && ! $this->is_singular ) {
 			$cat_in = $cat_not_in = array();
@@ -1959,6 +1969,11 @@ class WP_Query {
 				'operator' => 'AND',
 				'include_children' => false
 			);
+		}
+
+		// If querystring 'tag' is array, implode it.
+		if ( is_array( $q['tag'] ) ) {
+			$q['tag'] = implode( ',', $q['tag'] );
 		}
 
 		// Tag stuff
@@ -2161,7 +2176,7 @@ class WP_Query {
 			'Comma-separated list of search stopwords in your language' ) );
 
 		$stopwords = array();
-		foreach( $words as $word ) {
+		foreach ( $words as $word ) {
 			$word = trim( $word, "\r\n\t " );
 			if ( $word )
 				$stopwords[] = $word;
@@ -2256,7 +2271,7 @@ class WP_Query {
 			$allowed_keys   = array_merge( $allowed_keys, array_keys( $meta_clauses ) );
 		}
 
-		if ( ! in_array( $orderby, $allowed_keys ) ) {
+		if ( ! in_array( $orderby, $allowed_keys, true ) ) {
 			return false;
 		}
 
@@ -2603,6 +2618,11 @@ class WP_Query {
 			unset($ptype_obj);
 		}
 
+		if ( '' !== $q['title'] ) {
+			$where .= $wpdb->prepare( " AND $wpdb->posts.post_title = %s", stripslashes( $q['title'] ) );
+		}
+
+		// Parameters related to 'post_name'.
 		if ( '' != $q['name'] ) {
 			$q['name'] = sanitize_title_for_query( $q['name'] );
 			$where .= " AND $wpdb->posts.post_name = '" . $q['name'] . "'";
@@ -2647,8 +2667,10 @@ class WP_Query {
 			$q['attachment'] = sanitize_title_for_query( wp_basename( $q['attachment'] ) );
 			$q['name'] = $q['attachment'];
 			$where .= " AND $wpdb->posts.post_name = '" . $q['attachment'] . "'";
+		} elseif ( is_array( $q['post_name__in'] ) && ! empty( $q['post_name__in'] ) ) {
+			$q['post_name__in'] = array_map( 'sanitize_title_for_query', $q['post_name__in'] );
+			$where .= " AND $wpdb->posts.post_name IN ('" . implode( "' ,'", $q['post_name__in'] ) . "')";
 		}
-
 
 		if ( intval($q['comments_popup']) )
 			$q['p'] = absint($q['comments_popup']);
@@ -3164,7 +3186,9 @@ class WP_Query {
 			$cgroupby = ( ! empty( $cgroupby ) ) ? 'GROUP BY ' . $cgroupby : '';
 			$corderby = ( ! empty( $corderby ) ) ? 'ORDER BY ' . $corderby : '';
 
-			$this->comments = (array) $wpdb->get_results("SELECT $distinct $wpdb->comments.* FROM $wpdb->comments $cjoin $cwhere $cgroupby $corderby $climits");
+			$comments = (array) $wpdb->get_results("SELECT $distinct $wpdb->comments.* FROM $wpdb->comments $cjoin $cwhere $cgroupby $corderby $climits");
+			// Convert to WP_Comment
+			$this->comments = array_map( 'get_comment', $comments );
 			$this->comment_count = count($this->comments);
 
 			$post_ids = array();
@@ -3535,7 +3559,9 @@ class WP_Query {
 			$climits = apply_filters_ref_array( 'comment_feed_limits', array( 'LIMIT ' . get_option('posts_per_rss'), &$this ) );
 
 			$comments_request = "SELECT $wpdb->comments.* FROM $wpdb->comments $cjoin $cwhere $cgroupby $corderby $climits";
-			$this->comments = $wpdb->get_results($comments_request);
+			$comments = $wpdb->get_results($comments_request);
+			// Convert to WP_Comment
+			$this->comments = array_map( 'get_comment', $comments );
 			$this->comment_count = count($this->comments);
 		}
 
@@ -3790,12 +3816,12 @@ class WP_Query {
 	}
 
 	/**
-	 * Iterate current comment index and return comment object.
+	 * Iterate current comment index and return WP_Comment object.
 	 *
 	 * @since 2.2.0
 	 * @access public
 	 *
-	 * @return object Comment object.
+	 * @return WP_Comment Comment object.
 	 */
 	public function next_comment() {
 		$this->current_comment++;
@@ -3809,7 +3835,7 @@ class WP_Query {
 	 *
 	 * @since 2.2.0
 	 * @access public
-	 * @global object $comment Current comment.
+	 * @global WP_Comment $comment Current comment.
 	 */
 	public function the_comment() {
 		global $comment;
@@ -3891,7 +3917,7 @@ class WP_Query {
 			return $this->queried_object;
 
 		$this->queried_object = null;
-		$this->queried_object_id = 0;
+		$this->queried_object_id = null;
 
 		if ( $this->is_category || $this->is_tag || $this->is_tax ) {
 			if ( $this->is_category ) {
@@ -4581,6 +4607,7 @@ class WP_Query {
 	 * Set up global post data.
 	 *
 	 * @since 4.1.0
+	 * @since 4.4.0 Added the ability to pass a post ID to `$post`.
 	 *
 	 * @global int             $id
 	 * @global WP_User         $authordata
@@ -4592,11 +4619,19 @@ class WP_Query {
 	 * @global int             $more
 	 * @global int             $numpages
 	 *
-	 * @param WP_Post $post Post data.
+	 * @param WP_Post|object|int $post WP_Post instance or Post ID/object.
 	 * @return true True when finished.
 	 */
 	public function setup_postdata( $post ) {
 		global $id, $authordata, $currentday, $currentmonth, $page, $pages, $multipage, $more, $numpages;
+
+		if ( ! ( $post instanceof WP_Post ) ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post ) {
+			return;
+		}
 
 		$id = (int) $post->ID;
 
@@ -4666,7 +4701,7 @@ class WP_Query {
 	public function reset_postdata() {
 		if ( ! empty( $this->post ) ) {
 			$GLOBALS['post'] = $this->post;
-			setup_postdata( $this->post );
+			$this->setup_postdata( $this->post );
 		}
 	}
 }
@@ -4734,10 +4769,11 @@ function wp_old_slug_redirect() {
  * Set up global post data.
  *
  * @since 1.5.0
+ * @since 4.4.0 Added the ability to pass a post ID to `$post`.
  *
  * @global WP_Query $wp_query
  *
- * @param object $post Post data.
+ * @param WP_Post|object|int $post WP_Post instance or Post ID/object.
  * @return bool True when finished.
  */
 function setup_postdata( $post ) {

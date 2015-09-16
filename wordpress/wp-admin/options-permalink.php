@@ -46,27 +46,6 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __('<a href="https://wordpress.org/support/" target="_blank">Support Forums</a>') . '</p>'
 );
 
-/**
- * Display JavaScript on the page.
- *
- * @since 3.5.0
- */
-function options_permalink_add_js() {
-	?>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('.permalink-structure input:radio').change(function() {
-		if ( 'custom' == this.value )
-			return;
-		jQuery('#permalink_structure').val( this.value );
-	});
-	jQuery('#permalink_structure').focus(function() {
-		jQuery("#custom_selection").attr('checked', 'checked');
-	});
-});
-</script>
-<?php
-}
 add_filter('admin_head', 'options_permalink_add_js');
 
 $home_path = get_home_path();
@@ -197,7 +176,7 @@ $structures = array(
 	4 => $prefix . '/%postname%/',
 );
 ?>
-<h3 class="title"><?php _e('Common Settings'); ?></h3>
+<h2 class="title"><?php _e('Common Settings'); ?></h2>
 <table class="form-table permalink-structure">
 	<tr>
 		<th><label><input name="selection" type="radio" value="" <?php checked('', $permalink_structure); ?> /> <?php _e('Default'); ?></label></th>
@@ -232,7 +211,7 @@ $structures = array(
 	</tr>
 </table>
 
-<h3 class="title"><?php _e('Optional'); ?></h3>
+<h2 class="title"><?php _e('Optional'); ?></h2>
 <p><?php
 /* translators: %s is a placeholder that must come at the start of the URL. */
 printf( __('If you like, you may enter custom structures for your category and tag <abbr title="Universal Resource Locator">URL</abbr>s here. For example, using <code>topics</code> as your category base would make your category links like <code>%s/topics/uncategorized/</code>. If you leave these blank the defaults will be used.'), get_option('home') . $blog_prefix . $prefix ); ?></p>

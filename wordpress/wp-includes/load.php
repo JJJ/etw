@@ -132,7 +132,6 @@ function wp_check_php_mysql_versions() {
 function wp_favicon_request() {
 	if ( '/favicon.ico' == $_SERVER['REQUEST_URI'] ) {
 		header('Content-Type: image/vnd.microsoft.icon');
-		header('Content-Length: 0');
 		exit;
 	}
 }
@@ -764,7 +763,7 @@ function get_current_blog_id() {
  *
  * @global string    $text_direction
  * @global WP_Locale $wp_locale      The WordPress date and time locale object.
- * 
+ *
  * @staticvar bool $loaded
  */
 function wp_load_translations_early() {

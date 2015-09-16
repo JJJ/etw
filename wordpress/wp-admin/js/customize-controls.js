@@ -3,13 +3,22 @@
 	var Container, focus, api = wp.customize;
 
 	/**
+	 * A Customizer Setting.
+	 *
+	 * A setting is WordPress data (theme mod, option, menu, etc.) that the user can
+	 * draft changes to in the Customizer.
+	 *
+	 * @see PHP class WP_Customize_Setting.
+	 *
 	 * @class
 	 * @augments wp.customize.Value
 	 * @augments wp.customize.Class
 	 *
-	 * @param options
-	 * - previewer - The Previewer instance to sync with.
-	 * - transport - The transport to use for previewing. Supports 'refresh' and 'postMessage'.
+	 * @param {object} id                The Setting ID.
+	 * @param {object} value             The initial value of the setting.
+	 * @param {object} options.previewer The Previewer instance to sync with.
+	 * @param {object} options.transport The transport to use for previewing. Supports 'refresh' and 'postMessage'.
+	 * @param {object} options.dirty
 	 */
 	api.Setting = api.Value.extend({
 		initialize: function( id, value, options ) {
@@ -19,8 +28,13 @@
 			this.transport = this.transport || 'refresh';
 			this._dirty = options.dirty || false;
 
+			// Whenever the setting's value changes, refresh the preview.
 			this.bind( this.preview );
 		},
+
+		/**
+		 * Refresh the preview, respective of the setting's refresh policy.
+		 */
 		preview: function() {
 			switch ( this.transport ) {
 				case 'refresh':
@@ -68,13 +82,16 @@
 		params = params || {};
 		focus = function () {
 			var focusContainer;
-			if ( construct.extended( api.Panel ) && construct.expanded() ) {
-				focusContainer = construct.container.find( '.control-panel-content:first' );
+			if ( construct.extended( api.Panel ) && construct.expanded && construct.expanded() ) {
+				focusContainer = construct.container.find( 'ul.control-panel-content' );
+			} else if ( construct.extended( api.Section ) && construct.expanded && construct.expanded() ) {
+				focusContainer = construct.container.find( 'ul.accordion-section-content' );
 			} else {
 				focusContainer = construct.container;
 			}
-			focusContainer.find( ':focusable:first' ).focus();
-			focusContainer[0].scrollIntoView( true );
+
+			// Note that we can't use :focusable due to a jQuery UI issue. See: https://github.com/jquery/jquery-ui/pull/1583
+			focusContainer.find( 'input, select, textarea, button, object, a[href], [tabindex]' ).filter( ':visible' ).first().focus();
 		};
 		if ( params.completeCallback ) {
 			completeCallback = params.completeCallback;
@@ -269,10 +286,9 @@
 		},
 
 		/**
-		 * Handle changes to the active state.
+		 * Active state change handler.
 		 *
-		 * This does not change the active state, it merely handles the behavior
-		 * for when it does change.
+		 * Shows the container if it is active, hides it if not.
 		 *
 		 * To override by subclass, update the container's UI to reflect the provided active state.
 		 *
@@ -283,8 +299,15 @@
 		 * @param {Object}  args.duration
 		 * @param {Object}  args.completeCallback
 		 */
-		onChangeActive: function ( active, args ) {
+		onChangeActive: function( active, args ) {
 			var duration, construct = this;
+			if ( args.unchanged ) {
+				if ( args.completeCallback ) {
+					args.completeCallback();
+				}
+				return;
+			}
+
 			duration = ( 'resolved' === api.previewer.deferred.active.state() ? args.duration : 0 );
 			if ( ! $.contains( document, construct.container[0] ) ) {
 				// jQuery.fn.slideUp is not hiding an element if it is not in the DOM
@@ -580,13 +603,14 @@
 		 * @param {Object}  args
 		 */
 		onChangeExpanded: function ( expanded, args ) {
-			var position, scroll, section = this,
+			var section = this,
 				container = section.container.closest( '.wp-full-overlay-sidebar-content' ),
 				content = section.container.find( '.accordion-section-content' ),
 				overlay = section.container.closest( '.wp-full-overlay' ),
 				backBtn = section.container.find( '.customize-section-back' ),
 				sectionTitle = section.container.find( '.accordion-section-title' ).first(),
-				expand;
+				headerActionsHeight = $( '#customize-header-actions' ).height(),
+				resizeContentHeight, expand, position, scroll;
 
 			if ( expanded && ! section.container.hasClass( 'open' ) ) {
 
@@ -594,7 +618,7 @@
 					expand = args.completeCallback;
 				} else {
 					container.scrollTop( 0 );
-					expand = function () {
+					resizeContentHeight = function() {
 						var matchMedia, offset;
 						matchMedia = window.matchMedia || window.msMatchMedia;
 						offset = 90; // 45px for customize header actions + 45px for footer actions.
@@ -603,19 +627,32 @@
 						if ( matchMedia && matchMedia( '(max-width: 640px)' ).matches ) {
 							offset = 45;
 						}
-
+						content.css( 'height', ( window.innerHeight - offset ) );
+					};
+					expand = function() {
 						section.container.addClass( 'open' );
 						overlay.addClass( 'section-open' );
 						position = content.offset().top;
 						scroll = container.scrollTop();
-						content.css( 'margin-top', ( 45 - position - scroll ) );
-						content.css( 'height', ( window.innerHeight - offset ) );
+						content.css( 'margin-top', ( headerActionsHeight - position - scroll ) );
+						resizeContentHeight();
 						sectionTitle.attr( 'tabindex', '-1' );
 						backBtn.attr( 'tabindex', '0' );
 						backBtn.focus();
 						if ( args.completeCallback ) {
 							args.completeCallback();
 						}
+
+						// Fix the height after browser resize.
+						$( window ).on( 'resize.customizer-section', _.debounce( resizeContentHeight, 100 ) );
+
+						// Fix the top margin after reflow.
+						api.bind( 'pane-contents-reflowed', _.debounce( function() {
+							var offset = ( content.offset().top - headerActionsHeight );
+							if ( 0 < offset ) {
+								content.css( 'margin-top', ( parseInt( content.css( 'margin-top' ), 10 ) - offset ) );
+							}
+						}, 100 ) );
 					};
 				}
 
@@ -633,13 +670,16 @@
 						completeCallback: expand
 					});
 				} else {
+					api.panel.each( function( panel ) {
+						panel.collapse();
+					});
 					expand();
 				}
 
 			} else if ( ! expanded && section.container.hasClass( 'open' ) ) {
 				section.container.removeClass( 'open' );
 				overlay.removeClass( 'section-open' );
-				content.css( 'margin-top', 'inherit' );
+				content.css( 'margin-top', '' );
 				container.scrollTop( 0 );
 				backBtn.attr( 'tabindex', '-1' );
 				sectionTitle.attr( 'tabindex', '0' );
@@ -647,6 +687,7 @@
 				if ( args.completeCallback ) {
 					args.completeCallback();
 				}
+				$( window ).off( 'resize.customizer-section' );
 			} else {
 				if ( args.completeCallback ) {
 					args.completeCallback();
@@ -1234,13 +1275,14 @@
 				topPanel = overlay.find( '#customize-theme-controls > ul > .accordion-section > .accordion-section-title' ),
 				backBtn = section.find( '.customize-panel-back' ),
 				panelTitle = section.find( '.accordion-section-title' ).first(),
-				content = section.find( '.control-panel-content' );
+				content = section.find( '.control-panel-content' ),
+				headerActionsHeight = $( '#customize-header-actions' ).height();
 
 			if ( expanded ) {
 
 				// Collapse any sibling sections/panels
 				api.section.each( function ( section ) {
-					if ( ! section.panel() ) {
+					if ( panel.id !== section.panel() ) {
 						section.collapse( { duration: 0 } );
 					}
 				});
@@ -1254,7 +1296,7 @@
 					content.parent().show();
 					position = content.offset().top;
 					scroll = container.scrollTop();
-					content.css( 'margin-top', ( $( '#customize-header-actions' ).height() - position - scroll ) );
+					content.css( 'margin-top', ( headerActionsHeight - position - scroll ) );
 					section.addClass( 'current-panel' );
 					overlay.addClass( 'in-sub-panel' );
 					container.scrollTop( 0 );
@@ -1265,6 +1307,11 @@
 				topPanel.attr( 'tabindex', '-1' );
 				backBtn.attr( 'tabindex', '0' );
 				backBtn.focus();
+
+				// Fix the top margin after reflow.
+				api.bind( 'pane-contents-reflowed', _.debounce( function() {
+					content.css( 'margin-top', ( parseInt( content.css( 'margin-top' ), 10 ) - ( content.offset().top - headerActionsHeight ) ) );
+				}, 100 ) );
 			} else {
 				siblings.removeClass( 'open' );
 				section.removeClass( 'current-panel' );
@@ -1315,14 +1362,16 @@
 	 * @class
 	 * @augments wp.customize.Class
 	 *
-	 * @param {string} id                            Unique identifier for the control instance.
-	 * @param {object} options                       Options hash for the control instance.
+	 * @param {string} id                              Unique identifier for the control instance.
+	 * @param {object} options                         Options hash for the control instance.
 	 * @param {object} options.params
-	 * @param {object} options.params.type           Type of control (e.g. text, radio, dropdown-pages, etc.)
-	 * @param {string} options.params.content        The HTML content for the control.
-	 * @param {string} options.params.priority       Order of priority to show the control within the section.
+	 * @param {object} options.params.type             Type of control (e.g. text, radio, dropdown-pages, etc.)
+	 * @param {string} options.params.content          The HTML content for the control.
+	 * @param {string} options.params.priority         Order of priority to show the control within the section.
 	 * @param {string} options.params.active
-	 * @param {string} options.params.section
+	 * @param {string} options.params.section          The ID of the section the control belongs to.
+	 * @param {string} options.params.settings.default The ID of the setting the control relates to.
+	 * @param {string} options.params.settings.data
 	 * @param {string} options.params.label
 	 * @param {string} options.params.description
 	 * @param {string} options.params.instanceNumber Order in which this instance was created in relation to other instances.
@@ -1388,7 +1437,10 @@
 
 			api.utils.bubbleChildValueChanges( control, [ 'section', 'priority', 'active' ] );
 
-			// Associate this control with its settings when they are created
+			/*
+			 * After all settings related to the control are available,
+			 * make them available on the control and embed the control into the page.
+			 */
 			settings = $.map( control.params.settings, function( value ) {
 				return value;
 			});
@@ -1405,6 +1457,7 @@
 				control.embed();
 			}) );
 
+			// After the control is embedded on the page, invoke the "ready" method.
 			control.deferred.embedded.done( function () {
 				control.ready();
 			});
@@ -1475,6 +1528,13 @@
 		 * @param {Callback} args.completeCallback
 		 */
 		onChangeActive: function ( active, args ) {
+			if ( args.unchanged ) {
+				if ( args.completeCallback ) {
+					args.completeCallback();
+				}
+				return;
+			}
+
 			if ( ! $.contains( document, this.container ) ) {
 				// jQuery.fn.slideUp is not hiding an element if it is not in the DOM
 				this.container.toggle( active );
@@ -1597,7 +1657,7 @@
 					control.setting.set( picker.wpColorPicker('color') );
 				},
 				clear: function() {
-					control.setting.set( false );
+					control.setting.set( '' );
 				}
 			});
 
@@ -2122,13 +2182,19 @@
 		 * @param {object} attachment
 		 */
 		setImageFromAttachment: function( attachment ) {
-			var icon = typeof attachment.sizes['site_icon-32'] !== 'undefined' ? attachment.sizes['site_icon-32'] : attachment.sizes.thumbnail;
+			var sizes = [ 'site_icon-32', 'thumbnail', 'full' ],
+				icon;
+
+			_.each( sizes, function( size ) {
+				if ( ! icon && ! _.isUndefined ( attachment.sizes[ size ] ) ) {
+					icon = attachment.sizes[ size ];
+				}
+			} );
 
 			this.params.attachment = attachment;
 
 			// Set the Customizer setting; the callback takes care of rendering.
 			this.setting( attachment.id );
-
 
 			// Update the icon in-browser.
 			$( 'link[sizes="32x32"]' ).attr( 'href', icon.url );
@@ -2347,7 +2413,7 @@
 		 * @param {object} croppedImage Cropped attachment data.
 		 */
 		onCropped: function(croppedImage) {
-			var url = croppedImage.post_content,
+			var url = croppedImage.url,
 				attachmentId = croppedImage.attachment_id,
 				w = croppedImage.width,
 				h = croppedImage.height;
@@ -2534,6 +2600,9 @@
 	api.panel = new api.Values({ defaultConstructor: api.Panel });
 
 	/**
+	 * An object that fetches a preview in the background of the document, which
+	 * allows for seamless replacement of an existing preview.
+	 *
 	 * @class
 	 * @augments wp.customize.Messenger
 	 * @augments wp.customize.Class
@@ -2542,10 +2611,22 @@
 	api.PreviewFrame = api.Messenger.extend({
 		sensitivity: 2000,
 
+		/**
+		 * Initialize the PreviewFrame.
+		 *
+		 * @param {object} params.container
+		 * @param {object} params.signature
+		 * @param {object} params.previewUrl
+		 * @param {object} params.query
+		 * @param {object} options
+		 */
 		initialize: function( params, options ) {
 			var deferred = $.Deferred();
 
-			// This is the promise object.
+			/*
+			 * Make the instance of the PreviewFrame the promise object
+			 * so other objects can easily interact with it.
+			 */
 			deferred.promise( this );
 
 			this.container = params.container;
@@ -2562,6 +2643,12 @@
 			this.run( deferred );
 		},
 
+		/**
+		 * Run the preview request.
+		 *
+		 * @param {object} deferred jQuery Deferred object to be resolved with
+		 *                          the request.
+		 */
 		run: function( deferred ) {
 			var self   = this,
 				loaded = false,
@@ -2602,7 +2689,11 @@
 				_( constructs ).each( function ( activeConstructs, type ) {
 					api[ type ].each( function ( construct, id ) {
 						var active = !! ( activeConstructs && activeConstructs[ id ] );
-						construct.active( active );
+						if ( active ) {
+							construct.activate();
+						} else {
+							construct.deactivate();
+						}
 					} );
 				} );
 			} );
@@ -2761,9 +2852,13 @@
 		refreshBuffer: 250,
 
 		/**
-		 * Requires params:
-		 *  - container  - a selector or jQuery element
-		 *  - previewUrl - the URL of preview frame
+		 * @param {array}  params.allowedUrls
+		 * @param {string} params.container   A selector or jQuery element for the preview
+		 *                                    frame to be placed.
+		 * @param {string} params.form
+		 * @param {string} params.previewUrl  The URL to preview.
+		 * @param {string} params.signature
+		 * @param {object} options
 		 */
 		initialize: function( params, options ) {
 			var self = this,
@@ -2876,6 +2971,11 @@
 			} );
 		},
 
+		/**
+		 * Query string data sent with each preview request.
+		 *
+		 * @abstract
+		 */
 		query: function() {},
 
 		abort: function() {
@@ -2885,6 +2985,9 @@
 			}
 		},
 
+		/**
+		 * Refresh the preview.
+		 */
 		refresh: function() {
 			var self = this;
 
@@ -2985,7 +3088,10 @@
 		},
 
 		cheatin: function() {
-			$( document.body ).empty().addClass('cheatin').append( '<p>' + api.l10n.cheatin + '</p>' );
+			$( document.body ).empty().addClass( 'cheatin' ).append(
+				'<h1>' + api.l10n.cheatin + '</h1>' +
+				'<p>' + api.l10n.notAllowed + '</p>'
+			);
 		},
 
 		refreshNonces: function() {
@@ -3094,6 +3200,11 @@
 
 			nonce: api.settings.nonce,
 
+			/**
+			 * Build the query to send along with the Preview request.
+			 *
+			 * @return {object}
+			 */
 			query: function() {
 				var dirtyCustomized = {};
 				api.each( function ( value, key ) {
@@ -3387,18 +3498,6 @@
 			event.preventDefault();
 		});
 
-		// Go back to the top-level Customizer accordion.
-		$( '#customize-header-actions' ).on( 'click keydown', '.control-panel-back', function( event ) {
-			if ( api.utils.isKeydownButNotEnterEvent( event ) ) {
-				return;
-			}
-
-			event.preventDefault(); // Keep this AFTER the key filter above
-			api.panel.each( function ( panel ) {
-				panel.collapse();
-			});
-		});
-
 		closeBtn.keydown( function( event ) {
 			if ( 9 === event.which ) // tab
 				return;
@@ -3433,14 +3532,21 @@
 			} );
 		}
 
-		// Create a potential postMessage connection with the parent frame.
+		/*
+		 * Create a postMessage connection with a parent frame,
+		 * in case the Customizer frame was opened with the Customize loader.
+		 *
+		 * @see wp.customize.Loader
+		 */
 		parent = new api.Messenger({
 			url: api.settings.url.parent,
 			channel: 'loader'
 		});
 
-		// If we receive a 'back' event, we're inside an iframe.
-		// Send any clicks to the 'Return' link to the parent page.
+		/*
+		 * If we receive a 'back' event, we're inside an iframe.
+		 * Send any clicks to the 'Return' link to the parent page.
+		 */
 		parent.bind( 'back', function() {
 			closeBtn.on( 'click.customize-controls-close', function( event ) {
 				event.preventDefault();
@@ -3465,8 +3571,10 @@
 			});
 		} );
 
-		// When activated, let the loader handle redirecting the page.
-		// If no loader exists, redirect the page ourselves (if a url exists).
+		/*
+		 * When activated, let the loader handle redirecting the page.
+		 * If no loader exists, redirect the page ourselves (if a url exists).
+		 */
 		api.bind( 'activated', function() {
 			if ( parent.targetWindow() )
 				parent.send( 'activated', api.settings.url.activated );

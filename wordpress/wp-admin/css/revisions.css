@@ -487,7 +487,7 @@ div.revisions-controls > .wp-slider > .ui-slider-handle {
 	left: 0;
 	color: #fff;
 	content: "\f229";
-	font: normal 18px/1 'dashicons';
+	font: normal 18px/1 dashicons;
 	speak: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -500,19 +500,19 @@ div.revisions-controls > .wp-slider > .ui-slider-handle {
 }
 
 .wp-slider .ui-slider-handle.from-handle:before {
-	content: '\f139';
+	content: "\f139";
 }
 
 .wp-slider .ui-slider-handle.to-handle:before {
-	content: '\f141';
+	content: "\f141";
 }
 
 .rtl .wp-slider .ui-slider-handle.from-handle:before {
-	content: '\f141';
+	content: "\f141";
 }
 
 .rtl .wp-slider .ui-slider-handle.to-handle:before {
-	content: '\f139';
+	content: "\f139";
 	right: -1px;
 }
 

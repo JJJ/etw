@@ -59,6 +59,11 @@ commentsBox = {
 		);
 
 		return false;
+	},
+
+	load: function(total){
+		this.st = jQuery('#the-comment-list tr.comment:visible').length;
+		this.get(total);
 	}
 };
 
@@ -775,7 +780,7 @@ jQuery(document).ready( function($) {
 		}
 
 		slug_value = ( c > full.length / 4 ) ? '' : full;
-		e.html('<input type="text" id="new-post-slug" value="'+slug_value+'" />').children('input').keypress(function(e) {
+		e.html('<input type="text" id="new-post-slug" value="'+slug_value+'" autocomplete="off" />').children('input').keypress(function(e) {
 			var key = e.keyCode || 0;
 			// on enter, just save the new slug, don't save the post
 			if ( 13 == key ) {
@@ -929,6 +934,18 @@ jQuery(document).ready( function($) {
 			event.preventDefault();
 		}
 	});
+
+	if ( $( '#original_post_status' ).val() === 'auto-draft' && window.history.replaceState ) {
+		var location;
+
+		$( '#publish' ).on( 'click', function() {
+			location = window.location.href;
+			location += ( location.indexOf( '?' ) !== -1 ) ? '&' : '?';
+			location += 'wp-post-new-reload=true';
+
+			window.history.replaceState( null, null, location );
+		});
+	}
 });
 
 ( function( $, counter ) {

@@ -31,30 +31,19 @@ function post_submit_meta_box($post, $args = array() ) {
 <div id="save-action">
 <?php if ( 'publish' != $post->post_status && 'future' != $post->post_status && 'pending' != $post->post_status ) { ?>
 <input <?php if ( 'private' == $post->post_status ) { ?>style="display:none"<?php } ?> type="submit" name="save" id="save-post" value="<?php esc_attr_e('Save Draft'); ?>" class="button" />
+<span class="spinner"></span>
 <?php } elseif ( 'pending' == $post->post_status && $can_publish ) { ?>
 <input type="submit" name="save" id="save-post" value="<?php esc_attr_e('Save as Pending'); ?>" class="button" />
-<?php } ?>
 <span class="spinner"></span>
+<?php } ?>
 </div>
-<?php if ( $post_type_object->public ) : ?>
+<?php if ( is_post_type_viewable( $post_type_object ) ) : ?>
 <div id="preview-action">
 <?php
+$preview_link = esc_url( get_preview_post_link( $post ) );
 if ( 'publish' == $post->post_status ) {
-	$preview_link = esc_url( get_permalink( $post->ID ) );
 	$preview_button = __( 'Preview Changes' );
 } else {
-	$preview_link = set_url_scheme( get_permalink( $post->ID ) );
-
-	/**
-	 * Filter the URI of a post preview in the post submit box.
-	 *
-	 * @since 2.0.5
-	 * @since 4.0.0 $post parameter was added.
-	 *
-	 * @param string  $preview_link URI the user will be directed to for a post preview.
-	 * @param WP_Post $post         Post object.
-	 */
-	$preview_link = esc_url( apply_filters( 'preview_post_link', add_query_arg( 'preview', 'true', $preview_link ), $post ) );
 	$preview_button = __( 'Preview' );
 }
 ?>
@@ -509,7 +498,44 @@ function post_categories_meta_box( $post, $box ) {
 					<label class="screen-reader-text" for="new<?php echo $tax_name; ?>_parent">
 						<?php echo $taxonomy->labels->parent_item_colon; ?>
 					</label>
-					<?php wp_dropdown_categories( array( 'taxonomy' => $tax_name, 'hide_empty' => 0, 'name' => 'new' . $tax_name . '_parent', 'orderby' => 'name', 'hierarchical' => 1, 'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;' ) ); ?>
+					<?php
+					$parent_dropdown_args = array(
+						'taxonomy'         => $tax_name,
+						'hide_empty'       => 0,
+						'name'             => 'new' . $tax_name . '_parent',
+						'orderby'          => 'name',
+						'hierarchical'     => 1,
+						'show_option_none' => '&mdash; ' . $taxonomy->labels->parent_item . ' &mdash;',
+					);
+
+					/**
+					 * Filter the arguments for the taxonomy parent dropdown on the Post Edit page.
+					 *
+					 * @since 4.4.0
+					 *
+					 * @param array $parent_dropdown_args {
+					 *     Optional. Array of arguments to generate parent dropdown.
+					 *
+					 *     @type string   $taxonomy         Name of the taxonomy to retrieve.
+					 *     @type bool     $hide_if_empty    True to skip generating markup if no
+					 *                                      categories are found. Default 0.
+					 *     @type string   $name             Value for the 'name' attribute
+					 *                                      of the select element.
+					 *                                      Default "new{$tax_name}_parent".
+					 *     @type string   $orderby          Which column to use for ordering
+					 *                                      terms. Default 'name'.
+					 *     @type bool|int $hierarchical     Whether to traverse the taxonomy
+					 *                                      hierarchy. Default 1.
+					 *     @type string   $show_option_none Text to display for the "none" option.
+					 *                                      Default "&mdash; {$parent} &mdash;",
+					 *                                      where `$parent` is 'parent_item'
+					 *                                      taxonomy label.
+					 * }
+					 */
+					$parent_dropdown_args = apply_filters( 'post_edit_category_parent_dropdown_args', $parent_dropdown_args );
+
+					wp_dropdown_categories( $parent_dropdown_args );
+					?>
 					<input type="button" id="<?php echo $tax_name; ?>-add-submit" data-wp-lists="add:<?php echo $tax_name; ?>checklist:<?php echo $tax_name; ?>-add" class="button category-add-submit" value="<?php echo esc_attr( $taxonomy->labels->add_new_item ); ?>" />
 					<?php wp_nonce_field( 'add-' . $tax_name, '_ajax_nonce-add-' . $tax_name, false ); ?>
 					<span id="<?php echo $tax_name; ?>-ajax-response"></span>
@@ -652,7 +678,7 @@ function post_comment_meta_box( $post ) {
 		}
 
 		?>
-		<p class="hide-if-no-js" id="show-comments"><a href="#commentstatusdiv" onclick="commentsBox.get(<?php echo $total; ?>);return false;"><?php _e('Show comments'); ?></a> <span class="spinner"></span></p>
+		<p class="hide-if-no-js" id="show-comments"><a href="#commentstatusdiv" onclick="commentsBox.load(<?php echo $total; ?>);return false;"><?php _e('Show comments'); ?></a> <span class="spinner"></span></p>
 		<?php
 	}
 

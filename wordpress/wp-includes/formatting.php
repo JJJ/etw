@@ -258,7 +258,7 @@ function wptexturize( $text, $reset = false ) {
 		// Only call _wptexturize_pushpop_element if $curl is a delimiter.
 		$first = $curl[0];
 		if ( '<' === $first && '<!--' === substr( $curl, 0, 4 ) ) {
-			// This is an HTML comment delimeter.
+			// This is an HTML comment delimiter.
 
 			continue;
 
@@ -340,7 +340,7 @@ function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quo
 
 	$sentences = explode( $open_quote, $haystack );
 
-	foreach( $sentences as $key => &$sentence ) {
+	foreach ( $sentences as $key => &$sentence ) {
 		if ( false === strpos( $sentence, $needle ) ) {
 			continue;
 		} elseif ( 0 !== $key && 0 === substr_count( $sentence, $close_quote ) ) {
@@ -491,12 +491,12 @@ function wpautop( $pee, $br = true ) {
 		$pee .= $last_pee;
 	}
 	// Change multiple <br>s into two line breaks, which will turn into paragraphs.
-	$pee = preg_replace('|<br />\s*<br />|', "\n\n", $pee);
+	$pee = preg_replace('|<br\s*/?>\s*<br\s*/?>|', "\n\n", $pee);
 
 	$allblocks = '(?:table|thead|tfoot|caption|col|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|form|map|area|blockquote|address|math|style|p|h[1-6]|hr|fieldset|legend|section|article|aside|hgroup|header|footer|nav|figure|figcaption|details|menu|summary)';
 
 	// Add a single line break above block-level opening tags.
-	$pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
+	$pee = preg_replace('!(<' . $allblocks . '[\s/>])!', "\n$1", $pee);
 
 	// Add a double line break below block-level closing tags.
 	$pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
@@ -574,6 +574,9 @@ function wpautop( $pee, $br = true ) {
 		// Replace newlines that shouldn't be touched with a placeholder.
 		$pee = preg_replace_callback('/<(script|style).*?<\/\\1>/s', '_autop_newline_preservation_helper', $pee);
 
+		// Normalize <br>
+		$pee = str_replace( array( '<br>', '<br/>' ), '<br />', $pee );
+
 		// Replace any new line characters that aren't preceded by a <br /> with a <br />.
 		$pee = preg_replace('|(?<!<br />)\s*\n|', "<br />\n", $pee);
 
@@ -593,7 +596,9 @@ function wpautop( $pee, $br = true ) {
 		$pee = str_replace(array_keys($pre_tags), array_values($pre_tags), $pee);
 
 	// Restore newlines in all elements.
-	$pee = str_replace( " <!-- wpnl --> ", "\n", $pee );
+	if ( false !== strpos( $pee, '<!-- wpnl -->' ) ) {
+		$pee = str_replace( array( ' <!-- wpnl --> ', '<!-- wpnl -->' ), "\n", $pee );
+	}
 
 	return $pee;
 }
@@ -664,7 +669,7 @@ function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
 		// Extract $needle and $replace.
 		foreach ( $replace_pairs as $needle => $replace );
 
-		// Loop through delimeters (elements) only.
+		// Loop through delimiters (elements) only.
 		for ( $i = 1, $c = count( $textarr ); $i < $c; $i += 2 ) {
 			if ( false !== strpos( $textarr[$i], $needle ) ) {
 				$textarr[$i] = str_replace( $needle, $replace, $textarr[$i] );
@@ -675,7 +680,7 @@ function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
 		// Extract all $needles.
 		$needles = array_keys( $replace_pairs );
 
-		// Loop through delimeters (elements) only.
+		// Loop through delimiters (elements) only.
 		for ( $i = 1, $c = count( $textarr ); $i < $c; $i += 2 ) {
 			foreach ( $needles as $needle ) {
 				if ( false !== strpos( $textarr[$i], $needle ) ) {
@@ -811,10 +816,14 @@ function seems_utf8( $str ) {
  *
  * @staticvar string $_charset
  *
- * @param string $string         The text which is to be encoded.
- * @param int    $quote_style    Optional. Converts double quotes if set to ENT_COMPAT, both single and double if set to ENT_QUOTES or none if set to ENT_NOQUOTES. Also compatible with old values; converting single quotes if set to 'single', double if set to 'double' or both if otherwise set. Default is ENT_NOQUOTES.
- * @param string $charset        Optional. The character encoding of the string. Default is false.
- * @param bool   $double_encode  Optional. Whether to encode existing html entities. Default is false.
+ * @param string     $string         The text which is to be encoded.
+ * @param int|string $quote_style    Optional. Converts double quotes if set to ENT_COMPAT,
+ *                                   both single and double if set to ENT_QUOTES or none if set to ENT_NOQUOTES.
+ *                                   Also compatible with old values; converting single quotes if set to 'single',
+ *                                   double if set to 'double' or both if otherwise set.
+ *                                   Default is ENT_NOQUOTES.
+ * @param string     $charset        Optional. The character encoding of the string. Default is false.
+ * @param bool       $double_encode  Optional. Whether to encode existing html entities. Default is false.
  * @return string The encoded text with HTML entities.
  */
 function _wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false ) {
@@ -3267,11 +3276,19 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 
 	if ( '' == $url )
 		return $url;
+
+	$url = str_replace( ' ', '%20', $url );
 	$url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@$\|*\'()\\x80-\\xff]|i', '', $url);
+
+	if ( '' === $url ) {
+		return $url;
+	}
+
 	if ( 0 !== stripos( $url, 'mailto:' ) ) {
 		$strip = array('%0d', '%0a', '%0D', '%0A');
 		$url = _deep_replace($strip, $url);
 	}
+
 	$url = str_replace(';//', '://', $url);
 	/* If the URL doesn't appear to contain a scheme, we
 	 * presume it needs http:// appended (unless a relative
@@ -3980,7 +3997,7 @@ function _links_add_base( $m ) {
 	return $m[1] . '=' . $m[2] .
 		( preg_match( '#^(\w{1,20}):#', $m[3], $protocol ) && in_array( $protocol[1], wp_allowed_protocols() ) ?
 			$m[3] :
-			WP_HTTP::make_absolute_url( $m[3], $_links_add_base )
+			WP_Http::make_absolute_url( $m[3], $_links_add_base )
 		)
 		. $m[2];
 }
@@ -4435,7 +4452,7 @@ function wp_encode_emoji( $content ) {
 		$matches = array();
 		if ( preg_match_all( $regex, $content, $matches ) ) {
 			if ( ! empty( $matches[1] ) ) {
-				foreach( $matches[1] as $emoji ) {
+				foreach ( $matches[1] as $emoji ) {
 					/*
 					 * UTF-32's hex encoding is the same as HTML's hex encoding.
 					 * So, by converting the emoji from UTF-8 to UTF-32, we magically

@@ -20,65 +20,6 @@ $parent_file = 'options-general.php';
 /* translators: date and time format for exact current time, mainly about timezones, see http://php.net/date */
 $timezone_format = _x('Y-m-d H:i:s', 'timezone date format');
 
-/**
- * Display JavaScript on the page.
- *
- * @since 3.5.0
- */
-function options_general_add_js() {
-?>
-<script type="text/javascript">
-	jQuery(document).ready(function($){
-		var $siteName = $( '#wp-admin-bar-site-name' ).children( 'a' ).first(),
-			homeURL = ( <?php echo wp_json_encode( get_home_url() ); ?> || '' ).replace( /^(https?:\/\/)?(www\.)?/, '' );
-
-		$( '#blogname' ).on( 'input', function() {
-			var title = $.trim( $( this ).val() ) || homeURL;
-
-			// Truncate to 40 characters.
-			if ( 40 < title.length ) {
-				title = title.substring( 0, 40 ) + '\u2026';
-			}
-
-			$siteName.text( title );
-		});
-
-		$("input[name='date_format']").click(function(){
-			if ( "date_format_custom_radio" != $(this).attr("id") )
-				$( "input[name='date_format_custom']" ).val( $( this ).val() ).siblings( '.example' ).text( $( this ).parent( 'label' ).text() );
-		});
-		$("input[name='date_format_custom']").focus(function(){
-			$( '#date_format_custom_radio' ).prop( 'checked', true );
-		});
-
-		$("input[name='time_format']").click(function(){
-			if ( "time_format_custom_radio" != $(this).attr("id") )
-				$( "input[name='time_format_custom']" ).val( $( this ).val() ).siblings( '.example' ).text( $( this ).parent( 'label' ).text() );
-		});
-		$("input[name='time_format_custom']").focus(function(){
-			$( '#time_format_custom_radio' ).prop( 'checked', true );
-		});
-		$("input[name='date_format_custom'], input[name='time_format_custom']").change( function() {
-			var format = $(this);
-			format.siblings( '.spinner' ).addClass( 'is-active' );
-			$.post(ajaxurl, {
-					action: 'date_format_custom' == format.attr('name') ? 'date_format' : 'time_format',
-					date : format.val()
-				}, function(d) { format.siblings( '.spinner' ).removeClass( 'is-active' ); format.siblings('.example').text(d); } );
-		});
-
-		var languageSelect = $( '#WPLANG' );
-		$( 'form' ).submit( function() {
-			// Don't show a spinner for English and installed languages,
-			// as there is nothing to download.
-			if ( ! languageSelect.find( 'option:selected' ).data( 'installed' ) ) {
-				$( '#submit', this ).after( '<span class="spinner language-install-spinner" />' );
-			}
-		});
-	});
-</script>
-<?php
-}
 add_action('admin_head', 'options_general_add_js');
 
 $options_help = '<p>' . __('The fields on this screen determine some of the basics of your site setup.') . '</p>' .
@@ -135,7 +76,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 <p class="description" id="home-description"><?php _e( 'Enter the address here if you <a href="https://codex.wordpress.org/Giving_WordPress_Its_Own_Directory">want your site home page to be different from your WordPress installation directory.</a>' ); ?></p></td>
 </tr>
 <tr>
-<th scope="row"><label for="admin_email"><?php _e('E-mail Address') ?> </label></th>
+<th scope="row"><label for="admin_email"><?php _e('Email Address') ?> </label></th>
 <td><input name="admin_email" type="email" id="admin_email" aria-describedby="admin-email-description" value="<?php form_option( 'admin_email' ); ?>" class="regular-text ltr" />
 <p class="description" id="admin-email-description"><?php _e( 'This address is used for admin purposes, like new user notification.' ) ?></p></td>
 </tr>
@@ -154,14 +95,14 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 </tr>
 <?php } else { ?>
 <tr>
-<th scope="row"><label for="new_admin_email"><?php _e('E-mail Address') ?> </label></th>
+<th scope="row"><label for="new_admin_email"><?php _e('Email Address') ?> </label></th>
 <td><input name="new_admin_email" type="email" id="new_admin_email" aria-describedby="new-admin-email-description" value="<?php form_option( 'admin_email' ); ?>" class="regular-text ltr" />
-<p class="description" id="new-admin-email-description"><?php _e( 'This address is used for admin purposes. If you change this we will send you an e-mail at your new address to confirm it. <strong>The new address will not become active until confirmed.</strong>' ) ?></p>
+<p class="description" id="new-admin-email-description"><?php _e( 'This address is used for admin purposes. If you change this we will send you an email at your new address to confirm it. <strong>The new address will not become active until confirmed.</strong>' ) ?></p>
 <?php
 $new_admin_email = get_option( 'new_admin_email' );
 if ( $new_admin_email && $new_admin_email != get_option('admin_email') ) : ?>
 <div class="updated inline">
-<p><?php printf( __('There is a pending change of the admin e-mail to <code>%1$s</code>. <a href="%2$s">Cancel</a>'), esc_html( $new_admin_email ), esc_url( admin_url( 'options.php?dismiss=new_admin_email' ) ) ); ?></p>
+<p><?php printf( __('There is a pending change of the admin email to <code>%1$s</code>. <a href="%2$s">Cancel</a>'), esc_html( $new_admin_email ), esc_url( admin_url( 'options.php?dismiss=new_admin_email' ) ) ); ?></p>
 </div>
 <?php endif; ?>
 </td>

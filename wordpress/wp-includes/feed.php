@@ -264,7 +264,7 @@ function comments_link_feed() {
  *
  * @since 2.5.0
  *
- * @param int|object $comment_id Optional comment object or id. Defaults to global comment object.
+ * @param int|WP_Comment $comment_id Optional comment object or id. Defaults to global comment object.
  */
 function comment_guid($comment_id = null) {
 	echo esc_url( get_comment_guid($comment_id) );
@@ -275,7 +275,7 @@ function comment_guid($comment_id = null) {
  *
  * @since 2.5.0
  *
- * @param int|object $comment_id Optional comment object or id. Defaults to global comment object.
+ * @param int|WP_Comment $comment_id Optional comment object or id. Defaults to global comment object.
  * @return false|string false on failure or guid for comment on success.
  */
 function get_comment_guid($comment_id = null) {
@@ -291,8 +291,11 @@ function get_comment_guid($comment_id = null) {
  * Display the link to the comments.
  *
  * @since 1.5.0
+ * @since 4.4.0 Introduced the `$comment` argument.
+ *
+ * @param int|WP_Comment $comment Optional. Comment object or id. Defaults to global comment object.
  */
-function comment_link() {
+function comment_link( $comment = null ) {
 	/**
 	 * Filter the current comment's permalink.
 	 *
@@ -302,7 +305,7 @@ function comment_link() {
 	 *
 	 * @param string $comment_permalink The current comment permalink.
 	 */
-	echo esc_url( apply_filters( 'comment_link', get_comment_link() ) );
+	echo esc_url( apply_filters( 'comment_link', get_comment_link( $comment ) ) );
 }
 
 /**
@@ -560,7 +563,7 @@ function prep_atom_text_construct($data) {
  * @see get_site_icon_url()
  */
 function atom_site_icon() {
-	$url = get_site_icon_url( null, 32 );
+	$url = get_site_icon_url( 32 );
 	if ( $url ) {
 		echo "<icon>$url</icon>\n";
 	}
@@ -577,7 +580,7 @@ function rss2_site_icon() {
 		$rss_title = get_bloginfo_rss( 'name' );
 	}
 
-	$url = get_site_icon_url( null, 32 );
+	$url = get_site_icon_url( 32 );
 	if ( $url ) {
 		echo '
 <image>

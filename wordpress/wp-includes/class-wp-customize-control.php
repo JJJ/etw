@@ -386,7 +386,7 @@ class WP_Customize_Control {
 	 * @access public
 	 */
 	public function input_attrs() {
-		foreach( $this->input_attrs as $attr => $value ) {
+		foreach ( $this->input_attrs as $attr => $value ) {
 			echo $attr . '="' . esc_attr( $value ) . '" ';
 		}
 	}
@@ -1945,7 +1945,7 @@ class WP_Customize_Nav_Menu_Auto_Add_Control extends WP_Customize_Control {
  *
  * @see WP_Customize_Control
  */
-class WP_New_Menu_Customize_Control extends WP_Customize_Control {
+class WP_Customize_New_Menu_Control extends WP_Customize_Control {
 
 	/**
 	 * Control type.

@@ -14,7 +14,7 @@ require( dirname(__FILE__) . '/wp-load.php' );
 require( dirname( __FILE__ ) . '/wp-blog-header.php' );
 
 if ( !is_multisite() ) {
-	wp_redirect( site_url( '/wp-login.php?action=register' ) );
+	wp_redirect( wp_registration_url() );
 	die();
 }
 
@@ -67,7 +67,7 @@ add_action( 'wp_head', 'wpmu_activate_stylesheet' );
 get_header();
 ?>
 
-<div id="content" class="widecolumn">
+<div id="signup-content" class="widecolumn">
 	<?php if ( empty($_GET['key']) && empty($_POST['key']) ) { ?>
 
 		<h2><?php _e('Activation Key Required') ?></h2>

@@ -52,7 +52,7 @@ if ( post_password_required($post) ) {  // and it doesn't match the cookie
 <?php foreach ($comments as $comment) { ?>
 	<li id="comment-<?php comment_ID() ?>">
 	<?php comment_text() ?>
-	<p><cite><?php comment_type(); ?> <?php printf(__('by %1$s &#8212; %2$s @ <a href="#comment-%3$s">%4$s</a>'), get_comment_author_link(), get_comment_date(), get_comment_ID(), get_comment_time()); ?></cite></p>
+	<p><cite><?php comment_type(); ?> <?php printf(__('by %1$s &#8212; %2$s @ <a href="#comment-%3$s">%4$s</a>'), get_comment_author_link( $comment ), get_comment_date( '', $comment ), get_comment_ID(), get_comment_time()); ?></cite></p>
 	</li>
 
 <?php } // end for each comment ?>
@@ -63,7 +63,7 @@ if ( post_password_required($post) ) {  // and it doesn't match the cookie
 
 <?php if ( comments_open() ) { ?>
 <h2><?php _e('Leave a comment'); ?></h2>
-<p><?php printf(__('Line and paragraph breaks automatic, e-mail address never displayed, <acronym title="Hypertext Markup Language">HTML</acronym> allowed: <code>%s</code>'), allowed_tags()); ?></p>
+<p><?php printf(__('Line and paragraph breaks automatic, email address never displayed, <acronym title="Hypertext Markup Language">HTML</acronym> allowed: <code>%s</code>'), allowed_tags()); ?></p>
 
 <form action="<?php echo site_url(); ?>/wp-comments-post.php" method="post" id="commentform">
 <?php if ( $user_ID ) : ?>
@@ -76,7 +76,7 @@ if ( post_password_required($post) ) {  // and it doesn't match the cookie
 
 	<p>
 	  <input type="text" name="email" id="email" value="<?php echo esc_attr( $commenter['comment_author_email'] ); ?>" size="28" tabindex="2" />
-	   <label for="email"><?php _e('E-mail'); ?></label>
+	   <label for="email"><?php _e('Email'); ?></label>
 	</p>
 
 	<p>

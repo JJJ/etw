@@ -128,7 +128,7 @@ textarea {
 .form-table th {
 	font-size: 14px;
 	text-align: right;
-	padding: 16px 0 10px 20px;
+	padding: 10px 0 10px 20px;
 	width: 140px;
 	vertical-align: top;
 }
@@ -168,6 +168,7 @@ submit {
 	font-weight: normal;
 }
 
+.form-table.install-success th,
 .form-table.install-success td {
 	vertical-align: middle;
 	padding: 16px 0 16px 20px;

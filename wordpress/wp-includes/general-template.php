@@ -447,7 +447,7 @@ function wp_login_form( $args = array() ) {
 	$login_form_bottom = apply_filters( 'login_form_bottom', '', $args );
 
 	$form = '
-		<form name="' . $args['form_id'] . '" id="' . $args['form_id'] . '" action="' . esc_url( site_url( 'wp-login.php', 'login_post' ) ) . '" method="post">
+		<form name="' . $args['form_id'] . '" id="' . $args['form_id'] . '" action="' . esc_url( wp_login_url() ) . '" method="post">
 			' . $login_form_top . '
 			<p class="login-username">
 				<label for="' . esc_attr( $args['id_username'] ) . '">' . esc_html( $args['label_username'] ) . '</label>
@@ -518,8 +518,10 @@ function wp_register( $before = '<li>', $after = '</li>', $echo = true ) {
 			$link = $before . '<a href="' . esc_url( wp_registration_url() ) . '">' . __('Register') . '</a>' . $after;
 		else
 			$link = '';
-	} else {
+	} elseif ( current_user_can( 'read' ) ) {
 		$link = $before . '<a href="' . admin_url() . '">' . __('Site Admin') . '</a>' . $after;
+	} else {
+		$link = '';
 	}
 
 	/**
@@ -724,29 +726,28 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 /**
  * Returns the Site Icon URL.
  *
- * @param  null|int $blog_id Id of the blog to get the site icon for.
- * @param  int      $size    Size of the site icon.
- * @param  string   $url     Fallback url if no site icon is found.
- * @return string            Site Icon URL.
+ * @param  int    $size    Size of the site icon.
+ * @param  string $url     Fallback url if no site icon is found.
+ * @param  int    $blog_id Id of the blog to get the site icon for.
+ * @return string          Site Icon URL.
  */
-function get_site_icon_url( $blog_id = null, $size = 512, $url = '' ) {
-	if ( function_exists( 'get_blog_option' ) ) {
-		if ( ! is_int( $blog_id ) ) {
-			$blog_id = get_current_blog_id();
-		}
+function get_site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
+	if ( $blog_id && is_multisite() ) {
 		$site_icon_id = get_blog_option( $blog_id, 'site_icon' );
 	} else {
 		$site_icon_id = get_option( 'site_icon' );
 	}
 
-	if ( $site_icon_id  ) {
+	if ( $site_icon_id ) {
 		if ( $size >= 512 ) {
 			$size_data = 'full';
 		} else {
 			$size_data = array( $size, $size );
 		}
 		$url_data = wp_get_attachment_image_src( $site_icon_id, $size_data );
-		$url = $url_data[0];
+		if ( $url_data ) {
+			$url = $url_data[0];
+		}
 	}
 
 	return $url;
@@ -755,22 +756,22 @@ function get_site_icon_url( $blog_id = null, $size = 512, $url = '' ) {
 /**
  * Displays the Site Icon URL.
  *
- * @param null|int $blog_id Id of the blog to get the site icon for.
- * @param int      $size    Size of the site icon.
- * @param string   $url     Fallback url if no site icon is found.
+ * @param  int    $size    Size of the site icon.
+ * @param  string $url     Fallback url if no site icon is found.
+ * @param  int    $blog_id Id of the blog to get the site icon for.
  */
-function site_icon_url( $blog_id = null, $size = 512, $url = '' ) {
-	echo esc_url( get_site_icon_url( $blog_id, $size, $url ) );
+function site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
+	echo esc_url( get_site_icon_url( $size, $url, $blog_id ) );
 }
 
 /**
  * Whether the site has a Site Icon.
  *
- * @param int|null $blog_id Optional. Blog ID. Default: Current blog.
+ * @param int $blog_id Optional. Blog ID. Default: Current blog.
  * @return bool
  */
-function has_site_icon( $blog_id = null ) {
-	return !! get_site_icon_url( $blog_id, 512 );
+function has_site_icon( $blog_id = 0 ) {
+	return (bool) get_site_icon_url( 512, '', $blog_id );
 }
 
 /**
@@ -2307,8 +2308,27 @@ function feed_links( $args = array() ) {
 
 	$args = wp_parse_args( $args, $defaults );
 
-	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr( sprintf( $args['feedtitle'], get_bloginfo('name'), $args['separator'] ) ) . '" href="' . esc_url( get_feed_link() ) . "\" />\n";
-	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr( sprintf( $args['comstitle'], get_bloginfo('name'), $args['separator'] ) ) . '" href="' . esc_url( get_feed_link( 'comments_' . get_default_feed() ) ) . "\" />\n";
+	/**
+	 * Filter whether to display the posts feed link.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param bool $show Whether to display the posts feed link. Default true.
+	 */
+	if ( apply_filters( 'feed_links_show_posts_feed', true ) ) {
+		echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr( sprintf( $args['feedtitle'], get_bloginfo( 'name' ), $args['separator'] ) ) . '" href="' . esc_url( get_feed_link() ) . "\" />\n";
+	}
+
+	/**
+	 * Filter whether to display the comments feed link.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param bool $show Whether to display the comments feed link. Default true.
+	 */
+	if ( apply_filters( 'feed_links_show_comments_feed', true ) ) {
+		echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr( sprintf( $args['comstitle'], get_bloginfo( 'name' ), $args['separator'] ) ) . '" href="' . esc_url( get_feed_link( 'comments_' . get_default_feed() ) ) . "\" />\n";
+	}
 }
 
 /**
@@ -2450,10 +2470,10 @@ function wp_site_icon() {
 	}
 
 	$meta_tags = array(
-		sprintf( '<link rel="icon" href="%s" sizes="32x32" />', esc_url( get_site_icon_url( null, 32 ) ) ),
-		sprintf( '<link rel="icon" href="%s" sizes="192x192" />', esc_url( get_site_icon_url( null, 192 ) ) ),
-		sprintf( '<link rel="apple-touch-icon-precomposed" href="%s">', esc_url( get_site_icon_url( null, 180 ) ) ),
-		sprintf( '<meta name="msapplication-TileImage" content="%s">', esc_url( get_site_icon_url( null, 270 ) ) ),
+		sprintf( '<link rel="icon" href="%s" sizes="32x32" />', esc_url( get_site_icon_url( 32 ) ) ),
+		sprintf( '<link rel="icon" href="%s" sizes="192x192" />', esc_url( get_site_icon_url( 192 ) ) ),
+		sprintf( '<link rel="apple-touch-icon-precomposed" href="%s">', esc_url( get_site_icon_url( 180 ) ) ),
+		sprintf( '<meta name="msapplication-TileImage" content="%s">', esc_url( get_site_icon_url( 270 ) ) ),
 	);
 
 	/**

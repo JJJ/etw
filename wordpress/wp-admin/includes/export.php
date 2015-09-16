@@ -274,8 +274,8 @@ function export_wp( $args = array() ) {
 			echo '<wp:author_login>' . $author->user_login . '</wp:author_login>';
 			echo '<wp:author_email>' . $author->user_email . '</wp:author_email>';
 			echo '<wp:author_display_name>' . wxr_cdata( $author->display_name ) . '</wp:author_display_name>';
-			echo '<wp:author_first_name>' . wxr_cdata( $author->user_firstname ) . '</wp:author_first_name>';
-			echo '<wp:author_last_name>' . wxr_cdata( $author->user_lastname ) . '</wp:author_last_name>';
+			echo '<wp:author_first_name>' . wxr_cdata( $author->first_name ) . '</wp:author_first_name>';
+			echo '<wp:author_last_name>' . wxr_cdata( $author->last_name ) . '</wp:author_last_name>';
 			echo "</wp:author>\n";
 		}
 	}
@@ -473,7 +473,8 @@ function export_wp( $args = array() ) {
 		</wp:postmeta>
 <?php	endforeach;
 
-		$comments = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved <> 'spam'", $post->ID ) );
+		$_comments = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved <> 'spam'", $post->ID ) );
+		$comments = array_map( 'get_comment', $_comments );
 		foreach ( $comments as $c ) : ?>
 		<wp:comment>
 			<wp:comment_id><?php echo $c->comment_ID; ?></wp:comment_id>

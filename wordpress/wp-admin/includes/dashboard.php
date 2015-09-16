@@ -548,24 +548,21 @@ function wp_dashboard_recent_drafts( $drafts = false ) {
 }
 
 /**
- * @global object $comment
+ * @global WP_Comment $comment
  *
- * @param object $comment
- * @param bool   $show_date
+ * @param WP_Comment $comment
+ * @param bool       $show_date
  */
 function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 	$GLOBALS['comment'] =& $comment;
 
-	$comment_post_title = _draft_or_post_title( $comment->comment_post_ID );
-
-	if ( current_user_can( 'edit_post', $comment->comment_post_ID ) ) {
+	if ( $comment->comment_post_ID > 0 && current_user_can( 'edit_post', $comment->comment_post_ID ) ) {
+		$comment_post_title = _draft_or_post_title( $comment->comment_post_ID );
 		$comment_post_url = get_edit_post_link( $comment->comment_post_ID );
 		$comment_post_link = "<a href='$comment_post_url'>$comment_post_title</a>";
 	} else {
-		$comment_post_link = $comment_post_title;
+		$comment_post_link = '';
 	}
-
-	$comment_link = '<a class="comment-link" href="' . esc_url(get_comment_link()) . '">#</a>';
 
 	$actions_string = '';
 	if ( current_user_can( 'edit_comment', $comment->comment_ID ) ) {
@@ -575,7 +572,8 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			'reply' => '',
 			'edit' => '',
 			'spam' => '',
-			'trash' => '', 'delete' => ''
+			'trash' => '', 'delete' => '',
+			'view' => '',
 		);
 
 		$del_nonce = esc_html( '_wpnonce=' . wp_create_nonce( "delete-comment_$comment->comment_ID" ) );
@@ -592,10 +590,16 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 		$actions['edit'] = "<a href='comment.php?action=editcomment&amp;c={$comment->comment_ID}' title='" . esc_attr__('Edit comment') . "'>". __('Edit') . '</a>';
 		$actions['reply'] = '<a onclick="window.commentReply && commentReply.open(\''.$comment->comment_ID.'\',\''.$comment->comment_post_ID.'\');return false;" class="vim-r hide-if-no-js" title="'.esc_attr__('Reply to this comment').'" href="#">' . __('Reply') . '</a>';
 		$actions['spam'] = "<a href='$spam_url' data-wp-lists='delete:the-comment-list:comment-$comment->comment_ID::spam=1' class='vim-s vim-destructive' title='" . esc_attr__( 'Mark this comment as spam' ) . "'>" . /* translators: mark as spam link */ _x( 'Spam', 'verb' ) . '</a>';
-		if ( !EMPTY_TRASH_DAYS )
+
+		if ( ! EMPTY_TRASH_DAYS ) {
 			$actions['delete'] = "<a href='$delete_url' data-wp-lists='delete:the-comment-list:comment-$comment->comment_ID::trash=1' class='delete vim-d vim-destructive'>" . __('Delete Permanently') . '</a>';
-		else
+		} else {
 			$actions['trash'] = "<a href='$trash_url' data-wp-lists='delete:the-comment-list:comment-$comment->comment_ID::trash=1' class='delete vim-d vim-destructive' title='" . esc_attr__( 'Move this comment to the trash' ) . "'>" . _x('Trash', 'verb') . '</a>';
+		}
+
+		if ( '1' === $comment->comment_approved ) {
+			$actions['view'] = '<a class="comment-link" href="' . esc_url( get_comment_link( $comment ) ) . '">' . _x( 'View', 'verb' ) . '</a>';
+		}
 
 		/**
 		 * Filter the action links displayed for each comment in the 'Recent Comments'
@@ -603,10 +607,10 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 		 *
 		 * @since 2.6.0
 		 *
-		 * @param array  $actions An array of comment actions. Default actions include:
-		 *                        'Approve', 'Unapprove', 'Edit', 'Reply', 'Spam',
-		 *                        'Delete', and 'Trash'.
-		 * @param object $comment The comment object.
+		 * @param array      $actions An array of comment actions. Default actions include:
+		 *                            'Approve', 'Unapprove', 'Edit', 'Reply', 'Spam',
+		 *                            'Delete', and 'Trash'.
+		 * @param WP_Comment $comment The comment object.
 		 */
 		$actions = apply_filters( 'comment_row_actions', array_filter($actions), $comment );
 
@@ -625,7 +629,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 ?>
 
-		<div id="comment-<?php echo $comment->comment_ID; ?>" <?php comment_class( array( 'comment-item', wp_get_comment_status($comment->comment_ID) ) ); ?>>
+		<div id="comment-<?php echo $comment->comment_ID; ?>" <?php comment_class( array( 'comment-item', wp_get_comment_status( $comment ) ), $comment ); ?>>
 
 			<?php echo get_avatar( $comment, 50, 'mystery' ); ?>
 
@@ -633,8 +637,24 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 			<div class="dashboard-comment-wrap has-row-actions">
 			<h4 class="comment-meta">
-				<?php printf( /* translators: 1: comment author, 2: post link, 3: notification if the comment is pending */__( 'From %1$s on %2$s%3$s' ),
-					'<cite class="comment-author">' . get_comment_author_link() . '</cite>', $comment_post_link.' '.$comment_link, ' <span class="approve">' . __( '[Pending]' ) . '</span>' ); ?>
+				<?php
+				if ( $comment_post_link ) {
+					printf(
+						/* translators: 1: comment author, 2: post link, 3: notification if the comment is pending */
+						__( 'From %1$s on %2$s%3$s' ),
+						'<cite class="comment-author">' . get_comment_author_link( $comment ) . '</cite>',
+						$comment_post_link,
+						' <span class="approve">' . __( '[Pending]' ) . '</span>'
+					);
+				} else {
+					printf(
+						/* translators: 1: comment author, 2: notification if the comment is pending */
+						__( 'From %1$s %2$s' ),
+						'<cite class="comment-author">' . get_comment_author_link( $comment ) . '</cite>',
+						' <span class="approve">' . __( '[Pending]' ) . '</span>'
+					);
+				}
+				?>
 			</h4>
 
 			<?php
@@ -653,15 +673,16 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			?>
 			<div class="dashboard-comment-wrap has-row-actions">
 			<?php /* translators: %1$s is type of comment, %2$s is link to the post */ ?>
-			<h4 class="comment-meta"><?php printf( _x( '%1$s on %2$s', 'dashboard' ), "<strong>$type</strong>", $comment_post_link." ".$comment_link ); ?></h4>
-			<p class="comment-author"><?php comment_author_link(); ?></p>
+			<h4 class="comment-meta"><?php printf( _x( '%1$s on %2$s', 'dashboard' ), "<strong>$type</strong>", $comment_post_link ); ?></h4>
+			<p class="comment-author"><?php comment_author_link( $comment ); ?></p>
 
 			<?php endif; // comment_type ?>
-			<blockquote><p><?php comment_excerpt(); ?></p></blockquote>
+			<blockquote><p><?php comment_excerpt( $comment ); ?></p></blockquote>
 			<p class="row-actions"><?php echo $actions_string; ?></p>
 			</div>
 		</div>
 <?php
+	$GLOBALS['comment'] = null;
 }
 
 /**
@@ -1036,7 +1057,15 @@ function wp_dashboard_primary() {
 			 * @param string $title Title attribute for the widget's secondary link.
 			 */
 			'title'        => apply_filters( 'dashboard_secondary_title', __( 'Other WordPress News' ) ),
-			'items'        => 3,
+
+			/**
+			 * Filter the number of secondary link items for the 'WordPress News' dashboard widget.
+			 *
+			 * @since 4.4.0
+			 *
+			 * @param string $items How many items to show in the secondary feed.
+			 */
+			'items'        => apply_filters( 'dashboard_secondary_items', 3 ),
 			'show_summary' => 0,
 			'show_author'  => 0,
 			'show_date'    => 0,
@@ -1069,7 +1098,7 @@ function wp_dashboard_primary() {
  * @param array  $feeds     Array of RSS feeds.
  */
 function wp_dashboard_primary_output( $widget_id, $feeds ) {
-	foreach( $feeds as $type => $args ) {
+	foreach ( $feeds as $type => $args ) {
 		$args['type'] = $type;
 		echo '<div class="rss-widget">';
 		if ( $type === 'plugins' ) {
@@ -1301,8 +1330,8 @@ function wp_check_browser_version() {
 		/**
 		 * Response should be an array with:
 		 *  'name' - string - A user friendly browser name
-		 *  'version' - string - The most recent version of the browser
-		 *  'current_version' - string - The version of the browser the user is using
+		 *  'version' - string - The version of the browser the user is using
+		 *  'current_version' - string - The most recent version of the browser
 		 *  'upgrade' - boolean - Whether the browser needs an upgrade
 		 *  'insecure' - boolean - Whether the browser is deemed insecure
 		 *  'upgrade_url' - string - The url to visit to upgrade

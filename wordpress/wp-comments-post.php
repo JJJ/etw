@@ -146,20 +146,20 @@ $comment = get_comment( $comment_id );
  *
  * @since 3.4.0
  *
- * @param object $comment Comment object.
- * @param WP_User $user   User object. The user may not exist.
+ * @param WP_Comment $comment Comment object.
+ * @param WP_User    $user    User object. The user may not exist.
  */
 do_action( 'set_comment_cookies', $comment, $user );
 
-$location = empty($_POST['redirect_to']) ? get_comment_link($comment_id) : $_POST['redirect_to'] . '#comment-' . $comment_id;
+$location = empty($_POST['redirect_to']) ? get_comment_link( $comment ) : $_POST['redirect_to'] . '#comment-' . $comment_id;
 
 /**
  * Filter the location URI to send the commenter after posting.
  *
  * @since 2.0.5
  *
- * @param string $location The 'redirect_to' URI sent via $_POST.
- * @param object $comment  Comment object.
+ * @param string     $location The 'redirect_to' URI sent via $_POST.
+ * @param WP_Comment $comment  Comment object.
  */
 $location = apply_filters( 'comment_post_redirect', $location, $comment );
 

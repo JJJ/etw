@@ -132,7 +132,7 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 		if ( $timezone_string ) {
 			$timezone_object = timezone_open( $timezone_string );
 			$date_object = date_create( null, $timezone_object );
-			foreach( $timezone_formats as $timezone_format ) {
+			foreach ( $timezone_formats as $timezone_format ) {
 				if ( false !== strpos( $dateformatstring, $timezone_format ) ) {
 					$formatted = date_format( $date_object, $timezone_format );
 					$dateformatstring = ' '.$dateformatstring;
@@ -564,62 +564,6 @@ function do_enclose( $content, $post_ID ) {
 }
 
 /**
- * Perform a HTTP HEAD or GET request.
- *
- * If $file_path is a writable filename, this will do a GET request and write
- * the file to that path.
- *
- * @since 2.5.0
- *
- * @param string      $url       URL to fetch.
- * @param string|bool $file_path Optional. File path to write request to. Default false.
- * @param int         $red       Optional. The number of Redirects followed, Upon 5 being hit,
- *                               returns false. Default 1.
- * @return bool|string False on failure and string of headers if HEAD request.
- */
-function wp_get_http( $url, $file_path = false, $red = 1 ) {
-	@set_time_limit( 60 );
-
-	if ( $red > 5 )
-		return false;
-
-	$options = array();
-	$options['redirection'] = 5;
-
-	if ( false == $file_path )
-		$options['method'] = 'HEAD';
-	else
-		$options['method'] = 'GET';
-
-	$response = wp_safe_remote_request( $url, $options );
-
-	if ( is_wp_error( $response ) )
-		return false;
-
-	$headers = wp_remote_retrieve_headers( $response );
-	$headers['response'] = wp_remote_retrieve_response_code( $response );
-
-	// WP_HTTP no longer follows redirects for HEAD requests.
-	if ( 'HEAD' == $options['method'] && in_array($headers['response'], array(301, 302)) && isset( $headers['location'] ) ) {
-		return wp_get_http( $headers['location'], $file_path, ++$red );
-	}
-
-	if ( false == $file_path )
-		return $headers;
-
-	// GET request - write it to the supplied filename
-	$out_fp = fopen($file_path, 'w');
-	if ( !$out_fp )
-		return $headers;
-
-	fwrite( $out_fp,  wp_remote_retrieve_body( $response ) );
-	fclose($out_fp);
-	clearstatcache();
-
-	return $headers;
-}
-
-/**
  * Retrieve HTTP Headers from URL.
  *
  * @since 1.5.1
@@ -822,6 +766,47 @@ function remove_query_arg( $key, $query = false ) {
 		return $query;
 	}
 	return add_query_arg( $key, false, $query );
+}
+
+/**
+ * Returns an array of single-use query variable names that can be removed from a URL.
+ *
+ * @since 4.4.0
+ *
+ * @return array An array of parameters to remove from the URL.
+ */
+function wp_removable_query_args() {
+	$removable_query_args = array(
+		'activate',
+		'activated',
+		'approved',
+		'deactivate',
+		'deleted',
+		'disabled',
+		'enabled',
+		'error',
+		'locked',
+		'message',
+		'same',
+		'saved',
+		'settings-updated',
+		'skipped',
+		'spammed',
+		'trashed',
+		'unspammed',
+		'untrashed',
+		'update',
+		'updated',
+	);
+
+	/**
+	 * Filter the list of query variables to remove.
+	 *
+	 * @since 4.2.0
+	 *
+	 * @param array $removable_query_args An array of query variables to remove from a URL.
+	 */
+	return apply_filters( 'removable_query_args', $removable_query_args );
 }
 
 /**
@@ -1080,7 +1065,7 @@ function nocache_headers() {
 		}
 	}
 
-	foreach( $headers as $name => $field_value )
+	foreach ( $headers as $name => $field_value )
 		@header("{$name}: {$field_value}");
 }
 
@@ -1590,10 +1575,12 @@ function path_join( $base, $path ) {
 /**
  * Normalize a filesystem path.
  *
- * Replaces backslashes with forward slashes for Windows systems, and ensures
- * no duplicate slashes exist.
+ * On windows systems, replaces backslashes with forward slashes
+ * and forces upper-case drive letters.
+ * Ensures that no duplicate slashes exist.
  *
  * @since 3.9.0
+ * @since 4.4.0 Ensures upper-case drive letters on Windows systems.
  *
  * @param string $path Path to normalize.
  * @return string Normalized path.
@@ -1601,6 +1588,9 @@ function path_join( $base, $path ) {
 function wp_normalize_path( $path ) {
 	$path = str_replace( '\\', '/', $path );
 	$path = preg_replace( '|/+|','/', $path );
+	if ( ':' === substr( $path, 1, 1 ) ) {
+		$path = ucfirst( $path );
+	}
 	return $path;
 }
 
@@ -2677,7 +2667,7 @@ function wp_json_encode( $data, $options = 0, $depth = 512 ) {
 		$args = array( $data );
 	}
 
-	$json = call_user_func_array( 'json_encode', $args );
+	$json = @call_user_func_array( 'json_encode', $args );
 
 	// If json_encode() was successful, no need to do more sanity checking.
 	// ... unless we're in an old version of PHP, and json_encode() returned
@@ -4275,7 +4265,7 @@ function wp_scheduled_delete() {
 			delete_comment_meta($comment_id, '_wp_trash_meta_time');
 			delete_comment_meta($comment_id, '_wp_trash_meta_status');
 		} else {
-			wp_delete_comment($comment_id);
+			wp_delete_comment( $del_comment );
 		}
 	}
 }
@@ -4994,4 +4984,27 @@ function wp_post_preview_js() {
 	}());
 	</script>
 	<?php
+}
+
+/**
+ * Retrieve and, optionally, validate, an `action` query var
+ *
+ * @since 4.4.0
+ *
+ * @param string $action Optional. Action to validate.
+ * @return string Empty string if there is no action in the request or it doesn't
+ *                match the passed `$action`. Returns the [passed `$action` or
+ *                request action on succcess.
+ */
+function wp_validate_action( $action = '' ) {
+	$r = $_REQUEST;
+	if ( ! isset( $r['action'] ) ) {
+		return '';
+	}
+
+	if ( ! empty( $action ) ) {
+		return $action === $r['action'] ? $action : '';
+	}
+
+	return $r['action'];
 }

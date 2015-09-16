@@ -276,9 +276,8 @@ class wp_xmlrpc_server extends IXR_Server {
 	 * Check user's credentials. Deprecated.
 	 *
 	 * @since 1.5.0
-	 * @deprecated 2.8.0
-	 * @deprecated use wp_xmlrpc_server::login
-	 * @see wp_xmlrpc_server::login
+	 * @deprecated 2.8.0 Use wp_xmlrpc_server::login()
+	 * @see wp_xmlrpc_server::login()
 	 *
 	 * @param string $username User's username.
 	 * @param string $password User's password.
@@ -760,7 +759,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			'post_content'      => $post['post_content'],
 			'post_parent'       => strval( $post['post_parent'] ),
 			'post_mime_type'    => $post['post_mime_type'],
-			'link'              => post_permalink( $post['ID'] ),
+			'link'              => get_permalink( $post['ID'] ),
 			'guid'              => $post['guid'],
 			'menu_order'        => intval( $post['menu_order'] ),
 			'comment_status'    => $post['comment_status'],
@@ -930,7 +929,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	protected function _prepare_page( $page ) {
 		// Get all of the page content and link.
 		$full_page = get_extended( $page->post_content );
-		$link = post_permalink( $page->ID );
+		$link = get_permalink( $page->ID );
 
 		// Get info the page parent if there is one.
 		$parent_title = "";
@@ -1043,8 +1042,8 @@ class wp_xmlrpc_server extends IXR_Server {
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array  $_comment An array of prepared comment data.
-		 * @param object $comment  Comment object.
+		 * @param array      $_comment An array of prepared comment data.
+		 * @param WP_Comment $comment  Comment object.
 		 */
 		return apply_filters( 'xmlrpc_prepare_comment', $_comment, $comment );
 	}
@@ -1734,7 +1733,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( $post_type->cap->edit_posts ) )
-			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts in this post type' ));
+			return new IXR_Error( 401, __( 'You are not allowed to edit posts in this post type.' ));
 
 		$query['post_type'] = $post_type->name;
 
@@ -2412,7 +2411,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		do_action( 'xmlrpc_call', 'wp.getUsers' );
 
 		if ( ! current_user_can( 'list_users' ) )
-			return new IXR_Error( 401, __( 'Sorry, you cannot list users.' ) );
+			return new IXR_Error( 401, __( 'You are not allowed to browse users.' ) );
 
 		$query = array( 'fields' => 'all_with_meta' );
 
@@ -2949,7 +2948,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		$tags = array();
 
 		if ( $all_tags = get_tags() ) {
-			foreach( (array) $all_tags as $tag ) {
+			foreach ( (array) $all_tags as $tag ) {
 				$struct = array();
 				$struct['tag_id']			= $tag->term_id;
 				$struct['name']				= $tag->name;
@@ -4049,7 +4048,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$struct = array();
 
-		foreach( $post_types as $post_type ) {
+		foreach ( $post_types as $post_type ) {
 			if ( ! current_user_can( $post_type->cap->edit_posts ) )
 				continue;
 
@@ -5133,7 +5132,6 @@ class wp_xmlrpc_server extends IXR_Server {
 						break;
 					default:
 						return new IXR_Error( 401, __( 'Invalid post type' ) );
-						break;
 				}
 				$post_author = $content_struct['wp_author_id'];
 			}
@@ -5234,8 +5232,8 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$tags_input = isset( $content_struct['mt_keywords'] ) ? $content_struct['mt_keywords'] : null;
 
-		if ( ('publish' == $post_status) ) {
-			if ( ( 'page' == $post_type ) && ! current_user_can( 'publish_pages' ) ) {
+		if ( 'publish' == $post_status || 'private' == $post_status ) {
+			if ( 'page' == $post_type && ! current_user_can( 'publish_pages' ) ) {
 				return new IXR_Error( 401, __( 'Sorry, you do not have the right to publish this page.' ) );
 			} elseif ( ! current_user_can( 'publish_posts' ) ) {
 				return new IXR_Error( 401, __( 'Sorry, you do not have the right to publish this post.' ) );
@@ -5281,6 +5279,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( $post_type == 'post' && isset( $content_struct['sticky'] ) ) {
 			$data = $newpost;
 			$data['sticky'] = $content_struct['sticky'];
+			$data['post_type'] = 'post';
 			$error = $this->_toggle_sticky( $data, true );
 			if ( $error ) {
 				return $error;
@@ -5368,7 +5367,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 			$categories = array();
 			$catids = wp_get_post_categories($post_ID);
-			foreach($catids as $catid)
+			foreach ($catids as $catid)
 				$categories[] = get_cat_name($catid);
 
 			$tagnames = array();
@@ -5382,7 +5381,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 
 			$post = get_extended($postdata['post_content']);
-			$link = post_permalink($postdata['ID']);
+			$link = get_permalink($postdata['ID']);
 
 			// Get the author info.
 			$author = get_userdata($postdata['post_author']);
@@ -5507,7 +5506,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 			$categories = array();
 			$catids = wp_get_post_categories($entry['ID']);
-			foreach( $catids as $catid )
+			foreach ( $catids as $catid )
 				$categories[] = get_cat_name($catid);
 
 			$tagnames = array();
@@ -5522,7 +5521,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 
 			$post = get_extended($entry['post_content']);
-			$link = post_permalink($entry['ID']);
+			$link = get_permalink($entry['ID']);
 
 			// Get the post author info.
 			$author = get_userdata($entry['post_author']);

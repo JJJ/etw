@@ -12,22 +12,18 @@ require_once( dirname( __FILE__ ) . '/admin.php' );
 /** WordPress Administration Widgets API */
 require_once(ABSPATH . 'wp-admin/includes/widgets.php');
 
-if ( ! current_user_can('edit_theme_options') )
-	wp_die( __( 'Cheatin&#8217; uh?' ), 403 );
+if ( ! current_user_can( 'edit_theme_options' ) ) {
+	wp_die(
+		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+		'<p>' . __( 'You are not allowed to edit theme options on this site.' ) . '</p>',
+		403
+	);
+}
 
 $widgets_access = get_user_setting( 'widgets_access' );
 if ( isset($_GET['widgets-access']) ) {
 	$widgets_access = 'on' == $_GET['widgets-access'] ? 'on' : 'off';
 	set_user_setting( 'widgets_access', $widgets_access );
-}
-
-/**
- *
- * @param string $classes
- * @return string
- */
-function wp_widgets_access_body_class($classes) {
-	return "$classes widgets_access ";
 }
 
 if ( 'on' == $widgets_access ) {

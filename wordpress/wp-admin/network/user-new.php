@@ -30,7 +30,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __('<a href="https://wordpress.org/support/forum/multisite/" target="_blank">Support Forums</a>') . '</p>'
 );
 
-if ( isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action'] ) {
+if ( wp_validate_action( 'add-user' ) ) {
 	check_admin_referer( 'add-user', '_wpnonce_add-user' );
 
 	if ( ! current_user_can( 'manage_network_users' ) )
@@ -51,7 +51,7 @@ if ( isset($_REQUEST['action']) && 'add-user' == $_REQUEST['action'] ) {
 		if ( ! $user_id ) {
 	 		$add_user_errors = new WP_Error( 'add_user_fail', __( 'Cannot add user.' ) );
 		} else {
-			wp_new_user_notification( $user_id, $password );
+			wp_new_user_notification( $user_id, null, 'both' );
 			wp_redirect( add_query_arg( array('update' => 'added'), 'user-new.php' ) );
 			exit;
 		}
@@ -89,7 +89,7 @@ if ( isset( $add_user_errors ) && is_wp_error( $add_user_errors ) ) { ?>
 	<table class="form-table">
 		<tr class="form-field form-required">
 			<th scope="row"><label for="username"><?php _e( 'Username' ) ?></label></th>
-			<td><input type="text" class="regular-text" name="user[username]" id="username" autocapitalize="none" autocorrect="off" /></td>
+			<td><input type="text" class="regular-text" name="user[username]" id="username" autocapitalize="none" autocorrect="off" maxlength="60" /></td>
 		</tr>
 		<tr class="form-field form-required">
 			<th scope="row"><label for="email"><?php _e( 'Email' ) ?></label></th>

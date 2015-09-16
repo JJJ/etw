@@ -44,16 +44,14 @@
 		}, true );
 
 		editor.on( 'keyup', function( event ) {
-			if ( ! VK.modifierPressed( event ) ) {
-				if ( event.keyCode === VK.SPACEBAR ) {
-					space();
-				} else if ( event.keyCode === VK.ENTER ) {
-					enter();
-				}
+			if ( event.keyCode === VK.SPACEBAR && ! event.ctrlKey && ! event.metaKey && ! event.altKey ) {
+				space();
+			} else if ( event.keyCode === VK.ENTER && ! VK.modifierPressed( event ) ) {
+				enter();
 			}
 		} );
 
-		function firstNode( node ) {
+		function firstTextNode( node ) {
 			var parent = editor.dom.getParent( node, 'p' ),
 				child;
 
@@ -74,7 +72,11 @@
 			}
 
 			if ( ! child.data ) {
-				child = child.nextSibling;
+				if ( child.nextSibling && child.nextSibling.nodeType === 3 ) {
+					child = child.nextSibling;
+				} else {
+					child = null;
+				}
 			}
 
 			return child;
@@ -86,7 +88,7 @@
 				parent,
 				text;
 
-			if ( ! node || firstNode( node ) !== node ) {
+			if ( ! node || firstTextNode( node ) !== node ) {
 				return;
 			}
 
@@ -123,11 +125,9 @@
 		}
 
 		function watchEnter() {
-			var selection = editor.selection,
-				rng = selection.getRng(),
-				offset = rng.startOffset,
+			var rng = editor.selection.getRng(),
 				start = rng.startContainer,
-				node = firstNode( start ),
+				node = firstTextNode( start ),
 				i = enterPatterns.length,
 				text, pattern;
 
@@ -148,12 +148,8 @@
 				return;
 			}
 
-			if ( node === start ) {
-				if ( tinymce.trim( text ) === pattern.start ) {
-					return;
-				}
-
-				offset = Math.max( 0, offset - pattern.start.length );
+			if ( node === start && tinymce.trim( text ) === pattern.start ) {
+				return;
 			}
 
 			refNode = node;
@@ -166,7 +162,7 @@
 
 				editor.undoManager.transact( function() {
 					editor.formatter.apply( refPattern.format, {}, refNode );
-					refNode.deleteData( 0, refPattern.start.length );
+					refNode.replaceData( 0, refNode.data.length, tinymce.trim( refNode.data.slice( refPattern.start.length ) ) );
 				} );
 
 				// We need to wait for native events to be triggered.

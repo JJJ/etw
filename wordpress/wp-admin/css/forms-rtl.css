@@ -127,20 +127,20 @@ input[type="radio"]:checked:before {
 	display: inline-block;
 	vertical-align: middle;
 	width: 16px;
-	font: normal 21px/1 'dashicons';
+	font: normal 21px/1 dashicons;
 	speak: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
 input[type="checkbox"]:checked:before {
-	content: '\f147';
+	content: "\f147";
 	margin: -3px -4px 0 0;
 	color: #1e8cbe;
 }
 
 input[type="radio"]:checked:before {
-	content: '\2022';
+	content: "\2022";
 	text-indent: -9999px;
 	-webkit-border-radius: 50px;
 	border-radius: 50px;
@@ -195,6 +195,7 @@ textarea {
 	overflow: auto;
 	padding: 2px 6px;
 	line-height: 1.4;
+	resize: vertical;
 }
 
 .wp-admin input[type="file"] {
@@ -240,10 +241,23 @@ textarea[readonly] {
 }
 
 .form-table .form-required.form-invalid td:after {
-	content: '\f534';
+	content: "\f534";
 	font: normal 20px/1 dashicons;
 	color: #dc3232;
 	margin-right: -25px;
+	vertical-align: middle;
+}
+
+/* Adjust error indicator for password layout */
+.form-table .form-required.user-pass1-wrap.form-invalid td:after {
+	content: '';
+}
+
+.form-table .form-required.user-pass1-wrap.form-invalid .password-input-wrapper:after {
+	content: '\f534';
+	font: normal 20px/1 dashicons;
+	color: #dc3232;
+	margin: 0 -29px 0 6px;
 	vertical-align: middle;
 }
 
@@ -427,9 +441,9 @@ fieldset label,
 }
 
 #misc-publishing-actions label[for="post_status"]:before {
-	content: '\f173';
+	content: "\f173";
 	display: inline-block;
-	font: normal 20px/1 'dashicons';
+	font: normal 20px/1 dashicons;
 	speak: none;
 	right: -1px;
 	padding: 0 0 0 5px;
@@ -785,7 +799,7 @@ table.form-table td .updated p {
 }
 
 .pressthis-bookmarklet:after {
-	content: '';
+	content: "";
 	width: 70%;
 	height: 55%;
 	z-index: -1;
@@ -816,8 +830,8 @@ table.form-table td .updated p {
 
 .pressthis-bookmarklet span:before {
 	color: #777;
-	font: normal 20px/1 'dashicons';
-	content:'\f157';
+	font: normal 20px/1 dashicons;
+	content: "\f157";
 	position: relative;
 	display: inline-block;
 	top: 4px;
@@ -1023,7 +1037,7 @@ table.form-table td .updated p {
 	.widefat th input[type="checkbox"]:before,
 	.widefat thead td input[type="checkbox"]:before,
 	.widefat tfoot td input[type="checkbox"]:before {
-		font: normal 30px/1 'Dashicons';
+		font: normal 30px/1 dashicons;
 		margin: -3px -5px;
 	}
 

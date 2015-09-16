@@ -119,6 +119,10 @@
 		initialize: function() {
 			var self = this;
 
+			if ( ! api.panel.has( 'nav_menus' ) ) {
+				return;
+			}
+
 			this.$search = $( '#menu-items-search' );
 			this.sectionContent = this.$el.find( '.accordion-section-content' );
 
@@ -364,8 +368,8 @@
 		itemSectionHeight: function() {
 			var sections, totalHeight, accordionHeight, diff;
 			totalHeight = window.innerHeight;
-			sections = this.$el.find( '.accordion-section-content' );
-			accordionHeight =  46 * ( 1 + sections.length ) - 16; // Magic numbers.
+			sections = this.$el.find( '.accordion-section:not( #available-menu-items-search ) .accordion-section-content' );
+			accordionHeight =  46 * ( 2 + sections.length ) - 13; // Magic numbers.
 			diff = totalHeight - accordionHeight;
 			if ( 120 < diff && 290 > diff ) {
 				sections.css( 'max-height', diff );
@@ -538,7 +542,12 @@
 				content = panelMeta.find( '.customize-panel-description' ),
 				options = $( '#screen-options-wrap' ),
 				button = panelMeta.find( '.customize-screen-options-toggle' );
-			button.on( 'click', function() {
+			button.on( 'click keydown', function( event ) {
+				if ( api.utils.isKeydownButNotEnterEvent( event ) ) {
+					return;
+				}
+				event.preventDefault();
+
 				// Hide description
 				if ( content.not( ':hidden' ) ) {
 					content.slideUp( 'fast' );
@@ -561,7 +570,12 @@
 			} );
 
 			// Help toggle
-			help.on( 'click', function() {
+			help.on( 'click keydown', function( event ) {
+				if ( api.utils.isKeydownButNotEnterEvent( event ) ) {
+					return;
+				}
+				event.preventDefault();
+
 				if ( 'true' === button.attr( 'aria-expanded' ) ) {
 					button.attr( 'aria-expanded', 'false' );
 					help.attr( 'aria-expanded', 'true' );
@@ -2273,7 +2287,7 @@
 	 * wp.customize.Menus.NewMenuControl
 	 *
 	 * Customizer control for creating new menus and handling deletion of existing menus.
-	 * Note that 'new_menu' must match the WP_New_Menu_Customize_Control::$type.
+	 * Note that 'new_menu' must match the WP_Customize_New_Menu_Control::$type.
 	 *
 	 * @constructor
 	 * @augments wp.customize.Control

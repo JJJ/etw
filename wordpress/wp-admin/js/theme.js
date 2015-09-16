@@ -454,6 +454,8 @@ themes.view.Theme = wp.Backbone.View.extend({
 		var self = this,
 			current, preview;
 
+		event = event || window.event;
+
 		// Bail if the user scrolled on a touch device
 		if ( this.touchDrag === true ) {
 			return this.touchDrag = false;
@@ -981,7 +983,7 @@ themes.view.Themes = wp.Backbone.View.extend({
 
 		// 'Add new theme' element shown at the end of the grid
 		if ( themes.data.settings.canInstall ) {
-			this.$el.append( '<div class="theme add-new-theme"><a href="' + themes.data.settings.installURI + '"><div class="theme-screenshot"><span></span></div><h3 class="theme-name">' + l10n.addNew + '</h3></a></div>' );
+			this.$el.append( '<div class="theme add-new-theme"><a href="' + themes.data.settings.installURI + '"><div class="theme-screenshot"><span></span></div><h2 class="theme-name">' + l10n.addNew + '</h2></a></div>' );
 		}
 
 		this.parent.page++;
@@ -1658,6 +1660,9 @@ themes.RunInstaller = {
 		themes.router.on( 'route:preview', function( slug ) {
 			request.theme = slug;
 			self.view.collection.query( request );
+			self.view.collection.once( 'update', function() {
+				self.view.view.theme.preview();
+			});
 		});
 
 		// Handles sorting / browsing routes

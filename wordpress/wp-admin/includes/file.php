@@ -154,7 +154,7 @@ function wp_tempnam( $filename = '', $dir = '' ) {
 	$temp_filename = basename( $filename );
 	$temp_filename = preg_replace( '|\.[^.]*$|', '', $temp_filename );
 
-	// If the folder is falsey, use it's parent directory name instead
+	// If the folder is falsey, use its parent directory name instead.
 	if ( ! $temp_filename ) {
 		return wp_tempnam( dirname( $filename ), $dir );
 	}
@@ -1232,7 +1232,7 @@ function wp_print_request_filesystem_credentials_modal() {
 		<div class="notification-dialog" role="dialog" aria-labelledby="request-filesystem-credentials-title" tabindex="0">
 			<div class="request-filesystem-credentials-dialog-content">
 				<?php request_filesystem_credentials( site_url() ); ?>
-			<div>
+			</div>
 		</div>
 	</div>
 	<?php

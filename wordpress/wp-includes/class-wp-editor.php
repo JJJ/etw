@@ -297,8 +297,6 @@ final class _WP_Editors {
 	public static function editor_settings($editor_id, $set) {
 		global $wp_version, $tinymce_version;
 
-		$first_run = false;
-
 		if ( empty(self::$first_init) ) {
 			if ( is_admin() ) {
 				add_action( 'admin_print_footer_scripts', array( __CLASS__, 'editor_js' ), 50 );
@@ -351,7 +349,6 @@ final class _WP_Editors {
 
 				/** This filter is documented in wp-admin/includes/media.php */
 				$no_captions = (bool) apply_filters( 'disable_captions', '' );
-				$first_run = true;
 				$ext_plugins = '';
 
 				if ( $set['teeny'] ) {
@@ -596,10 +593,12 @@ final class _WP_Editors {
 			} else {
 				$mce_buttons = array( 'bold', 'italic', 'strikethrough', 'bullist', 'numlist', 'blockquote', 'hr', 'alignleft', 'aligncenter', 'alignright', 'link', 'unlink', 'wp_more', 'spellchecker' );
 
-				if ( $set['_content_editor_dfw'] ) {
-					$mce_buttons[] = 'dfw';
-				} else {
-					$mce_buttons[] = 'fullscreen';
+				if ( ! wp_is_mobile() ) {
+					if ( $set['_content_editor_dfw'] ) {
+						$mce_buttons[] = 'dfw';
+					} else {
+						$mce_buttons[] = 'fullscreen';
+					}
 				}
 
 				$mce_buttons[] = 'wp_adv';
@@ -927,7 +926,7 @@ final class _WP_Editors {
 
 			'Color' => __( 'Color' ),
 			'Custom color' => __( 'Custom color' ),
-			'Custom...' => _x( 'Custom...', 'label for custom color' ),
+			'Custom...' => _x( 'Custom...', 'label for custom color' ), // no ellipsis
 			'No color' => __( 'No color' ),
 
 			// Spelling, search/replace plugins
@@ -1029,7 +1028,7 @@ final class _WP_Editors {
 			'Toolbar Toggle' => __( 'Toolbar Toggle' ),
 			'Insert Read More tag' => __( 'Insert Read More tag' ),
 			'Insert Page Break tag' => __( 'Insert Page Break tag' ),
-			'Read more...' => __( 'Read more...' ), // Title on the placeholder inside the editor
+			'Read more...' => __( 'Read more...' ), // Title on the placeholder inside the editor (no ellipsis)
 			'Distraction-free writing mode' => __( 'Distraction-free writing mode' ),
 			'No alignment' => __( 'No alignment' ), // Tooltip for the 'alignnone' button in the image toolbar
 			'Remove' => __( 'Remove' ), // Tooltip for the 'remove' button in the image toolbar
@@ -1410,7 +1409,7 @@ final class _WP_Editors {
 					<label><span><?php _e( 'Link Text' ); ?></span><input id="wp-link-text" type="text" /></label>
 				</div>
 				<div class="link-target">
-					<label><span>&nbsp;</span><input type="checkbox" id="wp-link-target" /> <?php _e( 'Open link in a new window/tab' ); ?></label>
+					<label><span>&nbsp;</span><input type="checkbox" id="wp-link-target" /> <?php _e( 'Open link in a new tab' ); ?></label>
 				</div>
 			</div>
 			<p class="howto"><a href="#" id="wp-link-search-toggle"><?php _e( 'Or link to existing content' ); ?></a></p>

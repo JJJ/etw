@@ -222,6 +222,7 @@ As a new WordPress user, you should go to <a href=\"%s\">your dashboard</a> to d
 		'post_date_gmt' => $now_gmt,
 		'post_content' => $first_page,
 		'post_excerpt' => '',
+		'comment_status' => 'closed',
 		'post_title' => __( 'Sample Page' ),
 		/* translators: Default page slug */
 		'post_name' => __( 'sample-page' ),
@@ -534,6 +535,12 @@ function upgrade_all() {
 	if ( $wp_current_db_version < 33055 )
 		upgrade_430();
 
+	if ( $wp_current_db_version < 33056 )
+		upgrade_431();
+
+	if ( $wp_current_db_version < 34030 )
+		upgrade_440();
+
 	maybe_disable_link_manager();
 
 	maybe_disable_automattic_widgets();
@@ -555,7 +562,7 @@ function upgrade_100() {
 	// Get the title and ID of every post, post_name to check if it already has a value
 	$posts = $wpdb->get_results("SELECT ID, post_title, post_name FROM $wpdb->posts WHERE post_name = ''");
 	if ($posts) {
-		foreach($posts as $post) {
+		foreach ($posts as $post) {
 			if ('' == $post->post_name) {
 				$newtitle = sanitize_title($post->post_title);
 				$wpdb->query( $wpdb->prepare("UPDATE $wpdb->posts SET post_name = %s WHERE ID = %d", $newtitle, $post->ID) );
@@ -695,7 +702,7 @@ function upgrade_130() {
 	// Remove extraneous backslashes.
 	$posts = $wpdb->get_results("SELECT ID, post_title, post_content, post_excerpt, guid, post_date, post_name, post_status, post_author FROM $wpdb->posts");
 	if ($posts) {
-		foreach($posts as $post) {
+		foreach ($posts as $post) {
 			$post_content = addslashes(deslash($post->post_content));
 			$post_title = addslashes(deslash($post->post_title));
 			$post_excerpt = addslashes(deslash($post->post_excerpt));
@@ -712,7 +719,7 @@ function upgrade_130() {
 	// Remove extraneous backslashes.
 	$comments = $wpdb->get_results("SELECT comment_ID, comment_author, comment_content FROM $wpdb->comments");
 	if ($comments) {
-		foreach($comments as $comment) {
+		foreach ($comments as $comment) {
 			$comment_content = deslash($comment->comment_content);
 			$comment_author = deslash($comment->comment_author);
 
@@ -723,7 +730,7 @@ function upgrade_130() {
 	// Remove extraneous backslashes.
 	$links = $wpdb->get_results("SELECT link_id, link_name, link_description FROM $wpdb->links");
 	if ($links) {
-		foreach($links as $link) {
+		foreach ($links as $link) {
 			$link_name = deslash($link->link_name);
 			$link_description = deslash($link->link_description);
 
@@ -1201,7 +1208,7 @@ function upgrade_280() {
 	if ( is_multisite() ) {
 		$start = 0;
 		while( $rows = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options ORDER BY option_id LIMIT $start, 20" ) ) {
-			foreach( $rows as $row ) {
+			foreach ( $rows as $row ) {
 				$value = $row->option_value;
 				if ( !@unserialize( $value ) )
 					$value = stripslashes( $value );
@@ -1505,8 +1512,10 @@ function upgrade_430() {
 		upgrade_430_fix_comments();
 	}
 
+	// Shared terms are split in a separate process.
 	if ( $wp_current_db_version < 32814 ) {
-		split_all_shared_terms();
+		update_option( 'finished_splitting_shared_terms', 0 );
+		wp_schedule_single_event( time() + ( 1 * MINUTE_IN_SECONDS ), 'wp_split_shared_term_batch' );
 	}
 
 	if ( $wp_current_db_version < 33055 && 'utf8mb4' === $wpdb->charset ) {
@@ -1519,7 +1528,7 @@ function upgrade_430() {
 				$tables = array_diff_assoc( $tables, $global_tables );
 			}
 		}
-	
+
 		foreach ( $tables as $table ) {
 			maybe_convert_table_to_utf8mb4( $table );
 		}
@@ -1576,6 +1585,36 @@ function upgrade_430_fix_comments() {
 }
 
 /**
+ * Executes changes made in WordPress 4.3.1.
+ *
+ * @since 4.3.1
+ */
+function upgrade_431() {
+	// Fix incorrect cron entries for term splitting
+	$cron_array = _get_cron_array();
+	if ( isset( $cron_array['wp_batch_split_terms'] ) ) {
+		unset( $cron_array['wp_batch_split_terms'] );
+		_set_cron_array( $cron_array );
+	}
+}
+
+/**
+ * Executes changes made in WordPress 4.4.0.
+ *
+ * @since 4.4.0
+ *
+ * @global int  $wp_current_db_version Current version.
+ * @global wpdb $wpdb                  WordPress database abstraction object.
+ */
+function upgrade_440() {
+	global $wp_current_db_version, $wpdb;
+
+	if ( $wp_current_db_version < 34030 ) {
+		$wpdb->query( "ALTER TABLE {$wpdb->options} MODIFY option_name VARCHAR(191)" );
+	}
+}
+
+/**
  * Executes network-level upgrade routines.
  *
  * @since 3.0.0
@@ -1619,7 +1658,7 @@ function upgrade_network() {
 
 		$start = 0;
 		while( $rows = $wpdb->get_results( "SELECT meta_key, meta_value FROM {$wpdb->sitemeta} ORDER BY meta_id LIMIT $start, 20" ) ) {
-			foreach( $rows as $row ) {
+			foreach ( $rows as $row ) {
 				$value = $row->meta_value;
 				if ( !@unserialize( $value ) )
 					$value = stripslashes( $value );
@@ -1685,6 +1724,11 @@ function upgrade_network() {
 
 			$tables = $wpdb->tables( 'global' );
 
+			// sitecategories may not exist.
+			if ( ! $wpdb->get_var( "SHOW TABLES LIKE '{$tables['sitecategories']}'" ) ) {
+				unset( $tables['sitecategories'] );
+			}
+
 			foreach ( $tables as $table ) {
 				maybe_convert_table_to_utf8mb4( $table );
 			}
@@ -1696,7 +1740,7 @@ function upgrade_network() {
 		if ( wp_should_upgrade_global_tables() ) {
 			$upgrade = false;
 			$indexes = $wpdb->get_results( "SHOW INDEXES FROM $wpdb->signups" );
-			foreach( $indexes as $index ) {
+			foreach ( $indexes as $index ) {
 				if ( 'domain_path' == $index->Key_name && 'domain' == $index->Column_name && 140 != $index->Sub_part ) {
 					$upgrade = true;
 					break;
@@ -1708,6 +1752,11 @@ function upgrade_network() {
 			}
 
 			$tables = $wpdb->tables( 'global' );
+
+			// sitecategories may not exist.
+			if ( ! $wpdb->get_var( "SHOW TABLES LIKE '{$tables['sitecategories']}'" ) ) {
+				unset( $tables['sitecategories'] );
+			}
 
 			foreach ( $tables as $table ) {
 				maybe_convert_table_to_utf8mb4( $table );
@@ -1871,76 +1920,6 @@ function maybe_convert_table_to_utf8mb4( $table ) {
 }
 
 /**
- * Splits all shared taxonomy terms.
- *
- * @since 4.3.0
- *
- * @global wpdb $wpdb WordPress database abstraction object.
- */
-function split_all_shared_terms() {
-	global $wpdb;
-
-	// Get a list of shared terms (those with more than one associated row in term_taxonomy).
-	$shared_terms = $wpdb->get_results(
-		"SELECT tt.term_id, t.*, count(*) as term_tt_count FROM {$wpdb->term_taxonomy} tt
-		 LEFT JOIN {$wpdb->terms} t ON t.term_id = tt.term_id
-		 GROUP BY t.term_id
-		 HAVING term_tt_count > 1"
-	);
-
-	if ( empty( $shared_terms ) ) {
-		return;
-	}
-
-	// Rekey shared term array for faster lookups.
-	$_shared_terms = array();
-	foreach ( $shared_terms as $shared_term ) {
-		$term_id = intval( $shared_term->term_id );
-		$_shared_terms[ $term_id ] = $shared_term;
-	}
-	$shared_terms = $_shared_terms;
-
-	// Get term taxonomy data for all shared terms.
-	$shared_term_ids = implode( ',', array_keys( $shared_terms ) );
-	$shared_tts = $wpdb->get_results( "SELECT * FROM {$wpdb->term_taxonomy} WHERE `term_id` IN ({$shared_term_ids})" );
-
-	// Split term data recording is slow, so we do it just once, outside the loop.
-	$suspend = wp_suspend_cache_invalidation( true );
-	$split_term_data = get_option( '_split_terms', array() );
-	$skipped_first_term = $taxonomies = array();
-	foreach ( $shared_tts as $shared_tt ) {
-		$term_id = intval( $shared_tt->term_id );
-
-		// Don't split the first tt belonging to a given term_id.
-		if ( ! isset( $skipped_first_term[ $term_id ] ) ) {
-			$skipped_first_term[ $term_id ] = 1;
-			continue;
-		}
-
-		if ( ! isset( $split_term_data[ $term_id ] ) ) {
-			$split_term_data[ $term_id ] = array();
-		}
-
-		// Keep track of taxonomies whose hierarchies need flushing.
-		if ( ! isset( $taxonomies[ $shared_tt->taxonomy ] ) ) {
-			$taxonomies[ $shared_tt->taxonomy ] = 1;
-		}
-
-		// Split the term.
-		$split_term_data[ $term_id ][ $shared_tt->taxonomy ] = _split_shared_term( $shared_terms[ $term_id ], $shared_tt, false );
-	}
-
-	// Rebuild the cached hierarchy for each affected taxonomy.
-	foreach ( array_keys( $taxonomies ) as $tax ) {
-		delete_option( "{$tax}_children" );
-		_get_term_hierarchy( $tax );
-	}
-
-	wp_suspend_cache_invalidation( $suspend );
-	update_option( '_split_terms', $split_term_data );
-}
-
-/**
  * Retrieve all options as it was for 1.2.
  *
  * @since 1.2.0
@@ -2065,7 +2044,7 @@ function dbDelta( $queries = '', $execute = true ) {
 	$for_update = array();
 
 	// Create a tablename index for an array ($cqueries) of queries
-	foreach($queries as $qry) {
+	foreach ($queries as $qry) {
 		if ( preg_match( "|CREATE TABLE ([^ ]*)|", $qry, $matches ) ) {
 			$cqueries[ trim( $matches[1], '`' ) ] = $qry;
 			$for_update[$matches[1]] = 'Created table '.$matches[1];
@@ -2254,7 +2233,7 @@ function dbDelta( $queries = '', $execute = true ) {
 					"$index_string ($alt_index_columns)",
 				);
 
-				foreach( $index_strings as $index_string ) {
+				foreach ( $index_strings as $index_string ) {
 					if ( ! ( ( $aindex = array_search( $index_string, $indices ) ) === false ) ) {
 						unset( $indices[ $aindex ] );
 						break;
@@ -2305,7 +2284,7 @@ function dbDelta( $queries = '', $execute = true ) {
 function make_db_current( $tables = 'all' ) {
 	$alterations = dbDelta( $tables );
 	echo "<ol>\n";
-	foreach($alterations as $alteration) echo "<li>$alteration</li>\n";
+	foreach ($alterations as $alteration) echo "<li>$alteration</li>\n";
 	echo "</ol>\n";
 }
 
@@ -2680,7 +2659,7 @@ endif;
 
 /**
  * Determine if global tables should be upgraded.
- * 
+ *
  * This function performs a series of checks to ensure the environment allows
  * for the safe upgrading of global WordPress database tables. It is necessary
  * because global tables will commonly grow to millions of rows on large

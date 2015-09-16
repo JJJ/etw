@@ -148,13 +148,6 @@ if ( $action ) {
 
 			@ini_set('display_errors', true); //Ensure that Fatal errors are displayed.
 			// Go back to "sandbox" scope so we get the same errors as before
-			/**
-			 * @param string $plugin
-			 */
-			function plugin_sandbox_scrape( $plugin ) {
-				wp_register_plugin_realpath( WP_PLUGIN_DIR . '/' . $plugin );
-				include( WP_PLUGIN_DIR . '/' . $plugin );
-			}
 			plugin_sandbox_scrape( $plugin );
 			/** This action is documented in wp-admin/includes/plugin.php */
 			do_action( "activate_{$plugin}" );
@@ -265,7 +258,7 @@ if ( $action ) {
 
 							// Get plugins list from that folder.
 							if ( $folder_plugins = get_plugins( '/' . $plugin_slug ) ) {
-								foreach( $folder_plugins as $plugin_file => $data ) {
+								foreach ( $folder_plugins as $plugin_file => $data ) {
 									$plugin_info[ $plugin_file ] = _get_plugin_data_markup_translate( $plugin_file, $data );
 									$plugin_info[ $plugin_file ]['is_uninstallable'] = is_uninstallable_plugin( $plugin );
 									if ( ! $plugin_info[ $plugin_file ]['Network'] ) {
@@ -442,7 +435,7 @@ if ( !empty($invalid) )
 <?php elseif (isset($_GET['deactivate-multi'])) : ?>
 	<div id="message" class="updated notice is-dismissible"><p><?php _e('Selected plugins <strong>deactivated</strong>.'); ?></p></div>
 <?php elseif ( 'update-selected' == $action ) : ?>
-	<div id="message" class="updated notice is-dismissible"><p><?php _e('No out of date plugins were selected.'); ?></p></div>
+	<div id="message" class="updated notice is-dismissible"><p><?php _e('All selected plugins are up to date.'); ?></p></div>
 <?php endif; ?>
 
 <div class="wrap">
