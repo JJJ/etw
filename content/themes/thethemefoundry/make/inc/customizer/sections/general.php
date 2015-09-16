@@ -51,48 +51,119 @@ function ttfmake_customizer_define_general_sections( $sections ) {
 					'context'      => $theme_prefix . 'logo-retina',
 				),
 			),
-			'logo-favicon'         => array(
-				'setting' => array(
-					'sanitize_callback' => 'esc_url_raw',
-				),
-				'control' => array(
-					'control_type' => 'TTFMAKE_Customize_Image_Control',
-					'label'        => __( 'Favicon', 'make' ),
-					'description'  => __( 'File must be <strong>.png</strong> or <strong>.ico</strong> format. Optimal dimensions: <strong>32px x 32px</strong>.', 'make' ),
-					'context'      => $theme_prefix . 'logo-favicon',
-					'extensions'   => array( 'png', 'ico' ),
-				),
-			),
-			'logo-apple-touch'      => array(
-				'setting' => array(
-					'sanitize_callback' => 'esc_url_raw',
-				),
-				'control' => array(
-					'control_type' => 'TTFMAKE_Customize_Image_Control',
-					'label'        => __( 'Apple Touch Icon', 'make' ),
-					'description'  => __( 'File must be <strong>.png</strong> format. Optimal dimensions: <strong>152px x 152px</strong>.', 'make' ),
-					'context'      => $theme_prefix . 'logo-apple-touch',
-					'extensions'   => array( 'png' ),
-				),
-			),
 		),
 	);
 
+	// Transition to new Site Icon setting in core
+	$site_icon = array(
+		'logo-favicon'         => array(
+			'setting' => array(
+				'sanitize_callback' => 'esc_url_raw',
+			),
+			'control' => array(
+				'control_type' => 'TTFMAKE_Customize_Image_Control',
+				'label'        => __( 'Favicon', 'make' ),
+				'description'  => __( 'File must be <strong>.png</strong> or <strong>.ico</strong> format. Optimal dimensions: <strong>32px x 32px</strong>.', 'make' ),
+				'context'      => $theme_prefix . 'logo-favicon',
+				'extensions'   => array( 'png', 'ico' ),
+			),
+		),
+		'logo-apple-touch'      => array(
+			'setting' => array(
+				'sanitize_callback' => 'esc_url_raw',
+			),
+			'control' => array(
+				'control_type' => 'TTFMAKE_Customize_Image_Control',
+				'label'        => __( 'Apple Touch Icon', 'make' ),
+				'description'  => __( 'File must be <strong>.png</strong> format. Optimal dimensions: <strong>152px x 152px</strong>.', 'make' ),
+				'context'      => $theme_prefix . 'logo-apple-touch',
+				'extensions'   => array( 'png' ),
+			),
+		),
+	);
+	if ( function_exists( 'has_site_icon' ) ) {
+		$site_icon = array(
+			'logo-icons-heading'   => array(
+				'control' => array(
+					'control_type' => 'TTFMAKE_Customize_Misc_Control',
+					'label'   => __( 'Favicon & Apple Touch Icon', 'make' ),
+					'type'  => 'heading',
+				),
+			),
+			'logo-icons-text'      => array(
+				'control' => array(
+					'control_type' => 'TTFMAKE_Customize_Misc_Control',
+					'description'   => __( 'These options have been deprecated in favor of the Site Icon setting in WordPress core. Please visit the Site Identity section to configure your site icon.', 'make' ),
+					'type'  => 'text',
+				),
+			),
+		);
+	}
+	$general_sections['logo']['options'] = array_merge( $general_sections['logo']['options'], $site_icon );
+
 	/**
-	 * Background Image
+	 * Navigation
 	 *
 	 * This is a built-in section.
 	 */
 
 	/**
-	 * Social Profiles & RSS
+	 * Labels
+	 */
+	$general_sections['labels'] = array(
+		'panel'       => $panel,
+		'title'       => __( 'Labels', 'make' ),
+		'options'     => array(
+			'navigation-mobile-label' => array(
+				'setting' => array(
+					'sanitize_callback' => 'esc_html',
+					'theme_supports'    => 'menus',
+					'transport'         => 'postMessage',
+				),
+				'control' => array(
+					'label'             => __( 'Mobile Menu Label', 'make' ),
+					'description'       => __( 'Resize your browser window to preview the mobile menu label.', 'make' ),
+					'type'              => 'text',
+				),
+			),
+			'general-sticky-label'          => array(
+				'setting' => array(
+					'sanitize_callback' => 'esc_html',
+					'transport'         => 'postMessage',
+				),
+				'control' => array(
+					'label' => __( 'Sticky Label', 'make' ),
+					'type'  => 'text',
+				),
+			),
+		),
+	);
+
+	// Only show the Read More label option if no filters have been added to the deprecated filter hook.
+	/** This filter is documented in inc/template-tags.php */
+	if ( false === apply_filters( 'make_read_more_text', false ) ) {
+		$general_sections['labels']['options']['label-read-more'] = array(
+			'setting' => array(
+				'sanitize_callback' => 'esc_html',
+				'transport'         => 'postMessage',
+			),
+			'control' => array(
+				'label' => __( 'Read More Label', 'make' ),
+				'type'  => 'text',
+			),
+		);
+	}
+
+
+	/**
+	 * Social Profiles
 	 */
 	$general_sections['social'] = array(
 		'panel'       => $panel,
-		'title'       => __( 'Social Profiles &amp; RSS', 'make' ),
+		'title'       => __( 'Social Profiles', 'make' ),
 		'description' => __( 'Enter the complete URL to your profile for each service below that you would like to share.', 'make' ),
 		'options'     => array(
-			'social-facebook'           => array(
+			'social-facebook-official'  => array(
 				'setting' => array(
 					'sanitize_callback' => 'esc_url_raw',
 				),
@@ -186,12 +257,17 @@ function ttfmake_customizer_define_general_sections( $sections ) {
 					),
 				),
 			),
-			'social-divider-line' => array(
-				'control' => array(
-					'control_type' => 'TTFMAKE_Customize_Misc_Control',
-					'type'         => 'line',
-				),
-			),
+		),
+	);
+
+	/**
+	 * Email
+	 */
+	$general_sections['email'] = array(
+		'panel'       => $panel,
+		'title'       => __( 'Email', 'make' ),
+		'description' => __( 'Enter an email address to add an email icon link to your social profile icons.', 'make' ),
+		'options'     => array(
 			'social-email'              => array(
 				'setting' => array(
 					'sanitize_callback' => 'sanitize_email',
@@ -201,6 +277,17 @@ function ttfmake_customizer_define_general_sections( $sections ) {
 					'type'  => 'text',
 				),
 			),
+		),
+	);
+
+	/**
+	 * RSS
+	 */
+	$general_sections['rss'] = array(
+		'panel'       => $panel,
+		'title'       => __( 'RSS', 'make' ),
+		'description' => __( 'If configured, an RSS icon will appear with your social profile icons.', 'make' ),
+		'options'     => array(
 			'social-rss-heading'        => array(
 				'control' => array(
 					'control_type' => 'TTFMAKE_Customize_Misc_Control',
@@ -234,6 +321,33 @@ function ttfmake_customizer_define_general_sections( $sections ) {
 	 *
 	 * This is a built-in section.
 	 */
+
+	/**
+	 * White Label
+	 */
+	if ( ! ttfmake_is_plus() ) {
+		$general_sections['footer-white-label'] = array(
+			'panel'       => $panel,
+			'title'       => __( 'White Label', 'make' ),
+			'description' => __( 'Want to remove the theme byline from your website&#8217;s footer?', 'make' ),
+			'options'     => array(
+				'footer-white-label-text' => array(
+					'control' => array(
+						'control_type' => 'TTFMAKE_Customize_Misc_Control',
+						'type'         => 'text',
+						'description'  => sprintf(
+							'<a href="%1$s" target="_blank">%2$s</a>',
+							esc_url( ttfmake_get_plus_link( 'white-label' ) ),
+							sprintf(
+								__( 'Upgrade to %1$s', 'make' ),
+								'Make Plus'
+							)
+						),
+					),
+				),
+			),
+		);
+	}
 
 	/**
 	 * Filter the definitions for the controls in the General panel of the Customizer.

@@ -178,25 +178,27 @@ if ( ! function_exists( 'ttfmake_customizer_get_key_conversions' ) ) :
 function ttfmake_customizer_get_key_conversions() {
 	// $new_key => $old_key
 	$conversions = array(
-		'font-family-site-title' => 'font-site-title',
-		'font-family-h1'         => 'font-header',
-		'font-family-h2'         => 'font-header',
-		'font-family-h3'         => 'font-header',
-		'font-family-h4'         => 'font-header',
-		'font-family-h5'         => 'font-header',
-		'font-family-h6'         => 'font-header',
-		'font-family-body'       => 'font-body',
-		'font-size-site-title'   => 'font-site-title-size',
-		'font-size-site-tagline' => 'font-site-tagline-size',
-		'font-size-nav'          => 'font-nav-size',
-		'font-size-h1'           => 'font-header-size',
-		'font-size-h2'           => 'font-header-size',
-		'font-size-h3'           => 'font-header-size',
-		'font-size-h4'           => 'font-header-size',
-		'font-size-h5'           => 'font-header-size',
-		'font-size-h6'           => 'font-header-size',
-		'font-size-widget'       => 'font-widget-size',
-		'font-size-body'         => 'font-body-size',
+		'font-family-site-title'      => 'font-site-title',
+		'font-family-h1'              => 'font-header',
+		'font-family-h2'              => 'font-header',
+		'font-family-h3'              => 'font-header',
+		'font-family-h4'              => 'font-header',
+		'font-family-h5'              => 'font-header',
+		'font-family-h6'              => 'font-header',
+		'font-family-body'            => 'font-body',
+		'font-size-site-title'        => 'font-site-title-size',
+		'font-size-site-tagline'      => 'font-site-tagline-size',
+		'font-size-nav'               => 'font-nav-size',
+		'font-size-h1'                => 'font-header-size',
+		'font-size-h2'                => 'font-header-size',
+		'font-size-h3'                => 'font-header-size',
+		'font-size-h4'                => 'font-header-size',
+		'font-size-h5'                => 'font-header-size',
+		'font-size-h6'                => 'font-header-size',
+		'font-size-widget'            => 'font-widget-size',
+		'font-size-body'              => 'font-body-size',
+		'social-facebook-official'    => 'social-facebook',
+		'main-content-link-underline' => 'link-underline-body',
 	);
 
 	/**
@@ -222,11 +224,6 @@ if ( ! function_exists( 'ttfmake_customizer_convert_theme_mods' ) ) :
  * @return void
  */
 function ttfmake_customizer_set_up_theme_mod_conversions() {
-	// Don't run conversions if WordPress version doesn't support panels
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		return;
-	}
-
 	// Set up the necessary filters
 	foreach ( ttfmake_customizer_get_key_conversions() as $key => $value ) {
 		add_filter( 'theme_mod_' . $key, 'ttfmake_customizer_convert_theme_mods_filter', 11 );
@@ -303,10 +300,14 @@ if ( ! function_exists( 'ttfmake_customizer_convert_theme_mods_values' ) ) :
  * @return mixed                 The convert mod value.
  */
 function ttfmake_customizer_convert_theme_mods_values( $old_key, $new_key, $value ) {
-	if ( in_array( $old_key, array( 'font-header-size' ) ) ) {
+	if ( 'font-header-size' === $old_key ) {
 		$percent = ttfmake_font_get_relative_sizes();
 		$h       = preg_replace( '/font-size-(h\d)/', '$1', $new_key );
 		$value   = ttfmake_get_relative_font_size( $value, $percent[$h] );
+	} else if ( 'main-content-link-underline' === $old_key ) {
+		if ( 1 == $value ) {
+			$value = 'always';
+		}
 	}
 
 	return $value;
@@ -323,11 +324,12 @@ endif;
 function ttfmake_upgrade_notices() {
 	global $wp_version;
 
-	if ( version_compare( $wp_version, '3.9', '<' ) ) {
+	if ( version_compare( $wp_version, TTFMAKE_MIN_WP_VERSION, '<' ) ) {
 		ttfmake_register_admin_notice(
-			'make-wp-lt-39',
+			'make-wp-lt-min-version',
 			sprintf(
-				__( 'Make is designed to work with WordPress 3.9 and above. Please %s to ensure compatibility.', 'make' ),
+				__( 'Make requires version %1$s of WordPress or higher. Please %2$s to ensure full compatibility.', 'make' ),
+				TTFMAKE_MIN_WP_VERSION,
 				sprintf(
 					'<a href="%1$s">%2$s</a>',
 					admin_url( 'update-core.php' ),
@@ -335,9 +337,10 @@ function ttfmake_upgrade_notices() {
 				)
 			),
 			array(
-				'cap'    => 'update_core',
-				'screen' => array( 'index.php', 'themes.php', 'update-core.php' ),
-				'type'   => 'error',
+				'cap'     => 'update_core',
+				'dismiss' => false,
+				'screen'  => array( 'dashboard', 'themes.php', 'update-core.php' ),
+				'type'    => 'error',
 			)
 		);
 	}
@@ -356,24 +359,7 @@ function ttfmake_plus_upgrade_notices() {
 	if ( ttfmake_is_plus() && function_exists( 'ttfmp_get_app' ) ) {
 		$make_plus_version = ttfmp_get_app()->version;
 
-		if ( version_compare( $make_plus_version, '1.4.0', '<' ) ) {
-			ttfmake_register_admin_notice(
-				'make-plus-lt-140',
-				sprintf(
-					__( 'A new version of Make Plus is available. Please %s to ensure compatibility with the Make theme.', 'make' ),
-					sprintf(
-						'<a href="%1$s" target="_blank">%2$s</a>',
-						esc_url( 'https://thethemefoundry.com/tutorials/updating-your-existing-theme/' ),
-						__( 'update to the latest version', 'make' )
-					)
-				),
-				array(
-					'cap'    => 'update_plugins',
-					'screen' => array( 'index.php', 'update-core.php', 'plugins.php' ),
-					'type'   => 'error',
-				)
-			);
-		} else if ( version_compare( $make_plus_version, '1.4.7', '<=' ) ) {
+		if ( version_compare( $make_plus_version, '1.4.7', '<=' ) ) {
 			ttfmake_register_admin_notice(
 				'make-plus-lte-147',
 				sprintf(
@@ -391,7 +377,7 @@ function ttfmake_plus_upgrade_notices() {
 				),
 				array(
 					'cap'    => 'update_plugins',
-					'screen' => array( 'index.php', 'update-core.php', 'plugins.php' ),
+					'screen' => array( 'dashboard', 'update-core.php', 'plugins.php' ),
 					'type'   => 'warning',
 				)
 			);
@@ -400,3 +386,135 @@ function ttfmake_plus_upgrade_notices() {
 }
 
 add_action( 'admin_init', 'ttfmake_plus_upgrade_notices' );
+
+if ( ! function_exists( 'ttfmake_display_favicons' ) ) :
+/**
+ * Write the favicons to the head to implement the options.
+ *
+ * This function is deprecated. The functionality was moved to ttfmake_head_late().
+ *
+ * @since  1.0.0.
+ * @deprecated 1.5.0.
+ *
+ * @return void
+ */
+function ttfmake_display_favicons() {
+	_deprecated_function( __FUNCTION__, '1.5.0' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_body_layout_classes' ) ) :
+/**
+ * Add theme option body classes.
+ *
+ * This function is deprecated. The functionality was moved to ttfmake_body_classes().
+ *
+ * @since  1.0.0.
+ * @deprecated 1.5.0.
+ *
+ * @param  array    $classes    Existing classes.
+ * @return array                Modified classes.
+ */
+function ttfmake_body_layout_classes( $classes ) {
+	_deprecated_function( __FUNCTION__, '1.5.0' );
+	return $classes;
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_customizer_define_header_sections' ) ) :
+/**
+ * Define the sections and settings for the Header panel.
+ *
+ * @since  1.3.0.
+ * @deprecated 1.5.0.
+ *
+ * @param  array    $sections    The master array of Customizer sections
+ * @return array                 The augmented master array
+ */
+function ttfmake_customizer_define_header_sections( $sections ) {
+	_deprecated_function( __FUNCTION__, '1.5.0' );
+	return $sections;
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_customizer_define_footer_sections' ) ) :
+/**
+ * Define the sections and settings for the Footer panel
+ *
+ * @since  1.3.0.
+ *
+ * @param  array    $sections    The master array of Customizer sections
+ * @return array                 The augmented master array
+ */
+function ttfmake_customizer_define_footer_sections( $sections ) {
+	_deprecated_function( __FUNCTION__, '1.5.0' );
+	return $sections;
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_css_add_rules' ) ) :
+/**
+ * Process user options to generate CSS needed to implement the choices.
+ *
+ * This function has been broken up into several files/functions in the inc/customizer/style directory.
+ *
+ * @since  1.0.0.
+ * @deprecated 1.5.0.
+ *
+ * @return void
+ */
+function ttfmake_css_add_rules() {
+	_deprecated_function( __FUNCTION__, '1.5.0' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_customizer_supports_panels' ) ) :
+/**
+ * Detect support for Customizer panels.
+ *
+ * This feature was introduced in WP 4.0. The WP_Customize_Manager class is not loaded
+ * outside of the Customizer, so this also looks for wp_validate_boolean(), another
+ * function added in WP 4.0.
+ *
+ * This function has been deprecated, as Make no longer supports WordPress versions that don't support panels.
+ *
+ * @since  1.3.0.
+ *
+ * @return bool    Whether or not panels are supported.
+ */
+function ttfmake_customizer_supports_panels() {
+	_deprecated_function( __FUNCTION__, '1.6.0' );
+	return ( class_exists( 'WP_Customize_Manager' ) && method_exists( 'WP_Customize_Manager', 'add_panel' ) ) || function_exists( 'wp_validate_boolean' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_customizer_add_legacy_sections' ) ) :
+/**
+ * Add the old sections and controls to the customizer for WP installations with no panel support.
+ *
+ * This function has been deprecated, as Make no longer supports WordPress versions that don't support panels.
+ *
+ * @since  1.3.0.
+ *
+ * @param  WP_Customize_Manager    $wp_customize    Theme Customizer object.
+ * @return void
+ */
+function ttfmake_customizer_add_legacy_sections( $wp_customize ) {
+	_deprecated_function( __FUNCTION__, '1.6.0' );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_css_legacy_fonts' ) ) :
+/**
+ * Build the CSS rules for the custom fonts.
+ *
+ * This function has been deprecated, as Make no longer supports WordPress versions that don't support panels.
+ *
+ * @since  1.0.0.
+ *
+ * @return void
+ */
+function ttfmake_css_legacy_fonts() {
+	_deprecated_function( __FUNCTION__, '1.6.0' );
+}
+endif;

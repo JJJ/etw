@@ -13,9 +13,11 @@ $hide_site_title = (int) get_theme_mod( 'hide-site-title', ttfmake_get_default( 
 $hide_tagline    = (int) get_theme_mod( 'hide-tagline', ttfmake_get_default( 'hide-tagline' ) );
 $menu_label      = get_theme_mod( 'navigation-mobile-label', ttfmake_get_default( 'navigation-mobile-label' ) );
 $header_bar_menu = wp_nav_menu( array(
-	'theme_location' => 'header-bar',
-	'fallback_cb'    => false,
-	'echo'           => false,
+	'theme_location'  => 'header-bar',
+	'container_class' => 'header-bar-menu',
+	'depth'           => 1,
+	'fallback_cb'     => false,
+	'echo'            => false,
 ) );
 ?>
 
@@ -24,7 +26,7 @@ $header_bar_menu = wp_nav_menu( array(
 	if ( ! empty( $header_text ) || 1 === $show_search || ( ! empty ( $social_links ) && 1 === $show_social ) || ! empty( $header_bar_menu ) ) : ?>
 	<div class="header-bar<?php echo esc_attr( $subheader_class ); ?>">
 		<div class="container">
-			<a class="skip-link screen-reader-text" href="#site-content"><?php _e( 'Skip to content', 'make' ); ?></a>
+			<a class="skip-link screen-reader-text" href="#site-content"><?php esc_html_e( 'Skip to content', 'make' ); ?></a>
 			<?php // Social links
 			ttfmake_maybe_show_social_links( 'header' ); ?>
 			<?php // Header text; shown only if there is no header menu
@@ -68,7 +70,7 @@ $header_bar_menu = wp_nav_menu( array(
 
 			<nav id="site-navigation" class="site-navigation" role="navigation">
 				<span class="menu-toggle"><?php echo esc_html( $menu_label ); ?></span>
-				<a class="skip-link screen-reader-text" href="#site-content"><?php _e( 'Skip to content', 'make' ); ?></a>
+				<a class="skip-link screen-reader-text" href="#site-content"><?php esc_html_e( 'Skip to content', 'make' ); ?></a>
 				<?php
 				wp_nav_menu( array(
 					'theme_location' => 'primary'

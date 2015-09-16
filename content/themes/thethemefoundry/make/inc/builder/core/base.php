@@ -65,7 +65,6 @@ class TTFMAKE_Builder_Base {
 		add_action( 'admin_print_styles-post-new.php', array( $this, 'admin_print_styles' ) );
 		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 		add_action( 'admin_footer', array( $this, 'print_templates' ) );
-		add_action( 'tiny_mce_before_init', array( $this, 'tiny_mce_before_init' ), 15, 2 );
 		add_action( 'post_submitbox_misc_actions', array( $this, 'builder_toggle' ) );
 
 		if ( false === ttfmake_is_plus() ) {
@@ -95,7 +94,7 @@ class TTFMAKE_Builder_Base {
 		foreach ( ttfmake_get_post_types_supporting_builder() as $name ) {
 			add_meta_box(
 				'ttfmake-builder',
-				__( 'Page Builder', 'make' ),
+				esc_html__( 'Page Builder', 'make' ),
 				array( $this, 'display_builder' ),
 				$name,
 				'normal',
@@ -126,7 +125,7 @@ class TTFMAKE_Builder_Base {
 	?>
 		<div class="misc-pub-section">
 			<input type="checkbox" value="1" name="use-builder" id="use-builder"<?php checked( $using_builder, 1 ); ?> />
-			&nbsp;<label for="use-builder"><?php _e( 'Use Page Builder', 'make' ); ?></label>
+			&nbsp;<label for="use-builder"><?php esc_html_e( 'Use Page Builder', 'make' ); ?></label>
 		</div>
 	<?php
 	}
@@ -332,7 +331,7 @@ class TTFMAKE_Builder_Base {
 		$data = array(
 			'pageID'        => get_the_ID(),
 			'postRefresh'   => true,
-			'confirmString' => __( 'Delete the section?', 'make' ),
+			'confirmString' => esc_html__( 'Delete the section?', 'make' ),
 		);
 
 		wp_localize_script(
@@ -429,7 +428,7 @@ class TTFMAKE_Builder_Base {
 	 */
 	public function add_uploader( $section_name, $image_id = 0, $title = '' ) {
 		$image = ttfmake_get_image_src( $image_id, 'large' );
-		$title = ( ! empty( $title ) ) ? $title : __( 'Set image', 'make' );
+		$title = ( ! empty( $title ) ) ? $title : esc_html__( 'Set image', 'make' );
 		ob_start();
 		?>
 		<div class="ttfmake-uploader<?php if ( ! empty( $image[0] ) ) : ?> ttfmake-has-image-set<?php endif; ?>">
@@ -462,7 +461,7 @@ class TTFMAKE_Builder_Base {
 			<div class="ttfmake-iframe-overlay">
 				<a href="#" class="edit-content-link" data-textarea="<?php echo esc_attr( $textarea_id ); ?>" data-iframe="<?php echo esc_attr( $iframe_id ); ?>">
 					<span class="screen-reader-text">
-						<?php _e( 'Edit content', 'make' ); ?>
+						<?php esc_html_e( 'Edit content', 'make' ); ?>
 					</span>
 				</a>
 			</div>
@@ -548,9 +547,9 @@ class TTFMAKE_Builder_Base {
 		?>
 			<script type="text/html" id="tmpl-ttfmake-remove-image">
 				<div class="ttfmake-remove-current-image">
-					<h3><?php _e( 'Current image', 'make' ); ?></h3>
+					<h3><?php esc_html_e( 'Current image', 'make' ); ?></h3>
 					<a href="#" class="ttfmake-remove-image-from-modal">
-						<?php _e( 'Remove Current Image', 'make' ); ?>
+						<?php esc_html_e( 'Remove Current Image', 'make' ); ?>
 					</a>
 				</div>
 			</script>
@@ -561,7 +560,7 @@ class TTFMAKE_Builder_Base {
 	 * Wrapper function to produce a WP Editor with special defaults.
 	 *
 	 * @since  1.0.0.
-	 * @deprecated  1.3.0.
+	 * @deprecated  1.4.0.
 	 *
 	 * @param  string    $content     The content to display in the editor.
 	 * @param  string    $name        Name of the editor.
@@ -569,7 +568,7 @@ class TTFMAKE_Builder_Base {
 	 * @return void
 	 */
 	public function wp_editor( $content, $name, $settings = array() ) {
-		_deprecated_function( __FUNCTION__, '1.3.0', 'wp_editor' );
+		_deprecated_function( __FUNCTION__, '1.4.0', 'wp_editor' );
 		wp_editor( $content, $name, $settings );
 	}
 
@@ -581,13 +580,13 @@ class TTFMAKE_Builder_Base {
 	 * text in some situations.
 	 *
 	 * @since  1.0.0.
-	 * @deprecated  1.3.0.
+	 * @deprecated  1.4.0.
 	 *
 	 * @param  string    $editor_id    The value of the current editor ID.
 	 * @return void
 	 */
 	public function media_buttons( $editor_id = 'content' ) {
-		_deprecated_function( __FUNCTION__, '1.3.0', 'media_buttons' );
+		_deprecated_function( __FUNCTION__, '1.4.0', 'media_buttons' );
 		media_buttons( $editor_id );
 	}
 
@@ -604,35 +603,7 @@ class TTFMAKE_Builder_Base {
 	 * @return array                   The modified settings.
 	 */
 	function tiny_mce_before_init( $mce_init, $editor_id ) {
-		// Only add stylesheet to a section editor
-		if ( false === strpos( $editor_id, 'make' ) ) {
-			return $mce_init;
-		}
-
-		// Editor styles
-		$editor_styles = array();
-		if ( '' !== $google_request = ttfmake_get_google_font_uri() ) {
-			$editor_styles[] = $google_request;
-		}
-
-		$editor_styles[] = get_template_directory_uri() . '/css/font-awesome.css';
-		$editor_styles[] = get_template_directory_uri() . '/css/editor-style.css';
-
-		// Append in the customizer styles if available
-		if ( function_exists( 'ttfmake_get_css' ) && ttfmake_get_css()->build() ) {
-			$editor_styles[] = add_query_arg( 'action', 'ttfmake-css', admin_url( 'admin-ajax.php' ) );
-		}
-
-		// Create string of CSS files
-		$content_css = implode( ',', $editor_styles );
-
-		// If there is already a stylesheet being added, append and do not override
-		if ( isset( $mce_init['content_css'] ) ) {
-			$mce_init['content_css'] .= ',' . $content_css;
-		} else {
-			$mce_init['content_css'] = $content_css;
-		}
-
+		_deprecated_function( __FUNCTION__, '1.4.0' );
 		return $mce_init;
 	}
 
@@ -682,7 +653,7 @@ class TTFMAKE_Builder_Base {
 			<p style="font-style:italic;margin:0 0 7px 3px;">
 				<?php
 				printf(
-					__( 'Duplicate this page with %s.', 'make' ),
+					esc_html__( 'Duplicate this page with %s.', 'make' ),
 					sprintf(
 						'<a href="%1$s" target="_blank">%2$s</a>',
 						esc_url( ttfmake_get_plus_link( 'duplicator' ) ),
@@ -1073,15 +1044,15 @@ function ttfmake_plus_quick_start() {
 	?>
 	<div id="message" class="error below-h2 ttfmp-import-message<?php echo esc_attr( $additional_classes ); ?>">
 		<p>
-			<strong><?php _e( 'Want some ideas?', 'make' ); ?></strong><br />
+			<strong><?php esc_html_e( 'Want some ideas?', 'make' ); ?></strong><br />
 			<?php
 			printf(
-				__( '%s and get a quick start with pre-made designer builder templates.', 'make' ),
+				esc_html__( '%s and get a quick start with pre-made designer builder templates.', 'make' ),
 				sprintf(
 					'<a href="%1$s" target="_blank">%2$s</a>',
 					esc_url( ttfmake_get_plus_link( 'quick-start' ) ),
 					sprintf(
-						__( 'Upgrade to %s', 'make' ),
+						esc_html__( 'Upgrade to %s', 'make' ),
 						'Make Plus'
 					)
 				)

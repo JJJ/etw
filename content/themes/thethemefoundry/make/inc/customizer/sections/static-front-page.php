@@ -18,21 +18,18 @@ function ttfmake_customizer_staticfrontpage() {
 	$section      = $wp_customize->get_section( $section_id );
 	$priority     = new TTFMAKE_Prioritizer( 10, 5 );
 
+	// Bail if the section isn't registered
+	if ( ! is_object( $section ) || 'WP_Customize_Section' !== get_class( $section ) ) {
+		return;
+	}
+
 	// Move Static Front Page section to General panel
 	$section->panel = $theme_prefix . 'general';
 
 	// Set Static Front Page section priority
-	$social_priority = $wp_customize->get_section( $theme_prefix . 'social' )->priority;
+	$social_priority = $wp_customize->get_section( $theme_prefix . 'rss' )->priority;
 	$section->priority = $social_priority + 5;
-
-	// Adjust section title if no panel support
-	if ( ! ttfmake_customizer_supports_panels() ) {
-		$panels = ttfmake_customizer_get_panels();
-		if ( isset( $panels['general']['title'] ) ) {
-			$section->title = $panels['general']['title'] . ': ' . $section->title;
-		}
-	}
 }
 endif;
 
-add_action( 'customize_register', 'ttfmake_customizer_staticfrontpage', 20 );
+add_action( 'customize_register', 'ttfmake_customizer_staticfrontpage', 99 );

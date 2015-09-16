@@ -23,7 +23,7 @@ function ttfmake_comment( $comment, $args, $depth ) {
 
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class(); ?>>
 		<div class="comment-body">
-			<?php _e( 'Pingback:', 'make' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( 'Edit', 'make' ), '<span class="edit-link">', '</span>' ); ?>
+			<?php esc_html_e( 'Pingback:', 'make' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( esc_html__( 'Edit', 'make' ), '<span class="edit-link">', '</span>' ); ?>
 		</div>
 
 	<?php else : ?>
@@ -41,7 +41,7 @@ function ttfmake_comment( $comment, $args, $depth ) {
 						<time datetime="<?php comment_time( 'c' ); ?>">
 							<?php
 							printf(
-								_x( '%1$s at %2$s', '1: date, 2: time', 'make' ),
+								esc_html_x( '%1$s at %2$s', '1: date, 2: time', 'make' ),
 								get_comment_date(),
 								get_comment_time()
 							);
@@ -57,13 +57,14 @@ function ttfmake_comment( $comment, $args, $depth ) {
 							'<cite class="fn">%s</cite>',
 							get_comment_author_link()
 						),
-						_x( 'says:', 'e.g. Bob says hello.', 'make' )
+						// Translators: this string is a verb whose subject is a comment author. e.g. Bob says: Hello.
+						esc_html__( 'says:', 'make' )
 					);
 					?>
 				</div>
 
 				<?php if ( '0' == $comment->comment_approved ) : ?>
-				<p class="comment-awaiting-moderation"><?php _e( 'Your comment is awaiting moderation.', 'make' ); ?></p>
+				<p class="comment-awaiting-moderation"><?php esc_html_e( 'Your comment is awaiting moderation.', 'make' ); ?></p>
 				<?php endif; ?>
 			</header>
 
@@ -155,13 +156,23 @@ function ttfmake_get_read_more( $before = '<a class="read-more" href="%s">', $af
 	}
 
 	/**
-	 * Filter the value of the read more text.
+	 * Deprecated: Filter the value of the read more text.
+	 *
+	 * This filter hook has been deprecated in favor of a theme option in the Customizer. The theme option
+	 * will only be available if no filters have been added to the hook.
 	 *
 	 * @since 1.2.3.
+	 * @deprecated 1.5.0.
 	 *
-	 * @param string    $read_more_text    The read more text value.
+	 * @param string $read_more_text The read more text value.
 	 */
-	$more = apply_filters( 'make_read_more_text', __( 'Read more', 'make' ) );
+	$more = apply_filters( 'make_read_more_text', false );
+
+	// No filters, get the theme option.
+	if ( false === $more ) {
+		$more = esc_html( get_theme_mod( 'label-read-more', ttfmake_get_default( 'label-read-more' ) ) );
+	}
+
 	return $before . $more . $after;
 }
 endif;
@@ -302,144 +313,6 @@ function ttfmake_maybe_show_social_links( $region ) {
 }
 endif;
 
-if ( ! function_exists( 'ttfmake_pre_wp_nav_menu_social' ) ) :
-/**
- * Alternative output for wp_nav_menu for the 'social' menu location.
- *
- * @since  1.0.0.
- *
- * @param  string    $output    Output for the menu.
- * @param  object    $args      wp_nav_menu arguments.
- * @return string               Modified menu.
- */
-function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
-	if ( ! $args->theme_location || 'social' !== $args->theme_location ) {
-		return $output;
-	}
-
-	// Get the menu object
-	$locations = get_nav_menu_locations();
-	$menu      = wp_get_nav_menu_object( $locations[ $args->theme_location ] );
-
-	if ( ! $menu || is_wp_error( $menu ) ) {
-		return $output;
-	}
-
-	$output = '';
-
-	// Get the menu items
-	$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'update_post_term_cache' => false ) );
-
-	// Set up the $menu_item variables
-	_wp_menu_item_classes_by_context( $menu_items );
-
-	// Sort the menu items
-	$sorted_menu_items = array();
-	foreach ( (array) $menu_items as $menu_item ) {
-		$sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
-	}
-
-	unset( $menu_items, $menu_item );
-
-	/**
-	 * Filter the supported social icons.
-	 *
-	 * This array uses the url pattern for the key and the CSS class (as dictated by Font Awesome) as the array value.
-	 * The URL pattern is used to match the URL used by a menu item.
-	 *
-	 * @since 1.2.3.
-	 *
-	 * @param array    $icons    The array of supported social icons.
-	 */
-	$supported_icons = apply_filters( 'make_supported_social_icons', array(
-		'angel.co'           => 'fa-angellist',
-		'app.net'            => 'fa-adn',
-		'behance.net'        => 'fa-behance',
-		'bitbucket.org'      => 'fa-bitbucket',
-		'codepen.io'         => 'fa-codepen',
-		'delicious.com'      => 'fa-delicious',
-		'deviantart.com'     => 'fa-deviantart',
-		'digg.com'           => 'fa-digg',
-		'dribbble.com'       => 'fa-dribbble',
-		'facebook.com'       => 'fa-facebook',
-		'flickr.com'         => 'fa-flickr',
-		'foursquare.com'     => 'fa-foursquare',
-		'github.com'         => 'fa-github',
-		'gittip.com'         => 'fa-gittip',
-		'plus.google.com'    => 'fa-google-plus-square',
-		'instagram.com'      => 'fa-instagram',
-		'jsfiddle.net'       => 'fa-jsfiddle',
-		'last.fm'            => 'fa-lastfm',
-		'linkedin.com'       => 'fa-linkedin',
-		'pinterest.com'      => 'fa-pinterest',
-		'qzone.qq.com'       => 'fa-qq',
-		'reddit.com'         => 'fa-reddit',
-		'renren.com'         => 'fa-renren',
-		'slideshare.net'     => 'fa-slideshare',
-		'soundcloud.com'     => 'fa-soundcloud',
-		'spotify.com'        => 'fa-spotify',
-		'stackexchange.com'  => 'fa-stack-exchange',
-		'stackoverflow.com'  => 'fa-stack-overflow',
-		'steamcommunity.com' => 'fa-steam',
-		'stumbleupon.com'    => 'fa-stumbleupon',
-		't.qq.com'           => 'fa-tencent-weibo',
-		'trello.com'         => 'fa-trello',
-		'tumblr.com'         => 'fa-tumblr',
-		'twitch.tv'          => 'fa-twitch',
-		'twitter.com'        => 'fa-twitter',
-		'vimeo.com'          => 'fa-vimeo-square',
-		'vine.co'            => 'fa-vine',
-		'vk.com'             => 'fa-vk',
-		'weibo.com'          => 'fa-weibo',
-		'weixin.qq.com'      => 'fa-weixin',
-		'wordpress.com'      => 'fa-wordpress',
-		'xing.com'           => 'fa-xing',
-		'yahoo.com'          => 'fa-yahoo',
-		'yelp.com'           => 'fa-yelp',
-		'youtube.com'        => 'fa-youtube',
-	) );
-
-	// Process each menu item
-	foreach ( $sorted_menu_items as $item ) {
-		$item_output = '';
-
-		// Look for matching icons
-		foreach ( $supported_icons as $pattern => $class ) {
-			if ( false !== strpos( $item->url, $pattern ) ) {
-				$item_output .= '<li class="' . esc_attr( str_replace( 'fa-', '', $class ) ) . '">';
-				$item_output .= '<a href="' . esc_url( $item->url ) . '">';
-				$item_output .= '<i class="fa fa-fw ' . esc_attr( $class ) . '">';
-				$item_output .= '<span>' . esc_html( $item->title ) . '</span>';
-				$item_output .= '</i></a></li>';
-				break;
-			}
-		}
-
-		// No matching icons
-		if ( '' === $item_output ) {
-			$item_output .= '<li class="external-link-square">';
-			$item_output .= '<a href="' . esc_url( $item->url ) . '">';
-			$item_output .= '<i class="fa fa-fw fa-external-link-square">';
-			$item_output .= '<span>' . esc_html( $item->title ) . '</span>';
-			$item_output .= '</i></a></li>';
-		}
-
-		// Add item to list
-		$output .= $item_output;
-		unset( $item_output );
-	}
-
-	// If there are menu items, add a wrapper
-	if ( '' !== $output ) {
-		$output = '<ul class="' . esc_attr( $args->menu_class ) . '">' . $output . '</ul>';
-	}
-
-	return $output;
-}
-endif;
-
-add_filter( 'pre_wp_nav_menu', 'ttfmake_pre_wp_nav_menu_social', 10, 2 );
-
 if ( ! function_exists( 'ttfmake_get_exif_data' ) ) :
 /**
  * Get EXIF data from an attachment.
@@ -480,16 +353,16 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 				if ( in_array( number_format( $denominator, 1 ), array( 1.3, 1.5, 1.6, 2.5 ) ) ) {
 					$decimal_places = 1;
 				}
+				// Translators: this string denotes a camera shutter speed as a fraction of a second. %s is a placeholder for the denominator of the fraction.
 				$converted_ss = sprintf(
-					'1/%1$s %2$s',
-					number_format_i18n( $denominator, $decimal_places ),
-					_x( 'second', 'time', 'make' )
+					esc_html__( '1/%s second', 'make' ),
+					number_format_i18n( $denominator, $decimal_places )
 				);
 			} else {
+				// Translators: this string denotes a camera shutter speed as a number of seconds. %s is a placeholder for the number.
 				$converted_ss = sprintf(
-					'%1$s %2$s',
-					number_format_i18n( $raw_ss, 1 ),
-					_x( 'seconds', 'time', 'make' )
+					esc_html__( '%s seconds', 'make' ),
+					number_format_i18n( $raw_ss, 1 )
 				);
 			}
 
@@ -506,9 +379,9 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 
 		// Convert the aperture to an F-stop
 		if ( 0 !== $image_meta[ 'aperture' ] ) {
+			// Translators: this string denotes a camera f-stop. %s is a placeholder for the f-stop value. E.g. f/3.5
 			$f_stop = sprintf(
-				'%1$s' . '%2$s',
-				_x( 'f/', 'camera f-stop', 'make' ),
+				__( 'f/%s', 'make' ),
 				number_format_i18n( pow( sqrt( 2 ), absint( $image_meta['aperture'] ) ) )
 			);
 
@@ -527,39 +400,57 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 
 		// Camera
 		if ( ! empty( $image_meta['camera'] ) ) {
-			$output .= '<li><span>' . _x( 'Camera:', 'camera setting', 'make' ) . '</span> ';
-			$output .= esc_html( $image_meta['camera'] ) . "</li>\n";
+			// Translators: "Camera" refers to the model name of a camera. %s is a placeholder for the model name.
+			$output .= sprintf(
+				'<li>' . esc_html__( 'Camera: %s', 'make' ) . "</li>\n",
+				esc_html( $image_meta['camera'] )
+			);
 		}
 
 		// Creation Date
 		if ( ! empty( $image_meta['created_timestamp'] ) ) {
-			$output .= '<li><span>' . _x( 'Taken:', 'camera setting', 'make' ) . '</span> ';
-			$date    = new DateTime( gmdate( "Y-m-d\TH:i:s\Z", $image_meta['created_timestamp'] ) );
-			$output .= esc_html( $date->format( get_option( 'date_format' ) ) ) . "</li>\n";
+			$date = new DateTime( gmdate( "Y-m-d\TH:i:s\Z", $image_meta['created_timestamp'] ) );
+			// Translators: "Taken" refers to the date that a photograph was taken. %s is a placeholder for that date.
+			$output .= sprintf(
+				'<li>' . esc_html__( 'Taken: %s', 'make' ) . "</li>\n",
+				esc_html( $date->format( get_option( 'date_format' ) ) )
+			);
 		}
 
 		// Focal length
 		if ( ! empty( $image_meta['focal_length'] ) ) {
-			$output .= '<li><span>' . _x( 'Focal length:', 'camera setting', 'make' ) . '</span> ';
-			$output .= number_format_i18n( absint( $image_meta['focal_length'] ), 0 ) . _x( 'mm', 'millimeters', 'make' ) . "</li>\n";
+			// Translators: "Focal length" refers to the length of a camera's lens. %s is a placeholder for the focal length value, and "mm" is the units in millimeters.
+			$output .= sprintf(
+				'<li>' . esc_html__( 'Focal length: %smm', 'make' ) . "</li>\n",
+				number_format_i18n( absint( $image_meta['focal_length'] ), 0 )
+			);
 		}
 
 		// Aperture
 		if ( ! empty( $image_meta['aperture'] ) ) {
-			$output .= '<li><span>' . _x( 'Aperture:', 'camera setting', 'make' ) . '</span> ';
-			$output .= esc_html( $image_meta['aperture'] ) . "</li>\n";
+			// Translators: "Aperture" refers to the amount of light passing through a camera lens. %s is a placeholder for the aperture value, represented as an f-stop.
+			$output .= sprintf(
+				'<li>' . esc_html__( 'Aperture: %s', 'make' ) . "</li>\n",
+				esc_html( $image_meta['aperture'] )
+			);
 		}
 
 		// Exposure
 		if ( ! empty( $image_meta['shutter_speed'] ) ) {
-			$output .= '<li><span>' . _x( 'Exposure:', 'camera setting', 'make' ) . '</span> ';
-			$output .= esc_html( $image_meta['shutter_speed'] ) . "</li>\n";
+			// Translators: "Exposure" refers to a camera's shutter speed. %s is a placeholder for the shutter speed value.
+			$output .= sprintf(
+				'<li>' . esc_html__( 'Exposure: %s', 'make' ) . "</li>\n",
+				esc_html( $image_meta['shutter_speed'] )
+			);
 		}
 
 		// ISO
 		if ( ! empty( $image_meta['iso'] ) ) {
-			$output .= '<li><span>' . _x( 'ISO:', 'camera setting', 'make' ) . '</span> ';
-			$output .= absint( $image_meta['iso'] ) . "</li>\n";
+			// Translators: "ISO" is an acronym that refers to a camera's sensitivity to light. %s is a placeholder for the ISO value.
+			$output .= sprintf(
+				'<li>' . esc_html__( 'ISO: %s', 'make' ) . "</li>\n",
+				absint( $image_meta['iso'] )
+			);
 		}
 
 		$output .= "</ul>\n";
@@ -576,3 +467,21 @@ function ttfmake_get_exif_data( $attachment_id = 0 ) {
 	return apply_filters( 'make_get_exif_data', $output, $attachment_id );
 }
 endif;
+
+/**
+ * Add the Yoast SEO breadcrumb, if the plugin is activated.
+ *
+ * @since 1.6.4.
+ *
+ * @return void
+ */
+function ttfmake_yoast_seo_breadcrumb() {
+	if ( function_exists( 'yoast_breadcrumb' ) ) {
+		$key    = 'layout-' . ttfmake_get_view() . '-yoast-breadcrumb';
+		$option = absint( get_theme_mod( $key, ttfmake_get_default( $key ) ) );
+
+		if ( 1 === $option || is_404() ) {
+			yoast_breadcrumb( '<p class="yoast-seo-breadcrumb">', '</p>' );
+		}
+	}
+}

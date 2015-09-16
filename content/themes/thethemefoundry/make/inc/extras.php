@@ -30,6 +30,19 @@ if ( ! function_exists( 'ttfmake_body_classes' ) ) :
  * @return array                Modified class list.
  */
 function ttfmake_body_classes( $classes ) {
+	// Full-width vs Boxed
+	$classes[] = get_theme_mod( 'general-layout', ttfmake_get_default( 'general-layout' ) );
+
+	// Header branding position
+	if ( 'right' === get_theme_mod( 'header-branding-position', ttfmake_get_default( 'header-branding-position' ) ) ) {
+		$classes[] = 'branding-right';
+	}
+
+	// Header Bar text position
+	if ( 'flipped' === get_theme_mod( 'header-bar-content-layout', ttfmake_get_default( 'header-bar-content-layout' ) ) ) {
+		$classes[] = 'header-bar-flipped';
+	}
+
 	// Left Sidebar
 	if ( true === ttfmake_has_sidebar( 'left' ) ) {
 		$classes[] = 'has-left-sidebar';
@@ -75,7 +88,7 @@ function ttfmake_wp_title( $title, $sep ) {
 
 	// Add a page number if necessary:
 	if ( $paged >= 2 || $page >= 2 ) {
-		$title .= " $sep " . sprintf( __( 'Page %s', 'make' ), max( $paged, $page ) );
+		$title .= " $sep " . sprintf( esc_html__( 'Page %s', 'make' ), max( $paged, $page ) );
 	}
 
 	return $title;
@@ -83,6 +96,18 @@ function ttfmake_wp_title( $title, $sep ) {
 endif;
 
 add_filter( 'wp_title', 'ttfmake_wp_title', 10, 2 );
+
+/**
+ * Sanitize a string to ensure that it is a float number.
+ *
+ * @since 1.5.0.
+ *
+ * @param  string|float    $value    The value to sanitize.
+ * @return float                     The sanitized value.
+ */
+function ttfmake_sanitize_float( $value ) {
+	return floatval( $value );
+}
 
 if ( ! function_exists( 'ttfmake_sanitize_text' ) ) :
 /**
@@ -118,7 +143,7 @@ function ttfmake_sanitize_text( $string ) {
 	 * @param array     $expandedtags    The list of allowed tags and attributes.
 	 * @param string    $string          The text string being sanitized.
 	 */
-	apply_filters( 'make_sanitize_text_allowed_tags', $expandedtags, $string );
+	$expandedtags = apply_filters( 'make_sanitize_text_allowed_tags', $expandedtags, $string );
 
 	return wp_kses( $string, $expandedtags );
 }
@@ -294,7 +319,7 @@ function ttfmake_has_sidebar( $location ) {
 	$show_sidebar = (bool) get_theme_mod( 'layout-' . $view . '-sidebar-' . $location, ttfmake_get_default( 'layout-' . $view . '-sidebar-' . $location ) );
 
 	// Builder template doesn't support sidebars
-	if ( 'page' === $view && 'template-builder.php' === get_page_template_slug() ) {
+	if ( 'template-builder.php' === get_page_template_slug() ) {
 		$show_sidebar = false;
 	}
 
@@ -341,13 +366,13 @@ function ttfmake_sidebar_description( $sidebar_id ) {
 
 		// Not enabled anywhere
 		if ( empty( $enabled_views ) ) {
-			$description = __( 'This widget area is currently disabled. Enable it in the "Content & Layout" panel of the Customizer.', 'make' );
+			$description = __( 'This widget area is currently disabled. Enable it in the "Layout" panel of the Customizer.', 'make' );
 		}
 		// List enabled views
 		else {
 			$description = sprintf(
-				__( 'This widget area is currently enabled for the following views: %s. Change this in the "Content & Layout" panel of the Customizer.', 'make' ),
-				esc_html( implode( _x( ', ', 'list item separator', 'make' ), $enabled_views ) )
+				__( 'This widget area is currently enabled for the following views: %s. Change this in the "Layout" panel of the Customizer.', 'make' ),
+				implode( _x( ', ', 'list item separator', 'make' ), $enabled_views )
 			);
 		}
 	}
@@ -394,6 +419,274 @@ function ttfmake_sidebar_list_enabled( $location ) {
 	return apply_filters( 'make_sidebar_list_enabled', $enabled_views, $location );
 }
 endif;
+
+if ( ! function_exists( 'ttfmake_get_social_links' ) ) :
+/**
+ * Get the social links from options.
+ *
+ * @since  1.0.0.
+ *
+ * @return array    Keys are service names and the values are links.
+ */
+function ttfmake_get_social_links() {
+	// Define default services; note that these are intentionally non-translatable
+	$default_services = array(
+		'facebook-official' => array(
+			'title' => 'Facebook',
+			'class' => 'fa-facebook-official',
+		),
+		'twitter' => array(
+			'title' => 'Twitter',
+			'class' => 'fa-twitter',
+		),
+		'google-plus-square' => array(
+			'title' => 'Google+',
+			'class' => 'fa-google-plus-square',
+		),
+		'linkedin' => array(
+			'title' => 'LinkedIn',
+			'class' => 'fa-linkedin',
+		),
+		'instagram' => array(
+			'title' => 'Instagram',
+			'class' => 'fa-instagram',
+		),
+		'flickr' => array(
+			'title' => 'Flickr',
+			'class' => 'fa-flickr',
+		),
+		'youtube' => array(
+			'title' => 'YouTube',
+			'class' => 'fa-youtube',
+		),
+		'vimeo-square' => array(
+			'title' => 'Vimeo',
+			'class' => 'fa-vimeo-square',
+		),
+		'pinterest' => array(
+			'title' => 'Pinterest',
+			'class' => 'fa-pinterest',
+		),
+		'email' => array(
+			'title' => __( 'Email', 'make' ),
+			'class' => 'fa-envelope',
+		),
+		'rss' => array(
+			'title' => __( 'RSS', 'make' ),
+			'class' => 'fa-rss',
+		),
+	);
+
+	// Set up the collector array
+	$services_with_links = array();
+
+	// Get the links for these services
+	foreach ( $default_services as $service => $details ) {
+		$url = get_theme_mod( 'social-' . $service, ttfmake_get_default( 'social-' . $service ) );
+		if ( '' !== $url ) {
+			$services_with_links[ $service ] = array(
+				'title' => $details['title'],
+				'url'   => $url,
+				'class' => $details['class'],
+			);
+		}
+	}
+
+	// Special handling for RSS
+	$hide_rss = (int) get_theme_mod( 'social-hide-rss', ttfmake_get_default( 'social-hide-rss' ) );
+	if ( 0 === $hide_rss ) {
+		$custom_rss = get_theme_mod( 'social-custom-rss', ttfmake_get_default( 'social-custom-rss' ) );
+		if ( ! empty( $custom_rss ) ) {
+			$services_with_links['rss']['url'] = $custom_rss;
+		} else {
+			$services_with_links['rss']['url'] = get_feed_link();
+		}
+	} else {
+		unset( $services_with_links['rss'] );
+	}
+
+	// Properly set the email
+	if ( isset( $services_with_links['email']['url'] ) ) {
+		$services_with_links['email']['url'] = 'mailto:' . $services_with_links['email']['url'];
+	}
+
+	/**
+	 * Filter the social links added to the site.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param array    $services_with_links    The social services and links.
+	 */
+	return apply_filters( 'make_social_links', $services_with_links );
+}
+endif;
+
+if ( ! function_exists( 'ttfmake_pre_wp_nav_menu_social' ) ) :
+/**
+ * Alternative output for wp_nav_menu for the 'social' menu location.
+ *
+ * @since  1.0.0.
+ *
+ * @param  string    $output    Output for the menu.
+ * @param  object    $args      wp_nav_menu arguments.
+ * @return string               Modified menu.
+ */
+function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
+	if ( ! $args->theme_location || 'social' !== $args->theme_location ) {
+		return $output;
+	}
+
+	// Get the menu object
+	$locations = get_nav_menu_locations();
+	$menu      = wp_get_nav_menu_object( $locations[ $args->theme_location ] );
+
+	if ( ! $menu || is_wp_error( $menu ) ) {
+		return $output;
+	}
+
+	$output = '';
+
+	// Get the menu items
+	$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'update_post_term_cache' => false ) );
+
+	// Set up the $menu_item variables
+	_wp_menu_item_classes_by_context( $menu_items );
+
+	// Sort the menu items
+	$sorted_menu_items = array();
+	foreach ( (array) $menu_items as $menu_item ) {
+		$sorted_menu_items[ $menu_item->menu_order ] = $menu_item;
+	}
+
+	unset( $menu_items, $menu_item );
+
+	/**
+	 * Filter the supported social icons.
+	 *
+	 * This array uses the url pattern for the key and the CSS class (as dictated by Font Awesome) as the array value.
+	 * The URL pattern is used to match the URL used by a menu item.
+	 *
+	 * @since 1.2.3.
+	 *
+	 * @param array    $icons    The array of supported social icons.
+	 */
+	$supported_icons = apply_filters( 'make_supported_social_icons', array(
+		'500px.com'          => 'fa-500px',
+		'amazon.com'         => 'fa-amazon',
+		'angel.co'           => 'fa-angellist',
+		'app.net'            => 'fa-adn',
+		'behance.net'        => 'fa-behance',
+		'bitbucket.org'      => 'fa-bitbucket',
+		'codepen.io'         => 'fa-codepen',
+		'delicious.com'      => 'fa-delicious',
+		'deviantart.com'     => 'fa-deviantart',
+		'digg.com'           => 'fa-digg',
+		'dribbble.com'       => 'fa-dribbble',
+		'facebook.com'       => 'fa-facebook-official',
+		'flickr.com'         => 'fa-flickr',
+		'foursquare.com'     => 'fa-foursquare',
+		'github.com'         => 'fa-github',
+		'gittip.com'         => 'fa-gittip',
+		'plus.google.com'    => 'fa-google-plus-square',
+		'houzz.com'          => 'fa-houzz',
+		'instagram.com'      => 'fa-instagram',
+		'jsfiddle.net'       => 'fa-jsfiddle',
+		'last.fm'            => 'fa-lastfm',
+		'leanpub.com'        => 'fa-leanpub',
+		'linkedin.com'       => 'fa-linkedin',
+		'medium.com'         => 'fa-medium',
+		'ok.ru'              => 'fa-odnoklassniki',
+		'pinterest.com'      => 'fa-pinterest',
+		'qzone.qq.com'       => 'fa-qq',
+		'reddit.com'         => 'fa-reddit',
+		'renren.com'         => 'fa-renren',
+		'slideshare.net'     => 'fa-slideshare',
+		'soundcloud.com'     => 'fa-soundcloud',
+		'spotify.com'        => 'fa-spotify',
+		'stackexchange.com'  => 'fa-stack-exchange',
+		'stackoverflow.com'  => 'fa-stack-overflow',
+		'steamcommunity.com' => 'fa-steam',
+		'stumbleupon.com'    => 'fa-stumbleupon',
+		't.qq.com'           => 'fa-tencent-weibo',
+		'trello.com'         => 'fa-trello',
+		'tumblr.com'         => 'fa-tumblr',
+		'twitch.tv'          => 'fa-twitch',
+		'twitter.com'        => 'fa-twitter',
+		'vimeo.com'          => 'fa-vimeo-square',
+		'vine.co'            => 'fa-vine',
+		'vk.com'             => 'fa-vk',
+		'weibo.com'          => 'fa-weibo',
+		'weixin.qq.com'      => 'fa-weixin',
+		'wordpress.com'      => 'fa-wordpress',
+		'xing.com'           => 'fa-xing',
+		'yahoo.com'          => 'fa-yahoo',
+		'yelp.com'           => 'fa-yelp',
+		'youtube.com'        => 'fa-youtube',
+	) );
+
+	// Process each menu item
+	foreach ( $sorted_menu_items as $item ) {
+		// Item classes
+		$classes = ( isset( $item->classes ) && ! empty( $item->classes ) ) ? implode( ' ', (array) $item->classes ) : '';
+
+		// Item target
+		$target  = ( isset( $item->target ) && $item->target ) ? ' target="_blank"' : '';
+
+		$item_output = '';
+
+		// Look for matching icons
+		foreach ( $supported_icons as $pattern => $class ) {
+			if ( false !== strpos( $item->url, $pattern ) ) {
+				$item_output .= '<li class="' . esc_attr( str_replace( 'fa-', '', $class ) ) . ' ' . esc_attr( $classes ) . '">';
+				$item_output .= '<a href="' . esc_url( $item->url ) . '"' . $target . '>';
+				$item_output .= '<i class="fa fa-fw ' . esc_attr( $class ) . '">';
+				$item_output .= '<span>' . esc_html( $item->title ) . '</span>';
+				$item_output .= '</i></a></li>';
+				break;
+			}
+		}
+
+		// No matching icons
+		if ( '' === $item_output ) {
+			$item_output .= '<li class="external-link-square ' . esc_attr( $classes ) . '">';
+			$item_output .= '<a href="' . esc_url( $item->url ) . '"' . $target . '>';
+			$item_output .= '<i class="fa fa-fw fa-external-link-square">';
+			$item_output .= '<span>' . esc_html( $item->title ) . '</span>';
+			$item_output .= '</i></a></li>';
+		}
+
+		// Add item to list
+		$output .= $item_output;
+		unset( $item_output );
+	}
+
+	// Email & RSS
+	$customizer_links = ttfmake_get_social_links();
+	if ( isset( $customizer_links['email'] ) ) {
+		$output .= '<li class="email menu-item">';
+		$output .= '<a href="' . esc_url( $customizer_links['email']['url'] ) . '">';
+		$output .= '<i class="fa fa-fw fa-envelope">';
+		$output .= '<span>' . esc_html( $customizer_links['email']['title'] ) . '</span>';
+		$output .= '</i></a></li>';
+	}
+	if ( isset( $customizer_links['rss'] ) ) {
+		$output .= '<li class="rss menu-item">';
+		$output .= '<a href="' . esc_url( $customizer_links['rss']['url'] ) . '">';
+		$output .= '<i class="fa fa-fw fa-rss">';
+		$output .= '<span>' . esc_html( $customizer_links['rss']['title'] ) . '</span>';
+		$output .= '</i></a></li>';
+	}
+
+	// If there are menu items, add a wrapper
+	if ( '' !== $output ) {
+		$output = '<ul class="' . esc_attr( $args->menu_class ) . '">' . $output . '</ul>';
+	}
+
+	return $output;
+}
+endif;
+
+add_filter( 'pre_wp_nav_menu', 'ttfmake_pre_wp_nav_menu_social', 10, 2 );
 
 if ( ! function_exists( 'ttfmake_get_section_data' ) ) :
 /**
@@ -538,6 +831,47 @@ function ttfmake_is_builder_page( $post_id = 0 ) {
 }
 endif;
 
+/**
+ * Handle frontend scripts for use with the existing sections on the current Builder page.
+ *
+ * @since 1.6.1.
+ *
+ * @return void
+ */
+function ttfmake_frontend_builder_scripts() {
+	if ( ttfmake_is_builder_page() ) {
+		$sections = ttfmake_get_section_data( get_the_ID() );
+		// Bail if there are no sections
+		if ( empty( $sections ) ) {
+			return;
+		}
+		// Parse the sections included on the page.
+		$sections      = ttfmake_get_section_data( get_the_ID() );
+		$section_types = wp_list_pluck( $sections, 'section-type' );
+
+		foreach ( $section_types as $section_id => $section_type ) {
+			switch ( $section_type ) {
+				default :
+					break;
+				case 'banner' :
+					// Add Cycle2 as a dependency for the Frontend script
+					global $wp_scripts;
+					$script = $wp_scripts->query( 'ttfmake-global', 'registered' );
+					if ( $script && ! in_array( 'cycle2', $script->deps ) ) {
+						$script->deps[] = 'cycle2';
+						if ( ! defined( 'TTFMAKE_SUFFIX' ) || '.min' !== TTFMAKE_SUFFIX ) {
+							$script->deps[] = 'cycle2-center';
+							$script->deps[] = 'cycle2-swipe';
+						}
+					}
+					break;
+			}
+		}
+	}
+}
+
+add_action( 'wp_head', 'ttfmake_frontend_builder_scripts' );
+
 if ( ! function_exists( 'ttfmake_builder_css' ) ) :
 /**
  * Trigger an action hook for each section on a Builder page for the purpose
@@ -584,6 +918,13 @@ if ( ! function_exists( 'ttfmake_builder_banner_css' ) ) :
  * @return void
  */
 function ttfmake_builder_banner_css( $data, $id ) {
+	$prefix = 'builder-section-';
+	$id = sanitize_title_with_dashes( $data['id'] );
+	/**
+	 * This filter is documented in inc/builder/core/save.php
+	 */
+	$section_id = apply_filters( 'make_section_html_id', $prefix . $id, $data );
+
 	$responsive = ( isset( $data['responsive'] ) ) ? $data['responsive'] : 'balanced';
 	$slider_height = absint( $data['height'] );
 	if ( 0 === $slider_height ) {
@@ -593,20 +934,20 @@ function ttfmake_builder_banner_css( $data, $id ) {
 
 	if ( 'aspect' === $responsive ) {
 		ttfmake_get_css()->add( array(
-			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'selectors'    => array( '#' . esc_attr( $section_id ) . ' .builder-banner-slide' ),
 			'declarations' => array(
 				'padding-bottom' => $slider_ratio . '%'
 			),
 		) );
 	} else {
 		ttfmake_get_css()->add( array(
-			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'selectors'    => array( '#' . esc_attr( $section_id ) . ' .builder-banner-slide' ),
 			'declarations' => array(
 				'padding-bottom' => $slider_height . 'px'
 			),
 		) );
 		ttfmake_get_css()->add( array(
-			'selectors'    => array( '#builder-section-' . esc_attr( $id ) . ' .builder-banner-slide' ),
+			'selectors'    => array( '#' . esc_attr( $section_id ) . ' .builder-banner-slide' ),
 			'declarations' => array(
 				'padding-bottom' => $slider_ratio . '%'
 			),
@@ -617,3 +958,57 @@ function ttfmake_builder_banner_css( $data, $id ) {
 endif;
 
 add_action( 'make_builder_banner_css', 'ttfmake_builder_banner_css', 10, 2 );
+
+/**
+ * Add a wrapper div to the output of oembeds and the [embed] shortcode.
+ *
+ * Also enqueues FitVids, since the embed might be a video.
+ *
+ * @since 1.0.0.
+ *
+ * @param  string    $html    The generated HTML of the embed handler.
+ * @param  string    $url     The embed URL.
+ * @param  array     $attr    The attributes of the embed shortcode.
+ *
+ * @return string             The wrapped HTML.
+ */
+function ttfmake_embed_container( $html, $url, $attr ) {
+	// Bail if this is the admin or an RSS feed
+	if ( is_admin() || is_feed() ) {
+		return $html;
+	}
+
+	if ( isset( $attr['width'] ) ) {
+		// Add FitVids as a dependency for the Frontend script
+		global $wp_scripts;
+		if ( is_object( $wp_scripts ) && 'WP_Scripts' === get_class( $wp_scripts ) ) {
+			$script = $wp_scripts->query( 'ttfmake-global', 'registered' );
+			if ( $script && ! in_array( 'fitvids', $script->deps ) ) {
+				$script->deps[] = 'fitvids';
+			}
+		}
+
+		// Get classes
+		$default_class = 'ttfmake-embed-wrapper';
+		$align_class = 'aligncenter';
+		if ( isset( $attr['make_align'] ) ) {
+			$align = trim( $attr['make_align'] );
+			if ( in_array( $align, array( 'left', 'right', 'center', 'none' ) ) ) {
+				$align_class = 'align' . $align;
+			}
+		}
+		$class = trim( "$default_class $align_class" );
+
+		// Get style
+		$style = 'max-width: ' . absint( $attr['width'] ) . 'px;';
+
+		// Build wrapper
+		$wrapper = "<div class=\"$class\" style=\"$style\">%s</div>";
+		$html = sprintf( $wrapper, $html );
+	}
+
+	return $html;
+}
+
+add_filter( 'embed_handler_html', 'ttfmake_embed_container', 10, 3 );
+add_filter( 'embed_oembed_html' , 'ttfmake_embed_container', 10, 3 );

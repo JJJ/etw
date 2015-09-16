@@ -61,10 +61,10 @@ var ttfmakeFormatBuilder = ttfmakeFormatBuilder || {};
 			target: false,
 			fontSize: ttfmakeFormatBuilderVars.userSettings.fontSizeBody,
 			fontWeight: 'bold',
-			colorBackground: '#000000',
-			colorBackgroundHover: '#e5e5e5',
-			colorText: '#ffffff',
-			colorTextHover: '#000000',
+			colorBackground: ttfmakeFormatBuilderVars.userSettings.colorPrimary,
+			colorBackgroundHover: ttfmakeFormatBuilderVars.userSettings.colorSecondary,
+			colorText: ttfmakeFormatBuilderVars.userSettings.colorSecondary,
+			colorTextHover: ttfmakeFormatBuilderVars.userSettings.colorPrimary,
 			paddingHorz: '10',
 			paddingVert: '4',
 			borderRadius: '3',
@@ -275,6 +275,8 @@ var ttfmakeFormatBuilder = ttfmakeFormatBuilder || {};
 			});
 			if ( 'true' == this.get('target') ) {
 				$node.attr('target', '_blank');
+			} else {
+				$node.removeAttr('target');
 			}
 
 			// Add inline styles.
@@ -301,7 +303,8 @@ var ttfmakeFormatBuilder = ttfmakeFormatBuilder || {};
 				$node.prepend($icon);
 			}
 
-			// Remove TinyMCE attribute that breaks things when trying to update an existing format.
+			// Remove TinyMCE attributes that break things when trying to update an existing format.
+			$node.removeAttr('data-mce-href');
 			$node.removeAttr('data-mce-style');
 		},
 
