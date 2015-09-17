@@ -1,0 +1,350 @@
+<?php
+/**
+ * @package Make Plus
+ */
+
+if ( ! class_exists( 'TTFMP_Admin_Notice' ) ) :
+/**
+ * Class TTFMP_Admin_Notice
+ *
+ * Display notices in the WP Admin
+ *
+ * @since 1.6.0.
+ */
+class TTFMP_Admin_Notice {
+	/**
+	 * The array of registered notices.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @var    array    The array of registered notices.
+	 */
+	var $notices = array();
+
+	/**
+	 * The path to the notice template file.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @var    string    The path to the notice template file.
+	 */
+	var $template = '';
+
+	/**
+	 * The single instance of the class.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @var    object    The single instance of the class.
+	 */
+	private static $instance;
+
+	/**
+	 * Instantiate or return the one TTFMP_Admin_Notice instance.
+	 *
+	 * @since  1.6.0.
+	 *
+	 * @return TTFMP_Admin_Notice
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * Construct the object.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @return TTFMP_Admin_Notice
+	 */
+	public function __construct() {}
+
+	/**
+	 * Initialize the formatting functionality and hook into WordPress.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		// Define template path
+		$this->template = trailingslashit( dirname( __FILE__ ) ) . 'template.php';
+
+		// Register Ajax action
+		add_action( 'wp_ajax_ttfmp_hide_notice', array( $this, 'handle_ajax' ) );
+
+		// Hook up notices
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+	}
+
+	/**
+	 * Register an admin notice.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @param string    $id         A unique ID string for the admin notice.
+	 * @param string    $message    The content of the admin notice.
+	 * @param array     $args       Array of configuration parameters for the admin notice.
+	 * @return void
+	 */
+	public function register_admin_notice( $id, $message, $args = array() ) {
+		// Prep id
+		$id = sanitize_title_with_dashes( $id );
+
+		// Prep message
+		$allowedtags = wp_kses_allowed_html();
+		$allowedtags['a']['target'] = true;
+		$message = wp_kses( $message, $allowedtags );
+
+		// Prep args
+		$defaults = array(
+			'cap'     => 'update_plugins',      // User capability to see the notice
+			'dismiss' => true,                 // Whether notice is dismissable
+			'screen'  => array( 'dashboard' ), // IDs/filenames of screens to show the notice on
+			'type'    => 'info',               // success, warning, error, info
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		// Register the notice
+		if ( $message ) {
+			$this->notices[ $id ] = array_merge( array( 'message' => $message ), $args );
+		}
+	}
+
+	/**
+	 * Get the visible notices for a specified screen.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @param  string|object    $screen    The screen to display the notices on.
+	 * @return array                       Array of notices to display on the specified screen.
+	 */
+	private function get_notices( $screen = '' ) {
+		if ( ! $screen ) {
+			return array();
+		}
+
+		// Get the array of notices that the current user has already dismissed
+		$user_id = get_current_user_id();
+		$dismissed = get_user_meta( $user_id, 'ttfmp-dismissed-notices', true );
+
+		// Remove notices that don't meet requirements
+		$notices = $this->notices;
+		foreach( $notices as $id => $args ) {
+			if (
+				! $this->screen_is_enabled( $screen, $args['screen'] )
+				||
+				! current_user_can( $args['cap'] )
+				||
+				in_array( $id, (array) $dismissed )
+			) {
+				unset( $notices[ $id ] );
+			}
+		}
+
+		return $notices;
+	}
+
+	/**
+	 * Check if the given screen is in the array of allowed screens.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @param  WP_Screen    $current_screen     The WP_Screen object for the given screen.
+	 * @param  array        $enabled_screens    Array of allowed screen IDs.
+	 *
+	 * @return bool                             True if the given screen is enabled for displaying the notice.
+	 */
+	private function screen_is_enabled( $current_screen, $enabled_screens ) {
+		// Validate current screen variable
+		if ( ! is_object( $current_screen ) || 'WP_Screen' !== get_class( $current_screen ) ) {
+			return false;
+		}
+
+		// Ensure correct casting
+		$enabled_screens = (array) $enabled_screens;
+
+		// Check screen ID first
+		if ( in_array( $current_screen->id, $enabled_screens ) ) {
+			return true;
+		}
+
+		// Check screen's parent file next
+		return in_array( $current_screen->parent_file, $enabled_screens );
+	}
+
+	/**
+	 * Wrapper function for admin_notices hook that sets everything up.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @return void
+	 */
+	public function admin_notices() {
+		$current_notices = $this->get_notices( get_current_screen() );
+
+		if ( ! empty( $current_notices ) && file_exists( $this->template ) ) {
+			add_action( 'admin_print_footer_scripts', array( $this, 'print_admin_notices_js' ) );
+			$this->render_notices( $current_notices );
+		}
+	}
+
+	/**
+	 * Output the markup and styles for admin notices.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @param  array    $notices    The array of notices to render.
+	 * @return void
+	 */
+	private function render_notices( $notices ) {
+		global $wp_version;
+		?>
+		<style type="text/css">
+			.ttfmp-dismiss {
+				display: block;
+				float: right;
+				margin: 0.5em 0;
+				padding: 2px;
+			}
+			.rtl .ttfmp-dismiss {
+				float: left;
+			}
+		</style>
+	<?php
+		foreach ( $notices as $id => $args ) {
+			$message = $args['message'];
+			$dismiss = $args['dismiss'];
+			$type    = $args['type'];
+			$nonce   = wp_create_nonce( 'ttfmp_dismiss_' . $id );
+
+			// CSS and JS in older versions of WP rely on the error and updated classes.
+			$legacy_class = '';
+			if ( version_compare( $wp_version, '4.1', '<=' ) ) {
+				if ( in_array( $type, array( 'warning', 'error' ) ) ) {
+					$legacy_class = 'error';
+				} else if ( in_array( $type, array( 'success', 'info' ) ) ) {
+					$legacy_class = 'updated';
+				}
+			}
+
+			// Load the template
+			require( $this->template );
+		}
+	}
+
+	/**
+	 * Output the JS to hide admin notices.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @return void
+	 */
+	public function print_admin_notices_js() {
+		?>
+		<script type="application/javascript">
+			/* Make Plus admin notices */
+			/* <![CDATA[ */
+			( function( $ ) {
+				$('.notice').on('click', '.ttfmp-dismiss', function(evt) {
+					evt.preventDefault();
+
+					var $target = $(evt.target),
+						$parent = $target.parents('.notice').first(),
+						nonce   = $target.data('nonce'),
+						id      = $parent.attr('id').replace('ttfmp-notice-', '');
+
+					$.post(
+						ajaxurl,
+						{
+							action : 'ttfmp_hide_notice',
+							nid    : id,
+							nonce  : nonce
+						}
+					).done(function(data) {
+						if (1 === parseInt(data, 10)) {
+							$parent.fadeOut('slow', function() {
+								$(this).remove();
+							});
+						}
+					});
+				});
+			} )( jQuery );
+			/* ]]> */
+		</script>
+	<?php
+	}
+
+	/**
+	 * Process the Ajax request to hide an admin notice.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @return void
+	 */
+	public function handle_ajax() {
+		// Check requirements
+		if (
+			! defined( 'DOING_AJAX' ) ||
+			true !== DOING_AJAX ||
+			! isset( $_POST['nid'] ) ||
+			! isset( $_POST['nonce'] ) ||
+			! wp_verify_nonce( $_POST['nonce'], 'ttfmp_dismiss_' . $_POST['nid'] )
+		) {
+			wp_die();
+		}
+
+		// Get array of dismissed notices
+		$user_id = get_current_user_id();
+		$dismissed = get_user_meta( $user_id, 'ttfmp-dismissed-notices', true );
+		if ( ! $dismissed ) {
+			$dismissed = array();
+		}
+
+		// Add a new notice to the array
+		$id = $_POST['nid'];
+		$dismissed[] = $id;
+		$success = update_user_meta( $user_id, 'ttfmp-dismissed-notices', $dismissed );
+
+		// Return a success response.
+		if ( $success ) {
+			echo 1;
+		}
+		wp_die();
+	}
+}
+
+/**
+ * Instantiate or return the one TTFMP_Admin_Notice instance.
+ *
+ * @since  1.6.0.
+ *
+ * @return TTFMP_Admin_Notice
+ */
+function ttfmp_admin_notice() {
+	return TTFMP_Admin_Notice::instance();
+}
+
+/**
+ * Wrapper function to register an admin notice.
+ *
+ * @since 1.6.0.
+ *
+ * @param string    $id         A unique ID string for the admin notice.
+ * @param string    $message    The content of the admin notice.
+ * @param array     $args       Array of configuration parameters for the admin notice.
+ * @return void
+ */
+function ttfmp_register_admin_notice( $id, $message, $args ) {
+	ttfmp_admin_notice()->register_admin_notice( $id, $message, $args );
+}
+
+/**
+ * Fire the init function immediately.
+ */
+ttfmp_admin_notice()->init();
+endif;

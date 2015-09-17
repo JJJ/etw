@@ -1,211 +1,297 @@
 /*---------------------------------------------------------
  Widget area overlay (widget-area.css)
 -------------------------------------------------------- */
+
 .ttfmp-widget-area-overlay-region {
 	position: relative;
 }
+
 .ttfmp-widget-area-overlay {
+	overflow: scroll;
 	position: absolute;
+	top: 0;
+	/*reset*/
+	left: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
-	top: 0; /*reset*/
-	left: 0; /*reset*/
+	/*reset*/
 	border: 1px solid #dfdfdf;
 	background: #fff;
-	overflow: scroll;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
 }
+
 .ttfmp-widget-area-overlay-region-inactive .ttfmp-widget-area-overlay {
 	z-index: -10;
 	opacity: 0;
 }
+
 .ttfmp-widget-area-overlay-region-active .ttfmp-widget-area-overlay {
 	z-index: 1111;
-	opacity: 1; /*reset*/
+	opacity: 1;
+	/*reset*/
 }
+
+
 /*---------------------------------------------------------
  Widget area content (widget-area.css)
 -------------------------------------------------------- */
+
 .ttfmp-widget-area-text {
 	padding: 20px;
 }
+
 .ttfmp-widget-area-text p {
-	margin-top: 0; /*reset*/
+	margin-top: 0;
+	/*reset*/
 }
+
 .ttfmp-widget-list {
 	margin-top: 20px;
-	margin-bottom: 0; /*reset*/
+	margin-bottom: 0;
+	/*reset*/
 }
+
 .ttfmp-widget-list li {
-	margin-bottom: 0; /*reset*/
+	margin-bottom: 0;
+	/*reset*/
 }
+
 .ttfmp-widget-list li .ttfmp-widget-list-container {
-	position: relative;
 	display: block;
+	overflow: hidden;
+	position: relative;
 	height: 39px;
-	margin: 0; /*reset*/
+	margin: 0;
+	/*reset*/
 	margin-bottom: 20px;
 	padding: 0 15px;
-	line-height: 39px;
-	font-weight: bold;
-	color: #222;
 	border: 1px solid #dfdfdf;
+	color: #222;
 	background-color: #fafafa;
+	font-weight: bold;
+	line-height: 39px;
 	white-space: nowrap;
-	overflow: hidden;
-	-webkit-touch-callout: none; /*reset*/
-	-webkit-user-select: none; /*reset*/
-	-khtml-user-select: none; /*reset*/
-	-moz-user-select: none; /*reset*/
-	-ms-user-select: none; /*reset*/
-	user-select: none; /*reset*/
+	/*reset*/
+	-webkit-user-select: none;
+	/*reset*/
+	-moz-user-select: none;
+	/*reset*/
+	-ms-user-select: none;
+	/*reset*/
+	user-select: none;
+	/*reset*/
+
+	-khtml-user-select: none;
+	-webkit-touch-callout: none;
+	/*reset*/
 }
+
 .ttfmp-widget-list li:last-of-type .ttfmp-widget-list-container {
-	margin-bottom: 0; /*reset*/
+	margin-bottom: 0;
+	/*reset*/
 }
+
 .ttfmp-widget-list li:hover .sortable-background {
-	opacity: 1; /*reset*/
+	opacity: 1;
+	/*reset*/
 }
+
 .ttfmake-overlay-body .widget-form label {
 	display: inline-block;
 	margin-top: 20px;
 	margin-bottom: 10px;
 }
+
 .ttfmake-overlay-body .widget-form p:first-of-type label {
-	margin-top: 0; /*reset*/
+	margin-top: 0;
+	/*reset*/
 }
+
 .ttfmake-overlay-body .widget-form p .checkbox + label {
-	margin-top: 0; /*reset*/
-	margin-bottom: 0; /*reset*/
+	margin-top: 0;
+	/*reset*/
+	margin-bottom: 0;
+	/*reset*/
 }
+
+
 /*---------------------------------------------------------
  Widget area title (widget-area.css)
 -------------------------------------------------------- */
+
 .ttfmp-widget-area-display .ttfmake-title,
 .ttfmp-widget-area-display .ttfmake-title:focus {
-	border-top: 0 !important; /*reset*/
-	border-left: 0 !important; /*reset*/
-	border-right: 0 !important; /*reset*/
+	border-top: 0 !important;
+	/*reset*/
+	border-right: 0 !important;
+	/*reset*/
+	border-left: 0 !important;
+	/*reset*/
 }
+
 .ttfmp-widget-area-display .ttfmake-titlediv .ttfmake-title {
 	height: 40px;
 }
+
+
 /*---------------------------------------------------------
  Widget area buttons (widget-area.css)
 -------------------------------------------------------- */
+
 .convert-widget-area-link,
 .ttfmp-revert-widget-area {
-	position: absolute;
 	display: inline-block;
 	clear: both;
-	height: 39px;
+	position: absolute;
 	top: 0;
 	right: 0;
-	margin-bottom: 0; /*reset*/
+	height: 39px;
+	margin-bottom: 0;
+	/*reset*/
 	padding: 0 12px;
 	border: 1px solid #d9d9d9;
-	background-color: #eee;
-	color: #aaa;
-	text-decoration: none;  /*reset*/
+	/*reset*/
 	outline: none !important;
+	color: #aaa;
+	background-color: #eee;
+	text-decoration: none;
 }
+
 .ttfmp-revert-widget-area {
-	border-top: 0; /*reset*/
-	border-right: 0; /*reset*/
-	border-bottom: 0; /*reset*/
+	border-top: 0;
+	/*reset*/
+	border-right: 0;
+	/*reset*/
+	border-bottom: 0;
+	/*reset*/
 }
+
 .convert-widget-area-link:hover,
 .ttfmp-revert-widget-area:hover {
 	color: #222;
 }
+
 .convert-widget-area-link span,
 .ttfmp-revert-widget-area span {
 	display: none;
-	text-indent: -9999px;
-	white-space: nowrap;
 	overflow: hidden;
+	white-space: nowrap;
+	text-indent: -9999px;
 }
+
 .convert-widget-area-link:before,
 .ttfmp-revert-widget-area:before {
 	font: 400 20px/39px dashicons;
-	speak: none; /*reset*/
+
+	speak: none;
+	/*reset*/
 }
+
 .convert-widget-area-link:before {
 	content: "\f311";
 }
+
 .ttfmp-revert-widget-area:before {
 	content: "\f171";
 }
+
 .ttfmp-widget-list-container .remove-widget-link,
 .ttfmp-widget-list-container .edit-widget-link {
-	border-top: 0; /*reset*/
-	border-right: 0; /*reset*/
+	border-top: 0;
+	/*reset*/
+	border-right: 0;
+	/*reset*/
 }
+
 .ttfmp-widget-list-container .edit-widget-link {
 	right: 44px;
 }
+
+
 /*---------------------------------------------------------
  Sorting (widget-area.css)
 -------------------------------------------------------- */
+
 .ttfmp-widget-list li.sortable-placeholder {
 	display: block;
-	height: 61px;
-	padding: 0;
-	margin-bottom: 20px;
 	box-sizing: border-box;
+	height: 61px;
+	margin-bottom: 20px;
+	padding: 0;
 }
+
+
 /*---------------------------------------------------------
  Widget edit and remove links (widget-area.css)
 -------------------------------------------------------- */
+
 .edit-widget-link,
 .remove-widget-link {
 	display: inline-block;
-	position: absolute;
 	clear: both;
+	position: absolute;
 	top: 20px;
 	right: 45px;
 	height: 39px;
-	margin-bottom: 0; /*reset*/
+	margin-bottom: 0;
+	/*reset*/
 	padding: 0 12px;
 	border: 1px solid #d9d9d9;
-	background-color: #eeeeee;
-	color: #aaaaaa;
-	text-decoration: none;  /*reset*/
+	/*reset*/
 	outline: none !important;
+	color: #aaa;
+	background-color: #eee;
+	text-decoration: none;
 }
+
 .edit-widget-link,
 .remove-widget-link {
-	top: 0; /*reset*/
+	top: 0;
+	/*reset*/
 }
+
 .remove-widget-link:before {
-	content: "\f182";
 	font: 400 20px/39px dashicons;
-	speak: none; /*reset*/
+	content: "\f182";
+
+	speak: none;
+	/*reset*/
 }
+
 .edit-widget-link,
 .remove-widget-link {
-	right: 0; /*reset*/
+	right: 0;
+	/*reset*/
 }
+
 .edit-widget-link:hover,
 .remove-widget-link:hover {
-	color: #222222;
+	color: #222;
 }
+
 .edit-widget-link span,
 .remove-widget-link span {
-	display: none; /*reset*/
-	text-indent: -9999px;
-	white-space: nowrap;
+	display: none;
 	overflow: hidden;
+	white-space: nowrap;
+	/*reset*/
+	text-indent: -9999px;
 }
+
 .remove-widget-link:before {
+	font: 400 20px/39px dashicons;
 	content: "\f182";
-	font: 400 20px/39px dashicons;
-	speak: none; /*reset*/
+
+	speak: none;
+	/*reset*/
 }
+
 .edit-widget-link:before {
-	content: "\f111";
 	font: 400 20px/39px dashicons;
-	speak: none; /*reset*/
+	content: "\f111";
+
+	speak: none;
+	/*reset*/
 }

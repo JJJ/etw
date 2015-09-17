@@ -38,7 +38,7 @@ class TTFMP_Text_Column_Layout {
 	var $file_path = '';
 
 	/**
-	 * The URI base for the plugin (e.g., http://domain.com/wp-content/plugins/make-plus/my-component).
+	 * The URI base for the plugin (e.g., http://example.com/wp-content/plugins/make-plus/my-component).
 	 *
 	 * @since 1.3.0.
 	 *
@@ -82,80 +82,37 @@ class TTFMP_Text_Column_Layout {
 		$this->component_root = ttfmp_get_app()->component_base . '/' . $this->component_slug;
 		$this->file_path      = $this->component_root . '/' . basename( __FILE__ );
 		$this->url_base       = untrailingslashit( plugins_url( '/', __FILE__ ) );
-
-		// Add the JS/CSS
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-
-		if ( defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.3.99', '>=' ) ) {
-			add_action( 'make_add_section', array( $this, 'add_text_column_layout_input_to_configuration_panel' ) );
-		} else {
-			// Add content after the column
-			add_action( 'ttfmake_section_text_before_columns_select', array( $this, 'add_text_column_layout_input' ) );
-		}
-
-		// Add content after the column
-		add_action( 'ttfmake_section_text_after_columns_select', array( $this, 'clear_inputs' ) );
-
-		// Add the inputs for the individual columns
-		add_action( 'ttfmake_section_text_after_column', array( $this, 'add_column_inputs' ), 10, 2 );
-
-		// Save the data
-		add_filter( 'ttfmake_prepare_data_section', array( $this, 'save_data' ), 10, 3 );
-
-		// Hook up layout CSS customizations
-		add_action( 'ttfmake_css', array( $this, 'add_layout_css' ) );
-
-		// Add classes to the text columns
-		add_filter( 'ttfmake-text-column-classes', array( $this, 'add_classes' ), 10, 3 );
 	}
 
 	/**
-	 * Add input for the text column layout.
+	 * Initialize hooks
 	 *
-	 * Note that this is deprecated in 1.4.0. With the Make builder UI refresh, the action that this is hooked to has
-	 * changed its meaning. This is left here only for back compatibility.
+	 * @since 1.6.0.
 	 *
-	 * @since  1.3.0.
-	 *
-	 * @param  array     $data    The section data.
 	 * @return void
 	 */
-	public function add_text_column_layout_input( $data ) {
-		global $ttfmake_is_js_template;
-		$section_name       = ttfmake_get_section_name( $data, $ttfmake_is_js_template );
-		$class              = '';
-		$columns            = 3;
-		$text_column_layout = 'three-equal';
-		$layouts            = $this->layouts();
+	public function init() {
+		// Add the JS/CSS
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
-		if ( true !== $ttfmake_is_js_template ) {
-			// Test to see if input needs to be hidden
-			if ( isset( $data['data']['columns-number'] ) && in_array( $data['data']['columns-number'], array( '1', '4' ) ) ) {
-				$class = ' ttfmake-text-column-layout-select-hidden';
-			}
+		// Add a blurb where the old Column Layout option used to be.
+		add_filter( 'make_add_section', array( $this, 'add_configuration_inputs' ) );
+		add_filter( 'make_configuration_overlay_input_wrap', array( $this, 'filter_column_layout_input' ), 10, 2 );
 
-			// Get the number of columns
-			if ( isset( $data['data']['columns-number'] ) ) {
-				$columns = absint( $data['data']['columns-number'] );
-			}
+		// Add the inputs for the individual columns
+		add_action( 'make_section_text_after_column', array( $this, 'add_column_inputs' ), 10, 2 );
 
-			// Get the layout
-			if ( isset( $data['data']['text-column-layout'] ) ) {
-				$text_column_layout = $data['data']['text-column-layout'];
-			}
-		}
-	?>
-		<div class="ttfmake-text-column-layout-select ttfmake-select<?php echo $class; ?>">
-			<label for="<?php echo $section_name; ?>[text-column-layout]"><?php _e( 'Layout:', 'make-plus' ); ?></label>
-			<select class="ttfmp-text-column-layout-select" id="<?php echo $section_name; ?>[text-column-layout]" name="<?php echo $section_name; ?>[text-column-layout]">
-				<?php if ( isset( $layouts[ $columns ] ) ) : ?>
-					<?php foreach ( $layouts[ $columns ] as $value => $label ) : ?>
-						<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $value, $text_column_layout ); ?>><?php echo esc_html( $label ); ?></option>
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</select>
-		</div>
-	<?php
+		// Add the container for the column sizing sliders
+		add_action( 'make_section_text_after_columns', array( $this, 'add_column_slider_container' ) );
+
+		// Save the data
+		add_filter( 'make_prepare_data_section', array( $this, 'save_data' ), 10, 3 );
+
+		// Hook up layout CSS customizations
+		add_action( 'make_css', array( $this, 'add_layout_css' ) );
+
+		// Add classes to the text columns
+		add_filter( 'ttfmake-text-column-classes', array( $this, 'add_classes' ), 10, 3 );
 	}
 
 	/**
@@ -166,41 +123,51 @@ class TTFMP_Text_Column_Layout {
 	 * @param  array    $section_data    The section data.
 	 * @return array                     Modified section data.
 	 */
-	public function add_text_column_layout_input_to_configuration_panel( $section_data ) {
+	public function add_configuration_inputs( $section_data ) {
 		if ( 'text' === $section_data['id'] ) {
-			$options = array();
+			$controls = $section_data['config'];
 
-			foreach ( $this->layouts() as $value ) {
-				foreach ( $value as $subkey => $subvalue ) {
-					$options[ $subkey ] = $subvalue;
-				}
+			// Get the last priority of existing section controls
+			if ( ! empty( $controls ) ) {
+				$priorities = array_keys( $controls );
+				sort( $priorities );
+				$last_priority = (int) array_pop( $priorities );
+			} else {
+				$last_priority = 0;
 			}
 
-			$section_data['config'][300] = array(
-				'type'    => 'select',
-				'name'    => 'text-column-layout',
+			// New priority
+			$new_priority = $last_priority + 100;
+
+			$section_data['config'][ $new_priority ] = array(
+				'type'    => 'text',
+				'name'    => 'text-column-layout-blurb',
 				'label'   => __( 'Column layout', 'make-plus' ),
-				'class'   => 'ttfmp-text-column-layout-select',
-				'default' => 'three-equal',
-				'options' => $options
+				'class'   => 'ttfmp-text-column-layout-blurb',
 			);
 		}
-
 		return $section_data;
 	}
 
 	/**
-	 * Clear the floats after adding the text column layout select.
+	 * Filter the Column Layout input to just be a text blurb.
 	 *
-	 * @since  1.3.0.
+	 * Since there isn't a 'text blurb' input type.
 	 *
-	 * @param  array    $data    The section data.
-	 * @return void
+	 * @since 1.6.0.
+	 *
+	 * @param  string    $wrap    The HTML to wrap the option input.
+	 * @param  array     $args    The args for the input.
+	 *
+	 * @return string             The modified HTML wrap.
 	 */
-	public function clear_inputs( $data ) {
-	?>
-		<div class="clear"></div>
-	<?php
+	public function filter_column_layout_input( $wrap, $args ) {
+		if ( isset( $args['name'] ) && 'text-column-layout-blurb' === $args['name'] ) {
+			$blurb = esc_html__( 'Looking for the Column Layout option? Now you can simply click and drag between the columns to change their grid layout. (2- and 3-column sections only.)', 'make-plus' );
+			$wrap = str_replace( '%2$s', $blurb, $wrap );
+		}
+
+		return $wrap;
 	}
 
 	/**
@@ -226,6 +193,17 @@ class TTFMP_Text_Column_Layout {
 		<input type="hidden" class="ttfmp-column-size-input ttfmp-column-size-input-<?php echo $column_number; ?>" name="<?php echo $section_name; ?>[size]" value="<?php echo esc_attr( $size ); ?>" />
 	<?php
 	}
+
+	/**
+	 * Add the container HTML for the jQuery UI sliders.
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @return void
+	 */
+	public function add_column_slider_container() { ?>
+		<div class="ttfmp-column-size-container"></div>
+	<?php }
 
 	/**
 	 * Save the layout and size data
@@ -255,14 +233,6 @@ class TTFMP_Text_Column_Layout {
 					}
 				}
 			}
-
-			// Save the layout choice
-			$layouts         = $this->layouts();
-			$allowed_layouts = array_merge( array_keys( $layouts[2] ), array_keys( $layouts[3] ) );
-
-			if ( isset( $original_data['text-column-layout'] ) && in_array( $original_data['text-column-layout'], $allowed_layouts ) ) {
-				$clean_data['text-column-layout'] = $original_data['text-column-layout'];
-			}
 		}
 
 		return $clean_data;
@@ -286,47 +256,37 @@ class TTFMP_Text_Column_Layout {
 		}
 
 		wp_enqueue_script(
-			'ttfmp-text-column-layout',
-			$this->url_base . '/js/text-column-layout.js',
-			array( 'jquery' ),
+			'ttfmp-column-size',
+			$this->url_base . '/js/column-size.js',
+			array( 'jquery', 'jquery-ui-slider' ),
 			ttfmp_get_app()->version,
 			true
 		);
 
 		wp_localize_script(
-			'ttfmp-text-column-layout',
-			'ttfmpTextColumnLayout',
+			'ttfmp-column-size',
+			'ttfmpColumnSize',
 			array(
-				'layouts' => $this->layouts()
+				2 => array(
+					-2 => 'one-fourth',
+					-1 => 'one-third',
+					 0 => 'one-half',
+					 1 => 'two-thirds',
+					 2 => 'three-fourths',
+				),
+				3 => array(
+					-1 => 'one-fourth',
+					 0 => 'one-third',
+					 1 => 'one-half',
+				),
 			)
 		);
 
 		wp_enqueue_style(
 			'ttfmp-text-column-layout',
 			$this->url_base . '/css/text-column-layout.css',
-			array(),
+			array( 'ttfmake-sections/css/sections.css' ),
 			ttfmp_get_app()->version
-		);
-	}
-
-	/**
-	 * Collects the possible layout options.
-	 *
-	 * @since  1.3.0.
-	 *
-	 * @return array    All layout options.
-	 */
-	public function layouts() {
-		return array(
-			2 => array(
-				'two-equal'     => __( 'Equal Width', 'make-plus' ),
-				'two-thirds'    => __( 'Wide | Narrow', 'make-plus' ),
-				'three-fourths' => __( 'Wider | Narrower', 'make-plus' ),
-			),
-			3 => array(
-				'three-equal' => __( 'Equal Width', 'make-plus' ),
-				'two-fourths' => __( 'Wide | Narrow | Narrow', 'make-plus' ),
-			),
 		);
 	}
 
@@ -348,6 +308,13 @@ class TTFMP_Text_Column_Layout {
 
 		foreach ( $sections as $id => $data ) {
 			if ( isset( $data['section-type'] ) && 'text' === $data['section-type'] && isset( $data['columns-number'] ) && isset( $data['columns-order'] ) ) {
+				$prefix = 'builder-section-';
+				$id = sanitize_title_with_dashes( $id );
+				/**
+				 * This filter is documented in Make, inc/builder/core/save.php
+				 */
+				$section_id = apply_filters( 'make_section_html_id', $prefix . $id, $data );
+
 				$number_of_columns = absint( $data['columns-number'] );
 				$selector_base     = '.builder-text-columns-' . $number_of_columns . ' .builder-text-column-';
 
@@ -355,7 +322,7 @@ class TTFMP_Text_Column_Layout {
 					if ( isset( $column_data['size'] ) ) {
 						ttfmake_get_css()->add( array(
 							'selectors'    => array(
-								'#builder-section-' . $id . $selector_base . $this->get_column_number( $data['columns-order'], $column_number )
+								'#' . esc_attr( $section_id ) . $selector_base . $this->get_column_number( $data['columns-order'], $column_number )
 							),
 							'declarations' => array(
 								'width' => $this->get_column_width( $column_data['size'], $number_of_columns ) . '%'
@@ -454,7 +421,7 @@ class TTFMP_Text_Column_Layout {
 }
 endif;
 
-if ( ! function_exists( 'ttfmp_get_widget_area' ) ) :
+if ( ! function_exists( 'ttfmp_get_text_column_layout' ) ) :
 /**
  * Instantiate or return the one TTFMP_Text_Column_Layout instance.
  *
@@ -467,4 +434,4 @@ function ttfmp_get_text_column_layout() {
 }
 endif;
 
-ttfmp_get_text_column_layout();
+ttfmp_get_text_column_layout()->init();

@@ -44,9 +44,6 @@ class TTFMP_EDD_Section_Definitions {
 	 * @return TTFMP_EDD_Section_Definitions
 	 */
 	public function __construct() {
-		// Register all of the sections via the section API
-		$this->register_downloads_section();
-
 		// Add the section styles and scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
@@ -55,8 +52,11 @@ class TTFMP_EDD_Section_Definitions {
 		add_filter( 'ttfmake_section_choices', array( $this, 'section_choices' ), 10, 3 );
 
 		// Add JS fix for "Insert download" button
-		add_action( 'admin_head-post.php', array( $this, 'admin_head_script' ) );
-		add_action( 'admin_head-post-new.php', array( $this, 'admin_head_script' ) );
+		add_action( 'admin_footer-post.php', array( $this, 'admin_head_script' ) );
+		add_action( 'admin_footer-post-new.php', array( $this, 'admin_head_script' ) );
+
+		// Add section
+		add_action( 'after_setup_theme', array( $this, 'register_downloads_section' ), 11 );
 	}
 
 	/**
@@ -75,14 +75,42 @@ class TTFMP_EDD_Section_Definitions {
 			array( $this, 'save_downloads' ),
 			'sections/builder-templates/downloads',
 			'sections/front-end-templates/downloads',
-			500,
+			830,
 			ttfmp_get_edd()->component_root,
 			array(
 				100 => array(
 					'type'  => 'section_title',
 					'name'  => 'title',
-					'label' => __( 'Enter section title', 'make' ),
+					'label' => __( 'Enter section title', 'make-plus' ),
 					'class' => 'ttfmake-configuration-title ttfmake-section-header-title-input',
+					'default' => ttfmake_get_section_default( 'title', 'edd-downloads' ),
+				),
+				200 => array(
+					'type'  => 'image',
+					'name'  => 'background-image',
+					'label' => __( 'Background image', 'make-plus' ),
+					'class' => 'ttfmake-configuration-media',
+					'default' => ttfmake_get_section_default( 'background-image', 'edd-downloads' ),
+				),
+				300 => array(
+					'type'    => 'checkbox',
+					'label'   => __( 'Darken background to improve readability', 'make-plus' ),
+					'name'    => 'darken',
+					'default' => ttfmake_get_section_default( 'darken', 'edd-downloads' ),
+				),
+				400 => array(
+					'type'    => 'select',
+					'name'    => 'background-style',
+					'label'   => __( 'Background style', 'make-plus' ),
+					'default' => ttfmake_get_section_default( 'background-style', 'edd-downloads' ),
+					'options' => ttfmake_get_section_choices( 'background-style', 'edd-downloads' ),
+				),
+				500 => array(
+					'type'    => 'color',
+					'label'   => __( 'Background color', 'make-plus' ),
+					'name'    => 'background-color',
+					'class'   => 'ttfmake-text-background-color ttfmake-configuration-color-picker',
+					'default' => ttfmake_get_section_default( 'background-color', 'edd-downloads' ),
 				),
 			)
 		);
@@ -107,6 +135,10 @@ class TTFMP_EDD_Section_Definitions {
 		// Data to sanitize and save
 		$defaults = array(
 			'title' => ttfmake_get_section_default( 'title', 'edd-downloads' ),
+			'background-image' => ttfmake_get_section_default( 'background-image', 'edd-downloads' ),
+			'darken' => ttfmake_get_section_default( 'darken', 'edd-downloads' ),
+			'background-style' => ttfmake_get_section_default( 'background-style', 'edd-downloads' ),
+			'background-color' => ttfmake_get_section_default( 'background-color', 'edd-downloads' ),
 			'columns' => ttfmake_get_section_default( 'columns', 'edd-downloads' ),
 			'taxonomy' => ttfmake_get_section_default( 'taxonomy', 'edd-downloads' ),
 			'sortby' => ttfmake_get_section_default( 'sortby', 'edd-downloads' ),
@@ -122,6 +154,18 @@ class TTFMP_EDD_Section_Definitions {
 
 		// Title
 		$clean_data['title'] = $clean_data['label'] = apply_filters( 'title_save_pre', $parsed_data['title'] );
+
+		// Background image
+		$clean_data['background-image'] = ttfmake_sanitize_image_id( $parsed_data['background-image']['image-id'] );
+
+		// Darken
+		$clean_data['darken'] = absint( $parsed_data['darken'] );
+
+		// Background style
+		$clean_data['background-style'] = ttfmake_sanitize_section_choice( $parsed_data['background-style'], 'background-style', 'edd-downloads' );
+
+		// Background color
+		$clean_data['background-color'] = maybe_hash_hex_color( $parsed_data['background-color'] );
 
 		// Columns
 		$clean_data['columns'] = ttfmake_sanitize_section_choice( $parsed_data['columns'], 'columns', 'edd-downloads' );
@@ -164,6 +208,10 @@ class TTFMP_EDD_Section_Definitions {
 	public function section_defaults( $defaults ) {
 		$new_defaults = array(
 			'edd-downloads-title' => '',
+			'edd-downloads-background-image' => 0,
+			'edd-downloads-darken' => 0,
+			'edd-downloads-background-style' => 'tile',
+			'edd-downloads-background-color' => '',
 			'edd-downloads-columns' => 3,
 			'edd-downloads-taxonomy' => 'all',
 			'edd-downloads-sortby' => 'post_date-desc',
@@ -195,6 +243,12 @@ class TTFMP_EDD_Section_Definitions {
 		$choice_id = "$section_type-$key";
 
 		switch ( $choice_id ) {
+			case 'edd-downloads-background-style' :
+				$choices = array(
+					'tile'  => __( 'Tile', 'make-plus' ),
+					'cover' => __( 'Cover', 'make-plus' ),
+				);
+				break;
 			case 'edd-downloads-columns' :
 				$choices = array(
 					1 => __( '1', 'make-plus' ),
@@ -308,10 +362,10 @@ class TTFMP_EDD_Section_Definitions {
 
 	/**
 	 * This script fixes the "Chosen" download select used by EDD's "Insert download" button for
-	 * custom TinyMCE instances. A pull request has been accepted to fix this in the plugin, so this
-	 * shouldn't be needed after version 2.0.
+	 * custom TinyMCE instances.
 	 *
 	 * @since 1.2.0.
+	 * @since 1.6.1. Updated to work with the TinyMCE overlay.
 	 *
 	 * @return void
 	 */
@@ -320,15 +374,15 @@ class TTFMP_EDD_Section_Definitions {
 		$post_type_supports_builder = ( function_exists( 'ttfmake_post_type_supports_builder' ) ) ? ttfmake_post_type_supports_builder( get_post_type() ) : false;
 		$post_type_is_page          = ( 'page' === get_post_type() );
 
-		if ( ( ! $post_type_supports_builder && ! $post_type_is_page ) || ( defined( 'EDD_VERSION' ) && true === version_compare( EDD_VERSION, '2.0', '>' ) ) ) {
+		if ( ( ! $post_type_supports_builder && ! $post_type_is_page ) || ( ! defined( 'EDD_VERSION' ) ) ) {
 			return;
 		}
 		?>
 		<script type="application/javascript">
 			(function($){
 				// This fixes the Chosen box being 0px wide when the thickbox is opened
-				$('#post').on('click', '.edd-thickbox', function() {
-					$('.edd-select-chosen', '#choose-download').css('width', '100%');
+				$('#ttfmake-tinymce-overlay').on('click', '.edd-thickbox', function() {
+					$('.edd-select-chosen').css('width', '100%');
 				});
 			}(jQuery));
 		</script>

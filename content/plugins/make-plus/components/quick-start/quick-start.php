@@ -38,7 +38,7 @@ class TTFMP_Quick_Start {
 	var $file_path = '';
 
 	/**
-	 * The URI base for the plugin (e.g., http://domain.com/wp-content/plugins/make-plus/my-component).
+	 * The URI base for the plugin (e.g., http://example.com/wp-content/plugins/make-plus/my-component).
 	 *
 	 * @since 1.0.0.
 	 *
@@ -130,8 +130,8 @@ class TTFMP_Quick_Start {
 	?>
 		<div id="message" class="updated below-h2 ttfmp-import-message<?php echo esc_attr( $additional_classes ); ?>">
 			<p class="ttfmp-import-message-left">
-				<strong><?php _e( 'Quick Start', 'make-plus' ); ?></strong><br />
-				<?php _e( 'Import content into this page. To begin, select a category&hellip;', 'make-plus' ); ?>
+				<strong><?php esc_html_e( 'Quick Start', 'make-plus' ); ?></strong><br />
+				<?php esc_html_e( 'Import content into this page. To begin, select a category&hellip;', 'make-plus' ); ?>
 			</p>
 			<p class="ttfmp-import-message-right">
 				<select name="ttfmp-import-content" id="ttfmp-import-content">
@@ -145,7 +145,7 @@ class TTFMP_Quick_Start {
 					<?php endforeach; ?>
 				</select>
 				<a href="#" id="ttfmp-import-link" class="button">
-					<?php _e( 'Import content', 'make-plus' ); ?>
+					<?php esc_html_e( 'Import content', 'make-plus' ); ?>
 				</a>
 			</p>
 			<div class="clear"></div>

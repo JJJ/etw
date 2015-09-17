@@ -80,7 +80,7 @@
 		},
 
 		initSortables: function() {
-			$('.ttfmp-widget-list').sortable({
+			$('.ttfmp-widget-list-sortable').sortable({
 				handle: '.ttfmake-sortable-handle',
 				placeholder: 'sortable-placeholder',
 				forcePlaceholderSizeType: true,

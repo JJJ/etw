@@ -71,6 +71,7 @@ class TTFMP_PerPage_Options {
 				'layout-post-show-tags',
 				'layout-post-comment-count',
 				'layout-post-comment-count-location',
+				'layout-post-yoast-breadcrumb',
 			),
 			'page' => array(
 				'layout-page-hide-header',
@@ -88,6 +89,7 @@ class TTFMP_PerPage_Options {
 				'layout-page-comment-count',
 				'layout-page-comment-count-location',
 				'layout-page-hide-title',
+				'layout-page-yoast-breadcrumb',
 			),
 		);
 
@@ -243,6 +245,7 @@ class TTFMP_PerPage_Options {
 			'layout-post-show-tags' => 'absint',
 			'layout-post-comment-count' => 'ttfmake_sanitize_choice',
 			'layout-post-comment-count-location' => 'ttfmake_sanitize_choice',
+			'layout-post-yoast-breadcrumb' => 'absint',
 			//
 			'layout-page-hide-header' => 'absint',
 			'layout-page-hide-footer' => 'absint',
@@ -258,18 +261,21 @@ class TTFMP_PerPage_Options {
 			'layout-page-comment-count' => 'ttfmake_sanitize_choice',
 			'layout-page-comment-count-location' => 'ttfmake_sanitize_choice',
 			'layout-page-hide-title' => 'absint',
+			'layout-page-yoast-breadcrumb' => 'absint',
 			//
 			'layout-shop-hide-header' => 'absint',
 			'layout-shop-hide-footer' => 'absint',
 			'layout-shop-sidebar-left' => 'absint',
 			'layout-shop-sidebar-right' => 'absint',
 			'layout-shop-shop-sidebar' => 'ttfmake_sanitize_choice',
+			'layout-shop-yoast-breadcrumb' => 'absint',
 			//
 			'layout-product-hide-header' => 'absint',
 			'layout-product-hide-footer' => 'absint',
 			'layout-product-sidebar-left' => 'absint',
 			'layout-product-sidebar-right' => 'absint',
 			'layout-product-shop-sidebar' => 'ttfmake_sanitize_choice',
+			'layout-product-yoast-breadcrumb' => 'absint',
 		);
 
 		if ( ! function_exists( $functions[ $key ] ) ) {

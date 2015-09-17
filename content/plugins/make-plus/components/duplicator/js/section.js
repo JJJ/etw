@@ -42,6 +42,10 @@ var oneApp = oneApp || {};
 									oneApp.initializeTextColumnSortables(view);
 									duplicatorSection.initFrames(view);
 								}
+								if ('panels' === sectionType) {
+									oneApp.initializePanelsItemSortables(view);
+									duplicatorSection.initFrames(view);
+								}
 							} else {
 								duplicatorSection.handleError(data, $this);
 							}

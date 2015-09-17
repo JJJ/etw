@@ -11,6 +11,12 @@ $is_widget = ( isset( $ttfmp_data['is-widget'] ) && true === $ttfmp_data['is-wid
 // Thumbnail
 $thumbnail = trim( $ttfmp_data['thumbnail'] );
 $thumbnail_size = apply_filters( 'ttfmp_posts_list_thumbnail_size', 'large', $ttfmp_data );
+$aspect = trim( $ttfmp_data['aspect'] );
+$featured_image = wp_get_attachment_image_src( get_post_thumbnail_id(), $thumbnail_size );
+$image_style = ( isset( $featured_image[0] ) ) ? ' style="background-image: url(' . addcslashes( esc_url_raw( $featured_image[0] ), '"' ) . ');"' : '';
+
+// Excerpt length
+$excerpt_length = absint( $ttfmp_data['excerpt-length'] );
 
 // True/false options
 $display_keys = array(
@@ -35,9 +41,17 @@ if ( $is_widget || in_array( $thumbnail, array( 'left', 'right' ) ) ) {
 <header class="ttfmp-post-list-item-header">
 	<?php if ( 'none' !== $thumbnail ) : ?>
 	<figure class="ttfmp-post-list-item-thumb position-<?php echo esc_attr( $thumbnail ); ?>">
-		<a href="<?php the_permalink(); ?>">
-			<?php the_post_thumbnail( $thumbnail_size ); ?>
-		</a>
+		<?php if ( 'none' === $aspect ) : ?>
+			<?php if ( get_post_thumbnail_id() ) : ?>
+			<a href="<?php the_permalink(); ?>">
+				<?php the_post_thumbnail( $thumbnail_size ); ?>
+			</a>
+			<?php endif; ?>
+		<?php else : ?>
+		<div class="ttfmp-post-list-item-image aspect-<?php echo esc_attr( $aspect ); ?>"<?php echo $image_style; ?>>
+			<a href="<?php the_permalink(); ?>"></a>
+		</div>
+		<?php endif; ?>
 	</figure>
 	<?php endif; ?>
 	<?php if ( $d['show-title'] ) : ?>
@@ -58,7 +72,7 @@ if ( $is_widget || in_array( $thumbnail, array( 'left', 'right' ) ) ) {
 <?php endif; ?>
 <?php if ( $d['show-excerpt'] ) : ?>
 <div class="ttfmp-post-list-item-content">
-	<?php the_excerpt(); ?>
+	<?php echo ttfmp_get_post_list()->get_excerpt( $excerpt_length ); ?>
 </div>
 <?php endif; ?>
 <?php if ( $d['show-author'] ) : ?>
@@ -73,7 +87,7 @@ if ( $is_widget || in_array( $thumbnail, array( 'left', 'right' ) ) ) {
 	if ( function_exists( 'ttfmake_categorized_blog' ) ) :
 		$categorized_blog = ttfmake_categorized_blog();
 	endif;
-	if ( ( $d['show-categories'] && has_category() && $categorized_blog ) || ( $d['show-tags'] || has_tag() ) ) : ?>
+	if ( ( $d['show-categories'] && has_category() && $categorized_blog ) || ( $d['show-tags'] && has_tag() ) ) : ?>
 		<?php
 		$category_list   = get_the_category_list();
 		$tag_list        = get_the_tag_list( '<ul class="post-tags"><li>', "</li>\n<li>", '</li></ul>' ); // Replicates category output
@@ -81,11 +95,13 @@ if ( $is_widget || in_array( $thumbnail, array( 'left', 'right' ) ) ) {
 
 		// Categories
 		if ( $d['show-categories'] && $category_list ) :
+			// Translators: this HTML markup will display an icon representing blog categories.
 			$taxonomy_output .= __( '<i class="fa fa-file"></i> ', 'make-plus' ) . '%1$s';
 		endif;
 
 		// Tags
 		if ( $d['show-tags'] && $tag_list ) :
+			// Translators: this HTML markup will display an icon representing blog tags.
 			$taxonomy_output .= __( '<i class="fa fa-tag"></i> ', 'make-plus' ) . '%2$s';
 		endif;
 
@@ -101,7 +117,7 @@ if ( $is_widget || in_array( $thumbnail, array( 'left', 'right' ) ) ) {
 	<a class="ttfmp-post-list-item-comment-link" href="<?php the_permalink(); ?>">
 		<?php
 		printf(
-			_n( '%d comment', '%d comments', get_comments_number(), 'make-plus' ),
+			esc_html( _n( '%d comment', '%d comments', get_comments_number(), 'make-plus' ) ),
 			number_format_i18n( get_comments_number() )
 		);
 		?>

@@ -92,7 +92,7 @@ class TTFMP_WooCommerce_Legacy_Color {
 		?>
 		<tr valign="top" class="woocommerce_frontend_css_colors">
 			<th scope="row" class="titledesc">
-				<?php _e( 'Frontend Styles', 'make-plus' ); ?>
+				<?php esc_html_e( 'Frontend Styles', 'make-plus' ); ?>
 			</th>
 			<td class="forminp">
 				<span class="description">
@@ -108,11 +108,12 @@ class TTFMP_WooCommerce_Legacy_Color {
 				}
 				// Add the message
 				printf(
-					__( 'These styles can be customized in the Color Scheme &rarr; General section of the %s.', 'make-plus' ),
+					// Translators: %s is a placeholder for a link to the Customizer
+					esc_html__( 'These styles can be customized in the Color Scheme &rarr; General section of the %s.', 'make-plus' ),
 					sprintf(
 						'<a href="%1$s">%2$s</a>',
 						esc_url( $url ),
-						__( 'Customizer', 'make-plus' )
+						esc_html__( 'Customizer', 'make-plus' )
 					)
 				);
 			} else {
@@ -258,7 +259,7 @@ class TTFMP_WooCommerce_Legacy_Color {
 				// Reset the base
 				file_put_contents( $base_file, $original_base );
 			} catch ( exception $ex ) {
-				wp_die( __( 'Could not compile woocommerce.less:', 'make-plus' ) . ' ' . $ex->getMessage() );
+				wp_die( esc_html__( 'Could not compile woocommerce.less:', 'make-plus' ) . ' ' . $ex->getMessage() );
 			}
 		}
 	}
@@ -327,7 +328,7 @@ class TTFMP_WooCommerce_Legacy_Color {
 	 * @return string
 	 */
 	public function color_highlight_description( $text ) {
-		$description = __( 'For WooCommerce, used for prices, in stock labels, and sales flash.', 'make-plus' );
+		$description = esc_html__( 'For WooCommerce, used for prices, in stock labels, and sales flash.', 'make-plus' );
 
 		if ( '' !== $text ) {
 			$text .= ' ';

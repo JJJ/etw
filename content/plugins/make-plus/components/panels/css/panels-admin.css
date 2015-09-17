@@ -1,0 +1,166 @@
+/*---------------------------------------------------------
+ Panels section (panels-admin.scss)
+-------------------------------------------------------- */
+
+.ttfmp-panels-item {
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.ttfmp-panels-item .ttfmake-iframe-wrapper {
+	border-top: 0;
+}
+
+.ttfmp-panels-item .ttfmake-iframe-wrapper iframe {
+	max-height: 220px;
+}
+
+.ttfmp-panels-item .ttfmake-iframe-overlay {
+	height: 220px;
+}
+
+* html .wrapper-panels-item-links {
+	height: 1%;
+}
+
+.ttfmp-panels-item:hover .sortable-background {
+	opacity: 1;
+	/*reset*/
+}
+
+.ttfmake-section-configure.configure-panels-item-link {
+	padding: 0 12px;
+}
+
+
+/*---------------------------------------------------------
+ Add new panel button (panels-admin.scss)
+-------------------------------------------------------- */
+
+.ttfmp-panels-add-item {
+	clear: both;
+	height: 76px;
+	border: 1px solid #dfdfdf;
+	background-color: #fff;
+}
+
+.ttfmp-panels-add-item:before {
+	display: block;
+	color: #1bc865;
+	font: 36px/76px dashicons;
+	text-align: center;
+	content: "\f502";
+}
+
+.ttfmp-panels-add-item-link {
+	text-decoration: none;
+	/*reset*/
+}
+
+.ttfmp-panels-add-item span {
+	display: none;
+	overflow: hidden;
+	white-space: nowrap;
+	/*reset*/
+	text-indent: -9999px;
+}
+
+
+/*---------------------------------------------------------
+ Configure, Edit and Remove buttons (panels-admin.scss)
+-------------------------------------------------------- */
+
+.wrapper-panels-item-links {
+	display: block;
+	clear: both;
+	height: 41px;
+	border: 1px solid #d9d9d9;
+	background-color: #fafafa;
+}
+
+.wrapper-panels-item-links a {
+	height: 41px;
+	border-bottom: 0;
+}
+
+.wrapper-panels-item-links a:before {
+	line-height: 40px;
+}
+
+.wrapper-panels-item-links:after {
+	display: block;
+	visibility: hidden;
+	clear: both;
+	height: 0;
+	font-size: 0;
+	content: " ";
+}
+
+.edit-content-link.item-has-content.edit-panels-item-link:before {
+	content: "\f214";
+}
+
+.edit-panels-item-link,
+.remove-panels-item-link,
+.configure-panels-item-link {
+	display: inline-block;
+	clear: both;
+	position: absolute;
+	top: 20px;
+	right: 45px;
+	height: 39px;
+	margin-bottom: 0;
+	/*reset*/
+	padding: 0 12px;
+	border: 1px solid #d9d9d9;
+	/*reset*/
+	outline: none !important;
+	color: #aaa;
+	background-color: #eee;
+	text-decoration: none;
+}
+
+.remove-panels-item-link {
+	right: 0;
+	/*reset*/
+}
+
+.edit-panels-item-link:hover,
+.remove-panels-item-link:hover,
+.ttfmake-section-open .ttfmp-panels-item .configure-panels-item-link:hover {
+	color: #222;
+}
+
+.edit-panels-item-link span,
+.remove-panels-item-link span,
+.configure-panels-item-link span {
+	display: none;
+	overflow: hidden;
+	white-space: nowrap;
+	text-indent: -9999px;
+}
+
+.edit-panels-item-link:before {
+	font: 400 20px/39px dashicons;
+	content: "\f464";
+
+	speak: none;
+	/*reset*/
+}
+
+.remove-panels-item-link:before {
+	font: 400 20px/39px dashicons;
+	content: "\f182";
+
+	speak: none;
+	/*reset*/
+}
+
+.configure-panels-item-link {
+	float: right;
+	position: relative;
+	top: 0;
+	right: 90px;
+	border: 0;
+	border-left: 1px solid #d9d9d9;
+}

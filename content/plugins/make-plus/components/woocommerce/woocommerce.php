@@ -38,7 +38,7 @@ class TTFMP_WooCommerce {
 	var $file_path = '';
 
 	/**
-	 * The URI base for the plugin (e.g., http://domain.com/wp-content/plugins/make-plus/my-component).
+	 * The URI base for the plugin (e.g., http://example.com/wp-content/plugins/make-plus/my-component).
 	 *
 	 * @since 1.0.0.
 	 *
@@ -165,15 +165,30 @@ class TTFMP_WooCommerce {
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-		// Styles
-		if ( version_compare( $this->wc_version, '2.3', '>=' ) ) {
-			wp_enqueue_style(
-				'ttfmp-woocommerce',
-				trailingslashit( $this->url_base ) . 'css/woocommerce.css',
-				array( 'woocommerce-general', 'woocommerce-smallscreen', 'woocommerce-layout' ),
-				ttfmp_get_app()->version
-			);
-		} else {
+		if ( function_exists( 'ttfmake_is_builder_page' ) && ttfmake_is_builder_page() ) {
+			$sections = ttfmake_get_section_data( get_the_ID() );
+			if ( ! empty( $sections ) ) {
+				// Parse the sections included on the page.
+				$section_types = wp_list_pluck( $sections, 'section-type' );
+				$matched_sections = array_keys( $section_types, 'productgrid' );
+
+				// Only enqueue if there is at least one Panels section.
+				if ( ! empty( $matched_sections ) ) {
+					// Styles
+					if ( version_compare( $this->wc_version, '2.3', '>=' ) ) {
+						wp_enqueue_style(
+							'ttfmp-woocommerce',
+							trailingslashit( $this->url_base ) . 'css/woocommerce.css',
+							array(),
+							ttfmp_get_app()->version
+						);
+					}
+				}
+			}
+		}
+
+		// Legacy styles
+		if ( version_compare( $this->wc_version, '2.3', '<' ) ) {
 			wp_enqueue_style(
 				'ttfmp-woocommerce-legacy',
 				trailingslashit( $this->url_base ) . 'legacy/woocommerce.css',
@@ -259,7 +274,7 @@ class TTFMP_WooCommerce {
 	 * @return string
 	 */
 	public function layout_shop_description( $text ) {
-		$description = __( 'For WooCommerce, this view consists of product archives and other shop utility pages such as Checkout.', 'make-plus' );
+		$description = esc_html__( 'For WooCommerce, this view consists of product archives and other shop utility pages such as Checkout.', 'make-plus' );
 
 		if ( '' !== $text ) {
 			$text .= ' ';
@@ -277,7 +292,7 @@ class TTFMP_WooCommerce {
 	 * @return string
 	 */
 	public function layout_product_description( $text ) {
-		$description = __( 'For WooCommerce, this view consists of single products.', 'make-plus' );
+		$description = esc_html__( 'For WooCommerce, this view consists of single products.', 'make-plus' );
 
 		if ( '' !== $text ) {
 			$text .= ' ';
@@ -317,12 +332,12 @@ class TTFMP_WooCommerce {
 	 * @return void
 	 */
 	public function admin_notice() {
-		if ( ! function_exists( 'ttfmake_register_admin_notice' ) ) {
+		if ( true === ttfmp_get_app()->passive ) {
 			return;
 		}
 
 		if ( version_compare( $this->wc_version, '2.3', '>=' ) && false === $this->colors_plugin ) {
-			ttfmake_register_admin_notice(
+			ttfmp_register_admin_notice(
 				'woocommerce-23-no-color-plugin',
 				sprintf(
 					__( 'Make\'s color scheme no longer applies to WooCommerce shop elements. Please install the %s plugin to customize your shop\'s colors.', 'make-plus' ),
@@ -334,7 +349,7 @@ class TTFMP_WooCommerce {
 				),
 				array(
 					'cap'    => 'update_plugins',
-					'screen' => array( 'index.php', 'plugins.php' ),
+					'screen' => array( 'dashboard', 'dashboard_page_wc-about', 'woocommerce_page_wc-settings', 'plugins.php' ),
 					'type'   => 'warning',
 				)
 			);

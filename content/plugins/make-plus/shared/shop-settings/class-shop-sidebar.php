@@ -83,7 +83,7 @@ class TTFMP_Shop_Sidebar {
 	public function register_shop_sidebar() {
 		register_sidebar( array(
 			'id'            => 'sidebar-shop',
-			'name'          => __( 'Shop Sidebar', 'make-plus' ),
+			'name'          => esc_html__( 'Shop Sidebar', 'make-plus' ),
 			'description'   => $this->sidebar_description( 'sidebar-shop' ),
 			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</aside>',
@@ -236,6 +236,7 @@ class TTFMP_Shop_Sidebar {
 
 					// Location description
 					$locations .= sprintf(
+						// Translators: %1$s is a placeholder for a sidebar name, e.g. 'Left Sidebar'. %2$s is a placeholder for a view, e.g. 'Archives'
 						__( 'the %1$s in the %2$s view', 'make-plus' ),
 						$choices[ $mod ],
 						ucwords( $view )
@@ -246,10 +247,11 @@ class TTFMP_Shop_Sidebar {
 
 		// Build the description
 		if ( '' === $locations ) {
-			$description = __( 'This widget area is currently disabled. Enable it in the "Layout" section of the Theme Customizer.', 'make-plus' );
+			$description = esc_html__( 'This widget area is currently disabled. Enable it in the "Layout" section of the Customizer.', 'make-plus' );
 		} else {
 			$description = sprintf(
-				__( 'This widget area is currently used in place of: %s. Change this in the "Layout" section of the Theme Customizer.', 'make-plus' ),
+				// Translators: %s is a placeholder for a list of sidebar locations.
+				esc_html__( 'This widget area is currently used in place of: %s. Change this in the "Layout" section of the Customizer.', 'make-plus' ),
 				esc_html( $locations )
 			);
 		}

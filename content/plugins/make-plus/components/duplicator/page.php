@@ -76,7 +76,7 @@ class TTFMP_Page_Duplicator {
 				),
 				admin_url( 'options.php' )
 			);
-			$actions['duplicate'] = '<a href="' . esc_url( $url ) . '" title="' . __( 'Duplicate Page', 'make-plus' ) . '">' . __( 'Duplicate', 'make-plus' ) . '</a>';
+			$actions['duplicate'] = '<a href="' . esc_url( $url ) . '" title="' . esc_attr__( 'Duplicate Page', 'make-plus' ) . '">' . esc_html__( 'Duplicate', 'make-plus' ) . '</a>';
 		}
 
 		return $actions;
@@ -108,7 +108,7 @@ class TTFMP_Page_Duplicator {
 				// Add success message
 				new TTFMP_Reporting(
 					sprintf(
-						__( 'Your page was successfully copied.', 'make-plus' ),
+						esc_html__( 'Your page was successfully copied.', 'make-plus' ),
 						absint( $_GET['page-id'] )
 					),
 					'updated'
@@ -125,12 +125,12 @@ class TTFMP_Page_Duplicator {
 				wp_safe_redirect( $redirect );
 			} else {
 				// Set the error and redirect
-				new TTFMP_Reporting( __( 'Error occurred while trying to create a page copy. Please try again.', 'make-plus' ), 'error' );
+				new TTFMP_Reporting( esc_html__( 'Error occurred while trying to create a page copy. Please try again.', 'make-plus' ), 'error' );
 				wp_safe_redirect( wp_get_referer() );
 			}
 		} else {
 			// Set the error and redirect
-			new TTFMP_Reporting( __( 'An unexpected error occurred while trying to create a page copy. Please try again.', 'make-plus' ), 'error' );
+			new TTFMP_Reporting( esc_html__( 'An unexpected error occurred while trying to create a page copy. Please try again.', 'make-plus' ), 'error' );
 			wp_safe_redirect( wp_get_referer() );
 		}
 
@@ -148,8 +148,9 @@ class TTFMP_Page_Duplicator {
 	 */
 	public function create_page_copy( $page, $page_id ) {
 		// Generate the new title
-		$copy_text = '(' . _x( 'Copy', 'label for a duplicated page', 'make-plus' ) . ')';
-		$title     = ( ! empty( $page->post_title ) ) ? $page->post_title . ' ' . $copy_text : $copy_text;
+		// Translators: this string is appended to a page title to indicate that it is a copy of another page
+		$copy_text = esc_html__( '(Copy)', 'make-plus' );
+		$title     = trim( $page->post_title . ' ' . $copy_text );
 
 		// Replace the page's title
 		$page->post_title = $title;
@@ -249,7 +250,7 @@ class TTFMP_Page_Duplicator {
 		);
 	?>
 		<div class="misc-pub-section ttfmake-duplicator">
-			<a style="float:right;" class="ttfmp-duplicator-button button" href="<?php echo esc_url( $url ); ?>"><?php _e( 'Duplicate Page', 'make-plus' ); ?></a>
+			<a style="float:right;" class="ttfmp-duplicator-button button" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Duplicate Page', 'make-plus' ); ?></a>
 			<div class="clear"></div>
 		</div>
 	<?php

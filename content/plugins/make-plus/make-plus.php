@@ -4,7 +4,7 @@
  * Plugin URI:  https://thethemefoundry.com/make/
  * Description: A powerful paid companion plugin for the Make WordPress theme.
  * Author:      The Theme Foundry
- * Version:     1.5.1
+ * Version:     1.6.4
  * Author URI:  https://thethemefoundry.com
  *
  * @package Make Plus
@@ -26,7 +26,9 @@ class TTFMP_App {
 	 *
 	 * @var   string    The semantically versioned plugin version number.
 	 */
-	var $version = '1.5.1';
+	var $version = '1.6.4';
+
+	const MIN_WP_VERSION = '4.0';
 
 	/**
 	 * Plugin mode.
@@ -45,6 +47,15 @@ class TTFMP_App {
 	 * @var   string    Path to the root of this plugin.
 	 */
 	var $root_dir = '';
+
+	/**
+	 * Plugin base dir (e.g., make-plus).
+	 *
+	 * @since 1.6.0.
+	 *
+	 * @var   string    Root directory of this plugin.
+	 */
+	var $root_base = '';
 
 	/**
 	 * File path to the plugin main file (e.g., /var/www/mysite/wp-content/plugins/make-plus/make-plus.php).
@@ -92,7 +103,7 @@ class TTFMP_App {
 	var $shared_dir_name = 'shared';
 
 	/**
-	 * The URI base for the plugin (e.g., http://domain.com/wp-content/plugins/make-plus).
+	 * The URI base for the plugin (e.g., http://example.com/wp-content/plugins/make-plus).
 	 *
 	 * @since 1.0.0.
 	 *
@@ -134,6 +145,7 @@ class TTFMP_App {
 	public function __construct() {
 		// Set the main paths for the plugin
 		$this->root_dir       = dirname( __FILE__ );
+		$this->root_base      = dirname( plugin_basename( __FILE__ ) );
 		$this->file_path      = $this->root_dir . '/' . basename( __FILE__ );
 		$this->component_base = $this->root_dir . '/' . $this->component_dir_name;
 		$this->shared_base    = $this->root_dir . '/' . $this->shared_dir_name;
@@ -149,12 +161,12 @@ class TTFMP_App {
 	 */
 	public function init() {
 		// Check to see if Make is the active theme
-		if ( 'make' === get_template() ) {
+		if ( 'make' === get_template() || function_exists( 'ttfmake_setup' ) ) {
 			$this->passive = false;
 		}
 
 		// Translations
-		load_plugin_textdomain( 'make-plus', null, $this->root_dir . '/languages/' );
+		load_plugin_textdomain( 'make-plus', null, $this->root_base . '/languages/' );
 
 		// Load in the updater
 		if ( file_exists( $this->root_dir . '/updater/updater.php' ) ) {
@@ -179,6 +191,12 @@ class TTFMP_App {
 	 * @return void
 	 */
 	public function load_shared_functions() {
+		// Admin notices
+		$file = $this->shared_base . '/admin-notice/admin-notice.php';
+		if ( is_admin() && file_exists( $file ) ) {
+			require_once $file;
+		}
+
 		// Load compatibility helpers
 		$file = $this->shared_base . '/compatibility.php';
 		if ( file_exists( $file ) ) {
@@ -219,7 +237,7 @@ class TTFMP_App {
 				'conditions' => array(
 					// Make is active theme
 					false === $this->passive,
-					// Make version is at least 1.0.6
+					// Make version is at least 1.4.5
 					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.4.5', '>=' ),
 				)
 			),
@@ -241,6 +259,24 @@ class TTFMP_App {
 					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.0.6', '>=' ),
 					// EDD plugin is activated and version is at least 2.0
 					defined( 'EDD_VERSION' ) && true === version_compare( EDD_VERSION, '2.0', '>=' ),
+				)
+			),
+			'panels'    => array(
+				'slug'       => 'panels',
+				'conditions' => array(
+					// Make is active theme
+					false === $this->passive,
+					// Make version is at least 1.4.0
+					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.4.0', '>=' ),
+				)
+			),
+			'parallax'    => array(
+				'slug'       => 'parallax',
+				'conditions' => array(
+					// Make is active theme
+					false === $this->passive,
+					// Make version is at least 1.6.1
+					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.6.1', '>=' ),
 				)
 			),
 			'per-page'    => array(
@@ -274,8 +310,8 @@ class TTFMP_App {
 				'conditions' => array(
 					// Make is active theme
 					false === $this->passive,
-					// Make version is at least 1.0.6
-					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.0.6', '>=' ),
+					// Make version is at least 1.3.0
+					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.3.0', '>=' ),
 				)
 			),
 			'text-column-layout' => array(
@@ -294,8 +330,8 @@ class TTFMP_App {
 				'conditions' => array(
 					// Make is active theme
 					false === $this->passive,
-					// Make version is at least 1.0.4
-					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.0.4', '>=' ),
+					// Make version is at least 1.3.0
+					defined( 'TTFMAKE_VERSION' ) && true === version_compare( TTFMAKE_VERSION, '1.3.0', '>=' ),
 				)
 			),
 			'widget-area' => array(

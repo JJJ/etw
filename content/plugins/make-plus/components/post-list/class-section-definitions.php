@@ -44,15 +44,15 @@ class TTFMP_Post_List_Section_Definitions {
 	 * @return TTFMP_Post_List_Section_Definitions
 	 */
 	public function __construct() {
-		// Register all of the sections via the section API
-		$this->register_post_list_section();
-
 		// Add the section styles and scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		// Add section settings
 		add_filter( 'ttfmake_section_defaults', array( $this, 'section_defaults' ) );
 		add_filter( 'ttfmake_section_choices', array( $this, 'section_choices' ), 10, 3 );
+
+		// Add the section
+		add_action( 'after_setup_theme', array( $this, 'register_post_list_section' ), 11 );
 	}
 
 	/**
@@ -71,14 +71,41 @@ class TTFMP_Post_List_Section_Definitions {
 			array( $this, 'save_post_list' ),
 			'sections/builder-templates/post-list',
 			'sections/front-end-templates/post-list',
-			500,
+			810,
 			ttfmp_get_post_list()->component_root,
 			array(
 				100 => array(
 					'type'  => 'section_title',
 					'name'  => 'title',
-					'label' => __( 'Enter section title', 'make' ),
+					'label' => __( 'Enter section title', 'make-plus' ),
 					'class' => 'ttfmake-configuration-title ttfmake-section-header-title-input',
+				),
+				200 => array(
+					'type'  => 'image',
+					'name'  => 'background-image',
+					'label' => __( 'Background image', 'make-plus' ),
+					'class' => 'ttfmake-configuration-media',
+					'default' => ttfmake_get_section_default( 'background-image', 'post-list' ),
+				),
+				300 => array(
+					'type'    => 'checkbox',
+					'label'   => __( 'Darken background to improve readability', 'make-plus' ),
+					'name'    => 'darken',
+					'default' => ttfmake_get_section_default( 'darken', 'post-list' ),
+				),
+				400 => array(
+					'type'    => 'select',
+					'name'    => 'background-style',
+					'label'   => __( 'Background style', 'make-plus' ),
+					'default' => ttfmake_get_section_default( 'background-style', 'post-list' ),
+					'options' => ttfmake_get_section_choices( 'background-style', 'post-list' ),
+				),
+				500 => array(
+					'type'    => 'color',
+					'label'   => __( 'Background color', 'make-plus' ),
+					'name'    => 'background-color',
+					'class'   => 'ttfmake-text-background-color ttfmake-configuration-color-picker',
+					'default' => ttfmake_get_section_default( 'background-color', 'post-list' ),
 				),
 			)
 		);
@@ -103,6 +130,10 @@ class TTFMP_Post_List_Section_Definitions {
 		// Data to sanitize and save
 		$defaults = array(
 			'title' => ttfmake_get_section_default( 'title', 'post-list' ),
+			'background-image' => ttfmake_get_section_default( 'background-image', 'post-list' ),
+			'darken' => ttfmake_get_section_default( 'darken', 'post-list' ),
+			'background-style' => ttfmake_get_section_default( 'background-style', 'post-list' ),
+			'background-color' => ttfmake_get_section_default( 'background-color', 'post-list' ),
 			'columns' => ttfmake_get_section_default( 'columns', 'post-list' ),
 			'type' => ttfmake_get_section_default( 'type', 'post-list' ),
 			'sortby' => ttfmake_get_section_default( 'sortby', 'post-list' ),
@@ -113,11 +144,13 @@ class TTFMP_Post_List_Section_Definitions {
 			'show-title' => ttfmake_get_section_default( 'show-title', 'post-list' ),
 			'show-date' => ttfmake_get_section_default( 'show-date', 'post-list' ),
 			'show-excerpt' => ttfmake_get_section_default( 'show-excerpt', 'post-list' ),
+			'excerpt-length' => ttfmake_get_section_default( 'excerpt-length', 'post-list' ),
 			'show-author' => ttfmake_get_section_default( 'show-author', 'post-list' ),
 			'show-categories' => ttfmake_get_section_default( 'show-categories', 'post-list' ),
 			'show-tags' => ttfmake_get_section_default( 'show-tags', 'post-list' ),
 			'show-comments' => ttfmake_get_section_default( 'show-comments', 'post-list' ),
 			'thumbnail' => ttfmake_get_section_default( 'thumbnail', 'post-list' ),
+			'aspect' => ttfmake_get_section_default( 'aspect', 'post-list' ),
 		);
 		$parsed_data = wp_parse_args( $data, $defaults );
 
@@ -126,11 +159,27 @@ class TTFMP_Post_List_Section_Definitions {
 		// Title
 		$clean_data['title'] = $clean_data['label'] = apply_filters( 'title_save_pre', $parsed_data['title'] );
 
+		// Background image
+		$image_id = ( isset( $parsed_data['background-image']['image-id'] ) ) ? $parsed_data['background-image']['image-id'] : $parsed_data['background-image'];
+		$clean_data['background-image'] = ttfmake_sanitize_image_id( $image_id );
+
+		// Darken
+		$clean_data['darken'] = absint( $parsed_data['darken'] );
+
+		// Background style
+		$clean_data['background-style'] = ttfmake_sanitize_section_choice( $parsed_data['background-style'], 'background-style', 'post-list' );
+
+		// Background color
+		$clean_data['background-color'] = maybe_hash_hex_color( $parsed_data['background-color'] );
+
 		// Columns
 		$clean_data['columns'] = ttfmake_sanitize_section_choice( $parsed_data['columns'], 'columns', 'post-list' );
 
 		// Type
 		$clean_data['type'] = ttfmake_sanitize_section_choice( $parsed_data['type'], 'type', 'post-list' );
+
+		// Taxonomy
+		$clean_data['taxonomy'] = ttfmp_get_post_list()->filter->sanitize_filter_choice( $parsed_data['taxonomy'], $clean_data['type'] );
 
 		// Sort by
 		$clean_data['sortby'] = ttfmake_sanitize_section_choice( $parsed_data['sortby'], 'sortby', 'post-list' );
@@ -148,9 +197,6 @@ class TTFMP_Post_List_Section_Definitions {
 		// Offset
 		$clean_data['offset'] = absint( $parsed_data['offset'] );
 
-		// Taxonomy
-		$clean_data['taxonomy'] = ttfmake_sanitize_section_choice( $parsed_data['taxonomy'], 'taxonomy', 'post-list' );
-
 		// Checkboxes
 		foreach ( $checkboxes as $key ) {
 			$clean_data[$key] = absint( $parsed_data[$key] );
@@ -158,6 +204,12 @@ class TTFMP_Post_List_Section_Definitions {
 
 		// Thumbnail
 		$clean_data['thumbnail'] = ttfmake_sanitize_section_choice( $parsed_data['thumbnail'], 'thumbnail', 'post-list' );
+
+		// Aspect
+		$clean_data['aspect'] = ttfmake_sanitize_section_choice( $parsed_data['aspect'], 'aspect', 'post-list' );
+
+		// Excerpt length
+		$clean_data['excerpt-length'] = absint( $parsed_data['excerpt-length'] );
 
 		return $clean_data;
 	}
@@ -173,6 +225,10 @@ class TTFMP_Post_List_Section_Definitions {
 	public function section_defaults( $defaults ) {
 		$new_defaults = array(
 			'post-list-title' => '',
+			'post-list-background-image' => 0,
+			'post-list-darken' => 0,
+			'post-list-background-style' => 'tile',
+			'post-list-background-color' => '',
 			'post-list-columns' => 2,
 			'post-list-type' => 'post',
 			'post-list-sortby' => 'date-desc',
@@ -183,11 +239,13 @@ class TTFMP_Post_List_Section_Definitions {
 			'post-list-show-title' => 1,
 			'post-list-show-date' => 1,
 			'post-list-show-excerpt' => 1,
+			'post-list-excerpt-length' => apply_filters( 'excerpt_length', 55 ),
 			'post-list-show-author' => 0,
 			'post-list-show-categories' => 0,
 			'post-list-show-tags' => 0,
 			'post-list-show-comments' => 0,
 			'post-list-thumbnail' => 'top',
+			'post-list-aspect' => 'none',
 		);
 
 		return array_merge( $defaults, $new_defaults );
@@ -211,6 +269,12 @@ class TTFMP_Post_List_Section_Definitions {
 		$choice_id = "$section_type-$key";
 
 		switch ( $choice_id ) {
+			case 'post-list-background-style' :
+				$choices = array(
+					'tile'  => __( 'Tile', 'make-plus' ),
+					'cover' => __( 'Cover', 'make-plus' ),
+				);
+				break;
 			case 'post-list-columns' :
 				$choices = array(
 					1 => __( '1', 'make-plus' ),
@@ -231,8 +295,7 @@ class TTFMP_Post_List_Section_Definitions {
 				// Labels
 				$labels = array();
 				foreach ( $post_types as $type ) {
-					$l = get_post_type_object( $type )->labels;
-					$labels[] = esc_html( $l->name );
+					$labels[] = get_post_type_object( $type )->labels->singular_name;
 				}
 				// Choices
 				$choices = array_combine( $post_types, $labels );
@@ -248,40 +311,20 @@ class TTFMP_Post_List_Section_Definitions {
 					'rand' => __( 'Random', 'make-plus' ),
 				);
 				break;
-			case 'post-list-taxonomy' :
-				// Default
-				$choices = array( 'all' => __( 'All categories/tags', 'make-plus' ) );
-				// Categories
-				$category_terms = get_terms( 'category' );
-				if ( ! empty( $category_terms ) ) {
-					$category_slugs = array_map( array( $this, 'prefix_cat' ), wp_list_pluck( $category_terms, 'slug' ) );
-					$category_names = wp_list_pluck( $category_terms, 'name' );
-					$category_list = array_combine( $category_slugs, $category_names );
-					$choices = array_merge(
-						$choices,
-						array( 'ttfmp-disabled1' => '--- ' . __( 'Categories', 'make-plus' ) . ' ---' ),
-						$category_list
-					);
-				}
-				// Tags
-				$tag_terms = get_terms( 'post_tag' );
-				if ( ! empty( $tag_terms ) ) {
-					$tag_slugs = array_map( array( $this, 'prefix_tag' ), wp_list_pluck( $tag_terms, 'slug' ) );
-					$tag_names = wp_list_pluck( $tag_terms, 'name' );
-					$tag_list = array_combine( $tag_slugs, $tag_names );
-					$choices = array_merge(
-						$choices,
-						array( 'ttfmp-disabled2' => '--- ' . __( 'Tags', 'make-plus' ) . ' ---' ),
-						$tag_list
-					);
-				}
-				break;
 			case 'post-list-thumbnail' :
 				$choices = array(
 					'top' => __( 'Top', 'make-plus' ),
 					'left' => __( 'Left', 'make-plus' ),
 					'right' => __( 'Right', 'make-plus' ),
 					'none' => __( 'None', 'make-plus' ),
+				);
+				break;
+			case 'post-list-aspect' :
+				$choices = array(
+					'none' => __( 'None', 'make-plus' ),
+					'square' => __( 'Square', 'make-plus' ),
+					'landscape' => __( 'Landscape', 'make-plus' ),
+					'portrait' => __( 'Portrait', 'make-plus' ),
 				);
 				break;
 		}

@@ -2,9 +2,9 @@
 Contributors: thethemefoundry, dstrojny, jupiterwise, scottrrollo, tollmanz
 Donate link: https://thethemefoundry.com
 Tags: woocommerce, sidebars, widgets, customizer, fonts, typekit, demo content, page builder
-Requires at least: 3.9
-Tested up to: 4.1.1
-Stable tag: 1.5.1
+Requires at least: 4.0
+Tested up to: 4.3
+Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,61 @@ Make gives you the flexibility to build the site that you want. Make Plus makes 
 For more information, please see the [Make Plus support page](https://thethemefoundry.com/docs/make-docs/).
 
 == Changelog ==
+
+= 1.6.4 =
+
+* New feature: Support for Yoast SEO's breadcrumb functionality.
+  * Enhances the breadcrumb functionality in the Make theme.
+  * Toggle breadcrumb visibility for individual posts and pages.
+  * Add breadcrumb options for WooCommerce and Easy Digital Downloads.
+
+= 1.6.3 =
+
+* Improved: Typekit font kits are now loaded asynchronously.
+* Improved: Better handling of localization:
+  * Improved translator notes for some strings.
+  * Ensure that all translated strings are escaped for security hardening.
+  * Added some missing text domains.
+* Changed: The 'From' dropdown for Posts Lists will now include empty taxonomy terms.
+* Bug fix: Posts Lists displaying posts from a certain taxonomy term would revert to showing all posts if that term became empty.
+* Bug fix: Custom section classes could not contain multiple consecutive dashes or underscores.
+
+= 1.6.2 =
+
+* Posts List section/widget improvements:
+  * Aspect ratio options for post item featured images.
+  * Customize the length (in words) of the post item excerpts.
+  * Added 'read more' links to the end of excerpts.
+  * The 'From' control now displays different taxonomy options depending on the chosen post type.
+  * If the chosen post type is hierarchical (e.g. Pages), the 'From' control includes options to show the children of a specific page/post.
+  * Better labeling/organization of section and widget controls.
+* Improved: Allow Typekit ID setting default to be filtered like other theme setting defaults.
+* Improved: Layout for controls in Posts List, Products, and Downloads Builder sections.
+* Bug fix: Accordion panels were expanding upward beyond the viewport, forcing users to scroll back up to begin reading them from the top.
+* Bug fix: Layout settings for sidebar were incorrectly displaying in WooCommerce shop pages (e.g. Cart and Checkout).
+
+= 1.6.1.1 =
+
+* Bug fix: Fatal error on front end when Make Plus is activated but Make is not current theme.
+
+= 1.6.1 =
+
+* New feature: Parallax background effect on all Builder sections that support a background image.
+* New feature: Background image/color options for Posts List, Products, and Downloads Builder sections.
+* Improved: Posts List stylesheet only loads when a Posts List section or widget is present on the page.
+* Bug fix: Panels script enqueue function will no longer throw an error if a published Builder page has no sections.
+* Bug fix: Easy Digital Downloads' "Insert Download" button now works correctly in the Builder UI.
+
+= 1.6.0 =
+
+* New feature: Panels section for the Builder. Display a group of panels as an accordion or a group of tabs.
+* New feature: All Builder sections now have a configuration option for adding a custom HTML id attribute and custom HTML classes.
+* Improved: Columns in the Columns section can now be resized to different grid configurations by dragging the edges.
+* Bug fix: Column sizes will no longer get reset when the section configuration overlay is opened.
+* Bug fix: Column widget areas now only show a link to the Customizer if the current user has proper permissions.
+* Bug fix: Text domain loader now uses the correct file path.
+* New filter: `ttfmp_post_list_query_args` modifies the query arguments for Posts Lists.
+* Changed: Make Plus now only supports WordPress 4.0 and higher.
 
 = 1.5.1 =
 
@@ -179,114 +234,6 @@ For more information, please see the [Make Plus support page](https://thethemefo
 
 == Upgrade Notice ==
 
-= 1.5.1 =
+= 1.6.4 =
 
-Adds options to remove spacing above and below Builder sections.
-
-= 1.5.0 =
-
-Compatibility updates for Make 1.5.0 and WooCommerce 2.3.x.
-
-= 1.4.8 =
-
-Fixes a problem with the updater.
-
-= 1.4.7 =
-
-Adds new "Hello" and "Default" style kits.
-
-= 1.4.6 =
-
-Improves load/reset functionality for Style Kits.
-
-= 1.4.5 =
-
-Compatibility updates for WordPress 4.1.
-
-= 1.4.4 =
-
-Minor improvements to Column widget areas, WooCommerce integration, and plugin updates.
-
-= 1.4.3 =
-
-Allows shortcodes to continue working when Make is no longer the active theme.
-
-= 1.4.2 =
-
-Fixes layout issues with the Posts List section.
-
-= 1.4.1 =
-
-Adds the ability to edit and delete widget in page edit screen.
-
-= 1.4.0 =
-
-Updates Make Plus components to complement Make 1.4.0 Page Builder interface refresh.
-
-= 1.3.4 =
-
-Restores automatic updates.
-
-= 1.3.3 =
-
-Updated to support WordPress 4.0 and Make 1.3
-
-= 1.3.2 =
-
-Fix PHP notice
-
-= 1.3.1 =
-
-Bug fixes for text column layouts
-
-= 1.3.0 =
-
-Adds text column layout options and fixes minor bugs
-
-= 1.2.6 =
-
-Fixes fatal error for PHP 5.2 users, adds layout overrides, and offset parameter to post listing section
-
-= 1.2.5 =
-
-Fixes issue with update notices
-
-= 1.2.4 =
-
-Fixes disappearing Typekit fonts
-
-= 1.2.3 =
-
-Fixes fatal error for PHP 5.2 users
-
-= 1.2.2 =
-
-Fixes an issue with false update notifications
-
-= 1.2.1 =
-
-Adds plugin updater to get automatic updates from The Theme Foundry
-
-= 1.2.0 =
-
-Adds Section Duplicator, Post Listing widget and section, and fixes bugs
-
-= 1.1.1 =
-
-Do not show duplicate page button on post screen
-
-= 1.1.0 =
-
-Adds Page Duplicator, Style Kits, and Easy Digital Downloads features
-
-= 1.0.2 =
-
-Fixes critical bug that can cause the Customizer to break
-
-= 1.0.1 =
-
-Small bug fixes
-
-= 1.0.0 =
-
-Initial release
+Enhanced support for Yoast SEO's breadcrumb functionality.

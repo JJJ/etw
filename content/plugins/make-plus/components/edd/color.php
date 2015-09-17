@@ -52,7 +52,10 @@ function ttfmp_edd_add_color_css() {
 			'color' => $color_highlight
 		)
 	) );
+
+	// Remove action so the styles don't get added more than once
+	remove_action( 'make_builder_edd-downloads_css', __FUNCTION__ );
 }
 endif;
 
-add_action( 'ttfmake_css', 'ttfmp_edd_add_color_css' );
+add_action( 'make_builder_edd-downloads_css', 'ttfmp_edd_add_color_css' );

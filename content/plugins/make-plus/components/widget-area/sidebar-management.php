@@ -103,7 +103,7 @@ class TTFMP_Sidebar_Management {
 			$label = esc_html( $sidebar['label'] );
 		} else {
 			$sidebar_information = $this->parse_sidebar_id( $id );
-			$label               = __( 'Sidebar', 'make-plus' ) . ' ' . $sidebar_information['page_id'] . '-' . $sidebar_information['section_id'] . '-' . $sidebar_information['column_id'];
+			$label               = esc_html__( 'Sidebar', 'make-plus' ) . ' ' . $sidebar_information['page_id'] . '-' . $sidebar_information['section_id'] . '-' . $sidebar_information['column_id'];
 		}
 
 		return $label;
@@ -128,12 +128,10 @@ class TTFMP_Sidebar_Management {
 			$label               = $sidebar_information['page_id'] . '-' . $sidebar_information['section_id'] . '-' . $sidebar_information['column_id'];
 		}
 
-		return __(
-			sprintf(
-				'Add widgets to the "%s" widget area.',
-				$label
-			),
-			'make-plus'
+		return sprintf(
+			// Translators: %s is a placeholder for the name of the sidebar.
+			esc_html__( 'Add widgets to the "%s" widget area.', 'make-plus' ),
+			$label
 		);
 	}
 

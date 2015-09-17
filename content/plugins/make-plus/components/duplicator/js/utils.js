@@ -32,6 +32,17 @@ var oneApp = oneApp || {};
 			oneApp.initGalleryItemViews($el);
 		}
 
+		if ('panels' === sectionType) {
+			// Reset the color picker
+			var $input = $('.ttfmake-configuration-color-picker', $el),
+				$picker = $('.wp-picker-container', $el);
+
+			$picker.replaceWith($input);
+
+			// Initialize the view
+			oneApp.initPanelsItemViews($el);
+		}
+
 		return oneApp.initView($el);
 	};
 

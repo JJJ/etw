@@ -44,15 +44,15 @@ class TTFMP_WooCommerce_Section_Definitions {
 	 * @return TTFMP_WooCommerce_Section_Definitions
 	 */
 	public function __construct() {
-		// Register all of the sections via the section API
-		$this->register_product_grid_section();
-
 		// Add the section styles and scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		// Add Product Grid section settings
 		add_filter( 'ttfmake_section_defaults', array( $this, 'section_defaults' ) );
 		add_filter( 'ttfmake_section_choices', array( $this, 'section_choices' ), 10, 3 );
+
+		// Add section
+		add_action( 'after_setup_theme', array( $this, 'register_product_grid_section' ), 11 );
 	}
 
 	/**
@@ -71,14 +71,41 @@ class TTFMP_WooCommerce_Section_Definitions {
 			array( $this, 'save_product_grid' ),
 			'sections/builder-templates/product-grid',
 			'sections/front-end-templates/product-grid',
-			500,
+			820,
 			ttfmp_get_woocommerce()->component_root,
 			array(
 				100 => array(
 					'type'  => 'section_title',
 					'name'  => 'title',
-					'label' => __( 'Enter section title', 'make' ),
+					'label' => __( 'Enter section title', 'make-plus' ),
 					'class' => 'ttfmake-configuration-title ttfmake-section-header-title-input',
+				),
+				200 => array(
+					'type'  => 'image',
+					'name'  => 'background-image',
+					'label' => __( 'Background image', 'make-plus' ),
+					'class' => 'ttfmake-configuration-media',
+					'default' => ttfmake_get_section_default( 'background-image', 'woocommerce-product-grid' ),
+				),
+				300 => array(
+					'type'    => 'checkbox',
+					'label'   => __( 'Darken background to improve readability', 'make-plus' ),
+					'name'    => 'darken',
+					'default' => ttfmake_get_section_default( 'darken', 'woocommerce-product-grid' ),
+				),
+				400 => array(
+					'type'    => 'select',
+					'name'    => 'background-style',
+					'label'   => __( 'Background style', 'make-plus' ),
+					'default' => ttfmake_get_section_default( 'background-style', 'woocommerce-product-grid' ),
+					'options' => ttfmake_get_section_choices( 'background-style', 'woocommerce-product-grid' ),
+				),
+				500 => array(
+					'type'    => 'color',
+					'label'   => __( 'Background color', 'make-plus' ),
+					'name'    => 'background-color',
+					'class'   => 'ttfmake-text-background-color ttfmake-configuration-color-picker',
+					'default' => ttfmake_get_section_default( 'background-color', 'woocommerce-product-grid' ),
 				),
 			)
 		);
@@ -106,6 +133,10 @@ class TTFMP_WooCommerce_Section_Definitions {
 		// Data to sanitize and save
 		$defaults = array(
 			'title' => ttfmake_get_section_default( 'title', 'woocommerce-product-grid' ),
+			'background-image' => ttfmake_get_section_default( 'background-image', 'woocommerce-product-grid' ),
+			'darken' => ttfmake_get_section_default( 'darken', 'woocommerce-product-grid' ),
+			'background-style' => ttfmake_get_section_default( 'background-style', 'woocommerce-product-grid' ),
+			'background-color' => ttfmake_get_section_default( 'background-color', 'woocommerce-product-grid' ),
 			'columns' => ttfmake_get_section_default( 'columns', 'woocommerce-product-grid' ),
 			'type' => ttfmake_get_section_default( 'type', 'woocommerce-product-grid' ),
 			'taxonomy' => ttfmake_get_section_default( 'taxonomy', 'woocommerce-product-grid' ),
@@ -122,6 +153,18 @@ class TTFMP_WooCommerce_Section_Definitions {
 
 		// Title
 		$clean_data['title'] = $clean_data['label'] = apply_filters( 'title_save_pre', $parsed_data['title'] );
+
+		// Background image
+		$clean_data['background-image'] = ttfmake_sanitize_image_id( $parsed_data['background-image']['image-id'] );
+
+		// Darken
+		$clean_data['darken'] = absint( $parsed_data['darken'] );
+
+		// Background style
+		$clean_data['background-style'] = ttfmake_sanitize_section_choice( $parsed_data['background-style'], 'background-style', 'woocommerce-product-grid' );
+
+		// Background color
+		$clean_data['background-color'] = maybe_hash_hex_color( $parsed_data['background-color'] );
 
 		// Columns
 		$clean_data['columns'] = ttfmake_sanitize_section_choice( $parsed_data['columns'], 'columns', 'woocommerce-product-grid' );
@@ -169,6 +212,10 @@ class TTFMP_WooCommerce_Section_Definitions {
 	public function section_defaults( $defaults ) {
 		$new_defaults = array(
 			'woocommerce-product-grid-title' => '',
+			'woocommerce-product-grid-background-image' => 0,
+			'woocommerce-product-grid-darken' => 0,
+			'woocommerce-product-grid-background-style' => 'tile',
+			'woocommerce-product-grid-background-color' => '',
 			'woocommerce-product-grid-columns' => 3,
 			'woocommerce-product-grid-type' => 'all',
 			'woocommerce-product-grid-taxonomy' => 'all',
@@ -201,6 +248,12 @@ class TTFMP_WooCommerce_Section_Definitions {
 		$choice_id = "$section_type-$key";
 
 		switch ( $choice_id ) {
+			case 'woocommerce-product-grid-background-style' :
+				$choices = array(
+					'tile'  => __( 'Tile', 'make-plus' ),
+					'cover' => __( 'Cover', 'make-plus' ),
+				);
+				break;
 			case 'woocommerce-product-grid-columns' :
 				$choices = array(
 					1 => __( '1', 'make-plus' ),

@@ -38,7 +38,7 @@ class TTFMP_Shop_Settings {
 	var $file_path = '';
 
 	/**
-	 * The URI base for the plugin (e.g., http://domain.com/wp-content/plugins/make-plus/my-component).
+	 * The URI base for the plugin (e.g., http://example.com/wp-content/plugins/make-plus/my-component).
 	 *
 	 * @since 1.2.0.
 	 *
@@ -111,11 +111,7 @@ class TTFMP_Shop_Settings {
 	public function check_theme_support() {
 		// Layout: Shop & Layout: Product
 		if ( current_theme_supports( 'ttfmp-shop-layout-shop' ) || current_theme_supports( 'ttfmp-shop-layout-product' ) ) {
-			if ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_customizer_add_panels' ) ) {
-				add_filter( 'make_customizer_sections', array( $this, 'customizer_sections' ), 20 );
-			} else {
-				add_filter( 'ttfmake_customizer_sections', array( $this, 'legacy_customizer_sections' ) );
-			}
+			add_filter( 'make_customizer_sections', array( $this, 'customizer_sections' ), 20 );
 
 			if ( current_theme_supports( 'ttfmp-shop-layout-shop' ) ) {
 				add_filter( 'ttfmake_setting_defaults', array( $this, 'layout_shop_setting_defaults' ) );
@@ -166,7 +162,7 @@ class TTFMP_Shop_Settings {
 					'control' => array(
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
 						'type'				=> 'heading',
-						'label'				=> __( 'Header, Footer, Sidebars', 'make' ),
+						'label'				=> __( 'Header, Footer, Sidebars', 'make-plus' ),
 					),
 				),
 				$prefix . 'hide-header' => array(
@@ -174,7 +170,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Hide site header', 'make' ),
+						'label'				=> __( 'Hide site header', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -183,7 +179,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Hide site footer', 'make' ),
+						'label'				=> __( 'Hide site footer', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -192,7 +188,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Show left sidebar', 'make' ),
+						'label'				=> __( 'Show left sidebar', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -201,7 +197,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Show right sidebar', 'make' ),
+						'label'				=> __( 'Show right sidebar', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -223,7 +219,7 @@ class TTFMP_Shop_Settings {
 					'control' => array(
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
 						'type'				=> 'heading',
-						'label'				=> __( 'Header, Footer, Sidebars', 'make' ),
+						'label'				=> __( 'Header, Footer, Sidebars', 'make-plus' ),
 					),
 				),
 				$prefix . 'hide-header' => array(
@@ -231,7 +227,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Hide site header', 'make' ),
+						'label'				=> __( 'Hide site header', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -240,7 +236,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Hide site footer', 'make' ),
+						'label'				=> __( 'Hide site footer', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -249,7 +245,7 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Show left sidebar', 'make' ),
+						'label'				=> __( 'Show left sidebar', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
@@ -258,48 +254,19 @@ class TTFMP_Shop_Settings {
 						'sanitize_callback'	=> 'absint',
 					),
 					'control' => array(
-						'label'				=> __( 'Show right sidebar', 'make' ),
+						'label'				=> __( 'Show right sidebar', 'make-plus' ),
 						'type'				=> 'checkbox',
 					),
 				),
 			),
 		);
 
+		if ( function_exists( 'ttfmake_customizer_layout_breadcrumb_group_definitions' ) ) {
+			$sections['layout-shop']['options'] = array_merge( $sections['layout-shop']['options'], ttfmake_customizer_layout_breadcrumb_group_definitions( 'shop' ) );
+			$sections['layout-product']['options'] = array_merge( $sections['layout-product']['options'], ttfmake_customizer_layout_breadcrumb_group_definitions( 'product' ) );
+		}
+
 		return $sections;
-	}
-
-	/**
-	 * Filter to add the Layout: Shop section and/or the Layout: Product section to the Customizer.
-	 *
-	 * This function takes the main array of Customizer sections and attempts to insert
-	 * new ones right after the layout-page section.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  array    $sections    The array of sections to add to the Customizer.
-	 * @return array                 The modified array of sections.
-	 */
-	public function legacy_customizer_sections( $sections ) {
-		$new_sections = array();
-
-		if ( current_theme_supports( 'ttfmp-shop-layout-shop' ) ) {
-			$new_sections['layout-shop'] = array( 'title' => __( 'Layout: Shop', 'make-plus' ), 'path' => $this->component_root );
-		}
-		if ( current_theme_supports( 'ttfmp-shop-layout-product' ) ) {
-			$new_sections['layout-product'] = array( 'title' => __( 'Layout: Product', 'make-plus' ), 'path' => $this->component_root );
-		}
-
-		// Get the position of the layout-page section in the array
-		$keys = array_keys( $sections );
-		$positions = array_flip( $keys );
-		$layout_page = absint( $positions[ 'layout-page' ] );
-
-		// Slice the array
-		$front = array_slice( $sections, 0, $layout_page + 1 );
-		$back  = array_slice( $sections, $layout_page + 1 );
-
-		// Combine and return
-		return array_merge( $front, $new_sections, $back );
 	}
 
 	/**
@@ -316,6 +283,7 @@ class TTFMP_Shop_Settings {
 			'layout-shop-hide-footer'      => 0,
 			'layout-shop-sidebar-left'     => 0,
 			'layout-shop-sidebar-right'    => 1,
+			'layout-shop-yoast-breadcrumb' => 1,
 		);
 
 		return array_merge( $defaults, $new_defaults );
@@ -331,10 +299,11 @@ class TTFMP_Shop_Settings {
 	 */
 	public function layout_product_setting_defaults( $defaults ) {
 		$new_defaults = array(
-			'layout-product-hide-header'     => 0,
-			'layout-product-hide-footer'     => 0,
-			'layout-product-sidebar-left'    => 0,
-			'layout-product-sidebar-right'   => 1,
+			'layout-product-hide-header'      => 0,
+			'layout-product-hide-footer'      => 0,
+			'layout-product-sidebar-left'     => 0,
+			'layout-product-sidebar-right'    => 1,
+			'layout-product-yoast-breadcrumb' => 1,
 		);
 
 		return array_merge( $defaults, $new_defaults );
@@ -357,6 +326,7 @@ class TTFMP_Shop_Settings {
 			'layout-shop-sidebar-right',
 			'header-hide-padding-bottom',
 			'footer-hide-padding-top',
+			'layout-shop-yoast-breadcrumb',
 		);
 
 		return $allowed_keys;
@@ -379,6 +349,7 @@ class TTFMP_Shop_Settings {
 			'layout-product-sidebar-right',
 			'header-hide-padding-bottom',
 			'footer-hide-padding-top',
+			'layout-product-yoast-breadcrumb',
 		);
 
 		return $allowed_keys;

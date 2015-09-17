@@ -27,7 +27,7 @@ function ttfmake_customizer_stylekit( $wp_customize, $section ) {
 			array(
 				'section'     => $section,
 				'type'        => 'text',
-				'description' => __( 'Use a style kit to quickly apply designer-picked style choices (fonts, layout, colors) to your website.', 'make-plus' ),
+				'description' => esc_html__( 'Use a style kit to quickly apply designer-picked style choices (fonts, layout, colors) to your website.', 'make-plus' ),
 				'priority'    => $priority->add()
 			)
 		)
@@ -75,7 +75,7 @@ function ttfmake_customizer_stylekit( $wp_customize, $section ) {
 			array(
 				'section'     => $section,
 				'type'        => 'text',
-				'description' => '<a href="#" class="button reset-design">' . __( 'Reset', 'make-plus' ) . '</a><a href="#" class="button load-design">' . __( 'Load Kit', 'make-plus' ) . '</a>',
+				'description' => '<a href="#" class="button reset-design">' . esc_html__( 'Reset', 'make-plus' ) . '</a><a href="#" class="button load-design">' . esc_html__( 'Load Kit', 'make-plus' ) . '</a>',
 				'priority'    => $priority->add()
 			)
 		)

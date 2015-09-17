@@ -38,7 +38,7 @@ class TTFMP_Style_Kits {
 	var $file_path = '';
 
 	/**
-	 * The URI base for the plugin (e.g., http://domain.com/wp-content/plugins/make-plus/my-component).
+	 * The URI base for the plugin (e.g., http://example.com/wp-content/plugins/make-plus/my-component).
 	 *
 	 * @since 1.1.0.
 	 *
@@ -101,11 +101,7 @@ class TTFMP_Style_Kits {
 		add_action( 'wp_head', array( $this, 'head_script' ) );
 
 		// Customizer filters
-		if ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_customizer_add_panels' ) ) {
-			add_filter( 'make_customizer_sections', array( $this, 'customizer_sections' ) );
-		} else {
-			add_filter( 'ttfmake_customizer_sections', array( $this, 'legacy_customizer_sections' ) );
-		}
+		add_filter( 'make_customizer_sections', array( $this, 'customizer_sections' ) );
 
 		// Definition filters
 		add_filter( 'ttfmp_style_kit_definitions', array( $this, 'parse_definitions' ), 98 );
@@ -132,7 +128,7 @@ class TTFMP_Style_Kits {
 
 		$sections['stylekit'] = array(
 			'title' => __( 'Style Kits', 'make-plus' ),
-			'description' => __( 'Use a style kit to quickly apply designer-picked style choices (fonts, layout, colors) to your website.', 'make-plus' ),
+			'description' => esc_html__( 'Use a style kit to quickly apply designer-picked style choices (fonts, layout, colors) to your website.', 'make-plus' ),
 			'priority' => $general_priority - 10,
 			'options' => array(
 				'stylekit-heading' => array(
@@ -156,7 +152,7 @@ class TTFMP_Style_Kits {
 					'control' => array(
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
 						'type'				=> 'text',
-						'description'		=> '<a href="#" class="button reset-design">' . __( 'Reset', 'make-plus' ) . '</a><a href="#" class="button load-design">' . __( 'Load Kit', 'make-plus' ) . '</a>',
+						'description'		=> '<a href="#" class="button reset-design">' . esc_html__( 'Reset', 'make-plus' ) . '</a><a href="#" class="button load-design">' . esc_html__( 'Load Kit', 'make-plus' ) . '</a>',
 					),
 				),
 			),
@@ -279,7 +275,7 @@ class TTFMP_Style_Kits {
 	 * @return string    The options markup.
 	 */
 	public function get_kit_options() {
-		$output = '<option selected="selected" disabled="disabled">--- ' . __( "Choose a kit", 'make-plus' ) . ' ---</option>';
+		$output = '<option selected="selected" disabled="disabled">--- ' . esc_html__( 'Choose a kit', 'make-plus' ) . ' ---</option>';
 
 		$definitions = ttfmp_style_kit_definitions();
 		$options = array();
@@ -365,19 +361,23 @@ class TTFMP_Style_Kits {
 			'layout-archive-hide-footer',
 			'layout-archive-sidebar-left',
 			'layout-archive-sidebar-right',
+			'layout-archive-yoast-breadcrumb',
 			'layout-search-hide-header',
 			'layout-search-hide-footer',
 			'layout-search-sidebar-left',
 			'layout-search-sidebar-right',
+			'layout-search-yoast-breadcrumb',
 			'layout-post-hide-header',
 			'layout-post-hide-footer',
 			'layout-post-sidebar-left',
 			'layout-post-sidebar-right',
+			'layout-post-yoast-breadcrumb',
 			'layout-page-hide-header',
 			'layout-page-hide-footer',
 			'layout-page-sidebar-left',
 			'layout-page-sidebar-right',
 			'layout-page-hide-title',
+			'layout-page-yoast-breadcrumb',
 		);
 
 		// Get the master options list.

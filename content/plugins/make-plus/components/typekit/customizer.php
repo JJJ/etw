@@ -52,11 +52,8 @@ class TTFMP_Typekit_Customizer {
 	 */
 	public function __construct() {
 		// Add the sections
-		if ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_customizer_add_panels' ) ) {
-			add_filter( 'make_customizer_typography_sections', array( $this, 'customize_register' ), 20 );
-		} else {
-			add_action( 'customize_register', array( $this, 'legacy_customize_register' ), 20 );
-		}
+		add_filter( 'make_customizer_typography_sections', array( $this, 'customize_register' ), 20 );
+		add_filter( 'make_setting_defaults', array( $this, 'defaults' ), 20 );
 
 		// Add scripts and styles
 		add_action( 'wp_head', array( $this, 'print_typekit' ), 0 );
@@ -94,12 +91,11 @@ class TTFMP_Typekit_Customizer {
 		// Define the section
 		$sections['font-typekit'] = array(
 			'panel' => $panel,
-			'title' => __( 'Typekit', 'make' ),
+			'title' => __( 'Typekit', 'make-plus' ),
 			'description' => __( 'Enter your Kit ID into the field below and click the "Load" button to retrieve the fonts from your kit.', 'make-plus' ),
 			'options' => array(
 				'typekit-id' => array(
 					'setting' => array(
-						'default'			=> '',
 						'sanitize_callback'	=> array( $this, 'sanitize_typekit_id' ),
 					),
 					'control' => array(
@@ -111,7 +107,7 @@ class TTFMP_Typekit_Customizer {
 					'control' => array(
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
 						'type'				=> 'text',
-						'description'		=> '<a href="#">' . __( 'Reset', 'make-plus' ) . '</a><a href="#">' . __( 'Load Typekit Fonts', 'make-plus' ) . '</a>',
+						'description'		=> '<a href="#">' . esc_html__( 'Reset', 'make-plus' ) . '</a><a href="#">' . esc_html__( 'Load Typekit Fonts', 'make-plus' ) . '</a>',
 					),
 				),
 				'typekit-help-text' => array(
@@ -119,11 +115,12 @@ class TTFMP_Typekit_Customizer {
 						'control_type'		=> 'TTFMAKE_Customize_Misc_Control',
 						'type'				=> 'text',
 						'description'		=> sprintf(
-							__( 'For more information about Typekit integration, please see the %s.', 'make-plus' ),
+							// Translators: %s is a placeholder for a link to documentation
+							esc_html__( 'For more information about Typekit integration, please see the %s.', 'make-plus' ),
 							sprintf(
 								'<a href="%1$s">Make Plus %2$s</a>',
 								'https://thethemefoundry.com/docs/make-docs/customizer/typography/',
-								__( 'documentation', 'make-plus' )
+								esc_html__( 'documentation', 'make-plus' )
 							)
 						),
 					),
@@ -135,60 +132,20 @@ class TTFMP_Typekit_Customizer {
 	}
 
 	/**
-	 * Add the Typekit ID input.
+	 * Add setting defaults.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.6.2.
 	 *
-	 * @param  WP_Customize_Manager    $wp_customize    Theme Customizer object.
-	 * @return void
+	 * @param  array    $defaults    The array of setting defaults.
+	 *
+	 * @return array                 The modified array of setting defaults.
 	 */
-	public function legacy_customize_register( $wp_customize ) {
-		// Site title font size
-		$wp_customize->add_setting(
-			'typekit-id',
-			array(
-				'default'           => '',
-				'type'              => 'theme_mod',
-				'sanitize_callback' => array( $this, 'sanitize_typekit_id' ),
-			)
+	public function defaults( $defaults ) {
+		$new_defaults = array(
+			'typekit-id' => '',
 		);
 
-		$wp_customize->add_control(
-			'ttfmp-typekit-id',
-			array(
-				'settings' => 'typekit-id',
-				'section'  => 'ttfmake_font',
-				'label'    => __( 'Typekit Kit ID', 'make-plus' ),
-				'type'     => 'text',
-				'priority' => 450
-			)
-		);
-
-		$wp_customize->add_control(
-			new TTFMAKE_Customize_Misc_Control(
-				$wp_customize,
-				'ttfmp-typekit-load-fonts',
-				array(
-					'section'     => 'ttfmake_font',
-					'type'        => 'text',
-					'description' => '<a href="#">' . __( 'Reset', 'make-plus' ) . '</a><a href="#">' . __( 'Load Typekit Fonts', 'make-plus' ) . '</a>',
-					'priority'    => 460
-				)
-			)
-		);
-
-		$wp_customize->add_control(
-			new TTFMAKE_Customize_Misc_Control(
-				$wp_customize,
-				'ttfmp-typekit-documentation',
-				array(
-					'section'     => 'ttfmake_font',
-					'type'        => 'text',
-					'description' => sprintf( __( 'For more information about Typekit integration, please see <a href="%s">Make Plus\' documentation</a>.', 'make-plus' ), 'https://thethemefoundry.com/docs/make-docs/customizer/typography/' ),
-					'priority'    => 470
-				)
-			)
-		);
+		return array_merge( $defaults, $new_defaults );
 	}
 
 	/**
@@ -201,10 +158,49 @@ class TTFMP_Typekit_Customizer {
 	public function print_typekit() {
 		$id = $this->get_typekit_id();
 
-		if ( '' !== $id && true === $this->is_typekit_used() ) : ?>
-			<script type="text/javascript" src="//use.typekit.net/<?php echo $this->sanitize_typekit_id( $id ); ?>.js"></script>
-			<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+		if ( '' !== $id && true === $this->is_typekit_used() ) :
+			// Add frontend styles
+			add_action( 'make_css', array( $this, 'frontend_css' ), 2 );
+			?>
+			<script type="text/javascript">
+				(function(d) {
+					var config = {
+							kitId: '<?php echo $this->sanitize_typekit_id( $id ); ?>',
+							scriptTimeout: 3000,
+							async: true
+						},
+						h=d.documentElement,
+						t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),
+						tk=d.createElement("script"),
+						f=false,
+						s=d.getElementsByTagName("script")[0],
+						a;
+					h.className+=" wf-loading";
+					tk.src='//use.typekit.net/'+config.kitId+'.js';
+					tk.async=true;
+					tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};
+					s.parentNode.insertBefore(tk,s);
+				})(document);
+			</script>
 		<?php endif;
+	}
+
+	/**
+	 * Add frontend dynamic styles related to loading fonts.
+	 *
+	 * @since 1.6.3.
+	 *
+	 * @return void
+	 */
+	public function frontend_css() {
+		ttfmake_get_css()->add( array(
+			'selectors'    => array(
+				'.wf-loading body',
+			),
+			'declarations' => array(
+				'visibility' => 'hidden'
+			)
+		) );
 	}
 
 	/**
@@ -216,11 +212,8 @@ class TTFMP_Typekit_Customizer {
 	 */
 	public function is_typekit_used() {
 		// Grab the font choices
-		if ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_get_font_property_option_keys' ) ) {
-			$font_keys = ttfmake_get_font_property_option_keys( 'family' );
-		} else {
-			$font_keys = array( 'font-site-title', 'font-header', 'font-body', );
-		}
+		$font_keys = ttfmake_get_font_property_option_keys( 'family' );
+
 		$fonts = array();
 		foreach ( $font_keys as $key ) {
 			$fonts[] = get_theme_mod( $key, ttfmake_get_default( $key ) );
@@ -302,7 +295,7 @@ class TTFMP_Typekit_Customizer {
 		);
 
 		$typekit_choices = get_theme_mod( 'typekit-choices', array() );
-		$option_keys = ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_get_font_property_option_keys' ) ) ? ttfmake_get_font_property_option_keys( 'family' ) : array( 'font-site-title', 'font-header', 'font-body', );
+		$option_keys = ttfmake_get_font_property_option_keys( 'family' );
 
 		wp_localize_script(
 			'ttfmp-typekit-customizer',
@@ -379,7 +372,7 @@ class TTFMP_Typekit_Customizer {
 			$choices = array_merge( $typekit_fonts, $choices );
 			$choices = array_merge( array(
 				0 => array(
-					'label' => sprintf( '--- %s ---', __( 'Typekit Fonts', 'make-plus' ) )
+					'label' => sprintf( '--- %s ---', esc_html__( 'Typekit Fonts', 'make-plus' ) )
 				)
 			), $choices );
 		}
@@ -446,7 +439,7 @@ class TTFMP_Typekit_Customizer {
 			$this->remove_temp_mods();
 
 			$saved_fonts = array();
-			$option_keys = ( ttfmake_customizer_supports_panels() && function_exists( 'ttfmake_get_font_property_option_keys' ) ) ? ttfmake_get_font_property_option_keys( 'family' ) : array( 'font-site-title', 'font-header', 'font-body', );
+			$option_keys = ttfmake_get_font_property_option_keys( 'family' );
 			foreach ( $option_keys as $key ) {
 				$saved_fonts[ $key ] = ttfmake_sanitize_font_choice( get_theme_mod( $key, ttfmake_get_default( $key ) ) );
 			}
