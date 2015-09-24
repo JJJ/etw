@@ -3,10 +3,10 @@
 /**
  * Plugin Name: WP User Activity
  * Plugin URI:  https://wordpress.org/plugins/wp-user-activity/
- * Description: Activity streams, for your users
+ * Description: The best way to log activity in WordPress
  * Author:      John James Jacoby
  * Author URI:  https://jjj.me
- * Version:     0.1.0
+ * Version:     0.1.2
  * Text Domain: wp-user-activity
  * Domain Path: /languages/
  * License:     GPLv2 or later (license.txt)
@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
 function _wp_user_activity_init() {
 
 	// Include the files
-	$dir = dirname( __FILE__ );
+	$dir = plugin_dir_path( __FILE__ );
 
 	// Include the files
 	include $dir . '/includes/admin.php';
@@ -71,5 +71,5 @@ function wp_user_activity_get_plugin_url() {
  * @return int
  */
 function wp_user_activity_get_asset_version() {
-	return 201508310001;
+	return 201509210003;
 }

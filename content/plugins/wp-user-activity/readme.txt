@@ -3,7 +3,7 @@ Contributors: johnjamesjacoby, stuttter
 Tags: users, activity, log, attachment, comment, core, export, menu, plugin, post, settings, term, theme, user, widget
 Requires at least: 4.3
 Tested up to: 4.3
-Stable tag: 0.1.0
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,17 +15,17 @@ Activity is broken down into object "Types" and "Actions." Types are the objects
 
 = Examples =
 
-```
+`
 Admin logged in 2 minutes ago.
-```
+`
 
-```
+`
 Admin created the post "Hello World" 33 seconds ago.
-```
+`
 
-```
+`
 Admin created the topic "I need help!" 5 days ago.
-```
+`
 
 = Available Actions =
 
@@ -74,13 +74,13 @@ Yes. It will work perfectly with all post-types & taxonomies that define their o
 
 Yes. The autoloader can be filtered, so adding new object types is as simple as:
 
-```
+`
 add_filter( 'wp_get_default_user_activity_types', function( $types = array() ) {
-	$types[] = 'Your_New_Type' // extends `WP_User_Activity_Type`
+	$types[] = 'Your_New_Type' // class that extends WP_User_Activity_Type
 } );
-```
+`
 
-The `WP_User_Activity_Type_Taxonomy` is a good example to start with, if you'd like to create your own actions. It registers simple create/update/delete methods, with easy to understand messages & integrations.
+The `WP_User_Activity_Type_Taxonomy` class is a good example to start with, if you'd like to create your own actions. It registers simple create/update/delete methods, with easy to understand messages & integrations.
 
 = Does this create new database tables? =
 
@@ -99,6 +99,13 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-user-activ
 http://github.com/stuttter/wp-user-activity/
 
 == Changelog ==
+
+= 0.1.2 =
+* Improve admin styling
+* Add metadata callbacks
+
+= 0.1.1 =
+* Improve admin styling
 
 = 0.1.0 =
 * Initial release
