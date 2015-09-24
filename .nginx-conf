@@ -3,7 +3,7 @@ server {
     listen       [::]:80 default_server ipv6only=on;
     listen       443 ssl;
     root         /srv/www/easttroyweb/public;
-    server_name  easttroyweb.com *.easttroyweb.com villagestatus.com *.villagestatus.com siliconfarms.com *.siliconfarms.com easttroybusiness.com *.easttroybusiness.com etcda.org *.etcda.org;
+    server_name  easttroyweb.com *.easttroyweb.com villagestatus.com *.villagestatus.com siliconfarms.com *.siliconfarms.com easttroybusiness.com *.easttroybusiness.com etcda.org *.etcda.org upshift.io *.upshift.io;
 
     access_log   /srv/www/easttroyweb/log/access.log;
     error_log    /srv/www/easttroyweb/log/error.log;
