@@ -622,22 +622,35 @@ function get_post_comments_feed_link($post_id = 0, $feed = '') {
 	if ( empty( $feed ) )
 		$feed = get_default_feed();
 
+	$post = get_post( $post_id );
+	$unattached = 'attachment' === $post->post_type && 0 === (int) $post->post_parent;
+
 	if ( '' != get_option('permalink_structure') ) {
 		if ( 'page' == get_option('show_on_front') && $post_id == get_option('page_on_front') )
 			$url = _get_page_link( $post_id );
 		else
 			$url = get_permalink($post_id);
 
-		$url = trailingslashit($url) . 'feed';
-		if ( $feed != get_default_feed() )
-			$url .= "/$feed";
-		$url = user_trailingslashit($url, 'single_feed');
+		if ( $unattached ) {
+			$url =  home_url( '/feed/' );
+			if ( $feed !== get_default_feed() ) {
+				$url .= "$feed/";
+			}
+			$url = add_query_arg( 'attachment_id', $post_id, $url );
+		} else {
+			$url = trailingslashit($url) . 'feed';
+			if ( $feed != get_default_feed() )
+				$url .= "/$feed";
+			$url = user_trailingslashit($url, 'single_feed');
+		}
 	} else {
-		$type = get_post_field('post_type', $post_id);
-		if ( 'page' == $type )
+		if ( $unattached ) {
+			$url = add_query_arg( array( 'feed' => $feed, 'attachment_id' => $post_id ), home_url( '/' ) );
+		} elseif ( 'page' == $post->post_type ) {
 			$url = add_query_arg( array( 'feed' => $feed, 'page_id' => $post_id ), home_url( '/' ) );
-		else
+		} else {
 			$url = add_query_arg( array( 'feed' => $feed, 'p' => $post_id ), home_url( '/' ) );
+		}
 	}
 
 	/**
@@ -664,10 +677,12 @@ function get_post_comments_feed_link($post_id = 0, $feed = '') {
  * @param string $feed      Optional. Feed format.
 */
 function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
-	$url = esc_url( get_post_comments_feed_link( $post_id, $feed ) );
-	if ( empty($link_text) )
+	$url = get_post_comments_feed_link( $post_id, $feed );
+	if ( empty( $link_text ) ) {
 		$link_text = __('Comments Feed');
+	}
 
+	$link = '<a href="' . esc_url( $url ) . '">' . $link_text . '</a>';
 	/**
 	 * Filter the post comment feed link anchor tag.
 	 *
@@ -677,7 +692,7 @@ function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
 	 * @param int    $post_id Post ID.
 	 * @param string $feed    The feed type, or an empty string for the default feed type.
 	 */
-	echo apply_filters( 'post_comments_feed_link_html', "<a href='$url'>$link_text</a>", $post_id, $feed );
+	echo apply_filters( 'post_comments_feed_link_html', $link, $post_id, $feed );
 }
 
 /**
@@ -1190,7 +1205,7 @@ function get_preview_post_link( $post = null, $query_args = array(), $preview_li
 	 * Filter the URL used for a post preview.
 	 *
 	 * @since 2.0.5
-	 * @since 4.4.0 $post parameter was added.
+	 * @since 4.0.0 Added the `$post` parameter.
 	 *
 	 * @param string  $preview_link URL used for the post preview.
 	 * @param WP_Post $post         Post object.
@@ -1208,7 +1223,8 @@ function get_preview_post_link( $post = null, $query_args = array(), $preview_li
  *
  * @param int    $id      Optional. Post ID.
  * @param string $context Optional, defaults to display. How to write the '&', defaults to '&amp;'.
- * @return string|void The edit post link for the given post.
+ * @return string|null The edit post link for the given post. null if the post type is invalid or does
+ *                     not allow an editing UI.
  */
 function get_edit_post_link( $id = 0, $context = 'display' ) {
 	if ( ! $post = get_post( $id ) )
@@ -1228,7 +1244,13 @@ function get_edit_post_link( $id = 0, $context = 'display' ) {
 	if ( !current_user_can( 'edit_post', $post->ID ) )
 		return;
 
-	if ( ! in_array( $post->post_type, get_post_types( array( 'show_ui' => true ) ) ) ) {
+	$allowed = array_merge( array(
+		'revision',
+	), get_post_types( array(
+		'show_ui' => true,
+	) ) );
+
+	if ( ! in_array( $post->post_type, $allowed ) ) {
 		return;
 	}
 
@@ -1270,7 +1292,7 @@ function edit_post_link( $text = null, $before = '', $after = '', $id = 0, $clas
 		$text = __( 'Edit This' );
 	}
 
-	$link = '<a class="' . esc_attr( $class ) . '" href="' . $url . '">' . $text . '</a>';
+	$link = '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
 
 	/**
 	 * Filter the post edit link anchor tag.
@@ -1372,7 +1394,7 @@ function edit_comment_link( $text = null, $before = '', $after = '' ) {
 		$text = __( 'Edit This' );
 	}
 
-	$link = '<a class="comment-edit-link" href="' . get_edit_comment_link( $comment ) . '">' . $text . '</a>';
+	$link = '<a class="comment-edit-link" href="' . esc_url( get_edit_comment_link( $comment ) ) . '">' . $text . '</a>';
 
 	/**
 	 * Filter the comment edit link anchor tag.
@@ -1432,7 +1454,7 @@ function edit_bookmark_link( $link = '', $before = '', $after = '', $bookmark = 
 	if ( empty($link) )
 		$link = __('Edit This');
 
-	$link = '<a href="' . get_edit_bookmark_link( $bookmark ) . '">' . $link . '</a>';
+	$link = '<a href="' . esc_url( get_edit_bookmark_link( $bookmark ) ) . '">' . $link . '</a>';
 
 	/**
 	 * Filter the bookmark edit link anchor tag.
@@ -2686,6 +2708,105 @@ function paginate_comments_links($args = array()) {
 }
 
 /**
+ * Returns navigation to next/previous set of comments when applicable.
+ *
+ * @since 4.4.0
+ *
+ * @param array $args {
+ *     Optional. Default comments navigation arguments.
+ *
+ *     @type string $prev_text          Anchor text to display in the previous comments link. Default 'Older comments'.
+ *     @type string $next_text          Anchor text to display in the next comments link. Default 'Newer comments'.
+ *     @type string $screen_reader_text Screen reader text for nav element. Default 'Comments navigation'.
+ * }
+ * @return string Markup for comments links.
+ */
+function get_the_comments_navigation( $args = array() ) {
+	$navigation = '';
+
+	// Are there comments to navigate through?
+	if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) {
+		$args = wp_parse_args( $args, array(
+			'prev_text'          => __( 'Older comments' ),
+			'next_text'          => __( 'Newer comments' ),
+			'screen_reader_text' => __( 'Comments navigation' ),
+		) );
+
+		$prev_link = get_previous_comments_link( $args['prev_text'] );
+		$next_link = get_next_comments_link( $args['next_text'] );
+
+		if ( $prev_link ) {
+			$navigation .= '<div class="nav-previous">' . $prev_link . '</div>';
+		}
+
+		if ( $next_link ) {
+			$navigation .= '<div class="nav-next">' . $next_link . '</div>';
+		}
+
+		$navigation = _navigation_markup( $navigation, 'comment-navigation', $args['screen_reader_text'] );
+	}
+
+	return $navigation;
+}
+
+/**
+ * Displays navigation to next/previous set of comments when applicable.
+ *
+ * @since 4.4.0
+ *
+ * @param array $args See {@see get_the_comments_navigation()} for available arguments.
+ */
+function the_comments_navigation( $args = array() ) {
+	echo get_the_comments_navigation( $args );
+}
+
+/**
+ * Returns a paginated navigation to next/previous set of comments,
+ * when applicable.
+ *
+ * @since 4.4.0
+ *
+ * @see paginate_comments_links()
+ *
+ * @param array $args {
+ *     Optional. Default pagination arguments.
+ *
+ *     @type string $screen_reader_text Screen reader text for nav element. Default 'Comments navigation'.
+ * }
+ * @return string Markup for pagination links.
+ */
+function get_the_comments_pagination( $args = array() ) {
+	$navigation = '';
+	$args       = wp_parse_args( $args, array(
+		'screen_reader_text' => __( 'Comments navigation' ),
+	) );
+	$args['echo'] = false;
+
+	// Make sure we get plain links, so we get a string we can work with.
+	$args['type'] = 'plain';
+
+	$links = paginate_comments_links( $args );
+
+	if ( $links ) {
+		$navigation = _navigation_markup( $links, 'comments-pagination', $args['screen_reader_text'] );
+	}
+
+	return $navigation;
+}
+
+/**
+ * Displays a paginated navigation to next/previous set of comments,
+ * when applicable.
+ *
+ * @since 4.4.0
+ *
+ * @param array $args See {@see get_the_comments_pagination()} for available arguments.
+ */
+function the_comments_pagination( $args = array() ) {
+	echo get_the_comments_pagination( $args );
+}
+
+/**
  * Retrieve the Press This bookmarklet link.
  *
  * Use this in 'a' element 'href' attribute.
@@ -3322,23 +3443,28 @@ function get_edit_profile_url( $user_id = 0, $scheme = 'admin' ) {
  * Output rel=canonical for singular queries.
  *
  * @since 2.9.0
- *
- * @global WP_Query $wp_the_query
 */
 function rel_canonical() {
-	if ( !is_singular() )
+	if ( ! is_singular() ) {
 		return;
+	}
 
-	global $wp_the_query;
-	if ( !$id = $wp_the_query->get_queried_object_id() )
+	if ( ! $id = get_queried_object_id() ) {
 		return;
+	}
 
-	$link = get_permalink( $id );
+	$url = get_permalink( $id );
 
-	if ( $page = get_query_var('cpage') )
-		$link = get_comments_pagenum_link( $page );
+	$page = get_query_var( 'page' );
+	if ( $page ) {
+		$url = trailingslashit( $url ) . user_trailingslashit( $page, 'single_paged' );
+	}
 
-	echo "<link rel='canonical' href='$link' />\n";
+	$cpage = get_query_var( 'cpage' );
+	if ( $cpage ) {
+		$url = get_comments_pagenum_link( $cpage );
+	}
+	echo '<link rel="canonical" href="' . esc_url( $url ) . "\" />\n";
 }
 
 /**
@@ -3350,8 +3476,6 @@ function rel_canonical() {
  * via the get_shortlink filter.
  *
  * @since 3.0.0.
- *
- * @global WP_Query $wp_query
  *
  * @param int    $id          A post or blog id. Default is 0, which means the current post or blog.
  * @param string $context     Whether the id is a 'blog' id, 'post' id, or 'media' id.
@@ -3377,13 +3501,13 @@ function wp_get_shortlink($id = 0, $context = 'post', $allow_slugs = true) {
 	 */
 	$shortlink = apply_filters( 'pre_get_shortlink', false, $id, $context, $allow_slugs );
 
-	if ( false !== $shortlink )
+	if ( false !== $shortlink ) {
 		return $shortlink;
+	}
 
-	global $wp_query;
 	$post_id = 0;
 	if ( 'query' == $context && is_singular() ) {
-		$post_id = $wp_query->get_queried_object_id();
+		$post_id = get_queried_object_id();
 		$post = get_post( $post_id );
 	} elseif ( 'post' == $context ) {
 		$post = get_post( $id );

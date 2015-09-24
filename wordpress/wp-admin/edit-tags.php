@@ -17,6 +17,10 @@ $tax = get_taxonomy( $taxnow );
 if ( ! $tax )
 	wp_die( __( 'Invalid taxonomy' ) );
 
+if ( ! in_array( $tax->name, get_taxonomies( array( 'show_ui' => true ) ) ) ) {
+   wp_die( __( 'You are not allowed to manage these items.' ) );
+}
+
 if ( ! current_user_can( $tax->cap->manage_terms ) ) {
 	wp_die(
 		'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
@@ -334,8 +338,13 @@ endif; ?>
 <div class="form-wrap">
 <p>
 	<?php
-	/** This filter is documented in wp-includes/category-template.php */
-	printf( __( '<strong>Note:</strong><br />Deleting a category does not delete the posts in that category. Instead, posts that were only assigned to the deleted category are set to the category <strong>%s</strong>.' ), apply_filters( 'the_category', get_cat_name( get_option( 'default_category') ) ) );
+	echo '<strong>' . __( 'Note:' ) . '</strong><br />';
+	printf(
+		/* translators: %s: default category */
+		__( 'Deleting a category does not delete the posts in that category. Instead, posts that were only assigned to the deleted category are set to the category %s.' ),
+		/** This filter is documented in wp-includes/category-template.php */
+		'<strong>' . apply_filters( 'the_category', get_cat_name( get_option( 'default_category') ) ) . '</strong>'
+	);
 	?>
 </p>
 <?php if ( current_user_can( 'import' ) ) : ?>

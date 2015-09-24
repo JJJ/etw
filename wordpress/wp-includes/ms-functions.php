@@ -599,7 +599,6 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	$base = $current_site->path;
 
 	$blog_title = strip_tags( $blog_title );
-	$blog_title = substr( $blog_title, 0, 50 );
 
 	$errors = new WP_Error();
 	$illegal_names = get_site_option( 'illegal_names' );
@@ -619,11 +618,12 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 			 * Filter reserved site names on a sub-directory Multisite install.
 			 *
 			 * @since 3.0.0
-			 * @since 4.4.0 'wp-admin', 'wp-content', and 'wp-includes' were added to the reserved names list.
+			 * @since 4.4.0 'wp-admin', 'wp-content', 'wp-includes', and 'wp-json' were added
+			 *              to the reserved names list.
 			 *
 			 * @param array $subdirectory_reserved_names Array of reserved names.
 			 */
-			apply_filters( 'subdirectory_reserved_names', array( 'page', 'comments', 'blog', 'files', 'feed', 'wp-admin', 'wp-content', 'wp-includes' ) )
+			apply_filters( 'subdirectory_reserved_names', array( 'page', 'comments', 'blog', 'files', 'feed', 'wp-admin', 'wp-content', 'wp-includes', 'wp-json' ) )
 		);
 	}
 

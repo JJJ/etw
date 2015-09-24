@@ -351,6 +351,8 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 		$time = time();
 		$comment = get_comment( $comment_id );
 
+		$counts = wp_count_comments();
+
 		$x = new WP_Ajax_Response( array(
 			'what' => 'comment',
 			// Here for completeness - not used.
@@ -358,7 +360,16 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 			'supplemental' => array(
 				'status' => $comment ? $comment->comment_approved : '',
 				'postId' => $comment ? $comment->comment_post_ID : '',
-				'time' => $time
+				'time' => $time,
+				'in_moderation' => $counts->moderated,
+				'i18n_comments_text' => sprintf(
+					_n( '%s Comment', '%s Comments', $counts->approved ),
+					number_format_i18n( $counts->approved )
+				),
+				'i18n_moderation_text' => sprintf(
+					_nx( '%s in moderation', '%s in moderation', $counts->moderated, 'comments' ),
+					number_format_i18n( $counts->moderated )
+				)
 			)
 		) );
 		$x->send();
@@ -1049,8 +1060,23 @@ function wp_ajax_replyto_comment( $action ) {
 		'position' => $position
 	);
 
-	if ( $comment_auto_approved )
-		$response['supplemental'] = array( 'parent_approved' => $parent->comment_ID, 'parent_post_id' => $parent->comment_post_ID );
+	$counts = wp_count_comments();
+	$response['supplemental'] = array(
+		'in_moderation' => $counts->moderated,
+		'i18n_comments_text' => sprintf(
+			_n( '%s Comment', '%s Comments', $counts->approved ),
+			number_format_i18n( $counts->approved )
+		),
+		'i18n_moderation_text' => sprintf(
+			_nx( '%s in moderation', '%s in moderation', $counts->moderated, 'comments' ),
+			number_format_i18n( $counts->moderated )
+		)
+	);
+
+	if ( $comment_auto_approved ) {
+		$response['supplemental']['parent_approved'] = $parent->comment_ID;
+		$response['supplemental']['parent_post_id'] = $parent->comment_post_ID;
+	}
 
 	$x = new WP_Ajax_Response();
 	$x->add( $response );
@@ -1165,7 +1191,7 @@ function wp_ajax_add_menu_item() {
 	/** This filter is documented in wp-admin/includes/nav-menu.php */
 	$walker_class_name = apply_filters( 'wp_edit_nav_menu_walker', 'Walker_Nav_Menu_Edit', $_POST['menu'] );
 
-	if ( ! class_exists( $walker_class_name ) )
+	if ( ! class_exists( $walker_class_name, false ) )
 		wp_die( 0 );
 
 	if ( ! empty( $menu_items ) ) {
@@ -1308,7 +1334,11 @@ function wp_ajax_add_user( $action ) {
 		'id' => $user_id,
 		'data' => $wp_list_table->single_row( $user_object, '', $role ),
 		'supplemental' => array(
-			'show-link' => sprintf(__( 'User <a href="#%s">%s</a> added' ), "user-$user_id", $user_object->user_login),
+			'show-link' => sprintf(
+				/* translators: %s: the new user */
+				__( 'User %s added' ),
+				'<a href="#user-' . $user_id . '">' . $user_object->user_login . '</a>'
+			),
 			'role' => $role,
 		)
 	) );
@@ -2491,13 +2521,10 @@ function wp_ajax_send_attachment_to_editor() {
 		}
 	}
 
-	$rel = $url = '';
-	$html = isset( $attachment['post_title'] ) ? $attachment['post_title'] : '';
-	if ( ! empty( $attachment['url'] ) ) {
-		$url = $attachment['url'];
-		if ( strpos( $url, 'attachment_id') || get_attachment_link( $id ) == $url )
-			$rel = ' rel="attachment wp-att-' . $id . '"';
-		$html = '<a href="' . esc_url( $url ) . '"' . $rel . '>' . $html . '</a>';
+	$rel = '';
+	$url = empty( $attachment['url'] ) ? '' : $attachment['url'];
+	if ( strpos( $url, 'attachment_id') || get_attachment_link( $id ) == $url ) {
+		$rel = ' rel="attachment wp-att-' . $id . '"';
 	}
 
 	remove_filter( 'media_send_to_editor', 'image_media_send_to_editor' );
@@ -2514,9 +2541,14 @@ function wp_ajax_send_attachment_to_editor() {
 		}
 
 		$title = ''; // We no longer insert title tags into <img> tags, as they are redundant.
-		$html = get_image_send_to_editor( $id, $caption, $title, $align, $url, (bool) $rel, $size, $alt );
+		$html = get_image_send_to_editor( $id, $caption, $title, $align, $url, $rel, $size, $alt );
 	} elseif ( wp_attachment_is( 'video', $post ) || wp_attachment_is( 'audio', $post )  ) {
 		$html = stripslashes_deep( $_POST['html'] );
+	} else {
+		$html = isset( $attachment['post_title'] ) ? $attachment['post_title'] : '';
+		if ( ! empty( $url ) ) {
+			$html = '<a href="' . esc_url( $url ) . '"' . $rel . '>' . $html . '</a>';
+		}
 	}
 
 	/** This filter is documented in wp-admin/includes/media.php */
@@ -3196,4 +3228,13 @@ function wp_ajax_crop_image() {
 	}
 
 	wp_send_json_success( wp_prepare_attachment_for_js( $attachment_id ) );
+}
+
+/**
+ * Ajax handler for generating a password.
+ *
+ * @since 4.4.0
+ */
+function wp_ajax_generate_password() {
+	wp_send_json_success( wp_generate_password( 24 ) );
 }

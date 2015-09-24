@@ -71,6 +71,7 @@ class Walker_Nav_Menu extends Walker {
 	 * @see Walker::start_el()
 	 *
 	 * @since 3.0.0
+	 * @since 4.4.0 'nav_menu_item_args' filter was added.
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param object $item   Menu item data object.
@@ -83,6 +84,17 @@ class Walker_Nav_Menu extends Walker {
 
 		$classes = empty( $item->classes ) ? array() : (array) $item->classes;
 		$classes[] = 'menu-item-' . $item->ID;
+
+		/**
+		 * Filter the arguments for a single nav menu item.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param array  $args  An array of arguments.
+		 * @param object $item  Menu item data object.
+		 * @param int    $depth Depth of menu item. Used for padding.
+		 */
+		$args = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
 
 		/**
 		 * Filter the CSS class(es) applied to a menu item's list item element.
@@ -185,7 +197,7 @@ class Walker_Nav_Menu extends Walker {
 	 * @param array  $args   An array of arguments. @see wp_nav_menu()
 	 */
 	public function end_el( &$output, $item, $depth = 0, $args = array() ) {
-		$output .= "</li>\n";
+		$output .= '</li>';
 	}
 
 } // Walker_Nav_Menu

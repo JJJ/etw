@@ -1,12 +1,30 @@
 <?php
 /**
- * Calendar widget class
+ * Widget API: WP_Widget_Calendar class
  *
- * @since 2.8.0
  * @package WordPress
  * @subpackage Widgets
+ * @since 4.4.0
+ */
+
+/**
+ * Core class used to implement the Calendar widget.
+ *
+ * @since 2.8.0
+ *
+ * @see WP_Widget
  */
 class WP_Widget_Calendar extends WP_Widget {
+	/**
+	 * Ensure that the ID attribute only appears in the markup once
+	 *
+	 * @since 4.4.0
+	 *
+	 * @static
+	 * @access private
+	 * @var int
+	 */
+	private static $instance = 0;
 
 	public function __construct() {
 		$widget_ops = array('classname' => 'widget_calendar', 'description' => __( 'A calendar of your site&#8217;s Posts.') );
@@ -25,10 +43,16 @@ class WP_Widget_Calendar extends WP_Widget {
 		if ( $title ) {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
-		echo '<div id="calendar_wrap">';
+		if ( 0 === self::$instance ) {
+			echo '<div id="calendar_wrap" class="calendar_wrap">';
+		} else {
+			echo '<div class="calendar_wrap">';
+		}
 		get_calendar();
 		echo '</div>';
 		echo $args['after_widget'];
+
+		self::$instance++;
 	}
 
 	/**

@@ -277,8 +277,10 @@ function wp_read_image_metadata( $file ) {
 		'shutter_speed' => 0,
 		'title' => '',
 		'orientation' => 0,
+		'keywords' => array(),
 	);
 
+	$iptc = array();
 	/*
 	 * Read IPTC first, since it might contain data not available in exif such
 	 * as caption, description etc.
@@ -325,6 +327,10 @@ function wp_read_image_metadata( $file ) {
 
 			if ( ! empty( $iptc['2#116'][0] ) ) // copyright
 				$meta['copyright'] = trim( $iptc['2#116'][0] );
+
+			if ( ! empty( $iptc['2#025'][0] ) ) { // keywords array
+				$meta['keywords'] = array_values( $iptc['2#025'] );
+			}
 		 }
 	}
 
@@ -410,12 +416,14 @@ function wp_read_image_metadata( $file ) {
 	 * Filter the array of meta data read from an image's exif data.
 	 *
 	 * @since 2.5.0
+	 * @since 4.4.0 The `$iptc` parameter was added.
 	 *
 	 * @param array  $meta            Image meta data.
 	 * @param string $file            Path to image file.
 	 * @param int    $sourceImageType Type of image.
+	 * @param array  $iptc            IPTC data.
 	 */
-	return apply_filters( 'wp_read_image_metadata', $meta, $file, $sourceImageType );
+	return apply_filters( 'wp_read_image_metadata', $meta, $file, $sourceImageType, $iptc );
 
 }
 

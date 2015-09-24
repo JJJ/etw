@@ -1,10 +1,10 @@
 <?php
 /**
- * A File upgrader class for WordPress.
+ * Upgrade API: WP_Upgrader, Plugin_Upgrader, Theme_Upgrader, Language_Pack_Upgrader,
+ * Core_Upgrader, File_Upload_Upgrader, and WP_Automatic_Updater classes
  *
- * This set of classes are designed to be used to upgrade/install a local set of files on the filesystem via the Filesystem Abstraction classes.
- *
- * @link https://core.trac.wordpress.org/ticket/7875 consolidate plugin/theme/core upgrade/install functions
+ * This set of classes are designed to be used to upgrade/install a local set of files
+ * on the filesystem via the Filesystem Abstraction classes.
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -14,10 +14,9 @@
 require ABSPATH . 'wp-admin/includes/class-wp-upgrader-skins.php';
 
 /**
- * WordPress Upgrader class for Upgrading/Installing a local set of files via the Filesystem Abstraction classes from a Zip file.
+ * Core class used for upgrading/installing a local set of files via
+ * the Filesystem Abstraction classes from a Zip file.
  *
- * @package WordPress
- * @subpackage Upgrader
  * @since 2.8.0
  */
 class WP_Upgrader {
@@ -753,11 +752,14 @@ class WP_Upgrader {
 }
 
 /**
- * Plugin Upgrader class for WordPress Plugins, It is designed to upgrade/install plugins from a local zip, remote zip URL, or uploaded zip file.
+ * Core class used for upgrading/installing plugins.
  *
- * @package WordPress
- * @subpackage Upgrader
+ * It is designed to upgrade/install plugins from a local zip, remote zip URL,
+ * or uploaded zip file.
+ *
  * @since 2.8.0
+ *
+ * @see WP_Upgrader
  */
 class Plugin_Upgrader extends WP_Upgrader {
 
@@ -1214,11 +1216,14 @@ class Plugin_Upgrader extends WP_Upgrader {
 }
 
 /**
- * Theme Upgrader class for WordPress Themes, It is designed to upgrade/install themes from a local zip, remote zip URL, or uploaded zip file.
+ * Core class used for upgrading/installing themes.
  *
- * @package WordPress
- * @subpackage Upgrader
+ * It is designed to upgrade/install themes from a local zip, remote zip URL,
+ * or uploaded zip file.
+ *
  * @since 2.8.0
+ *
+ * @see WP_Upgrader
  */
 class Theme_Upgrader extends WP_Upgrader {
 
@@ -1778,11 +1783,12 @@ class Theme_Upgrader extends WP_Upgrader {
 }
 
 /**
- * Language pack upgrader, for updating translations of plugins, themes, and core.
+ * Core class used for updating/installing language packs (translations)
+ * for plugins, themes, and core.
  *
- * @package WordPress
- * @subpackage Upgrader
  * @since 3.7.0
+ *
+ * @see WP_Upgrader
  */
 class Language_Pack_Upgrader extends WP_Upgrader {
 
@@ -1806,16 +1812,17 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	public $bulk = true;
 
 	/**
-	 * Asynchronously upgrade language packs after other upgrades have been made.
+	 * Asynchronously upgrades language packs after other upgrades have been made.
 	 *
 	 * Hooked to the {@see 'upgrader_process_complete'} action by default.
 	 *
 	 * @since 3.7.0
 	 * @access public
-	 *
 	 * @static
 	 *
-	 * @param false|WP_Upgrader $upgrader
+	 * @param false|WP_Upgrader $upgrader Optional. WP_Upgrader instance or false. If `$upgrader` is
+	 *                                    a Language_Pack_Upgrader instance, the method will bail to
+	 *                                    avoid recursion. Otherwise unused. Default false.
 	 */
 	public static function async_upgrade( $upgrader = false ) {
 		// Avoid recursion.
@@ -1829,8 +1836,10 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			return;
 		}
 
-		// Avoid messing with VCS installs, at least for now.
-		// Noted: this is not the ideal way to accomplish this.
+		/*
+		 * Avoid messing with VCS installs, at least for now.
+		 * Noted: this is not the ideal way to accomplish this.
+		 */
 		$check_vcs = new WP_Automatic_Updater;
 		if ( $check_vcs->is_vcs_checkout( WP_CONTENT_DIR ) ) {
 			return;
@@ -2103,11 +2112,14 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 }
 
 /**
- * Core Upgrader class for WordPress. It allows for WordPress to upgrade itself in combination with the wp-admin/includes/update-core.php file
+ * Core class used for updating core.
  *
- * @package WordPress
- * @subpackage Upgrader
+ * It allows for WordPress to upgrade itself in combination with
+ * the wp-admin/includes/update-core.php file.
+ *
  * @since 2.8.0
+ *
+ * @see WP_Upgrader
  */
 class Core_Upgrader extends WP_Upgrader {
 
@@ -2440,10 +2452,11 @@ class Core_Upgrader extends WP_Upgrader {
 }
 
 /**
- * Upgrade Skin helper for File uploads. This class handles the upload process and passes it as if it's a local file to the Upgrade/Installer functions.
+ * Core class used for handling file uploads.
  *
- * @package WordPress
- * @subpackage Upgrader
+ * This class handles the upload process and passes it as if it's a local file
+ * to the Upgrade/Installer functions.
+ *
  * @since 2.8.0
  */
 class File_Upload_Upgrader {
@@ -2555,10 +2568,8 @@ class File_Upload_Upgrader {
 }
 
 /**
- * The WordPress automatic background updater.
+ * Core class used for handling automatic background updates.
  *
- * @package WordPress
- * @subpackage Upgrader
  * @since 3.7.0
  */
 class WP_Automatic_Updater {

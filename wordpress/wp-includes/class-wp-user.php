@@ -1,10 +1,16 @@
 <?php
 /**
- * WordPress User class.
+ * User API: WP_User class
+ *
+ * @package WordPress
+ * @subpackage Users
+ * @since 4.4.0
+ */
+
+/**
+ * Core class used to implement the WP_User object.
  *
  * @since 2.0.0
- * @package WordPress
- * @subpackage User
  *
  * @property string $nickname
  * @property string $description
@@ -253,11 +259,13 @@ class WP_User {
 	}
 
 	/**
-	 * Magic method for checking the existence of a certain custom field
+	 * Magic method for checking the existence of a certain custom field.
 	 *
 	 * @since 3.3.0
-	 * @param string $key
-	 * @return bool
+	 * @access public
+	 *
+	 * @param string $key User meta key to check if set.
+	 * @return bool Whether the given user meta key is set.
 	 */
 	public function __isset( $key ) {
 		if ( 'id' == $key ) {
@@ -275,11 +283,13 @@ class WP_User {
 	}
 
 	/**
-	 * Magic method for accessing custom fields
+	 * Magic method for accessing custom fields.
 	 *
 	 * @since 3.3.0
-	 * @param string $key
-	 * @return mixed
+	 * @access public
+	 *
+	 * @param string $key User meta key to retrieve.
+	 * @return mixed Value of the given user meta key (if set). If `$key` is 'id', the user ID.
 	 */
 	public function __get( $key ) {
 		if ( 'id' == $key ) {
@@ -305,6 +315,9 @@ class WP_User {
 	/**
 	 * Magic method for setting custom user fields.
 	 *
+	 * This method does not update custom fields in the database. It only stores
+	 * the value on the WP_User instance.
+	 *
 	 * @since 3.3.0
 	 * @access public
 	 *
@@ -319,6 +332,28 @@ class WP_User {
 		}
 
 		$this->data->$key = $value;
+	}
+
+	/**
+	 * Magic method for unsetting a certain custom field.
+	 *
+	 * @since 4.4.0
+	 * @access public
+	 *
+	 * @param string $key User meta key to unset.
+	 */
+	public function __unset( $key ) {
+		if ( 'id' == $key ) {
+			_deprecated_argument( 'WP_User->id', '2.1', __( 'Use <code>WP_User->ID</code> instead.' ) );
+		}
+
+		if ( isset( $this->data->$key ) ) {
+			unset( $this->data->$key );
+		}
+
+		if ( isset( self::$back_compat_keys[ $key ] ) ) {
+			unset( self::$back_compat_keys[ $key ] );
+		}
 	}
 
 	/**

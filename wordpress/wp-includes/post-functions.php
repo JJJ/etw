@@ -1,10 +1,10 @@
 <?php
 /**
- * Post functions and post utility function.
+ * Post API: Top-level post functionality
  *
  * @package WordPress
  * @subpackage Post
- * @since 1.5.0
+ * @since 4.4.0
  */
 
 //
@@ -876,6 +876,8 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  * parameter), along with a string for the post type name.
  *
  * @since 2.9.0
+ * @since 3.0.0 The `show_ui` argument is now enforced on the new post screen.
+ * @since 4.4.0 The `show_ui` argument is now enforced on the post type listing screen and post editing screen.
  *
  * @global array      $wp_post_types List of post types.
  * @global WP_Rewrite $wp_rewrite    Used for default feeds.
@@ -907,7 +909,7 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
  *                                             * ?{post_type_key}={single_post_slug}
  *                                             * ?{post_type_query_var}={single_post_slug}
  *                                             If not set, the default is inherited from $public.
- *     @type bool        $show_ui              Whether to generate a default UI for managing this post type in the
+ *     @type bool        $show_ui              Whether to generate and allow a UI for managing this post type in the
  *                                             admin. Default is value of $public.
  *     @type bool        $show_in_menu         Where to show the post type in the admin menu. To work, $show_ui
  *                                             must be true. If true, the post type is shown in its own top level
@@ -990,20 +992,17 @@ function register_post_type( $post_type, $args = array() ) {
 
 	// Sanitize post type name
 	$post_type = sanitize_key( $post_type );
+	$args      = wp_parse_args( $args );
 
-	if ( empty( $args['_builtin'] ) ) {
-		/**
-		 * Filter the arguments for registering a post type.
-		 *
-		 * Not available for built-in post types.
-		 *
-		 * @since 4.4.0
-		 *
-		 * @param array|string $args      Array or string of arguments for registering a post type.
-		 * @param string       $post_type Post type key.
-		 */
-		$args = apply_filters( 'register_post_type_args', $args, $post_type );
-	}
+	/**
+	 * Filter the arguments for registering a post type.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param array  $args      Array of arguments for registering a post type.
+	 * @param string $post_type Post type key.
+	 */
+	$args = apply_filters( 'register_post_type_args', $args, $post_type );
 
 	// Args prefixed with an underscore are reserved for internal use.
 	$defaults = array(
@@ -1033,7 +1032,7 @@ function register_post_type( $post_type, $args = array() ) {
 		'_builtin'             => false,
 		'_edit_link'           => 'post.php?post=%d',
 	);
-	$args = wp_parse_args( $args, $defaults );
+	$args = array_merge( $defaults, $args );
 	$args = (object) $args;
 
 	$args->name = $post_type;
@@ -1316,6 +1315,8 @@ function _post_type_meta_capabilities( $capabilities = null ) {
  * - parent_item_colon - This string isn't used on non-hierarchical types. In hierarchical
  *                       ones the default is 'Parent Page:'.
  * - all_items - String for the submenu. Default is All Posts/All Pages.
+ * - insert_into_item - String for the media frame button. Default is Insert into post/Insert into page.
+ * - uploaded_to_this_item - String for the media frame filter. Default is Uploaded to this post/Uploaded to this page.
  * - featured_image - Default is Featured Image.
  * - set_featured_image - Default is Set featured image.
  * - remove_featured_image - Default is Remove featured image.
@@ -1328,6 +1329,8 @@ function _post_type_meta_capabilities( $capabilities = null ) {
  * @since 3.0.0
  * @since 4.3.0 Added the `featured_image`, `set_featured_image`, `remove_featured_image`,
  *              and `use_featured_image` labels.
+ * @since 4.4.0 Added the `insert_into_item` and `uploaded_to_this_item` labels.
+ * 
  * @access private
  *
  * @param object $post_type_object Post type object.
@@ -1347,6 +1350,8 @@ function get_post_type_labels( $post_type_object ) {
 		'not_found_in_trash' => array( __('No posts found in Trash.'), __('No pages found in Trash.') ),
 		'parent_item_colon' => array( null, __('Parent Page:') ),
 		'all_items' => array( __( 'All Posts' ), __( 'All Pages' ) ),
+		'insert_into_item' => array( __( 'Insert into post' ), __( 'Insert into page' ) ),
+		'uploaded_to_this_item' => array( __( 'Uploaded to this post' ), __( 'Uploaded to this page' ) ),
 		'featured_image' => array( __( 'Featured Image' ), __( 'Featured Image' ) ),
 		'set_featured_image' => array( __( 'Set featured image' ), __( 'Set featured image' ) ),
 		'remove_featured_image' => array( __( 'Remove featured image' ), __( 'Remove featured image' ) ),
@@ -3208,6 +3213,11 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 	if ( ! empty( $postarr['tax_input'] ) ) {
 		foreach ( $postarr['tax_input'] as $taxonomy => $tags ) {
 			$taxonomy_obj = get_taxonomy($taxonomy);
+			if ( ! $taxonomy_obj ) {
+				_doing_it_wrong( __FUNCTION__, sprintf( __( 'Invalid taxonomy: %s' ), $taxonomy ), '4.4.0' );
+				continue;
+			}
+
 			// array = hierarchical, string = non-hierarchical.
 			if ( is_array( $tags ) ) {
 				$tags = array_filter($tags);
@@ -5076,11 +5086,16 @@ function wp_mime_type_icon( $mime = 0 ) {
 		$matches['default'] = array('default');
 
 		foreach ( $matches as $match => $wilds ) {
-			if ( isset($types[$wilds[0]])) {
-				$icon = $types[$wilds[0]];
-				if ( !is_numeric($mime) )
-					wp_cache_add("mime_type_icon_$mime", $icon);
-				break;
+			foreach ( $wilds as $wild ) {
+				if ( ! isset( $types[ $wild ] ) ) {
+					continue;
+				}
+
+				$icon = $types[ $wild ];
+				if ( ! is_numeric( $mime ) ) {
+					wp_cache_add( "mime_type_icon_$mime", $icon );
+				}
+				break 2;
 			}
 		}
 	}
@@ -5394,12 +5409,11 @@ function update_post_cache( &$posts ) {
  * @since 2.0.0
  *
  * @global bool $_wp_suspend_cache_invalidation
- * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int|WP_Post $post Post ID or post object to remove from the cache.
  */
 function clean_post_cache( $post ) {
-	global $_wp_suspend_cache_invalidation, $wpdb;
+	global $_wp_suspend_cache_invalidation;
 
 	if ( ! empty( $_wp_suspend_cache_invalidation ) )
 		return;

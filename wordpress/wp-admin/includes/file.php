@@ -17,8 +17,8 @@ $wp_file_descriptions = array(
 	'rtl.css' => __( 'RTL Stylesheet' ),
 	'comments.php' => __( 'Comments' ),
 	'comments-popup.php' => __( 'Popup Comments' ),
-	'footer.php' => __( 'Footer' ),
-	'header.php' => __( 'Header' ),
+	'footer.php' => __( 'Theme Footer' ),
+	'header.php' => __( 'Theme Header' ),
 	'sidebar.php' => __( 'Sidebar' ),
 	'archive.php' => __( 'Archives' ),
 	'author.php' => __( 'Author Template' ),
@@ -36,7 +36,6 @@ $wp_file_descriptions = array(
 	'video.php' => __('Video Attachment Template'),
 	'audio.php' => __('Audio Attachment Template'),
 	'application.php' => __('Application Attachment Template'),
-	'my-hacks.php' => __( 'my-hacks.php (legacy hacks support)' ),
 	'.htaccess' => __( '.htaccess (for rewrite rules )' ),
 	// Deprecated files
 	'wp-layout.css' => __( 'Stylesheet' ),
@@ -560,7 +559,7 @@ function unzip_file($file, $to) {
 	 *
 	 * @param bool $ziparchive Whether to use ZipArchive. Default true.
 	 */
-	if ( class_exists( 'ZipArchive' ) && apply_filters( 'unzip_file_use_ziparchive', true ) ) {
+	if ( class_exists( 'ZipArchive', false ) && apply_filters( 'unzip_file_use_ziparchive', true ) ) {
 		$result = _unzip_file_ziparchive($file, $to, $needed_dirs);
 		if ( true === $result ) {
 			return $result;
@@ -849,7 +848,7 @@ function WP_Filesystem( $args = false, $context = false, $allow_relaxed_file_own
 	if ( ! $method )
 		return false;
 
-	if ( ! class_exists("WP_Filesystem_$method") ) {
+	if ( ! class_exists( "WP_Filesystem_$method", false  ) ) {
 
 		/**
 		 * Filter the path for a specific filesystem method class file.

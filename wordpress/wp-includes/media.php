@@ -148,7 +148,8 @@ function image_hwstring( $width, $height ) {
  * @param int          $id   Attachment ID for image.
  * @param array|string $size Optional. Image size to scale to. Accepts a registered image size
  *                           or flat array of height and width values. Default 'medium'.
- * @return false|array False on failure, array on success.
+ * @return false|array Array containing the image URL, width, height, and boolean for whether
+ *                     the image is an intermediate size. False on failure.
  */
 function image_downsize( $id, $size = 'medium' ) {
 
@@ -691,13 +692,18 @@ function get_intermediate_image_sizes() {
  *
  * A mime icon for files, thumbnail or intermediate size for images.
  *
+ * The returned array contains four values: the URL of the attachment image src,
+ * the width of the image file, the height of the image file, and a boolean
+ * representing whether the returned array describes an intermediate (generated)
+ * image size or the original, full-sized upload.
+ *
  * @since 2.5.0
  *
  * @param int          $attachment_id Image attachment ID.
  * @param string|array $size          Optional. Registered image size to retrieve the source for or a flat
  *                                    array of height and width dimensions. Default 'thumbnail'.
  * @param bool         $icon          Optional. Whether the image should be treated as an icon. Default false.
- * @return false|array Returns an array (url, width, height), or false, if no image is available.
+ * @return false|array Returns an array (url, width, height, is_intermediate), or false, if no image is available.
  */
 function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail', $icon = false ) {
 	// get a thumbnail or intermediate image if there is one
@@ -790,6 +796,22 @@ function wp_get_attachment_image($attachment_id, $size = 'thumbnail', $icon = fa
 	}
 
 	return $html;
+}
+
+/**
+ * Get the URL of an image attachment.
+ *
+ * @since 4.4.0
+ *
+ * @param int          $attachment_id Image attachment ID.
+ * @param string|array $size          Optional. Registered image size to retrieve the source for or a flat
+ *                                    array of height and width dimensions. Default 'thumbnail'.
+ * @param bool         $icon          Optional. Whether the image should be treated as an icon. Default false.
+ * @return string|false Attachment URL or false if no image is available.
+ */
+function wp_get_attachment_image_url( $attachment_id, $size = 'thumbnail', $icon = false ) {
+	$image = wp_get_attachment_image_src( $attachment_id, $size, $icon );
+	return isset( $image['0'] ) ? $image['0'] : false;
 }
 
 /**
@@ -909,12 +931,9 @@ function img_caption_shortcode( $attr, $content = null ) {
 
 	$class = trim( 'wp-caption ' . $atts['align'] . ' ' . $atts['class'] );
 
-	if ( current_theme_supports( 'html5', 'caption' ) ) {
-		return '<figure ' . $atts['id'] . 'style="width: ' . (int) $atts['width'] . 'px;" class="' . esc_attr( $class ) . '">'
-		. do_shortcode( $content ) . '<figcaption class="wp-caption-text">' . $atts['caption'] . '</figcaption></figure>';
-	}
-
-	$caption_width = 10 + $atts['width'];
+	$html5 = current_theme_supports( 'html5', 'caption' );
+	// HTML5 captions never added the extra 10px to the image width
+	$width = $html5 ? $atts['width'] : ( 10 + $atts['width'] );
 
 	/**
 	 * Filter the width of an image's caption.
@@ -926,19 +945,27 @@ function img_caption_shortcode( $attr, $content = null ) {
 	 *
 	 * @see img_caption_shortcode()
 	 *
-	 * @param int    $caption_width Width of the caption in pixels. To remove this inline style,
-	 *                              return zero.
-	 * @param array  $atts          Attributes of the caption shortcode.
-	 * @param string $content       The image element, possibly wrapped in a hyperlink.
+	 * @param int    $width    Width of the caption in pixels. To remove this inline style,
+	 *                         return zero.
+	 * @param array  $atts     Attributes of the caption shortcode.
+	 * @param string $content  The image element, possibly wrapped in a hyperlink.
 	 */
-	$caption_width = apply_filters( 'img_caption_shortcode_width', $caption_width, $atts, $content );
+	$caption_width = apply_filters( 'img_caption_shortcode_width', $width, $atts, $content );
 
 	$style = '';
 	if ( $caption_width )
 		$style = 'style="width: ' . (int) $caption_width . 'px" ';
 
-	return '<div ' . $atts['id'] . $style . 'class="' . esc_attr( $class ) . '">'
-	. do_shortcode( $content ) . '<p class="wp-caption-text">' . $atts['caption'] . '</p></div>';
+	$html = '';
+	if ( $html5 ) {
+		$html = '<figure ' . $atts['id'] . $style . 'class="' . esc_attr( $class ) . '">'
+		. do_shortcode( $content ) . '<figcaption class="wp-caption-text">' . $atts['caption'] . '</figcaption></figure>';
+	} else {
+		$html = '<div ' . $atts['id'] . $style . 'class="' . esc_attr( $class ) . '">'
+		. do_shortcode( $content ) . '<p class="wp-caption-text">' . $atts['caption'] . '</p></div>';
+	}
+
+	return $html;
 }
 
 add_shortcode('gallery', 'gallery_shortcode');
@@ -2778,8 +2805,16 @@ function wp_prepare_attachment_for_js( $attachment ) {
 	}
 
 	$attached_file = get_attached_file( $attachment->ID );
-	if ( file_exists( $attached_file ) ) {
+
+	if ( isset( $meta['filesize'] ) ) {
+		$bytes = $meta['filesize'];
+	} elseif ( file_exists( $attached_file ) ) {
 		$bytes = filesize( $attached_file );
+	} else {
+		$bytes = '';
+	}
+
+	if ( $bytes ) {
 		$response['filesizeInBytes'] = $bytes;
 		$response['filesizeHumanReadable'] = size_format( $bytes );
 	}
@@ -3031,8 +3066,6 @@ function wp_enqueue_media( $args = array() ) {
 		}
 	}
 
-	$hier = $post && is_post_type_hierarchical( $post->post_type );
-
 	if ( $post ) {
 		$post_type_object = get_post_type_object( $post->post_type );
 	} else {
@@ -3071,10 +3104,10 @@ function wp_enqueue_media( $args = array() ) {
 		'allMediaItems'          => __( 'All media items' ),
 		'allDates'               => __( 'All dates' ),
 		'noItemsFound'           => __( 'No items found.' ),
-		'insertIntoPost'         => $hier ? __( 'Insert into page' ) : __( 'Insert into post' ),
+		'insertIntoPost'         => $post_type_object->labels->insert_into_item,
 		'unattached'             => __( 'Unattached' ),
 		'trash'                  => _x( 'Trash', 'noun' ),
-		'uploadedToThisPost'     => $hier ? __( 'Uploaded to this page' ) : __( 'Uploaded to this post' ),
+		'uploadedToThisPost'     => $post_type_object->labels->uploaded_to_this_item,
 		'warnDelete'             => __( "You are about to permanently delete this item.\n  'Cancel' to stop, 'OK' to delete." ),
 		'warnBulkDelete'         => __( "You are about to permanently delete these items.\n  'Cancel' to stop, 'OK' to delete." ),
 		'warnBulkTrash'          => __( "You are about to trash these items.\n  'Cancel' to stop, 'OK' to delete." ),

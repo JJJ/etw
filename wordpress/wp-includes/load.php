@@ -111,13 +111,25 @@ function wp_check_php_mysql_versions() {
 
 	if ( version_compare( $required_php_version, $php_version, '>' ) ) {
 		wp_load_translations_early();
+
+		$protocol = $_SERVER['SERVER_PROTOCOL'];
+		if ( 'HTTP/1.1' !== $protocol && 'HTTP/1.0' !== $protocol ) {
+			$protocol = 'HTTP/1.0';
+		}
+		header( sprintf( '%s 500 Internal Server Error', $protocol ), true, 500 );
 		header( 'Content-Type: text/html; charset=utf-8' );
 		die( sprintf( __( 'Your server is running PHP version %1$s but WordPress %2$s requires at least %3$s.' ), $php_version, $wp_version, $required_php_version ) );
 	}
 
 	if ( ! extension_loaded( 'mysql' ) && ! extension_loaded( 'mysqli' ) && ! file_exists( WP_CONTENT_DIR . '/db.php' ) ) {
 		wp_load_translations_early();
-		 header( 'Content-Type: text/html; charset=utf-8' );
+
+		$protocol = $_SERVER['SERVER_PROTOCOL'];
+		if ( 'HTTP/1.1' !== $protocol && 'HTTP/1.0' !== $protocol ) {
+			$protocol = 'HTTP/1.0';
+		}
+		header( sprintf( '%s 500 Internal Server Error', $protocol ), true, 500 );
+		header( 'Content-Type: text/html; charset=utf-8' );
 		die( __( 'Your PHP installation appears to be missing the MySQL extension which is required by WordPress.' ) );
 	}
 }
@@ -527,13 +539,6 @@ function wp_get_mu_plugins() {
 function wp_get_active_and_valid_plugins() {
 	$plugins = array();
 	$active_plugins = (array) get_option( 'active_plugins', array() );
-
-	// Check for hacks file if the option is enabled
-	if ( get_option( 'hack_file' ) && file_exists( ABSPATH . 'my-hacks.php' ) ) {
-		_deprecated_file( 'my-hacks.php', '1.5' );
-		array_unshift( $plugins, ABSPATH . 'my-hacks.php' );
-	}
-
 	if ( empty( $active_plugins ) || defined( 'WP_INSTALLING' ) )
 		return $plugins;
 

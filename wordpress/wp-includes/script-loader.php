@@ -77,7 +77,7 @@ function wp_default_scripts( &$scripts ) {
 		'secure' => (string) ( 'https' === parse_url( site_url(), PHP_URL_SCHEME ) ),
 	) );
 
-	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), false, 1 );
+	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils', 'list-table'), false, 1 );
 	did_action( 'init' ) && $scripts->localize( 'common', 'commonL10n', array(
 		'warnDelete' => __( "You are about to permanently delete the selected items.\n  'Cancel' to stop, 'OK' to delete." ),
 		'dismiss'    => __( 'Dismiss this notice.' ),
@@ -351,9 +351,19 @@ function wp_default_scripts( &$scripts ) {
 
 
 	$scripts->add( 'wp-mediaelement', "/wp-includes/js/mediaelement/wp-mediaelement.js", array('mediaelement'), false, 1 );
-	did_action( 'init' ) && $scripts->localize( 'mediaelement', '_wpmejsSettings', array(
+	$mejs_settings = array(
 		'pluginPath' => includes_url( 'js/mediaelement/', 'relative' ),
-	) );
+	);
+	did_action( 'init' ) && $scripts->localize( 'mediaelement', '_wpmejsSettings',
+		/**
+		 * Filter the MediaElement configuration settings.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param array $mejs_settings MediaElement settings array.
+		 */
+		apply_filters( 'mejs_settings', $mejs_settings )
+	);
 
 	$scripts->add( 'froogaloop',  "/wp-includes/js/mediaelement/froogaloop.min.js", array(), '2.0' );
 	$scripts->add( 'wp-playlist', "/wp-includes/js/mediaelement/wp-playlist.js", array( 'wp-util', 'backbone', 'mediaelement' ), false, 1 );
@@ -385,6 +395,8 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'language-chooser', "/wp-admin/js/language-chooser$suffix.js", array( 'jquery' ), false, 1 );
 
 	$scripts->add( 'user-suggest', "/wp-admin/js/user-suggest$suffix.js", array( 'jquery-ui-autocomplete' ), false, 1 );
+
+	$scripts->add( 'list-table', "/wp-admin/js/list-table$suffix.js", array( 'jquery' ), false, 1 );
 
 	$scripts->add( 'admin-bar', "/wp-includes/js/admin-bar$suffix.js", array(), false, 1 );
 

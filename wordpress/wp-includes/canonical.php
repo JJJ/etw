@@ -148,11 +148,24 @@ function redirect_canonical( $requested_url = null, $do_redirect = true ) {
 			}
 		}
 
+		if ( get_query_var( 'page' ) && $wp_query->post &&
+			false !== strpos( $wp_query->post->post_content, '<!--nextpage-->' ) ) {
+			$redirect['path'] = rtrim( $redirect['path'], (int) get_query_var( 'page' ) . '/' );
+			$redirect['query'] = remove_query_arg( 'page', $redirect['query'] );
+			$redirect_url = get_permalink( $wp_query->post->ID );
+		}
+
 	} elseif ( is_object($wp_rewrite) && $wp_rewrite->using_permalinks() ) {
 		// rewriting of old ?p=X, ?m=2004, ?m=200401, ?m=20040101
-		if ( is_attachment() && !empty($_GET['attachment_id']) && ! $redirect_url ) {
-			if ( $redirect_url = get_attachment_link(get_query_var('attachment_id')) )
-				$redirect['query'] = remove_query_arg('attachment_id', $redirect['query']);
+		if ( is_attachment() && ! $redirect_url ) {
+			if ( ! empty( $_GET['attachment_id'] ) ) {
+				$redirect_url = get_attachment_link( get_query_var( 'attachment_id' ) );
+				if ( $redirect_url ) {
+					$redirect['query'] = remove_query_arg( 'attachment_id', $redirect['query'] );
+				}
+			} else {
+				$redirect_url = get_attachment_link();
+			}
 		} elseif ( is_single() && !empty($_GET['p']) && ! $redirect_url ) {
 			if ( $redirect_url = get_permalink(get_query_var('p')) )
 				$redirect['query'] = remove_query_arg(array('p', 'post_type'), $redirect['query']);
@@ -527,12 +540,11 @@ function _remove_qs_args_if_not_in_url( $query_string, Array $args_to_check, $ur
  * @since 2.3.0
  *
  * @global wpdb $wpdb WordPress database abstraction object.
- * @global WP_Rewrite $wp_rewrite
  *
  * @return false|string The correct URL if one is found. False on failure.
  */
 function redirect_guess_404_permalink() {
-	global $wpdb, $wp_rewrite;
+	global $wpdb;
 
 	if ( get_query_var('name') ) {
 		$where = $wpdb->prepare("post_name LIKE %s", $wpdb->esc_like( get_query_var('name') ) . '%');
@@ -555,7 +567,7 @@ function redirect_guess_404_permalink() {
 			return false;
 		if ( get_query_var( 'feed' ) )
 			return get_post_comments_feed_link( $post_id, get_query_var( 'feed' ) );
-		elseif ( get_query_var( 'page' ) )
+		elseif ( get_query_var( 'page' ) && 1 < get_query_var( 'page' ) )
 			return trailingslashit( get_permalink( $post_id ) ) . user_trailingslashit( get_query_var( 'page' ), 'single_paged' );
 		else
 			return get_permalink( $post_id );

@@ -433,9 +433,12 @@ function comment_class( $class = '', $comment = null, $post_id = null, $echo = t
 function get_comment_class( $class = '', $comment_id = null, $post_id = null ) {
 	global $comment_alt, $comment_depth, $comment_thread_alt;
 
-	$comment = get_comment($comment_id);
-
 	$classes = array();
+
+	$comment = get_comment( $comment_id );
+	if ( ! $comment ) {
+		return $classes;
+	}
 
 	// Get the comment type (comment, trackback),
 	$classes[] = ( empty( $comment->comment_type ) ) ? 'comment' : $comment->comment_type;
@@ -562,23 +565,27 @@ function comment_date( $d = '', $comment_ID = 0 ) {
  */
 function get_comment_excerpt( $comment_ID = 0 ) {
 	$comment = get_comment( $comment_ID );
-	$comment_text = strip_tags($comment->comment_content);
-	$blah = explode(' ', $comment_text);
+	$comment_text = strip_tags( str_replace( array( "\n", "\r" ), ' ', $comment->comment_content ) );
+	$words = explode( ' ', $comment_text );
 
-	if (count($blah) > 20) {
-		$k = 20;
-		$use_dotdotdot = 1;
-	} else {
-		$k = count($blah);
-		$use_dotdotdot = 0;
+	/**
+	 * Filter the amount of words used in the comment excerpt.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param int $comment_excerpt_length The amount of words you want to display in the comment excerpt.
+	 */
+	$comment_excerpt_length = apply_filters( 'comment_excerpt_length', 20 );
+
+	$use_ellipsis = count( $words ) > $comment_excerpt_length;
+	if ( $use_ellipsis ) {
+		$words = array_slice( $words, 0, $comment_excerpt_length );
 	}
 
-	$excerpt = '';
-	for ($i=0; $i<$k; $i++) {
-		$excerpt .= $blah[$i] . ' ';
+	$excerpt = trim( join( ' ', $words ) );
+	if ( $use_ellipsis ) {
+		$excerpt .= '&hellip;';
 	}
-	$excerpt .= ($use_dotdotdot) ? '&hellip;' : '';
-
 	/**
 	 * Filter the retrieved comment excerpt.
 	 *
@@ -1211,6 +1218,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 		'orderby' => 'comment_date_gmt',
 		'status'  => 'approve',
 		'post_id' => $post->ID,
+		'update_comment_meta_cache' => false, // We lazy-load comment meta for performance.
 	);
 
 	if ( $user_ID ) {
@@ -1236,6 +1244,8 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	if ( $separate_comments ) {
 		$wp_query->comments_by_type = separate_comments($comments);
 		$comments_by_type = &$wp_query->comments_by_type;
+	} else {
+		$wp_query->comments_by_type = array();
 	}
 
 	$overridden_cpage = false;
@@ -1880,6 +1890,8 @@ function wp_list_comments( $args = array(), $comments = null ) {
  * @since 3.0.0
  * @since 4.1.0 Introduced the 'class_submit' argument.
  * @since 4.2.0 Introduced 'submit_button' and 'submit_fields' arguments.
+ * @since 4.4.0 Introduced 'title_reply_before', 'title_reply_after',
+ *              'cancel_reply_before', and 'cancel_reply_after' arguments.
  *
  * @param array       $args {
  *     Optional. Default arguments and form fields to override.
@@ -1904,6 +1916,12 @@ function wp_list_comments( $args = array(), $comments = null ) {
  *     @type string $title_reply          The translatable 'reply' button label. Default 'Leave a Reply'.
  *     @type string $title_reply_to       The translatable 'reply-to' button label. Default 'Leave a Reply to %s',
  *                                        where %s is the author of the comment being replied to.
+ *     @type string $title_reply_before   HTML displayed before the comment form title.
+ *                                        Default: '<h3 id="reply-title" class="comment-reply-title">'.
+ *     @type string $title_reply_after    HTML displayed after the comment form title.
+ *                                        Default: '</h3>'.
+ *     @type string $cancel_reply_before  HTML displayed before the cancel reply link.
+ *     @type string $cancel_reply_after   HTML displayed after the cancel reply link.
  *     @type string $cancel_reply_link    The translatable 'cancel reply' button label. Default 'Cancel reply'.
  *     @type string $label_submit         The translatable 'submit' button label. Default 'Post a comment'.
  *     @type string $submit_button        HTML format for the Submit button.
@@ -1965,6 +1983,10 @@ function comment_form( $args = array(), $post_id = null ) {
 		'name_submit'          => 'submit',
 		'title_reply'          => __( 'Leave a Reply' ),
 		'title_reply_to'       => __( 'Leave a Reply to %s' ),
+		'title_reply_before'   => '<h3 id="reply-title" class="comment-reply-title">',
+		'title_reply_after'    => '</h3>',
+		'cancel_reply_before'  => ' <small>',
+		'cancel_reply_after'   => '</small>',
 		'cancel_reply_link'    => __( 'Cancel reply' ),
 		'label_submit'         => __( 'Post Comment' ),
 		'submit_button'        => '<input name="%1$s" type="submit" id="%2$s" class="%3$s" value="%4$s" />',
@@ -1996,7 +2018,20 @@ function comment_form( $args = array(), $post_id = null ) {
 			do_action( 'comment_form_before' );
 			?>
 			<div id="respond" class="comment-respond">
-				<h3 id="reply-title" class="comment-reply-title"><?php comment_form_title( $args['title_reply'], $args['title_reply_to'] ); ?> <small><?php cancel_comment_reply_link( $args['cancel_reply_link'] ); ?></small></h3>
+				<?php
+				echo $args['title_reply_before'];
+
+				comment_form_title( $args['title_reply'], $args['title_reply_to'] );
+
+				echo $args['cancel_reply_before'];
+
+				cancel_comment_reply_link( $args['cancel_reply_link'] );
+
+				echo $args['cancel_reply_after'];
+
+				echo $args['title_reply_after'];
+				?>
+
 				<?php if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) : ?>
 					<?php echo $args['must_log_in']; ?>
 					<?php

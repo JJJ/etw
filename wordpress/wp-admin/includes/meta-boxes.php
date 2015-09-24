@@ -475,9 +475,9 @@ function post_categories_meta_box( $post, $box ) {
 
 		<div id="<?php echo $tax_name; ?>-all" class="tabs-panel">
 			<?php
-            $name = ( $tax_name == 'category' ) ? 'post_category' : 'tax_input[' . $tax_name . ']';
-            echo "<input type='hidden' name='{$name}[]' value='0' />"; // Allows for an empty term set to be sent. 0 is an invalid Term ID and will be ignored by empty() checks.
-            ?>
+			$name = ( $tax_name == 'category' ) ? 'post_category' : 'tax_input[' . $tax_name . ']';
+			echo "<input type='hidden' name='{$name}[]' value='0' />"; // Allows for an empty term set to be sent. 0 is an invalid Term ID and will be ignored by empty() checks.
+			?>
 			<ul id="<?php echo $tax_name; ?>checklist" data-wp-lists="list:<?php echo $tax_name; ?>" class="categorychecklist form-no-clear">
 				<?php wp_terms_checklist( $post->ID, array( 'taxonomy' => $tax_name, 'popular_cats' => $popular_ids ) ); ?>
 			</ul>
@@ -694,8 +694,9 @@ function post_comment_meta_box( $post ) {
  */
 function post_slug_meta_box($post) {
 /** This filter is documented in wp-admin/edit-tag-form.php */
+$editable_slug = apply_filters( 'editable_slug', $post->post_name, $post );
 ?>
-<label class="screen-reader-text" for="post_name"><?php _e('Slug') ?></label><input name="post_name" type="text" size="13" id="post_name" value="<?php echo esc_attr( apply_filters( 'editable_slug', $post->post_name ) ); ?>" />
+<label class="screen-reader-text" for="post_name"><?php _e('Slug') ?></label><input name="post_name" type="text" size="13" id="post_name" value="<?php echo esc_attr( $editable_slug ); ?>" />
 <?php
 }
 
@@ -777,7 +778,18 @@ function page_attributes_meta_box($post) {
 	if ( 'page' == $post->post_type && 0 != count( get_page_templates( $post ) ) && get_option( 'page_for_posts' ) != $post->ID ) {
 		$template = !empty($post->page_template) ? $post->page_template : false;
 		?>
-<p><strong><?php _e('Template') ?></strong></p>
+<p><strong><?php _e('Template') ?></strong><?php
+	/**
+	 * Fires immediately after the heading inside the 'Template' section
+	 * of the 'Page Attributes' meta box.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param string  $template The template used for the current post.
+	 * @param WP_Post $post     The current post.
+	 */
+	do_action( 'page_attributes_meta_box_template', $template, $post );
+?></p>
 <label class="screen-reader-text" for="page_template"><?php _e('Page Template') ?></label><select name="page_template" id="page_template">
 <?php
 /**

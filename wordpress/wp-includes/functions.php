@@ -670,22 +670,39 @@ function _http_build_query( $data, $prefix = null, $sep = null, $key = '', $urle
 }
 
 /**
- * Retrieve a modified URL query string.
+ * Retrieves a modified URL query string.
  *
- * You can rebuild the URL and append a new query variable to the URL query by
- * using this function. You can also retrieve the full URL with query data.
+ * You can rebuild the URL and append query variables to the URL query by using this function.
+ * There are two ways to use this function; either a single key and value, or an associative array.
  *
- * Adding a single key & value or an associative array. Setting a key value to
- * an empty string removes the key. Omitting oldquery_or_uri uses the $_SERVER
- * value. Additional values provided are expected to be encoded appropriately
- * with urlencode() or rawurlencode().
+ * Using a single key and value:
+ *
+ *     add_query_arg( 'key', 'value', 'http://example.com' );
+ *
+ * Using an associative array:
+ * 
+ *     add_query_arg( array(
+ *         'key1' => 'value1',
+ *         'key2' => 'value2',
+ *     ), 'http://example.com' );
+ * 
+ * Omitting the URL from either use results in the current URL being used
+ * (the value of `$_SERVER['REQUEST_URI']`).
+ * 
+ * Values are expected to be encoded appropriately with urlencode() or rawurlencode().
+ *
+ * Setting any query variable's value to boolean false removes the key (see remove_query_arg()).
+ *
+ * Important: The return value of add_query_arg() is not escaped by default. Output should be
+ * late-escaped with esc_url() or similar to help prevent vulnerability to cross-site scripting
+ * (XSS) attacks.
  *
  * @since 1.5.0
  *
- * @param string|array $param1 Either newkey or an associative_array.
- * @param string       $param2 Either newvalue or oldquery or URI.
- * @param string       $param3 Optional. Old query or URI.
- * @return string New URL query string.
+ * @param string|array $key   Either a query variable key, or an associative array of query variables.
+ * @param string       $value Optional. Either a query variable value, or a URL to act upon.
+ * @param string       $url   Optional. A URL to act upon.
+ * @return string New URL query string (unescaped).
  */
 function add_query_arg() {
 	$args = func_get_args();
@@ -751,12 +768,12 @@ function add_query_arg() {
 }
 
 /**
- * Removes an item or list from the query string.
+ * Removes an item or items from a query string.
  *
  * @since 1.5.0
  *
  * @param string|array $key   Query key or keys to remove.
- * @param bool|string  $query Optional. When false uses the $_SERVER value. Default false.
+ * @param bool|string  $query Optional. When false uses the current URL. Default false.
  * @return string New URL query string.
  */
 function remove_query_arg( $key, $query = false ) {
@@ -1993,7 +2010,8 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 	// Compute the URL
 	$url = $upload['url'] . "/$filename";
 
-	return array( 'file' => $new_file, 'url' => $url, 'error' => false );
+	/** This filter is documented in wp-admin/includes/file.php */
+	return apply_filters( 'wp_handle_upload', array( 'file' => $new_file, 'url' => $url, 'type' => $wp_filetype['type'], 'error' => false ), 'sideload' );
 }
 
 /**
@@ -3685,7 +3703,7 @@ function iis7_supports_permalinks() {
 		 * Lastly we make sure that PHP is running via FastCGI. This is important because if it runs
 		 * via ISAPI then pretty permalinks will not work.
 		 */
-		$supports_permalinks = class_exists('DOMDocument') && isset($_SERVER['IIS_UrlRewriteModule']) && ( PHP_SAPI == 'cgi-fcgi' );
+		$supports_permalinks = class_exists( 'DOMDocument', false ) && isset($_SERVER['IIS_UrlRewriteModule']) && ( PHP_SAPI == 'cgi-fcgi' );
 	}
 
 	/**
@@ -4984,27 +5002,4 @@ function wp_post_preview_js() {
 	}());
 	</script>
 	<?php
-}
-
-/**
- * Retrieve and, optionally, validate, an `action` query var
- *
- * @since 4.4.0
- *
- * @param string $action Optional. Action to validate.
- * @return string Empty string if there is no action in the request or it doesn't
- *                match the passed `$action`. Returns the [passed `$action` or
- *                request action on succcess.
- */
-function wp_validate_action( $action = '' ) {
-	$r = $_REQUEST;
-	if ( ! isset( $r['action'] ) ) {
-		return '';
-	}
-
-	if ( ! empty( $action ) ) {
-		return $action === $r['action'] ? $action : '';
-	}
-
-	return $r['action'];
 }

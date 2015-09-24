@@ -91,10 +91,14 @@ if ( $comment->comment_post_ID > 0 ):
 <?php
 /* translators: Publish box date format, see http://php.net/date */
 $datef = __( 'M j, Y @ H:i' );
-$stamp = __('Submitted on: <b>%1$s</b>');
-$date = date_i18n( $datef, strtotime( $comment->comment_date ) );
 ?>
-<span id="timestamp"><?php printf( $stamp, $date ); ?></span>
+<span id="timestamp"><?php
+printf(
+	/* translators: %s: comment date */
+	__( 'Submitted on: %s' ),
+	'<b>' . date_i18n( $datef, strtotime( $comment->comment_date ) ) . '</b>'
+);
+?></span>
 <a href="#edit_timestamp" class="edit-timestamp hide-if-no-js"><span aria-hidden="true"><?php _e( 'Edit' ); ?></span> <span class="screen-reader-text"><?php _e( 'Edit date and time' ); ?></span></a>
 <fieldset id='timestampdiv' class='hide-if-js'>
 <legend class="screen-reader-text"><?php _e( 'Date and time' ); ?></legend>
@@ -114,7 +118,7 @@ if ( current_user_can( 'edit_post', $post_id ) ) {
 
 <div class="misc-pub-section misc-pub-response-to">
 	<?php printf(
-		/* translators: post link */
+		/* translators: %s: post link */
 		__( 'In response to: %s' ),
 		'<b>' . $post_link . '</b>'
 	); ?>
@@ -129,7 +133,7 @@ if ( $comment->comment_parent ) :
 	?>
 	<div class="misc-pub-section misc-pub-reply-to">
 		<?php printf(
-			/* translators: comment link */
+			/* translators: %s: comment link */
 			__( 'In reply to: %s' ),
 			'<b><a href="' . $parent_link . '">' . $name . '</a></b>'
 		); ?>

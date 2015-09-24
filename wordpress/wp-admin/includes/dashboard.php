@@ -259,13 +259,15 @@ function wp_dashboard_right_now() {
 		?>
 		<li class="comment-count"><a href="edit-comments.php"><?php echo $text; ?></a></li>
 		<?php
-		if ( $num_comm->moderated ) {
-			/* translators: Number of comments in moderation */
-			$text = sprintf( _nx( '%s in moderation', '%s in moderation', $num_comm->moderated, 'comments' ), number_format_i18n( $num_comm->moderated ) );
-			?>
-			<li class="comment-mod-count"><a href="edit-comments.php?comment_status=moderated"><?php echo $text; ?></a></li>
-			<?php
-		}
+		/* translators: Number of comments in moderation */
+		$text = sprintf( _nx( '%s in moderation', '%s in moderation', $num_comm->moderated, 'comments' ), number_format_i18n( $num_comm->moderated ) );
+		?>
+		<li class="comment-mod-count<?php
+			if ( ! $num_comm->moderated ) {
+				echo ' hidden';
+			}
+		?>"><a href="edit-comments.php?comment_status=moderated"><?php echo $text; ?></a></li>
+		<?php
 	}
 
 	/**
@@ -403,7 +405,7 @@ function wp_network_dashboard_right_now() {
 		<p>
 			<label class="screen-reader-text" for="search-users"><?php _e( 'Search Users' ); ?></label>
 			<input type="search" name="s" value="" size="30" autocomplete="off" id="search-users"/>
-			<?php submit_button( __( 'Search Users' ), 'button', 'submit', false, array( 'id' => 'submit_users' ) ); ?>
+			<?php submit_button( __( 'Search Users' ), 'button', false, false, array( 'id' => 'submit_users' ) ); ?>
 		</p>
 	</form>
 
@@ -411,7 +413,7 @@ function wp_network_dashboard_right_now() {
 		<p>
 			<label class="screen-reader-text" for="search-sites"><?php _e( 'Search Sites' ); ?></label>
 			<input type="search" name="s" value="" size="30" autocomplete="off" id="search-sites"/>
-			<?php submit_button( __( 'Search Sites' ), 'button', 'submit', false, array( 'id' => 'submit_sites' ) ); ?>
+			<?php submit_button( __( 'Search Sites' ), 'button', false, false, array( 'id' => 'submit_sites' ) ); ?>
 		</p>
 	</form>
 <?php
@@ -554,7 +556,7 @@ function wp_dashboard_recent_drafts( $drafts = false ) {
  * @param bool       $show_date
  */
 function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
-	$GLOBALS['comment'] =& $comment;
+	$GLOBALS['comment'] = clone $comment;
 
 	if ( $comment->comment_post_ID > 0 && current_user_can( 'edit_post', $comment->comment_post_ID ) ) {
 		$comment_post_title = _draft_or_post_title( $comment->comment_post_ID );

@@ -457,7 +457,11 @@ function install_plugin_information() {
 	echo "</div>\n";
 
 	$date_format = __( 'M j, Y @ H:i' );
-	$last_updated_timestamp = strtotime( $api->last_updated );
+
+	if ( ! empty( $api->last_updated ) ) {
+		$last_updated_timestamp = strtotime( $api->last_updated );
+	}
+
 	?>
 	<div id="<?php echo $_tab; ?>-content" class='<?php echo $_with_banner; ?>'>
 	<div class="fyi">
@@ -541,9 +545,9 @@ function install_plugin_information() {
 	<div id="section-holder" class="wrap">
 	<?php
 		if ( ! empty( $api->tested ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $api->tested ) ), $api->tested, '>' ) ) {
-			echo '<div class="notice notice-warning"><p>' . __('<strong>Warning:</strong> This plugin has <strong>not been tested</strong> with your current version of WordPress.') . '</p></div>';
+			echo '<div class="notice notice-warning notice-alt"><p>' . __( '<strong>Warning:</strong> This plugin has <strong>not been tested</strong> with your current version of WordPress.' ) . '</p></div>';
 		} elseif ( ! empty( $api->requires ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $api->requires ) ), $api->requires, '<' ) ) {
-			echo '<div class="notice notice-warning"><p>' . __('<strong>Warning:</strong> This plugin has <strong>not been marked as compatible</strong> with your version of WordPress.') . '</p></div>';
+			echo '<div class="notice notice-warning notice-alt"><p>' . __( '<strong>Warning:</strong> This plugin has <strong>not been marked as compatible</strong> with your version of WordPress.' ) . '</p></div>';
 		}
 
 		foreach ( (array) $api->sections as $section_name => $content ) {

@@ -577,7 +577,8 @@ function bulk_edit_posts( $post_data = null ) {
  *
  * @since 2.0.0
  *
- * @param string $post_type A post type string, defaults to 'post'.
+ * @param string $post_type    Optional. A post type string. Default 'post'.
+ * @param bool   $create_in_db Optional. Whether to insert the post into database. Default false.
  * @return WP_Post Post object containing all the default post data as attributes
  */
 function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) {
@@ -1242,20 +1243,31 @@ function get_sample_permalink($id, $title = null, $name = null) {
 		}
 
 		/** This filter is documented in wp-admin/edit-tag-form.php */
-		$uri = apply_filters( 'editable_slug', $uri );
+		$uri = apply_filters( 'editable_slug', $uri, $post );
 		if ( !empty($uri) )
 			$uri .= '/';
 		$permalink = str_replace('%pagename%', "{$uri}%pagename%", $permalink);
 	}
 
 	/** This filter is documented in wp-admin/edit-tag-form.php */
-	$permalink = array( $permalink, apply_filters( 'editable_slug', $post->post_name ) );
+	$permalink = array( $permalink, apply_filters( 'editable_slug', $post->post_name, $post ) );
 	$post->post_status = $original_status;
 	$post->post_date = $original_date;
 	$post->post_name = $original_name;
 	unset($post->filter);
 
-	return $permalink;
+	/**
+	 * Filter the sample permalink.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param string  $permalink Sample permalink.
+	 * @param int     $post_id   Post ID.
+	 * @param string  $title     Post title.
+	 * @param string  $name      Post name (slug).
+	 * @param WP_Post $post      Post object.
+	 */
+	return apply_filters( 'get_sample_permalink', $permalink, $post->ID, $title, $name, $post );
 }
 
 /**
@@ -1317,7 +1329,7 @@ function get_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
 	}
 
 	if ( isset( $view_post ) ) {
-		if ( 'draft' == $post->post_status ) {
+		if ( 'draft' == $post->post_status || 'pending' == $post->post_status ) {
 			$draft_link = set_url_scheme( get_permalink( $post->ID ) );
 			$preview_link = get_preview_post_link( $post, array(), $draft_link );
 			$return .= "<span id='view-post-btn'><a href='" . esc_url( $preview_link ) . "' class='button button-small' target='wp-preview-{$post->ID}'>$view_post</a></span>\n";
@@ -1338,13 +1350,15 @@ function get_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
 	 * Filter the sample permalink HTML markup.
 	 *
 	 * @since 2.9.0
+	 * @since 4.4.0 Added `$post` parameter.
 	 *
-	 * @param string      $return    Sample permalink HTML markup.
-	 * @param int|WP_Post $id        Post object or ID.
-	 * @param string      $new_title New sample permalink title.
-	 * @param string      $new_slug  New sample permalink slug.
+	 * @param string  $return    Sample permalink HTML markup.
+	 * @param int     $post_id   Post ID.
+	 * @param string  $new_title New sample permalink title.
+	 * @param string  $new_slug  New sample permalink slug.
+	 * @param WP_Post $post      Post object.
 	 */
-	$return = apply_filters( 'get_sample_permalink_html', $return, $id, $new_title, $new_slug );
+	$return = apply_filters( 'get_sample_permalink_html', $return, $post->ID, $new_title, $new_slug, $post );
 
 	return $return;
 }

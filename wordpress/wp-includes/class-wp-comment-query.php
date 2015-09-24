@@ -1,9 +1,9 @@
 <?php
 /**
- * Comments API: WP_Comment_Query class
+ * Comment API: WP_Comment_Query class
  *
  * @package WordPress
- * @subpackage Comment
+ * @subpackage Comments
  * @since 4.4.0
  */
 
@@ -33,6 +33,15 @@ class WP_Comment_Query {
 	 * @var object WP_Meta_Query
 	 */
 	public $meta_query = false;
+
+	/**
+	 * Metadata query clauses.
+	 *
+	 * @since 4.4.0
+	 * @access protected
+	 * @var array
+	 */
+	protected $meta_query_clauses;
 
 	/**
 	 * Date query container
@@ -94,7 +103,7 @@ class WP_Comment_Query {
 	 *
 	 * @since 4.2.0
 	 * @since 4.4.0 `$parent__in` and `$parent__not_in` were added.
-	 * @since 4.4.0 Order by `comment__in` was added.
+	 * @since 4.4.0 Order by `comment__in` was added. `$update_comment_meta_cache` was added.
 	 * @access public
 	 *
 	 * @param string|array $query {
@@ -161,6 +170,8 @@ class WP_Comment_Query {
 	 *     @type array        $type__in            Include comments from a given array of comment types. Default empty.
 	 *     @type array        $type__not_in        Exclude comments from a given array of comment types. Default empty.
 	 *     @type int          $user_id             Include comments for a specific user ID. Default empty.
+	 *     @type bool         $update_comment_meta_cache Whether to prime the metadata cache for found comments.
+	 *                                                   Default true.
 	 * }
 	 */
 	public function __construct( $query = '' ) {
@@ -201,6 +212,7 @@ class WP_Comment_Query {
 			'meta_value' => '',
 			'meta_query' => '',
 			'date_query' => null, // See WP_Date_Query
+			'update_comment_meta_cache' => true,
 		);
 
 		if ( ! empty( $query ) ) {
@@ -258,8 +270,6 @@ class WP_Comment_Query {
 	public function get_comments() {
 		global $wpdb;
 
-		$groupby = '';
-
 		$this->parse_query();
 
 		// Parse meta query
@@ -278,7 +288,7 @@ class WP_Comment_Query {
 		// Reparse query vars, in case they were modified in a 'pre_get_comments' callback.
 		$this->meta_query->parse_query_vars( $this->query_vars );
 		if ( ! empty( $this->meta_query->queries ) ) {
-			$meta_query_clauses = $this->meta_query->get_sql( 'comment', $wpdb->comments, 'comment_ID', $this );
+			$this->meta_query_clauses = $this->meta_query->get_sql( 'comment', $wpdb->comments, 'comment_ID', $this );
 		}
 
 		// $args can include anything. Only use the args defined in the query_var_defaults to compute the key.
@@ -288,13 +298,66 @@ class WP_Comment_Query {
 			$last_changed = microtime();
 			wp_cache_set( 'last_changed', $last_changed, 'comment' );
 		}
-		$cache_key = "get_comments:$key:$last_changed";
+		$cache_key = "get_comment_ids:$key:$last_changed";
 
-		if ( $cache = wp_cache_get( $cache_key, 'comment' ) ) {
-			$this->comments = $cache;
+		$comment_ids = wp_cache_get( $cache_key, 'comment' );
+		if ( false === $comment_ids ) {
+			$comment_ids = $this->get_comment_ids();
+			wp_cache_add( $cache_key, $comment_ids, 'comment' );
+		}
+
+		// If querying for a count only, there's nothing more to do.
+		if ( $this->query_vars['count'] ) {
+			// $comment_ids is actually a count in this case.
+			return intval( $comment_ids );
+		}
+
+		$comment_ids = array_map( 'intval', $comment_ids );
+
+		if ( 'ids' == $this->query_vars['fields'] ) {
+			$this->comments = $comment_ids;
 			return $this->comments;
 		}
 
+		_prime_comment_caches( $comment_ids, $this->query_vars['update_comment_meta_cache'] );
+
+		// Fetch full comment objects from the primed cache.
+		$_comments = array();
+		foreach ( $comment_ids as $comment_id ) {
+			if ( $_comment = wp_cache_get( $comment_id, 'comment' ) ) {
+				$_comments[] = $_comment;
+			}
+		}
+
+		/**
+		 * Filter the comment query results.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param array            $results  An array of comments.
+		 * @param WP_Comment_Query &$this    Current instance of WP_Comment_Query, passed by reference.
+		 */
+		$_comments = apply_filters_ref_array( 'the_comments', array( $_comments, &$this ) );
+
+		// Convert to WP_Comment instances
+		$comments = array_map( 'get_comment', $_comments );
+
+		$this->comments = $comments;
+		return $this->comments;
+	}
+
+	/**
+	 * Used internally to get a list of comment IDs matching the query vars.
+	 *
+	 * @since 4.4.0
+	 * @access protected
+	 *
+	 * @global wpdb $wpdb
+	 */
+	protected function get_comment_ids() {
+		global $wpdb;
+
+		$groupby = '';
 		$where = array();
 
 		// Assemble clauses related to 'comment_approved'.
@@ -468,14 +531,7 @@ class WP_Comment_Query {
 		if ( $this->query_vars['count'] ) {
 			$fields = 'COUNT(*)';
 		} else {
-			switch ( strtolower( $this->query_vars['fields'] ) ) {
-				case 'ids':
-					$fields = "$wpdb->comments.comment_ID";
-					break;
-				default:
-					$fields = "*";
-					break;
-			}
+			$fields = "$wpdb->comments.comment_ID";
 		}
 
 		$join = '';
@@ -622,11 +678,11 @@ class WP_Comment_Query {
 			$join = "JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
 		}
 
-		if ( ! empty( $meta_query_clauses ) ) {
-			$join .= $meta_query_clauses['join'];
+		if ( ! empty( $this->meta_query_clauses ) ) {
+			$join .= $this->meta_query_clauses['join'];
 
 			// Strip leading 'AND'.
-			$where[] = preg_replace( '/^\s*AND\s*/', '', $meta_query_clauses['where'] );
+			$where[] = preg_replace( '/^\s*AND\s*/', '', $this->meta_query_clauses['where'] );
 
 			if ( ! $this->query_vars['count'] ) {
 				$groupby = "{$wpdb->comments}.comment_ID";
@@ -674,35 +730,11 @@ class WP_Comment_Query {
 		$this->request = "SELECT $fields FROM $wpdb->comments $join $where $groupby $orderby $limits";
 
 		if ( $this->query_vars['count'] ) {
-			return $wpdb->get_var( $this->request );
+			return intval( $wpdb->get_var( $this->request ) );
+		} else {
+			$comment_ids = $wpdb->get_col( $this->request );
+			return array_map( 'intval', $comment_ids );
 		}
-
-		if ( 'ids' == $this->query_vars['fields'] ) {
-			$this->comments = $wpdb->get_col( $this->request );
-			return array_map( 'intval', $this->comments );
-		}
-
-		$results = $wpdb->get_results( $this->request );
-		/**
-		 * Filter the comment query results.
-		 *
-		 * @since 3.1.0
-		 *
-		 * @param array            $results  An array of comments.
-		 * @param WP_Comment_Query &$this    Current instance of WP_Comment_Query, passed by reference.
-		 */
-		$_comments = apply_filters_ref_array( 'the_comments', array( $results, &$this ) );
-
-		// Convert to WP_Comment instances
-		$comments = array_map( 'get_comment', $_comments );
-
-		wp_cache_add( $cache_key, $comments, 'comment' );
-		if ( '*' === $fields ) {
-			update_comment_cache( $comments );
-		}
-
-		$this->comments = $comments;
-		return $this->comments;
 	}
 
 	/**

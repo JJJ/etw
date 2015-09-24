@@ -1,9 +1,9 @@
 <?php
 /**
- * Comments API: Top-level comments functionality
+ * Comment API: Top-level comments functionality
  *
  * @package WordPress
- * @subpackage Comment
+ * @subpackage Comments
  * @since 4.4.0
  */
 
@@ -162,7 +162,6 @@ function get_approved_comments( $post_id, $args = array() ) {
  *
  * @since 2.0.0
  *
- * @global wpdb   $wpdb WordPress database abstraction object.
  * @global object $comment
  *
  * @param WP_Comment|string|int $comment Comment to retrieve.
@@ -238,6 +237,8 @@ function get_comment_statuses() {
 		'approve'	=> _x('Approved', 'adjective'),
 		/* translators: comment status */
 		'spam'		=> _x('Spam', 'adjective'),
+		/* translators: comment status */
+		'trash'		=> _x('Trash', 'adjective'),
 	);
 
 	return $status;
@@ -689,10 +690,28 @@ function wp_allow_comment( $commentdata ) {
  */
 function check_comment_flood_db( $ip, $email, $date ) {
 	global $wpdb;
-	if ( current_user_can( 'manage_options' ) )
-		return; // don't throttle admins
+	// don't throttle admins or moderators
+	if ( current_user_can( 'manage_options' ) || current_user_can( 'moderate_comments' ) ) {
+		return;
+	}
 	$hour_ago = gmdate( 'Y-m-d H:i:s', time() - HOUR_IN_SECONDS );
-	if ( $lasttime = $wpdb->get_var( $wpdb->prepare( "SELECT `comment_date_gmt` FROM `$wpdb->comments` WHERE `comment_date_gmt` >= %s AND ( `comment_author_IP` = %s OR `comment_author_email` = %s ) ORDER BY `comment_date_gmt` DESC LIMIT 1", $hour_ago, $ip, $email ) ) ) {
+
+	if ( is_user_logged_in() ) {
+		$user = get_current_user_id();
+		$check_column = '`user_id`';
+	} else {
+		$user = $ip;
+		$check_column = '`comment_author_IP`';
+	}
+
+	$sql = $wpdb->prepare(
+		"SELECT `comment_date_gmt` FROM `$wpdb->comments` WHERE `comment_date_gmt` >= %s AND ( $check_column = %s OR `comment_author_email` = %s ) ORDER BY `comment_date_gmt` DESC LIMIT 1",
+		$hour_ago,
+		$user,
+		$email 
+	);
+	$lasttime = $wpdb->get_var( $sql );
+	if ( $lasttime ) {
 		$time_lastcomment = mysql2date('U', $lasttime, false);
 		$time_newcomment  = mysql2date('U', $date, false);
 		/**
@@ -1633,8 +1652,8 @@ function wp_new_comment( $commentdata ) {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param int $comment_ID       The comment ID.
-	 * @param int $comment_approved 1 (true) if the comment is approved, 0 (false) if not.
+	 * @param int        $comment_ID       The comment ID.
+	 * @param int|string $comment_approved 1 if the comment is approved, 0 if not, 'spam' if spam.
 	 */
 	do_action( 'comment_post', $comment_ID, $commentdata['comment_approved'] );
 
@@ -1646,13 +1665,18 @@ function wp_new_comment( $commentdata ) {
  *
  * @since 4.4.0
  *
- * @param int $comment_ID       ID of the comment.
- * @param int $comment_approved Whether the comment is approved.
+ * @param int $comment_ID ID of the comment.
+ * @return bool True on success, false on failure.
  */
-function wp_new_comment_notify_moderator( $comment_ID, $comment_approved ) {
-	if ( '0' == $comment_approved ) {
-		wp_notify_moderator( $comment_ID );
+function wp_new_comment_notify_moderator( $comment_ID ) {
+	$comment = get_comment( $comment_ID );
+
+	// Only send notifications for pending comments.
+	if ( '0' != $comment->comment_approved ) {
+		return false;
 	}
+
+	return wp_notify_moderator( $comment_ID );
 }
 
 /**
@@ -1661,6 +1685,7 @@ function wp_new_comment_notify_moderator( $comment_ID, $comment_approved ) {
  * @since 4.4.0
  *
  * @param int $comment_ID ID of the comment.
+ * @return bool True on success, false on failure.
  */
 function wp_new_comment_notify_postauthor( $comment_ID ) {
 	$comment = get_comment( $comment_ID );
@@ -1669,9 +1694,16 @@ function wp_new_comment_notify_postauthor( $comment_ID ) {
 	 * `wp_notify_postauthor()` checks if notifying the author of their own comment.
 	 * By default, it won't, but filters can override this.
 	 */
-	if ( get_option( 'comments_notify' ) && $comment->comment_approved ) {
-		wp_notify_postauthor( $comment_ID );
+	if ( ! get_option( 'comments_notify' ) ) {
+		return false;
 	}
+
+	// Only send notifications for approved comments.
+	if ( 'spam' === $comment->comment_approved || ! $comment->comment_approved ) {
+		return false;
+	}
+
+	return wp_notify_postauthor( $comment_ID );
 }
 
 /**
@@ -2344,12 +2376,70 @@ function clean_comment_cache($ids) {
  * cache using the comment group with the key using the ID of the comments.
  *
  * @since 2.3.0
+ * @since 4.4.0 Introduced the `$update_meta_cache` parameter.
  *
- * @param array $comments Array of comment row objects
+ * @param array $comments          Array of comment row objects
+ * @param bool  $update_meta_cache Whether to update commentmeta cache. Default true.
  */
-function update_comment_cache($comments) {
+function update_comment_cache( $comments, $update_meta_cache = true ) {
 	foreach ( (array) $comments as $comment )
 		wp_cache_add($comment->comment_ID, $comment, 'comment');
+
+	if ( $update_meta_cache ) {
+		// Avoid `wp_list_pluck()` in case `$comments` is passed by reference.
+		$comment_ids = array();
+		foreach ( $comments as $comment ) {
+			$comment_ids[] = $comment->comment_ID;
+		}
+		update_meta_cache( 'comment', $comment_ids );
+	}
+}
+
+/**
+ * Adds any comments from the given IDs to the cache that do not already exist in cache.
+ *
+ * @since 4.4.0
+ * @access private
+ *
+ * @see update_comment_cache()
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param array $comment_ids       Array of comment IDs.
+ * @param bool  $update_meta_cache Optional. Whether to update the meta cache. Default true.
+ */
+function _prime_comment_caches( $comment_ids, $update_meta_cache = true ) {
+	global $wpdb;
+
+	$non_cached_ids = _get_non_cached_ids( $comment_ids, 'comment' );
+	if ( !empty( $non_cached_ids ) ) {
+		$fresh_comments = $wpdb->get_results( sprintf( "SELECT $wpdb->comments.* FROM $wpdb->comments WHERE comment_ID IN (%s)", join( ",", array_map( 'intval', $non_cached_ids ) ) ) );
+
+		update_comment_cache( $fresh_comments, $update_meta_cache );
+	}
+}
+
+/**
+ * Lazy load comment meta when inside of a `WP_Query` loop.
+ *
+ * @since 4.4.0
+ *
+ * @param null $check      The `$check` param passed from the 'pre_comment_metadata' hook.
+ * @param int  $comment_id ID of the comment whose metadata is being cached.
+ * @return null In order not to short-circuit `get_metadata()`.
+ */
+function wp_lazyload_comment_meta( $check, $comment_id ) {
+	global $wp_query;
+
+	if ( ! empty( $wp_query->comments ) ) {
+		// Don't use `wp_list_pluck()` to avoid by-reference manipulation.
+		$comment_ids = array();
+		foreach ( $wp_query->comments as $comment ) {
+			$comment_ids[] = $comment->comment_ID;
+		}
+		update_meta_cache( 'comment', $comment_ids );
+	}
+
+	return $check;
 }
 
 //

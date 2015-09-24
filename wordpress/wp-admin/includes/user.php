@@ -107,7 +107,12 @@ function edit_user( $user_id = 0 ) {
 	/* checking that username has been typed */
 	if ( $user->user_login == '' )
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.' ) );
-
+		
+	/* checking that nickname has been typed */
+ 	if ( $update && empty( $user->nickname ) ) { 
+		$errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) ); 
+	}
+	
 	/* checking the password has been typed twice */
 	/**
 	 * Fires before the password and confirm password fields are checked for congruity.
@@ -176,7 +181,14 @@ function edit_user( $user_id = 0 ) {
 		$user_id = wp_update_user( $user );
 	} else {
 		$user_id = wp_insert_user( $user );
-		wp_new_user_notification( $user_id, null, 'both' );
+		/**
+		  * Fires after a new user has been created.
+		  *
+		  * @since 4.4.0
+		  *
+		  * @param int $user_id ID of the newly created user.
+		  */
+		do_action( 'edit_user_created_user', $user_id );
 	}
 	return $user_id;
 }

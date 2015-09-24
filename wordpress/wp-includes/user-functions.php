@@ -1,6 +1,6 @@
 <?php
 /**
- * Users API: Top-level users functionality
+ * User API: Top-level users functionality
  *
  * @package WordPress
  * @subpackage Users
@@ -136,8 +136,14 @@ function wp_authenticate_username_password($user, $username, $password) {
 
 	$user = get_user_by('login', $username);
 
-	if ( !$user )
-		return new WP_Error( 'invalid_username', sprintf( __( '<strong>ERROR</strong>: Invalid username. <a href="%s">Lost your password?</a>' ), wp_lostpassword_url() ) );
+	if ( !$user ) {
+		return new WP_Error( 'invalid_username',
+			__( '<strong>ERROR</strong>: Invalid username.' ) .
+			' <a href="' . wp_lostpassword_url() . '">' .
+			__( 'Lost your password?' ) .
+			'</a>'
+		);
+	}
 
 	/**
 	 * Filter whether the given user can be authenticated with the provided $password.
@@ -152,9 +158,18 @@ function wp_authenticate_username_password($user, $username, $password) {
 	if ( is_wp_error($user) )
 		return $user;
 
-	if ( !wp_check_password($password, $user->user_pass, $user->ID) )
-		return new WP_Error( 'incorrect_password', sprintf( __( '<strong>ERROR</strong>: The password you entered for the username <strong>%1$s</strong> is incorrect. <a href="%2$s">Lost your password?</a>' ),
-		$username, wp_lostpassword_url() ) );
+	if ( ! wp_check_password( $password, $user->user_pass, $user->ID ) ) {
+		return new WP_Error( 'incorrect_password',
+			sprintf(
+				/* translators: %s: user name */
+				__( '<strong>ERROR</strong>: The password you entered for the username %s is incorrect.' ),
+				'<strong>' . $username . '</strong>'
+			) .
+			' <a href="' . wp_lostpassword_url() . '">' .
+			__( 'Lost your password?' ) .
+			'</a>'
+		);
+	}
 
 	return $user;
 }
@@ -844,7 +859,6 @@ function setup_userdata($for_user_id = '') {
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database object for queries.
  * @global int  $blog_id
  *
  * @param array|string $args {
@@ -1090,6 +1104,7 @@ function update_user_caches($user) {
  * Clean all user caches
  *
  * @since 3.0.0
+ * @since 4.4.0 'clean_user_cache' action was added.
  *
  * @param WP_User|int $user User object or ID to be cleaned from the cache
  */
@@ -1104,6 +1119,16 @@ function clean_user_cache( $user ) {
 	wp_cache_delete( $user->user_login, 'userlogins' );
 	wp_cache_delete( $user->user_email, 'useremail' );
 	wp_cache_delete( $user->user_nicename, 'userslugs' );
+
+	/**
+	 * Fires immediately after the given user's cache is cleaned.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param int     $user_id User ID.
+	 * @param WP_User $user    User object.
+	 */
+	do_action( 'clean_user_cache', $user->ID, $user );
 }
 
 /**
@@ -1451,9 +1476,10 @@ function wp_insert_user( $userdata ) {
 	 *     @type bool     $show_admin_bar_front Whether to show the admin bar on the front end for the user.
 	 *                                          Default true.
  	 * }
- 	 * @param WP_User $user User object.
+	 * @param WP_User $user   User object.
+	 * @param bool    $update Whether the user is being updated rather than created.
  	 */
-	$meta = apply_filters( 'insert_user_meta', $meta, $user );
+	$meta = apply_filters( 'insert_user_meta', $meta, $user, $update );
 
 	// Update user meta.
 	foreach ( $meta as $key => $value ) {
@@ -2023,9 +2049,29 @@ function register_new_user( $user_login, $user_email ) {
 
 	update_user_option( $user_id, 'default_password_nag', true, true ); //Set up the Password change nag.
 
-	wp_new_user_notification( $user_id, null, 'both' );
+	/**
+	 * Fires after a new user registration has been recorded.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param int $user_id ID of the newly registered user.
+	 */
+	do_action( 'register_new_user', $user_id );
 
 	return $user_id;
+}
+
+/**
+ * Initiate email notifications related to the creation of new users.
+ *
+ * Notifications are sent both to the site admin and to the newly created user.
+ *
+ * @since 4.4.0
+ *
+ * @param int $user_id ID of the newly created user.
+ */
+function wp_send_new_user_notifications( $user_id ) {
+	wp_new_user_notification( $user_id, null, 'both' );
 }
 
 /**

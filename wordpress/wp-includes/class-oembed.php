@@ -146,6 +146,7 @@ class WP_oEmbed {
 		 * | Kickstarter  | kickstarter.com      |  Yes  | 4.2.0     |
 		 * | Kickstarter  | kck.st               |  Yes  | 4.2.0     |
 		 * | ------------ | -------------------- | ----- | --------- |
+		 * | Cloudup      | cloudup.com          |  Yes  | 4.4.0     |
 		 * | ReverbNation | reverbnation.com     |  Yes  | 4.4.0     |
 		 *
 		 * No longer supported providers:
@@ -489,7 +490,7 @@ class WP_oEmbed {
 	 * @return object|false
 	 */
 	private function _parse_xml_body( $response_body ) {
-		if ( ! function_exists( 'simplexml_import_dom' ) || ! class_exists( 'DOMDocument' ) )
+		if ( ! function_exists( 'simplexml_import_dom' ) || ! class_exists( 'DOMDocument', false ) )
 			return false;
 
 		$dom = new DOMDocument;

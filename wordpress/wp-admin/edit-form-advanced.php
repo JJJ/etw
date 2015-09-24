@@ -81,63 +81,84 @@ if ( ! $permalink ) {
 }
 
 $messages = array();
-$post_preview_url = get_preview_post_link( $post );
 
-$preview_link_html = $scheduled_link_html = $view_post_html = '';
+$preview_post_link_html = $scheduled_post_link_html = $view_post_link_html = '';
+$preview_page_link_html = $scheduled_page_link_html = $view_page_link_html = '';
+
+$preview_url = get_preview_post_link( $post );
 
 $viewable = is_post_type_viewable( $post_type_object );
 
 if ( $viewable ) {
-	// Preview link.
-	$preview_link_html = sprintf( ' <a target="_blank" href="%s">%s</a>',
-		esc_url( $post_preview_url ),
+
+	// Preview post link.
+	$preview_post_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
+		esc_url( $preview_url ),
 		__( 'Preview post' )
 	);
 
-	// Scheduled preview link.
-	$scheduled_link_html = sprintf( ' <a target="_blank" href="%s">%s</a>',
+	// Scheduled post preview link.
+	$scheduled_post_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
 		__( 'Preview post' )
 	);
 
 	// View post link.
-	$view_post_html = sprintf( ' <a href="%s">%s</a>',
+	$view_post_link_html = sprintf( ' <a href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
 		__( 'View post' )
 	);
+
+	// Preview page link.
+	$preview_page_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
+		esc_url( $preview_url ),
+		__( 'Preview page' )
+	);
+
+	// Scheduled page preview link.
+	$scheduled_page_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
+		esc_url( $permalink ),
+		__( 'Preview page' )
+	);
+
+	// View page link.
+	$view_page_link_html = sprintf( ' <a href="%1$s">%2$s</a>',
+		esc_url( $permalink ),
+		__( 'View page' )
+	);
+
 }
 
 /* translators: Publish box date format, see http://php.net/date */
 $scheduled_date = date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_date ) );
+
 $messages['post'] = array(
 	 0 => '', // Unused. Messages start at index 1.
-	 1 => __( 'Post updated.' ) . $view_post_html,
-	 2 => __('Custom field updated.'),
-	 3 => __('Custom field deleted.'),
-	 4 => __('Post updated.'),
+	 1 => __( 'Post updated.' ) . $view_post_link_html,
+	 2 => __( 'Custom field updated.' ),
+	 3 => __( 'Custom field deleted.' ),
+	 4 => __( 'Post updated.' ),
 	/* translators: %s: date and time of the revision */
-	 5 => isset($_GET['revision']) ? sprintf( __('Post restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-	 6 => __( 'Post published.' ) . $view_post_html,
-	 7 => __('Post saved.'),
-	 8 => __( 'Post submitted.' ) . $preview_link_html,
-	 9 => sprintf( __( 'Post scheduled for: <strong>%1$s</strong>' ), $scheduled_date ) . $scheduled_link_html,
-	10 => __( 'Post draft updated.' ) . $preview_link_html,
+	 5 => isset($_GET['revision']) ? sprintf( __( 'Post restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	 6 => __( 'Post published.' ) . $view_post_link_html,
+	 7 => __( 'Post saved.' ),
+	 8 => __( 'Post submitted.' ) . $preview_post_link_html,
+	 9 => sprintf( __( 'Post scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_post_link_html,
+	10 => __( 'Post draft updated.' ) . $preview_post_link_html,
 );
-
-$page_preview_url = get_preview_post_link( $post );
-
 $messages['page'] = array(
 	 0 => '', // Unused. Messages start at index 1.
-	 1 => sprintf( __('Page updated. <a href="%s">View page</a>'), esc_url( $permalink ) ),
-	 2 => __('Custom field updated.'),
-	 3 => __('Custom field deleted.'),
-	 4 => __('Page updated.'),
-	 5 => isset($_GET['revision']) ? sprintf( __('Page restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-	 6 => sprintf( __('Page published. <a href="%s">View page</a>'), esc_url( $permalink ) ),
-	 7 => __('Page saved.'),
-	 8 => sprintf( __('Page submitted. <a target="_blank" href="%s">Preview page</a>'), esc_url( $page_preview_url ) ),
-	 9 => sprintf( __('Page scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview page</a>'), date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
-	10 => sprintf( __('Page draft updated. <a target="_blank" href="%s">Preview page</a>'), esc_url( $page_preview_url ) ),
+	 1 => __( 'Page updated.' ) . $view_page_link_html,
+	 2 => __( 'Custom field updated.' ),
+	 3 => __( 'Custom field deleted.' ),
+	 4 => __( 'Page updated.' ),
+	/* translators: %s: date and time of the revision */
+	 5 => isset($_GET['revision']) ? sprintf( __( 'Page restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	 6 => __( 'Page published.' ) . $view_page_link_html,
+	 7 => __( 'Page saved.' ),
+	 8 => __( 'Page submitted.' ) . $preview_page_link_html,
+	 9 => sprintf( __( 'Page scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_page_link_html,
+	10 => __( 'Page draft updated.' ) . $preview_page_link_html,
 );
 $messages['attachment'] = array_fill( 1, 10, __( 'Media attachment updated.' ) ); // Hack, for now.
 
@@ -263,11 +284,25 @@ if ( post_type_supports($post_type, 'custom-fields') )
  */
 do_action( 'dbx_post_advanced', $post );
 
-if ( post_type_supports($post_type, 'comments') )
-	add_meta_box('commentstatusdiv', __('Discussion'), 'post_comment_status_meta_box', null, 'normal', 'core');
+// Allow the Discussion meta box to show up if the post type supports comments,
+// or if comments or pings are open.
+if ( comments_open( $post ) || pings_open( $post ) || post_type_supports( $post_type, 'comments' ) ) {
+	add_meta_box( 'commentstatusdiv', __( 'Discussion' ), 'post_comment_status_meta_box', null, 'normal', 'core' );
+}
 
-if ( ( 'publish' == get_post_status( $post ) || 'private' == get_post_status( $post ) ) && post_type_supports($post_type, 'comments') )
-	add_meta_box('commentsdiv', __('Comments'), 'post_comment_meta_box', null, 'normal', 'core');
+$stati = get_post_stati( array( 'public' => true ) );
+if ( empty( $stati ) ) {
+	$stati = array( 'publish' );
+}
+$stati[] = 'private';
+
+if ( in_array( get_post_status( $post ), $stati ) ) {
+	// If the post type support comments, or the post has comments, allow the
+	// Comments meta box.
+	if ( comments_open( $post ) || pings_open( $post ) || $post->comment_count > 0 || post_type_supports( $post_type, 'comments' ) ) {
+		add_meta_box( 'commentsdiv', __( 'Comments' ), 'post_comment_meta_box', null, 'normal', 'core' );
+	}
+}
 
 if ( ! ( 'pending' == get_post_status( $post ) && ! current_user_can( $post_type_object->cap->publish_posts ) ) )
 	add_meta_box('slugdiv', __('Slug'), 'post_slug_meta_box', null, 'normal', 'core');
@@ -584,7 +619,7 @@ if ( post_type_supports($post_type, 'editor') ) {
 	),
 ) ); ?>
 <table id="post-status-info"><tbody><tr>
-	<td id="wp-word-count"><?php printf( __( 'Word count: %s' ), '<span class="word-count">0</span>' ); ?></td>
+	<td id="wp-word-count" class="hide-if-no-js"><?php printf( __( 'Word count: %s' ), '<span class="word-count">0</span>' ); ?></td>
 	<td class="autosave-info">
 	<span class="autosave-message">&nbsp;</span>
 <?php

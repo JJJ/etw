@@ -190,11 +190,16 @@
 			}
 		} );
 
-		$passwordWrapper = $pass1Row.find('.wp-pwd').hide();
+		$passwordWrapper = $pass1Row.find( '.wp-pwd' );
+		$generateButton  = $pass1Row.find( 'button.wp-generate-pw' );
 
 		bindToggleButton();
 
-		$generateButton = $pass1Row.find( 'button.wp-generate-pw' ).show();
+		if ( $generateButton.length ) {
+			$passwordWrapper.hide();
+		}
+
+		$generateButton.show();
 		$generateButton.on( 'click', function () {
 			updateLock = true;
 
@@ -216,6 +221,15 @@
 		$cancelButton = $pass1Row.find( 'button.wp-cancel-pw' );
 		$cancelButton.on( 'click', function () {
 			updateLock = false;
+
+			// Clear any entered password.
+			$pass1Text.val( '' );
+
+			// Generate a new password.
+			wp.ajax.post( 'generate-password' )
+				.done( function( data ) {
+					$pass1.data( 'pw', data );
+				} );
 
 			$generateButton.show();
 			$passwordWrapper.hide();

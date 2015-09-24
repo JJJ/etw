@@ -200,6 +200,7 @@ add_filter( 'nav_menu_meta_box_object', '_wp_nav_menu_meta_box_object'        );
 add_filter( 'pingback_ping_source_uri', 'pingback_ping_source_uri'            );
 add_filter( 'xmlrpc_pingback_error',    'xmlrpc_pingback_error'               );
 add_filter( 'title_save_pre',           'trim'                                );
+add_filter( 'get_comment_metadata',     'wp_lazyload_comment_meta',     10, 2 );
 
 add_filter( 'http_request_host_is_external', 'allowed_http_request_hosts', 10, 2 );
 
@@ -336,9 +337,11 @@ add_action( 'split_shared_term', '_wp_check_split_nav_menu_terms', 10, 4 );
 add_action( 'wp_split_shared_term_batch', '_wp_batch_split_terms' );
 
 // Email notifications.
-add_action( 'comment_post', 'wp_new_comment_notify_moderator', 10, 2 );
+add_action( 'comment_post', 'wp_new_comment_notify_moderator' );
 add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
 add_action( 'after_password_reset', 'wp_password_change_notification' );
+add_action( 'register_new_user',      'wp_send_new_user_notifications' );
+add_action( 'edit_user_created_user', 'wp_send_new_user_notifications' );
 
 /**
  * Filters formerly mixed into wp-includes

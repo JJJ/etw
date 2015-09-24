@@ -179,16 +179,22 @@ default:
 <div class="fileedit-sub">
 <div class="alignleft">
 <big><?php
-	if ( is_plugin_active($plugin) ) {
-		if ( is_writeable($real_file) )
-			echo sprintf(__('Editing <strong>%s</strong> (active)'), $file);
-		else
-			echo sprintf(__('Browsing <strong>%s</strong> (active)'), $file);
+	if ( is_plugin_active( $plugin ) ) {
+		if ( is_writeable( $real_file ) ) {
+			/* translators: %s: File name */
+			echo sprintf( _x( 'Editing %s',  'plugin' ), '<strong>' . $file . '</strong>' ) . ' ' . _x( '(active)', 'plugin' );
+		} else {
+			/* translators: %s: File name */
+			echo sprintf( _x( 'Browsing %s', 'plugin' ), '<strong>' . $file . '</strong>' ) . ' ' . _x( '(active)', 'plugin' );
+		}
 	} else {
-		if ( is_writeable($real_file) )
-			echo sprintf(__('Editing <strong>%s</strong> (inactive)'), $file);
-		else
-			echo sprintf(__('Browsing <strong>%s</strong> (inactive)'), $file);
+		if ( is_writeable( $real_file ) ) {
+			/* translators: %s: File name */
+			echo sprintf( _x( 'Editing %s',  'plugin' ), '<strong>' . $file . '</strong>' ) . ' ' . _x( '(inactive)', 'plugin' );
+		} else {
+			/* translators: %s: File name */
+			echo sprintf( _x( 'Browsing %s', 'plugin' ), '<strong>' . $file . '</strong>' ) . ' ' . _x( '(inactive)', 'plugin' );
+		}
 	}
 	?></big>
 </div>

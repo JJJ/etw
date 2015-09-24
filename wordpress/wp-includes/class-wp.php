@@ -300,6 +300,21 @@ class WP {
 			if ( $t->query_var && isset( $this->query_vars[$t->query_var] ) )
 				$this->query_vars[$t->query_var] = str_replace( ' ', '+', $this->query_vars[$t->query_var] );
 
+		// Don't allow non-public taxonomies to be queried from the front-end.
+		if ( ! is_admin() ) {
+			foreach ( get_taxonomies( array( 'public' => false ), 'objects' ) as $taxonomy => $t ) {
+				// Check first for taxonomy-specific query_var.
+				if ( $t->query_var && isset( $this->query_vars[ $t->query_var ] ) ) {
+					unset( $this->query_vars[ $t->query_var ] );
+				}
+
+				// Next, check the 'taxonomy' query_var.
+				if ( isset( $this->query_vars['taxonomy'] ) && $taxonomy === $this->query_vars['taxonomy'] ) {
+					unset( $this->query_vars['taxonomy'], $this->query_vars['term'] );
+				}
+			}
+		}
+
 		// Limit publicly queried post_types to those that are publicly_queryable
 		if ( isset( $this->query_vars['post_type']) ) {
 			$queryable_post_types = get_post_types( array('publicly_queryable' => true) );
@@ -350,7 +365,7 @@ class WP {
 	 * @since 2.0.0
 	 */
 	public function send_headers() {
-		$headers = array('X-Pingback' => get_bloginfo('pingback_url'));
+		$headers = array();
 		$status = null;
 		$exit_required = false;
 
@@ -580,8 +595,27 @@ class WP {
 
 		// Never 404 for the admin, robots, or if we found posts.
 		if ( is_admin() || is_robots() || $wp_query->posts ) {
-			status_header( 200 );
-			return;
+
+			$success = true;
+			if ( is_singular() ) {
+				$p = clone $wp_query->post;
+				// Only set X-Pingback for single posts that allow pings.
+				if ( $p && pings_open( $p ) ) {
+					@header( 'X-Pingback: ' . get_bloginfo( 'pingback_url' ) );
+				}
+
+				// check for paged content that exceeds the max number of pages
+				$next = '<!--nextpage-->';
+				if ( $p && false !== strpos( $p->post_content, $next ) && ! empty( $this->query_vars['page'] ) ) {
+					$page = trim( $this->query_vars['page'], '/' );
+					$success = (int) $page <= ( substr_count( $p->post_content, $next ) + 1 );
+				}
+			}
+
+			if ( $success ) {
+				status_header( 200 );
+				return;
+			}
 		}
 
 		// We will 404 for paged queries, as no posts were found.
