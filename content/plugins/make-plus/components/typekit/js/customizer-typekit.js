@@ -18,7 +18,12 @@
 			});
 
 			// Denote which items are Typekit fonts
-			ttfmpTypekit.markTypekitChoices();
+			$.each(ttfmpTypekit.cache.options, function(key, element) {
+				ttfmpTypekit.markTypekitChoices(element);
+				element.one('chosen:updated', function() {
+					ttfmpTypekit.markTypekitChoices( $(this) );
+				});
+			});
 
 			// Add classes to elements
 			ttfmpTypekit.cache.$reset.addClass('button reset-fonts');
@@ -56,18 +61,14 @@
 			});
 		},
 
-		markTypekitChoices: function() {
+		markTypekitChoices: function(element) {
 			_.each(ttfmpTypekitData.typekitChoices, function(value) {
-				$.each(ttfmpTypekit.cache.options, function(key, element) {
-					$('option[value="' + value +'"]', element).addClass('ttfmp-typekit-choice');
-				});
+				$('option[value="' + value +'"]', element).addClass('ttfmp-typekit-choice');
 			});
 
 			// Mark the header as a choice
 			if (ttfmpTypekitData.typekitChoices.length > 0) {
-				$.each(ttfmpTypekit.cache.options, function(key, element) {
-					$('.ttfmp-typekit-choice', element).first().prev().addClass('ttfmp-typekit-choice');
-				});
+				$('.ttfmp-typekit-choice', element).first().prev().addClass('ttfmp-typekit-choice');
 			}
 		},
 
@@ -126,7 +127,8 @@
 
 		removeFonts: function() {
 			$.each(ttfmpTypekit.cache.options, function(key, element) {
-				$('.ttfmp-typekit-choice', element).trigger('chosen:updated');
+				$('.ttfmp-typekit-choice', element).remove();
+				element.trigger('chosen:updated');
 			});
 		},
 

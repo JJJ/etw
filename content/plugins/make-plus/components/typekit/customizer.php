@@ -236,11 +236,19 @@ class TTFMP_Typekit_Customizer {
 	 * Get the list of Typekit fonts in the current Typekit Kit.
 	 *
 	 * @since  1.0.0.
+	 * @since  1.6.5. Introduced $allow_temp parameter.
 	 *
-	 * @return array    Array of Typekit fonts available to the kit.
+	 * @param  bool     $allow_temp    True to look for the temp mod first. False to ignore it.
+	 *
+	 * @return array                   Array of Typekit fonts available to the kit.
 	 */
-	public function get_typekit_choices() {
-		$choices = get_theme_mod( 'typekit-temp-choices', array() );
+	public function get_typekit_choices( $allow_temp = true ) {
+		$choices = array();
+
+		if ( $allow_temp ) {
+			$choices = get_theme_mod( 'typekit-temp-choices', array() );
+		}
+
 		if ( empty( $choices ) ) {
 			$choices = get_theme_mod( 'typekit-choices', array() );
 		}
@@ -252,8 +260,9 @@ class TTFMP_Typekit_Customizer {
 			foreach ( $choices as $data ) {
 				if ( isset( $data['label'] ) && isset( $data['stack'] ) ) {
 					$values[] = array(
-						'label' => wp_strip_all_tags( $data['label'] ),
-						'stack' => wp_strip_all_tags( $data['stack'] ),
+						'label'      => wp_strip_all_tags( $data['label'] ),
+						'stack'      => wp_strip_all_tags( $data['stack'] ),
+						'variations' => $data['variations'],
 					);
 				}
 			}
@@ -271,7 +280,7 @@ class TTFMP_Typekit_Customizer {
 	 * @return string    ID for the current Typekit Kit.
 	 */
 	public function get_typekit_id() {
-		return ( '' !== get_theme_mod( 'typekit-temp-id', '' ) ) ? get_theme_mod( 'typekit-temp-id' ) : get_theme_mod( 'typekit-id', '' );
+		return ( '' !== get_theme_mod( 'typekit-temp-id', '' ) ) ? get_theme_mod( 'typekit-temp-id' ) : get_theme_mod( 'typekit-id', ttfmake_get_default( 'typekit-id' ) );
 	}
 
 	/**
@@ -366,7 +375,7 @@ class TTFMP_Typekit_Customizer {
 	 * @return array                The updated font choices.
 	 */
 	public function all_fonts( $choices ) {
-		$typekit_fonts = $this->get_typekit_choices();
+		$typekit_fonts = $this->get_typekit_choices( false );
 
 		if ( ! empty( $typekit_fonts ) ) {
 			$choices = array_merge( $typekit_fonts, $choices );
@@ -403,14 +412,21 @@ class TTFMP_Typekit_Customizer {
 
 				// Package the new select options
 				foreach ( $response_body->kit->families as $family ) {
+					$key = sanitize_title_with_dashes( $family->slug );
+
 					// This format is needed to plug into the existing fonts
-					$php_options[ sanitize_title_with_dashes( $family->slug ) ] = array(
+					$php_options[ $key ] = array(
 						'label' => wp_strip_all_tags( $family->name ),
 						'stack' => ( isset( $family->css_stack ) ) ? wp_strip_all_tags( $family->css_stack ) : '',
 					);
 
+					// Save the variants
+					if ( isset( $family->variations ) ) {
+						$php_options[ $key ]['variations'] = $family->variations;
+					}
+
 					// Key/value pair for JS
-					$js_options[ sanitize_title_with_dashes( $family->slug ) ] = wp_strip_all_tags( $family->name );
+					$js_options[ $key ] = wp_strip_all_tags( $family->name );
 				}
 
 				// Save the current choices to a theme mod

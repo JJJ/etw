@@ -401,8 +401,10 @@ class TTFMP_Panels {
 		if ( $color_primary_link && $color_primary_link !== ttfmake_get_default( 'color-primary-link' ) ) {
 			ttfmake_get_css()->add( array(
 				'selectors'    => array(
-					'.builder-section-panels .ui-widget-content a:hover',
-					'.builder-section-panels .ui-widget-content a:focus',
+					'.builder-section-panels .ui-accordion-content a:hover',
+					'.builder-section-panels .ui-accordion-content a:focus',
+					'.builder-section-panels .ui-tabs-panel a:hover',
+					'.builder-section-panels .ui-tabs-panel a:focus',
 				),
 				'declarations' => array(
 					'color' => $color_primary_link

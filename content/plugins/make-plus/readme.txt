@@ -3,8 +3,8 @@ Contributors: thethemefoundry, dstrojny, jupiterwise, scottrrollo, tollmanz
 Donate link: https://thethemefoundry.com
 Tags: woocommerce, sidebars, widgets, customizer, fonts, typekit, demo content, page builder
 Requires at least: 4.0
-Tested up to: 4.3
-Stable tag: 1.6.4
+Tested up to: 4.3.1
+Stable tag: 1.6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,17 @@ Make gives you the flexibility to build the site that you want. Make Plus makes 
 For more information, please see the [Make Plus support page](https://thethemefoundry.com/docs/make-docs/).
 
 == Changelog ==
+
+= 1.6.5 =
+
+* New feature: Numeric font weight control for typography options in the Customizer.
+  * Replaces the standard normal/bold font weight options in Make.
+  * Available font weight options are determined by the chosen font family and font style options.
+  * Works with Google fonts and Typekit fonts.
+* Bug fix: Incorrect Typekit font family options were displayed if a kit ID was loaded but not saved.
+* Bug fix: The default kit ID value was sometimes being ignored if it was changed by a child theme.
+* Bug fix: Tab headers in the Panels section were styled with the wrong text color when in focus.
+* Changed: Added an admin notice that Make Plus will soon drop support for WP 4.0 and 4.1.
 
 = 1.6.4 =
 
@@ -234,6 +245,6 @@ For more information, please see the [Make Plus support page](https://thethemefo
 
 == Upgrade Notice ==
 
-= 1.6.4 =
+= 1.6.5 =
 
-Enhanced support for Yoast SEO's breadcrumb functionality.
+Enhanced font weight controls, bug fixes.

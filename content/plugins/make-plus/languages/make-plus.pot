@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Make Plus package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Make Plus 1.6.4\n"
+"Project-Id-Version: Make Plus 1.6.5\n"
 "Report-Msgid-Bugs-To: https://thethemefoundry.com/support/\n"
-"POT-Creation-Date: 2015-09-04 20:11:58+00:00\n"
+"POT-Creation-Date: 2015-09-21 23:03:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -267,6 +267,55 @@ msgstr ""
 
 #: components/edd/sections/builder-templates/downloads.php:90
 msgid "Details"
+msgstr ""
+
+#: components/font-weight/font-weight.php:98
+msgid "100 - Thin"
+msgstr ""
+
+#: components/font-weight/font-weight.php:99
+msgid "200 - Extra Light"
+msgstr ""
+
+#: components/font-weight/font-weight.php:100
+msgid "300 - Light"
+msgstr ""
+
+#: components/font-weight/font-weight.php:101
+msgid "400 - Normal"
+msgstr ""
+
+#: components/font-weight/font-weight.php:102
+msgid "500 - Medium"
+msgstr ""
+
+#: components/font-weight/font-weight.php:103
+msgid "600 - Semi Bold"
+msgstr ""
+
+#: components/font-weight/font-weight.php:104
+msgid "700 - Bold"
+msgstr ""
+
+#: components/font-weight/font-weight.php:105
+msgid "800 - Extra Bold"
+msgstr ""
+
+#: components/font-weight/font-weight.php:106
+msgid "900 - Black"
+msgstr ""
+
+#: components/font-weight/font-weight.php:133
+msgid "Available weights are based on your selected Font Family and Font Style."
+msgstr ""
+
+#: components/font-weight/font-weight.php:194
+#: components/font-weight/font-weight.php:377
+msgid "400 - Normal (simulated)"
+msgstr ""
+
+#: components/font-weight/font-weight.php:200
+msgid "700 - Bold (simulated)"
 msgstr ""
 
 #: components/panels/definitions.php:95
@@ -855,23 +904,23 @@ msgstr ""
 msgid "documentation"
 msgstr ""
 
-#: components/typekit/customizer.php:305 components/typekit/customizer.php:375
+#: components/typekit/customizer.php:314 components/typekit/customizer.php:384
 msgid "Typekit Fonts"
 msgstr ""
 
-#: components/typekit/customizer.php:306
+#: components/typekit/customizer.php:315
 msgid "Please enter your Typekit Kit ID"
 msgstr ""
 
-#: components/typekit/customizer.php:307
+#: components/typekit/customizer.php:316
 msgid "Typekit fonts could not be found. Please try again"
 msgstr ""
 
-#: components/typekit/customizer.php:308
+#: components/typekit/customizer.php:317
 msgid "Fonts loaded successfully."
 msgstr ""
 
-#: components/typekit/customizer.php:309
+#: components/typekit/customizer.php:318
 msgid "Fonts reset."
 msgstr ""
 
@@ -1065,7 +1114,7 @@ msgstr ""
 msgid "WooCommerce Colors"
 msgstr ""
 
-#: shared/admin-notice/template.php:8
+#: shared/admin-notice.php:258
 msgid "Hide"
 msgstr ""
 
@@ -1077,11 +1126,17 @@ msgid ""
 "ensure full compatibility."
 msgstr ""
 
-#: shared/compatibility.php:26
+#: shared/compatibility.php:26 shared/compatibility.php:48
 msgid "update WordPress"
 msgstr ""
 
-#: shared/compatibility.php:41
+#: shared/compatibility.php:43
+msgid ""
+"Make Plus will soon be dropping support for WordPress versions 4.0 and 4.1. "
+"Please %2$s to ensure full compatibility."
+msgstr ""
+
+#: shared/compatibility.php:63
 msgid ""
 "The Make Plus plugin was designed to work with the Make theme. To enjoy "
 "full use of the plugin, please install and activate Make."
