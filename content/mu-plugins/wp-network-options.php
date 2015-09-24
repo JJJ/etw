@@ -20,12 +20,13 @@ function flox_get_default_network_options() {
 	$timestamp = 1408167226;
 
 	// Stuttter Specific
-	$network_wide_plugins['user-switching/user-switching.php']         = $timestamp;
-	$network_wide_plugins['wp-term-meta/wp-term-meta.php']             = $timestamp;
-	$network_wide_plugins['wp-term-order/wp-term-order.php']           = $timestamp;
-	$network_wide_plugins['wp-term-colors/wp-term-colors.php']         = $timestamp;
-	$network_wide_plugins['wp-user-activity/wp-user-activity.php']     = $timestamp;
-	$network_wide_plugins['wp-session-manager/wp-session-manager.php'] = $timestamp;
+	$network_wide_plugins['user-switching/user-switching.php']           = $timestamp;
+	$network_wide_plugins['wp-term-meta/wp-term-meta.php']               = $timestamp;
+	$network_wide_plugins['wp-term-order/wp-term-order.php']             = $timestamp;
+	$network_wide_plugins['wp-term-colors/wp-term-colors.php']           = $timestamp;
+	$network_wide_plugins['wp-user-activity/wp-user-activity.php']       = $timestamp;
+	$network_wide_plugins['wp-session-manager/wp-session-manager.php']   = $timestamp;
+	$network_wide_plugins['wp-comment-humility/wp-comment-humility.php'] = $timestamp;
 
 	return array(
 
