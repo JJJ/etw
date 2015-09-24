@@ -1,0 +1,21 @@
+/* Profile Options CSS */
+
+.sessions-table {
+	margin: 20px 0;
+}
+
+.sessions-table th,
+.sessions-table td {
+	padding: 10px;
+	vertical-align: top;
+	width: auto;
+}
+
+.sessions-table td.col-device {
+	width: 20px;
+	padding-right: 0;
+}
+
+.sessions-table .description {
+	color: #666;
+}
