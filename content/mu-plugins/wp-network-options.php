@@ -19,17 +19,13 @@ function flox_get_default_network_options() {
 	// Get the current site
 	$timestamp = 1408167226;
 
-	// User switching is always active
-	$network_wide_plugins = array(
-		'user-switching/user-switching.php'         => $timestamp,
-		'wp-session-manager/wp-session-manager.php' => $timestamp
-	);
-
 	// Stuttter Specific
-	$network_wide_plugins['wp-term-meta/wp-term-meta.php']         = $timestamp;
-	$network_wide_plugins['wp-term-order/wp-term-order.php']       = $timestamp;
-	$network_wide_plugins['wp-term-colors/wp-term-colors.php']     = $timestamp;
-	$network_wide_plugins['wp-user-activity/wp-user-activity.php'] = $timestamp;
+	$network_wide_plugins['user-switching/user-switching.php']         = $timestamp;
+	$network_wide_plugins['wp-term-meta/wp-term-meta.php']             = $timestamp;
+	$network_wide_plugins['wp-term-order/wp-term-order.php']           = $timestamp;
+	$network_wide_plugins['wp-term-colors/wp-term-colors.php']         = $timestamp;
+	$network_wide_plugins['wp-user-activity/wp-user-activity.php']     = $timestamp;
+	$network_wide_plugins['wp-session-manager/wp-session-manager.php'] = $timestamp;
 
 	return array(
 
@@ -42,10 +38,10 @@ function flox_get_default_network_options() {
 			'swifter' => 1,
 			'make' => 1
 		),
-		'can_compress_scripts'        => 1,
+		//'can_compress_scripts'        => 1,
 
 		// Site
-		'site_admins'                 => get_super_admins(), // Always define $super_admins global
+		//'site_admins'                 => get_super_admins(), // Always define $super_admins global
 		'siteurl'                     => network_site_url( '/' ),
 
 		// Other
