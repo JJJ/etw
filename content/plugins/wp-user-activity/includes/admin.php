@@ -10,6 +10,24 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Tuck the top level menu underneath the dashboard menu instead
+ *
+ * @since 0.1.3
+ */
+function wp_user_activity_menu_humility() {
+
+	// Bail if not using menu humility
+	if ( ! apply_filters( 'wp_user_activity_menu_humility', false ) ) {
+		return;
+	}
+
+	// Unset top level page & add a dashboard page on success
+	if ( remove_menu_page( 'edit.php?post_type=activity' ) ) {
+		add_dashboard_page( esc_html__( 'Activity', 'wp-user-activity' ), esc_html__( 'Activity', 'wp-user-activity' ), 'edit_activities', 'edit.php?post_type=activity' );
+	}
+}
+
+/**
  * Filter activity posts list-table columns
  *
  * @since 0.1.0
@@ -21,11 +39,11 @@ function wp_user_activity_manage_posts_columns( $columns = array() ) {
 
 	// Override all columns
 	$new_columns = array(
-		'cb'       => '<input type="checkbox" />',
-		'type'     => '<span class="screen-reader-text">' . esc_html__( 'Type', 'wp-user-activity' ) . '</span><span class="dashicons dashicons-backup" title="' . esc_html__( 'Type', 'wp-user-activity' ) . '"></span>',
-		'username' => esc_html__( 'Action',  'wp-user-activity' ),
-		'when'     => esc_html__( 'Date',    'wp-user-activity' ),
-		'session'  => esc_html__( 'Session', 'wp-user-activity' ),
+		'cb'                => '<input type="checkbox" />',
+		'activity_type'     => '<span class="screen-reader-text">' . esc_html__( 'Type', 'wp-user-activity' ) . '</span><span class="dashicons dashicons-backup" title="' . esc_html__( 'Type', 'wp-user-activity' ) . '"></span>',
+		'activity_username' => esc_html__( 'Action',  'wp-user-activity' ),
+		'activity_when'     => esc_html__( 'Date',    'wp-user-activity' ),
+		'activity_session'  => esc_html__( 'Session', 'wp-user-activity' ),
 	);
 
 	// Return overridden columns
@@ -43,7 +61,7 @@ function wp_user_activity_list_table_primary_column( $name = '', $screen_id = ''
 
 	// Only on the `edit-activity` screen
 	if ( 'edit-activity' === $screen_id ) {
-		$name = 'username';
+		$name = 'activity_username';
 	}
 
 	// Return possibly overridden name
@@ -63,10 +81,10 @@ function wp_user_activity_sortable_columns( $columns = array() ) {
 
 	// Override columns
 	$columns = array(
-		'type'     => 'type',
-		'username' => 'username',
-		'session'  => 'session',
-		'when'     => 'when'
+		'activity_type'     => 'type',
+		'activity_username' => 'username',
+		'activity_session'  => 'session',
+		'activity_when'     => 'when'
 	);
 
 	return $columns;
@@ -98,36 +116,38 @@ function wp_user_activity_maybe_sort_by_fields( WP_Query $wp_query ) {
 	}
 
 	// Set by 'orderby'
-	switch ( $wp_query->query['orderby'] ) {
+	if ( ! empty( $wp_query->query['orderby'] ) ) {
+		switch ( $wp_query->query['orderby'] ) {
 
-		// Type
-		case 'type' :
-			$wp_query->set( 'order',     $order                         );
-			$wp_query->set( 'orderby',   'meta_value'                   );
-			$wp_query->set( 'meta_key',  'wp_user_activity_object_type' );
-			$wp_query->set( 'meta_type', 'CHAR'                         );
-			break;
+			// Type
+			case 'activity_type' :
+				$wp_query->set( 'order',     $order                         );
+				$wp_query->set( 'orderby',   'meta_value'                   );
+				$wp_query->set( 'meta_key',  'wp_user_activity_object_type' );
+				$wp_query->set( 'meta_type', 'CHAR'                         );
+				break;
 
-		// Action
-		case 'username' :
-			$wp_query->set( 'order',   $order        );
-			$wp_query->set( 'orderby', 'post_author' );
-			break;
+			// Action
+			case 'activity_username' :
+				$wp_query->set( 'order',   $order        );
+				$wp_query->set( 'orderby', 'post_author' );
+				break;
 
-		// Session
-		case 'session' :
-			$wp_query->set( 'order',     $order                );
-			$wp_query->set( 'orderby',   'meta_value'          );
-			$wp_query->set( 'meta_key',  'wp_user_activity_ip' );
-			$wp_query->set( 'meta_type', 'NUMERIC'             );
-			break;
+			// Session
+			case 'activity_session' :
+				$wp_query->set( 'order',     $order                );
+				$wp_query->set( 'orderby',   'meta_value'          );
+				$wp_query->set( 'meta_key',  'wp_user_activity_ip' );
+				$wp_query->set( 'meta_type', 'NUMERIC'             );
+				break;
 
-		// Date (default)
-		case 'when' :
-		default :
-			$wp_query->set( 'order',   $order      );
-			$wp_query->set( 'orderby', 'post_date' );
-			break;
+			// Date (default)
+			case 'activity_when' :
+			default :
+				$wp_query->set( 'order',   $order      );
+				$wp_query->set( 'orderby', 'post_date' );
+				break;
+		}
 	}
 }
 
@@ -196,22 +216,22 @@ function wp_user_activity_manage_custom_column_data( $column = '', $post_id = 0 
 	switch ( $column ) {
 
 		// Attempt to output human-readable action
-		case 'type' :
+		case 'activity_type' :
 			echo wp_get_user_activity_type_icon( $post, $meta );
 			break;
 
 		// User who performed this activity
-		case 'username' :
+		case 'activity_username' :
 			echo wp_get_user_activity_action( $post, $meta );
 			break;
 
 		// Session of the user who performed this activity
-		case 'session' :
+		case 'activity_session' :
 			echo '<abbr title="' . wp_get_user_activity_ua( $post, $meta ) . '">' . wp_get_user_activity_ip( $post, $meta ) . '</abbr>';
 			break;
 
 		// Attempt to output helpful connection to object
-		case 'when' :
+		case 'activity_when' :
 			$when = strtotime( $post->post_date );
 			$date = get_option( 'date_format' );
 			$time = get_option( 'time_format' );
@@ -229,13 +249,12 @@ function wp_user_activity_manage_custom_column_data( $column = '', $post_id = 0 
  */
 function wp_user_activity_admin_assets() {
 
-	// Bail if not an activity post type
-	if ( 'activity' !== $GLOBALS['typenow'] ) {
-		return;
-	}
+	// Asset management
+	$url = wp_user_activity_get_plugin_url();
+	$ver = wp_user_activity_get_asset_version();
 
 	// Activity styling
-	wp_enqueue_style( 'wp_user_activity', wp_user_activity_get_plugin_url() . '/assets/css/activity.css', false, wp_user_activity_get_asset_version() );
+	wp_enqueue_style( 'wp_user_activity', $url . '/assets/css/activity.css', false, $ver );
 }
 
 /**
@@ -361,4 +380,27 @@ function wp_user_activity_add_dropdown_filters( $post_type = '' ) {
 
 	// Output the filters
 	ob_end_flush();
+}
+
+/**
+ * Add new section to User Profiles
+ *
+ * @since 0.1.9
+ *
+ * @param array $sections
+ */
+function wp_user_activity_add_profile_section( $sections = array() ) {
+
+	// Copy for modifying
+	$new_sections = $sections;
+
+	// Add the "Activity" section
+	$new_sections['activity'] = array(
+		'slug' => 'activity',
+		'name' => esc_html__( 'Activity', 'wp-user-activity' ),
+		'cap'  => 'read_activity'
+	);
+
+	// Filter & return
+	return apply_filters( 'wp_user_activity_add_profile_section', $new_sections, $sections );
 }

@@ -5,7 +5,7 @@
  * Plugin URI:  https://wordpress.org/plugins/wp-term-meta/
  * Description: Metadata, for taxonomy terms.
  * Author:      John James Jacoby
- * Version:     0.1.3
+ * Version:     0.1.4
  * Author URI:  https://profiles.wordpress.org/johnjamesjacoby/
  * License:     GPL v2 or later
  */
@@ -228,6 +228,7 @@ final class WP_Term_Meta {
 	 */
 	public function add_termmeta_to_db_object() {
 		$this->db->termmeta = "{$this->db->prefix}termmeta";
+		$this->db->tables[] = "termmeta";
 	}
 
 	/**
@@ -279,6 +280,7 @@ final class WP_Term_Meta {
 		// Should we switch?
 		if ( false !== $site_id ) {
 			$switched = true;
+			require_once ABSPATH . '/wp-includes/ms-blogs.php';
 			switch_to_blog( $site_id );
 		}
 
@@ -304,7 +306,7 @@ final class WP_Term_Meta {
 
 		// If activated on a particular blog, just set it up there.
 		if ( false === $network_wide ) {
-			$this->install();
+			$this->install(false);
 			return;
 		}
 
@@ -349,12 +351,13 @@ final class WP_Term_Meta {
 	 */
 	private function upgrade_database( $old_version = 0 ) {
 
-		$old_version = (int) $old_version;
-
 		// The main column alter
-		if ( $old_version < 201508110005 ) {
-			$this->create_termmeta_table();
+		if ( version_compare( (int) $old_version, 201509010001, '>=' ) ) {
+			return;
 		}
+
+		// Create term table
+		$this->create_termmeta_table();
 
 		// Update the DB version
 		update_option( $this->db_version_key, $this->db_version );

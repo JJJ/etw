@@ -2,8 +2,8 @@
 Contributors: johnjamesjacoby, stuttter
 Tags: users, activity, log, attachment, comment, core, export, menu, plugin, post, settings, term, theme, user, widget
 Requires at least: 4.3
-Tested up to: 4.3
-Stable tag: 0.1.2
+Tested up to: 4.4
+Stable tag: 0.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,14 +44,16 @@ Admin created the topic "I need help!" 5 days ago.
 
 = Also checkout =
 
+* [WP Event Calendar](https://wordpress.org/plugins/wp-event-calendar/ "The best way to manage events in WordPress.")
 * [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ "Metadata, for taxonomy terms.")
 * [WP Term Order](https://wordpress.org/plugins/wp-term-order/ "Sort taxonomy terms, your way.")
 * [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
 * [WP Term Colors](https://wordpress.org/plugins/wp-term-colors/ "Pretty colors for categories, tags, and other taxonomy terms.")
 * [WP Term Icons](https://wordpress.org/plugins/wp-term-icons/ "Pretty icons for categories, tags, and other taxonomy terms.")
 * [WP Term Visibility](https://wordpress.org/plugins/wp-term-visibility/ "Visibilities for categories, tags, and other taxonomy terms.")
-* [WP Event Calendar](https://wordpress.org/plugins/wp-event-calendar/ "The best way to manage events in WordPress.")
+* [WP User Avatars](https://wordpress.org/plugins/wp-user-avatars/ "Allow users to upload avatars or choose them from your media library.")
 * [WP User Groups](https://wordpress.org/plugins/wp-user-groups/ "Group users together with taxonomies & terms.")
+* [WP User Profiles](https://wordpress.org/plugins/wp-user-profiles/ "A sophisticated way to edit users in WordPress.")
 
 == Screenshots ==
 
@@ -99,6 +101,23 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-user-activ
 http://github.com/stuttter/wp-user-activity/
 
 == Changelog ==
+
+= 0.1.7 =
+* Fix list-table issue causing fatal errors
+
+= 0.1.6 =
+* Prevent user profile activity from leaking out
+
+= 0.1.5 =
+* Update column names
+* Add support for WP User Profiles
+
+= 0.1.4 =
+* Improve compatibility with other plugins
+
+= 0.1.3 =
+* Add menu humility filter
+* Improve capability checks
 
 = 0.1.2 =
 * Improve admin styling
