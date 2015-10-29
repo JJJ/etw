@@ -15,7 +15,7 @@ class WP {
 	 * @access public
 	 * @var array
 	 */
-	public $public_query_vars = array('m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'comments_popup', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'title');
+	public $public_query_vars = array('m', 'p', 'posts', 'w', 'cat', 'withcomments', 'withoutcomments', 's', 'search', 'exact', 'sentence', 'calendar', 'page', 'paged', 'more', 'tb', 'pb', 'author', 'order', 'orderby', 'year', 'monthnum', 'day', 'hour', 'minute', 'second', 'name', 'category_name', 'tag', 'feed', 'author_name', 'static', 'pagename', 'page_id', 'error', 'comments_popup', 'attachment', 'attachment_id', 'subpost', 'subpost_id', 'preview', 'robots', 'taxonomy', 'term', 'cpage', 'post_type', 'title', 'embed', 'oembed', 'format', 'url', '_jsonp', 'maxwidth' );
 
 	/**
 	 * Private query variables.
@@ -209,8 +209,16 @@ class WP {
 
 						if ( $wp_rewrite->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
 							// This is a verbose page match, let's check to be sure about it.
-							if ( ! get_page_by_path( $matches[ $varmatch[1] ] ) )
+							$page = get_page_by_path( $matches[ $varmatch[1] ] );
+							if ( ! $page ) {
 						 		continue;
+							}
+
+							$post_status_obj = get_post_status_object( $page->post_status );
+							if ( ! $post_status_obj->public && ! $post_status_obj->protected
+								&& ! $post_status_obj->private && $post_status_obj->exclude_from_search ) {
+								continue;
+							}
 						}
 
 						// Got a match.
@@ -303,12 +311,10 @@ class WP {
 		// Don't allow non-public taxonomies to be queried from the front-end.
 		if ( ! is_admin() ) {
 			foreach ( get_taxonomies( array( 'public' => false ), 'objects' ) as $taxonomy => $t ) {
-				// Check first for taxonomy-specific query_var.
-				if ( $t->query_var && isset( $this->query_vars[ $t->query_var ] ) ) {
-					unset( $this->query_vars[ $t->query_var ] );
-				}
-
-				// Next, check the 'taxonomy' query_var.
+				/*
+				 * Disallow when set to the 'taxonomy' query var.
+				 * Non-public taxonomies cannot register custom query vars. See register_taxonomy().
+				 */
 				if ( isset( $this->query_vars['taxonomy'] ) && $taxonomy === $this->query_vars['taxonomy'] ) {
 					unset( $this->query_vars['taxonomy'], $this->query_vars['term'] );
 				}
@@ -357,12 +363,13 @@ class WP {
 	}
 
 	/**
-	 * Send additional HTTP headers for caching, content type, etc.
+	 * Sends additional HTTP headers for caching, content type, etc.
 	 *
-	 * Sets the X-Pingback header, 404 status (if 404), Content-type. If showing
-	 * a feed, it will also send last-modified, etag, and 304 status if needed.
+	 * Sets the Content-Type header. Sets the 'error' status (if passed) and optionally exits.
+	 * If showing a feed, it will also send Last-Modified, ETag, and 304 status if needed.
 	 *
 	 * @since 2.0.0
+	 * @since 4.4.0 `X-Pingback` header is added conditionally after posts have been queried in handle_404().
 	 */
 	public function send_headers() {
 		$headers = array();
@@ -581,6 +588,10 @@ class WP {
 	 * issued, and if the request was not a search or the homepage.
 	 *
 	 * Otherwise, issue a 200.
+	 *
+	 * This sets headers after posts have been queried. handle_404() really means "handle status."
+	 * By inspecting the result of querying posts, seemingly successful requests can be switched to
+	 * a 404 so that canonical redirection logic can kick in.
 	 *
 	 * @since 2.0.0
 	 *

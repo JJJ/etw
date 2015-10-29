@@ -68,6 +68,12 @@ get_current_screen()->set_help_sidebar(
     '<p>' . __('<a href="https://wordpress.org/support/" target="_blank">Support Forums</a>') . '</p>'
 );
 
+get_current_screen()->set_screen_reader_content( array(
+	'heading_views'      => __( 'Filter users list' ),
+	'heading_pagination' => __( 'Users list navigation' ),
+	'heading_list'       => __( 'Users list' ),
+) );
+
 if ( empty($_REQUEST) ) {
 	$referer = '<input type="hidden" name="wp_http_referer" value="'. esc_attr( wp_unslash( $_SERVER['REQUEST_URI'] ) ) . '" />';
 } elseif ( isset($_REQUEST['wp_http_referer']) ) {
@@ -95,8 +101,16 @@ case 'promote':
 	}
 
 	$editable_roles = get_editable_roles();
-	if ( empty( $editable_roles[$_REQUEST['new_role']] ) )
-		wp_die(__('You can&#8217;t give users that role.'));
+	$role = false;
+	if ( ! empty( $_REQUEST['new_role2'] ) ) {
+		$role = $_REQUEST['new_role2'];
+	} elseif ( ! empty( $_REQUEST['new_role'] ) ) {
+		$role = $_REQUEST['new_role'];
+	}
+
+	if ( ! $role || empty( $editable_roles[ $role ] ) ) {
+		wp_die( __( 'You can&#8217;t give users that role.' ) );
+	}
 
 	$userids = $_REQUEST['users'];
 	$update = 'promote';
@@ -106,7 +120,7 @@ case 'promote':
 		if ( ! current_user_can('promote_user', $id) )
 			wp_die(__('You can&#8217;t edit that user.'));
 		// The new role of the current user must also have the promote_users cap or be a multisite super admin
-		if ( $id == $current_user->ID && ! $wp_roles->role_objects[ $_REQUEST['new_role'] ]->has_cap('promote_users')
+		if ( $id == $current_user->ID && ! $wp_roles->role_objects[ $role ]->has_cap('promote_users')
 			&& ! ( is_multisite() && is_super_admin() ) ) {
 				$update = 'err_admin_role';
 				continue;
@@ -122,7 +136,7 @@ case 'promote':
 		}
 
 		$user = get_userdata( $id );
-		$user->set_role($_REQUEST['new_role']);
+		$user->set_role( $role );
 	}
 
 	wp_redirect(add_query_arg('update', $update, $redirect));
@@ -268,7 +282,7 @@ case 'delete':
 	do_action( 'delete_user_form', $current_user );
 	?>
 	<input type="hidden" name="action" value="dodelete" />
-	<?php submit_button( __('Confirm Deletion'), 'secondary' ); ?>
+	<?php submit_button( __('Confirm Deletion'), 'primary' ); ?>
 <?php else : ?>
 	<p><?php _e('There are no valid users selected for deletion.'); ?></p>
 <?php endif; ?>
@@ -366,7 +380,7 @@ case 'remove':
 </ul>
 <?php if ( $go_remove ) : ?>
 		<input type="hidden" name="action" value="doremove" />
-		<?php submit_button( __('Confirm Removal'), 'secondary' ); ?>
+		<?php submit_button( __('Confirm Removal'), 'primary' ); ?>
 <?php else : ?>
 	<p><?php _e('There are no valid users selected for removal.'); ?></p>
 <?php endif; ?>

@@ -220,7 +220,7 @@ function wp_popular_terms_checklist( $taxonomy, $default = 0, $number = 10, $ech
 }
 
 /**
- * {@internal Missing Short Description}}
+ * Outputs a link category checklist element.
  *
  * @since 2.5.1
  *
@@ -314,8 +314,13 @@ function get_inline_data($post) {
 
 		} elseif ( $taxonomy->show_ui ) {
 
+			$terms_to_edit = get_terms_to_edit( $post->ID, $taxonomy_name );
+			if ( ! is_string( $terms_to_edit ) ) {
+				$terms_to_edit = '';
+			}
+
 			echo '<div class="tags_input" id="'.$taxonomy_name.'_'.$post->ID.'">'
-				. esc_html( str_replace( ',', ', ', get_terms_to_edit( $post->ID, $taxonomy_name ) ) ) . '</div>';
+				. esc_html( str_replace( ',', ', ', $terms_to_edit ) ) . '</div>';
 
 		}
 	}
@@ -330,7 +335,7 @@ function get_inline_data($post) {
 }
 
 /**
- * {@internal Missing Short Description}}
+ * Outputs the in-line comment reply-to form in the Comments list table.
  *
  * @since 2.7.0
  *
@@ -380,8 +385,21 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 <?php else : ?>
 <div id="com-reply" style="display:none;"><div id="replyrow" style="display:none;">
 <?php endif; ?>
-	<div id="replyhead" style="display:none;"><h5><?php _e( 'Reply to Comment' ); ?></h5></div>
-	<div id="addhead" style="display:none;"><h5><?php _e('Add new Comment'); ?></h5></div>
+	<fieldset class="comment-reply">
+	<legend>
+		<span class="hidden" id="editlegend"><?php _e( 'Edit Comment' ); ?></span>
+		<span class="hidden" id="replyhead"><?php _e( 'Reply to Comment' ); ?></span>
+		<span class="hidden" id="addhead"><?php _e( 'Add new Comment' ); ?></span>
+	</legend>
+
+	<div id="replycontainer">
+	<label for="replycontent" class="screen-reader-text"><?php _e( 'Comment' ); ?></label>
+	<?php
+	$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' );
+	wp_editor( '', 'replycontent', array( 'media_buttons' => false, 'tinymce' => false, 'quicktags' => $quicktags_settings ) );
+	?>
+	</div>
+
 	<div id="edithead" style="display:none;">
 		<div class="inside">
 		<label for="author-name"><?php _e( 'Name' ) ?></label>
@@ -397,14 +415,6 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 		<label for="author-url"><?php _e('URL') ?></label>
 		<input type="text" id="author-url" name="newcomment_author_url" class="code" size="103" value="" />
 		</div>
-		<div style="clear:both;"></div>
-	</div>
-
-	<div id="replycontainer">
-	<?php
-	$quicktags_settings = array( 'buttons' => 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' );
-	wp_editor( '', 'replycontent', array( 'media_buttons' => false, 'tinymce' => false, 'quicktags' => $quicktags_settings ) );
-	?>
 	</div>
 
 	<p id="replysubmit" class="submit">
@@ -415,7 +425,6 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 	<a href="#comments-form" class="cancel button-secondary alignleft"><?php _e('Cancel'); ?></a>
 	<span class="waiting spinner"></span>
 	<span class="error" style="display:none;"></span>
-	<br class="clear" />
 	</p>
 
 	<input type="hidden" name="action" id="action" value="" />
@@ -430,6 +439,7 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 		if ( current_user_can( 'unfiltered_html' ) )
 			wp_nonce_field( 'unfiltered-html-comment', '_wp_unfiltered_html_comment', false );
 	?>
+	</fieldset>
 <?php if ( $table_row ) : ?>
 </td></tr></tbody></table>
 <?php else : ?>
@@ -456,7 +466,7 @@ function wp_comment_trashnotice() {
 }
 
 /**
- * {@internal Missing Short Description}}
+ * Outputs a post's public meta data in the Custom Fields meta box.
  *
  * @since 1.2.0
  *
@@ -499,7 +509,7 @@ function list_meta( $meta ) {
 }
 
 /**
- * {@internal Missing Short Description}}
+ * Outputs a single row of public meta data in the Custom Fields meta box.
  *
  * @since 2.5.0
  *
@@ -558,7 +568,7 @@ function _list_meta_row( $entry, &$count ) {
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param WP_Post $post Optional. The post being edited.
  */
@@ -748,7 +758,7 @@ function page_template_dropdown( $default = '' ) {
  * @since 1.5.0
  * @since 4.4.0 `$post` argument was added.
  *
- * @global wpdb $wpdb
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int         $default Optional. The default page ID to be pre-selected. Default 0.
  * @param int         $parent  Optional. The parent page ID. Default 0.
@@ -835,44 +845,56 @@ function wp_import_upload_form( $action ) {
 <input type="hidden" name="action" value="save" />
 <input type="hidden" name="max_file_size" value="<?php echo $bytes; ?>" />
 </p>
-<?php submit_button( __('Upload file and import'), 'button' ); ?>
+<?php submit_button( __('Upload file and import'), 'primary' ); ?>
 </form>
 <?php
 	endif;
 }
 
 /**
- * Add a meta box to an edit form.
+ * Adds a meta box to one or more screens.
  *
  * @since 2.5.0
+ * @since 4.4.0 The `$screen` parameter now accepts an array of screen IDs.
  *
  * @global array $wp_meta_boxes
  *
- * @param string           $id            String for use in the 'id' attribute of tags.
- * @param string           $title         Title of the meta box.
- * @param callback         $callback      Function that fills the box with the desired content.
- *                                        The function should echo its output.
- * @param string|WP_Screen $screen        Optional. The screen on which to show the box (like a post
- *                                        type, 'link', or 'comment'). Default is the current screen.
- * @param string           $context       Optional. The context within the screen where the boxes
- *                                        should display. Available contexts vary from screen to
- *                                        screen. Post edit screen contexts include 'normal', 'side',
- *                                        and 'advanced'. Comments screen contexts include 'normal'
- *                                        and 'side'. Menus meta boxes (accordion sections) all use
- *                                        the 'side' context. Global default is 'advanced'.
- * @param string           $priority      Optional. The priority within the context where the boxes
- *                                        should show ('high', 'low'). Default 'default'.
- * @param array            $callback_args Optional. Data that should be set as the $args property
- *                                        of the box array (which is the second parameter passed
- *                                        to your callback). Default null.
+ * @param string                 $id            Meta box ID (used in the 'id' attribute for the meta box).
+ * @param string                 $title         Title of the meta box.
+ * @param callable               $callback      Function that fills the box with the desired content.
+ *                                              The function should echo its output.
+ * @param string|array|WP_Screen $screen        Optional. The screen or screens on which to show the box
+ *                                              (such as a post type, 'link', or 'comment'). Accepts a single
+ *                                              screen ID, WP_Screen object, or array of screen IDs. Default
+ *                                              is the current screen.
+ * @param string                 $context       Optional. The context within the screen where the boxes
+ *                                              should display. Available contexts vary from screen to
+ *                                              screen. Post edit screen contexts include 'normal', 'side',
+ *                                              and 'advanced'. Comments screen contexts include 'normal'
+ *                                              and 'side'. Menus meta boxes (accordion sections) all use
+ *                                              the 'side' context. Global default is 'advanced'.
+ * @param string                 $priority      Optional. The priority within the context where the boxes
+ *                                              should show ('high', 'low'). Default 'default'.
+ * @param array                  $callback_args Optional. Data that should be set as the $args property
+ *                                              of the box array (which is the second parameter passed
+ *                                              to your callback). Default null.
  */
 function add_meta_box( $id, $title, $callback, $screen = null, $context = 'advanced', $priority = 'default', $callback_args = null ) {
 	global $wp_meta_boxes;
 
-	if ( empty( $screen ) )
+	if ( empty( $screen ) ) {
 		$screen = get_current_screen();
-	elseif ( is_string( $screen ) )
+	} elseif ( is_string( $screen ) ) {
 		$screen = convert_to_screen( $screen );
+	} elseif ( is_array( $screen ) ) {
+		foreach ( $screen as $single_screen ) {
+			add_meta_box( $id, $title, $callback, $single_screen, $context, $priority, $callback_args );
+		}
+	}
+
+	if ( ! isset( $screen->id ) ) {
+		return;
+	}
 
 	$page = $screen->id;
 
@@ -984,11 +1006,12 @@ function do_meta_boxes( $screen, $context, $object ) {
 					$hidden_class = in_array($box['id'], $hidden) ? ' hide-if-js' : '';
 					echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes($box['id'], $page) . $hidden_class . '" ' . '>' . "\n";
 					if ( 'dashboard_browser_nag' != $box['id'] ) {
-						echo '<button class="handlediv button-link" title="' . esc_attr__( 'Click to toggle' ) . '" aria-expanded="true">';
-						echo '<span class="screen-reader-text">' . sprintf( __( 'Click to toggle %s panel' ), $box['title'] ) . '</span><br />';
+						echo '<button type="button" class="handlediv button-link" aria-expanded="true">';
+						echo '<span class="screen-reader-text">' . sprintf( __( 'Toggle panel: %s' ), $box['title'] ) . '</span>';
+						echo '<span class="toggle-indicator" aria-hidden="true"></span>';
 						echo '</button>';
 					}
-					echo "<h3 class='hndle'><span>{$box['title']}</span></h3>\n";
+					echo "<h2 class='hndle'><span>{$box['title']}</span></h2>\n";
 					echo '<div class="inside">' . "\n";
 					call_user_func($box['callback'], $object, $box);
 					echo "</div>\n";
@@ -1005,23 +1028,40 @@ function do_meta_boxes( $screen, $context, $object ) {
 }
 
 /**
- * Remove a meta box from an edit form.
+ * Removes a meta box from one or more screens.
  *
  * @since 2.6.0
+ * @since 4.4.0 The `$screen` parameter now accepts an array of screen IDs.
  *
  * @global array $wp_meta_boxes
  *
- * @param string        $id      String for use in the 'id' attribute of tags.
- * @param string|object $screen  The screen on which to show the box (post, page, link).
- * @param string        $context The context within the page where the boxes should show ('normal', 'advanced').
+ * @param string                 $id      Meta box ID (used in the 'id' attribute for the meta box).
+ * @param string|array|WP_Screen $screen  The screen or screens on which the meta box is shown (such as a
+ *                                        post type, 'link', or 'comment'). Accepts a single screen ID,
+ *                                        WP_Screen object, or array of screen IDs.
+ * @param string                 $context Optional. The context within the screen where the boxes
+ *                                        should display. Available contexts vary from screen to
+ *                                        screen. Post edit screen contexts include 'normal', 'side',
+ *                                        and 'advanced'. Comments screen contexts include 'normal'
+ *                                        and 'side'. Menus meta boxes (accordion sections) all use
+ *                                        the 'side' context. Global default is 'advanced'.
  */
-function remove_meta_box($id, $screen, $context) {
+function remove_meta_box( $id, $screen, $context ) {
 	global $wp_meta_boxes;
 
-	if ( empty( $screen ) )
+	if ( empty( $screen ) ) {
 		$screen = get_current_screen();
-	elseif ( is_string( $screen ) )
+	} elseif ( is_string( $screen ) ) {
 		$screen = convert_to_screen( $screen );
+	} elseif ( is_array( $screen ) ) {
+		foreach ( $screen as $single_screen ) {
+			remove_meta_box( $id, $single_screen, $context );
+		}
+	}
+
+	if ( ! isset( $screen->id ) ) {
+		return;
+	}
 
 	$page = $screen->id;
 
@@ -1090,7 +1130,7 @@ function do_accordion_sections( $screen, $context, $object ) {
 					<li class="control-section accordion-section <?php echo $hidden_class; ?> <?php echo $open_class; ?> <?php echo esc_attr( $box['id'] ); ?>" id="<?php echo esc_attr( $box['id'] ); ?>">
 						<h3 class="accordion-section-title hndle" tabindex="0">
 							<?php echo esc_html( $box['title'] ); ?>
-							<span class="screen-reader-text"><?php _e( 'Press return or enter to expand' ); ?></span>
+							<span class="screen-reader-text"><?php _e( 'Press return or enter to open this section' ); ?></span>
 						</h3>
 						<div class="accordion-section-content <?php postbox_classes( $box['id'], $page ); ?>">
 							<div class="inside">
@@ -1412,7 +1452,7 @@ function settings_errors( $setting = '', $sanitize = false, $hide_on_update = fa
 }
 
 /**
- * {@internal Missing Short Description}}
+ * Outputs the modal window used for attaching media to posts or pages in the media-listing screen.
  *
  * @since 2.7.0
  *
@@ -1631,12 +1671,14 @@ function _post_states($post) {
 		$post_states['scheduled'] = __( 'Scheduled' );
 	}
 
-	if ( get_option( 'page_on_front' ) == $post->ID ) {
-		$post_states['page_on_front'] = __( 'Front Page' );
-	}
+	if ( 'page' === get_option( 'show_on_front' ) ) {
+		if ( intval( get_option( 'page_on_front' ) ) === $post->ID ) {
+			$post_states['page_on_front'] = __( 'Front Page' );
+		}
 
-	if ( get_option( 'page_for_posts' ) == $post->ID ) {
-		$post_states['page_for_posts'] = __( 'Posts Page' );
+		if ( intval( get_option( 'page_for_posts' ) ) === $post->ID ) {
+			$post_states['page_for_posts'] = __( 'Posts Page' );
+		}
 	}
 
 	/**
@@ -1652,7 +1694,7 @@ function _post_states($post) {
 	if ( ! empty($post_states) ) {
 		$state_count = count($post_states);
 		$i = 0;
-		echo ' - ';
+		echo ' &mdash; ';
 		foreach ( $post_states as $state ) {
 			++$i;
 			( $i == $state_count ) ? $sep = '' : $sep = ', ';
@@ -1699,7 +1741,7 @@ function _media_states( $post ) {
 	if ( ! empty( $media_states ) ) {
 		$state_count = count( $media_states );
 		$i = 0;
-		echo ' - ';
+		echo ' &mdash; ';
 		foreach ( $media_states as $state ) {
 			++$i;
 			( $i == $state_count ) ? $sep = '' : $sep = ', ';
@@ -1947,6 +1989,8 @@ function _local_storage_notice() {
  * number of ratings may also be displayed by passing the $number parameter.
  *
  * @since 3.8.0
+ * @since 4.4.0 Introduced the `echo` parameter.
+ *
  * @param array $args {
  *     Optional. Array of star ratings arguments.
  *
@@ -1955,13 +1999,16 @@ function _local_storage_notice() {
  *     @type string $type   Format that the $rating is in. Valid values are 'rating' (default),
  *                          or, 'percent'. Default 'rating'.
  *     @type int    $number The number of ratings that makes up this rating. Default 0.
+ *     @type bool   $echo   Whether to echo the generated markup. False to return the markup instead
+ *                          of echoing it. Default true.
  * }
  */
 function wp_star_rating( $args = array() ) {
 	$defaults = array(
 		'rating' => 0,
-		'type' => 'rating',
+		'type'   => 'rating',
 		'number' => 0,
+		'echo'   => true,
 	);
 	$r = wp_parse_args( $args, $defaults );
 
@@ -1987,12 +2034,18 @@ function wp_star_rating( $args = array() ) {
 		$title = sprintf( __( '%s rating' ), number_format_i18n( $rating, 1 ) );
 	}
 
-	echo '<div class="star-rating" title="' . esc_attr( $title ) . '">';
-	echo '<span class="screen-reader-text">' . $title . '</span>';
-	echo str_repeat( '<div class="star star-full"></div>', $full_stars );
-	echo str_repeat( '<div class="star star-half"></div>', $half_stars );
-	echo str_repeat( '<div class="star star-empty"></div>', $empty_stars);
-	echo '</div>';
+	$output = '<div class="star-rating" title="' . esc_attr( $title ) . '">';
+	$output .= '<span class="screen-reader-text">' . $title . '</span>';
+	$output .= str_repeat( '<div class="star star-full"></div>', $full_stars );
+	$output .= str_repeat( '<div class="star star-half"></div>', $half_stars );
+	$output .= str_repeat( '<div class="star star-empty"></div>', $empty_stars );
+	$output .= '</div>';
+
+	if ( $r['echo'] ) {
+		echo $output;
+	}
+
+	return $output;
 }
 
 /**

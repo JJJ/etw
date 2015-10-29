@@ -452,7 +452,7 @@ class WP_Upgrader {
 			$source = trailingslashit( $args['source'] ) . trailingslashit( $source_files[0] );
 		} elseif ( count( $source_files ) == 0 ) {
 			return new WP_Error( 'incompatible_archive_empty', $this->strings['incompatible_archive'], $this->strings['no_files'] ); // There are no files?
-		} else { //It's only a single file, the upgrader will use the foldername of this file as the destination folder. foldername is based on zip filename.
+		} else { // It's only a single file, the upgrader will use the folder name of this file as the destination folder. Folder name is based on zip filename.
 			$source = trailingslashit( $args['source'] );
 		}
 
@@ -844,6 +844,8 @@ class Plugin_Upgrader extends WP_Upgrader {
 		$this->install_strings();
 
 		add_filter('upgrader_source_selection', array($this, 'check_package') );
+		// Clear cache so wp_update_plugins() knows about the new plugin.
+		add_action( 'upgrader_process_complete', 'wp_clean_plugins_cache', 9, 0 );
 
 		$this->run( array(
 			'package' => $package,
@@ -856,6 +858,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 			)
 		) );
 
+		remove_action( 'upgrader_process_complete', 'wp_clean_plugins_cache', 9 );
 		remove_filter('upgrader_source_selection', array($this, 'check_package') );
 
 		if ( ! $this->result || is_wp_error($this->result) )
@@ -876,7 +879,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 	 *
 	 * @param string $plugin The basename path to the main plugin file.
 	 * @param array  $args {
-	 *     Optional. Other arguments for upgrading a plugin package. Defualt empty array.
+	 *     Optional. Other arguments for upgrading a plugin package. Default empty array.
 	 *
 	 *     @type bool $clear_update_cache Whether to clear the plugin updates cache if successful.
 	 *                                    Default true.
@@ -1232,7 +1235,7 @@ class Theme_Upgrader extends WP_Upgrader {
 	 *
 	 * @since 2.8.0
 	 * @access public
-	 * @var array|WP_Erorr $result
+	 * @var array|WP_Error $result
 	 * @see WP_Upgrader::$result
 	 */
 	public $result;
@@ -1408,6 +1411,8 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		add_filter('upgrader_source_selection', array($this, 'check_package') );
 		add_filter('upgrader_post_install', array($this, 'check_parent_theme_filter'), 10, 3);
+		// Clear cache so wp_update_themes() knows about the new theme.
+		add_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9, 0 );
 
 		$this->run( array(
 			'package' => $package,
@@ -1420,6 +1425,7 @@ class Theme_Upgrader extends WP_Upgrader {
 			),
 		) );
 
+		remove_action( 'upgrader_process_complete', 'wp_clean_themes_cache', 9 );
 		remove_filter('upgrader_source_selection', array($this, 'check_package') );
 		remove_filter('upgrader_post_install', array($this, 'check_parent_theme_filter'));
 
@@ -1867,9 +1873,14 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			return;
 		}
 
-		$skin = new Language_Pack_Upgrader_Skin( array(
-			'skip_header_footer' => true,
-		) );
+		// Re-use the automatic upgrader skin if the parent upgrader is using it.
+		if ( $upgrader && $upgrader->skin instanceof Automatic_Upgrader_Skin ) {
+			$skin = $upgrader->skin;
+		} else {
+			$skin = new Language_Pack_Upgrader_Skin( array(
+				'skip_header_footer' => true,
+			) );
+		}
 
 		$lp_upgrader = new Language_Pack_Upgrader( $skin );
 		$lp_upgrader->bulk_upgrade( $language_updates );
@@ -2147,7 +2158,7 @@ class Core_Upgrader extends WP_Upgrader {
 	 * @access public
 	 *
 	 * @global WP_Filesystem_Base $wp_filesystem Subclass
-	 * @global callback           $_wp_filesystem_direct_method
+	 * @global callable           $_wp_filesystem_direct_method
 	 *
 	 * @param object $current Response object for whether WordPress is current.
 	 * @param array  $args {
@@ -2421,7 +2432,7 @@ class Core_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Compare the disk file checksums agains the expected checksums.
+	 * Compare the disk file checksums against the expected checksums.
 	 *
 	 * @since 3.7.0
 	 * @access public
@@ -2593,7 +2604,7 @@ class WP_Automatic_Updater {
 		if ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS )
 			return true;
 
-		if ( defined( 'WP_INSTALLING' ) )
+		if ( wp_installing() )
 			return true;
 
 		// More fine grained control can be done through the WP_AUTO_UPDATE_CORE constant and filters.
@@ -2682,7 +2693,7 @@ class WP_Automatic_Updater {
 	 * @since 3.7.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb
+	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @param string $type    The type of update being checked: 'core', 'theme',
 	 *                        'plugin', 'translation'.
@@ -2842,6 +2853,18 @@ class WP_Automatic_Updater {
 		// Determine whether we can and should perform this update.
 		if ( ! $this->should_update( $type, $item, $context ) )
 			return false;
+
+		/**
+		 * Fires immediately prior to an auto-update.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param string $type    The type of update being checked: 'core', 'theme', 'plugin', or 'translation'.
+		 * @param object $item    The update offer.
+		 * @param string $context The filesystem context (a path) against which filesystem access and status
+		 *                        should be checked.
+		 */
+		do_action( 'pre_auto_update', $type, $item, $context );
 
 		$upgrader_item = $item;
 		switch ( $type ) {
@@ -3368,6 +3391,24 @@ class WP_Automatic_Updater {
 
 		// Plugins, Themes, Translations
 		foreach ( array( 'plugin', 'theme', 'translation' ) as $type ) {
+
+			/**
+			 * Filter to control whether a notification email is sent to the site admin email address for
+			 * plugin, theme, and translation updates.
+			 *
+			 * By default, this only has an effect when automatic background updates are enabled and a
+			 * development version of WordPress is in use.
+			 *
+			 * @since 4.4.0
+			 *
+			 * @param bool                 $notify Whether the site administrator is notified.
+			 * @param string               $type   The type of update. One of 'plugin', 'theme', or 'translation'.
+			 * @param WP_Automatic_Updater $this   The WP_Automatic_Updater instance.
+			 */
+			if ( ! apply_filters( 'send_update_notification_email', true, $type, $this ) ) {
+				continue;
+			}
+
 			if ( ! isset( $this->update_results[ $type ] ) )
 				continue;
 			$success_items = wp_list_filter( $this->update_results[ $type ], array( 'result' => true ) );
@@ -3400,6 +3441,10 @@ class WP_Automatic_Updater {
 				}
 			}
 			$body[] = '';
+		}
+
+		if ( empty( $body ) ) {
+			return;
 		}
 
 		$site_title = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );

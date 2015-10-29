@@ -1,9 +1,10 @@
 <?php
 /**
- * WordPress Core Ajax Handlers.
+ * Administration API: Core Ajax handlers
  *
  * @package WordPress
  * @subpackage Administration
+ * @since 2.1.0
  */
 
 //
@@ -1158,6 +1159,10 @@ function wp_ajax_add_menu_item() {
 					$_object = get_post( $menu_item_data['menu-item-object-id'] );
 				break;
 
+				case 'post_type_archive' :
+					$_object = get_post_type_object( $menu_item_data['menu-item-object'] );
+				break;
+
 				case 'taxonomy' :
 					$_object = get_term( $menu_item_data['menu-item-object-id'], $menu_item_data['menu-item-object'] );
 				break;
@@ -1877,6 +1882,10 @@ function wp_ajax_save_widget() {
 
 		$sidebar = array_diff( $sidebar, array($widget_id) );
 		$_POST = array('sidebar' => $sidebar_id, 'widget-' . $id_base => array(), 'the-widget-id' => $widget_id, 'delete_widget' => '1');
+
+		/** This action is documented in wp-admin/widgets.php */
+		do_action( 'delete_widget', $widget_id, $sidebar_id, $id_base );
+
 	} elseif ( $settings && preg_match( '/__i__|%i%/', key($settings) ) ) {
 		if ( !$multi_number )
 			wp_die( $error );
@@ -1926,6 +1935,41 @@ function wp_ajax_save_widget() {
 function wp_ajax_update_widget() {
 	global $wp_customize;
 	$wp_customize->widgets->wp_ajax_update_widget();
+}
+
+/**
+ * Ajax handler for removing inactive widgets.
+ *
+ * @since 4.4.0
+ */
+function wp_ajax_delete_inactive_widgets() {
+	check_ajax_referer( 'remove-inactive-widgets', 'removeinactivewidgets' );
+
+	if ( ! current_user_can( 'edit_theme_options' ) ) {
+		wp_die( -1 );
+	}
+
+	unset( $_POST['removeinactivewidgets'], $_POST['action'] );
+
+	do_action( 'load-widgets.php' );
+	do_action( 'widgets.php' );
+	do_action( 'sidebar_admin_setup' );
+
+	$sidebars_widgets = wp_get_sidebars_widgets();
+
+	foreach ( $sidebars_widgets['wp_inactive_widgets'] as $key => $widget_id ) {
+		$pieces = explode( '-', $widget_id );
+		$multi_number = array_pop( $pieces );
+		$id_base = implode( '-', $pieces );
+		$widget = get_option( 'widget_' . $id_base );
+		unset( $widget[$multi_number] );
+		update_option( 'widget_' . $id_base, $widget );
+		unset( $sidebars_widgets['wp_inactive_widgets'][$key] );
+	}
+
+	wp_set_sidebars_widgets( $sidebars_widgets );
+
+	wp_die();
 }
 
 /**
@@ -2797,7 +2841,8 @@ function wp_ajax_query_themes() {
 		$theme->author      = wp_kses( $theme->author, $themes_allowedtags );
 		$theme->version     = wp_kses( $theme->version, $themes_allowedtags );
 		$theme->description = wp_kses( $theme->description, $themes_allowedtags );
-		$theme->num_ratings = sprintf( _n( '(based on %s rating)', '(based on %s ratings)', $theme->num_ratings ), number_format_i18n( $theme->num_ratings ) );
+		$theme->stars       = wp_star_rating( array( 'rating' => $theme->rating, 'type' => 'percent', 'number' => $theme->num_ratings, 'echo' => false ) );
+		$theme->num_ratings = number_format_i18n( $theme->num_ratings );
 		$theme->preview_url = set_url_scheme( $theme->preview_url );
 	}
 
@@ -3057,6 +3102,7 @@ function wp_ajax_update_plugin() {
 		 * For now, surface some sort of error here.
 		 */
 		if ( $plugin_update_data === true ) {
+			$status['error'] = __( 'Plugin update failed.' );
  			wp_send_json_error( $status );
 		}
 
@@ -3083,6 +3129,10 @@ function wp_ajax_update_plugin() {
 
 		wp_send_json_error( $status );
 
+	} else {
+		// An unhandled error occured
+		$status['error'] = __( 'Plugin update failed.' );
+		wp_send_json_error( $status );
 	}
 }
 

@@ -1,11 +1,19 @@
 <?php
 /**
- * Multisite Users List Table class.
+ * List Table API: WP_MS_Users_List_Table class
  *
  * @package WordPress
- * @subpackage List_Table
+ * @subpackage Administration
+ * @since 3.1.0
+ */
+
+/**
+ * Core class used to implement displaying users in a list table for the network admin.
+ *
  * @since 3.1.0
  * @access private
+ *
+ * @see WP_List_Table
  */
 class WP_MS_Users_List_Table extends WP_List_Table {
 	/**
@@ -74,6 +82,9 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 			$args['order'] = $_REQUEST['order'];
 
 		$mode = empty( $_REQUEST['mode'] ) ? 'list' : $_REQUEST['mode'];
+
+		/** This filter is documented in wp-admin/includes/class-wp-users-list-table.php */
+		$args = apply_filters( 'users_list_table_query_args', $args );
 
 		// Query the user IDs for this page
 		$wp_user_search = new WP_User_Query( $args );
@@ -149,7 +160,6 @@ class WP_MS_Users_List_Table extends WP_List_Table {
 	public function get_columns() {
 		$users_columns = array(
 			'cb'         => '<input type="checkbox" />',
-			'id'         => __( 'ID' ),
 			'username'   => __( 'Username' ),
 			'name'       => __( 'Name' ),
 			'email'      => __( 'Email' ),

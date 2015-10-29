@@ -128,6 +128,8 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 	<?php install_themes_upload(); ?>
 	</div>
 
+	<h2 class="screen-reader-text"><?php _e( 'Filter themes list' ); ?></h2>
+
 	<div class="wp-filter">
 		<div class="filter-count">
 			<span class="count theme-count"></span>
@@ -151,17 +153,17 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 		<?php
 		$feature_list = get_theme_feature_list();
 		foreach ( $feature_list as $feature_name => $features ) {
-			echo '<div class="filter-group">';
+			echo '<fieldset class="filter-group">';
 			$feature_name = esc_html( $feature_name );
-			echo '<h4>' . $feature_name . '</h4>';
-			echo '<ol class="feature-group">';
+			echo '<legend>' . $feature_name . '</legend>';
+			echo '<div class="filter-group-feature">';
 			foreach ( $features as $feature => $feature_name ) {
 				$feature = esc_attr( $feature );
-				echo '<li><input type="checkbox" id="filter-id-' . $feature . '" value="' . $feature . '" /> ';
-				echo '<label for="filter-id-' . $feature . '">' . $feature_name . '</label></li>';
+				echo '<input type="checkbox" id="filter-id-' . $feature . '" value="' . $feature . '" /> ';
+				echo '<label for="filter-id-' . $feature . '">' . $feature_name . '</label><br>';
 			}
-			echo '</ol>';
 			echo '</div>';
+			echo '</fieldset>';
 		}
 		?>
 			<div class="filtered-by">
@@ -171,6 +173,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 			</div>
 		</div>
 	</div>
+	<h2 class="screen-reader-text"><?php _e( 'Themes list' ); ?></h2>
 	<div class="theme-browser content-filterable"></div>
 	<div class="theme-install-overlay wp-full-overlay expanded"></div>
 
@@ -239,14 +242,12 @@ if ( $tab ) {
 
 				<div class="theme-details">
 					<# if ( data.rating ) { #>
-						<div class="star-rating rating-{{ Math.round( data.rating / 10 ) * 10 }}">
-							<span class="one"></span><span class="two"></span><span class="three"></span><span class="four"></span><span class="five"></span>
-							<small class="ratings">{{ data.num_ratings }}</small>
+						<div class="theme-rating">
+							{{{ data.stars }}}
+							<span class="num-ratings">({{ data.num_ratings }})</span>
 						</div>
 					<# } else { #>
-						<div class="star-rating">
-							<small class="ratings"><?php _e( 'This theme has not been rated yet.' ); ?></small>
-						</div>
+						<span class="no-rating"><?php _e( 'This theme has not been rated yet.' ); ?></span>
 					<# } #>
 					<div class="theme-version"><?php printf( __( 'Version: %s' ), '{{ data.version }}' ); ?></div>
 					<div class="theme-description">{{{ data.description }}}</div>

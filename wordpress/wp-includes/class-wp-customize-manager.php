@@ -191,11 +191,32 @@ final class WP_Customize_Manager {
 		require_once( ABSPATH . WPINC . '/class-wp-customize-panel.php' );
 		require_once( ABSPATH . WPINC . '/class-wp-customize-section.php' );
 		require_once( ABSPATH . WPINC . '/class-wp-customize-control.php' );
-		require_once( ABSPATH . WPINC . '/class-wp-customize-widgets.php' );
-		require_once( ABSPATH . WPINC . '/class-wp-customize-nav-menus.php' );
 
-		$this->widgets = new WP_Customize_Widgets( $this );
-		$this->nav_menus = new WP_Customize_Nav_Menus( $this );
+		/**
+		 * Filter the core Customizer components to load.
+		 *
+		 * This allows Core components to be excluded from being instantiated by
+		 * filtering them out of the array. Note that this filter generally runs
+		 * during the <code>plugins_loaded</code> action, so it cannot be added
+		 * in a theme.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @see WP_Customize_Manager::__construct()
+		 *
+		 * @param array                $components List of core components to load.
+		 * @param WP_Customize_Manager $this       WP_Customize_Manager instance.
+		 */
+		$components = apply_filters( 'customize_loaded_components', array( 'widgets', 'nav_menus' ), $this );
+
+		if ( in_array( 'widgets', $components ) ) {
+			require_once( ABSPATH . WPINC . '/class-wp-customize-widgets.php' );
+			$this->widgets = new WP_Customize_Widgets( $this );
+		}
+		if ( in_array( 'nav_menus', $components ) ) {
+			require_once( ABSPATH . WPINC . '/class-wp-customize-nav-menus.php' );
+			$this->nav_menus = new WP_Customize_Nav_Menus( $this );
+		}
 
 		add_filter( 'wp_die_handler', array( $this, 'wp_die_handler' ) );
 
@@ -714,9 +735,6 @@ final class WP_Customize_Manager {
 			'activePanels' => array(),
 			'activeSections' => array(),
 			'activeControls' => array(),
-			'l10n' => array(
-				'loading'  => __( 'Loading...' ), // no ellipsis
-			),
 		);
 
 		if ( 2 == $this->nonce_tick ) {
@@ -1389,9 +1407,11 @@ final class WP_Customize_Manager {
 	 */
 	public function get_document_title_template() {
 		if ( $this->is_theme_active() ) {
-			$document_title_tmpl = _x( 'Customize: %s', 'Placeholder is the document title from the preview' );
+			/* translators: %s: document title from the preview */
+			$document_title_tmpl = __( 'Customize: %s' );
 		} else {
-			$document_title_tmpl = _x( 'Live Preview: %s', 'Placeholder is the document title from the preview' );
+			/* translators: %s: document title from the preview */
+			$document_title_tmpl = __( 'Live Preview: %s' );
 		}
 		$document_title_tmpl = html_entity_decode( $document_title_tmpl, ENT_QUOTES, 'UTF-8' ); // Because exported to JS and assigned to document.title.
 		return $document_title_tmpl;

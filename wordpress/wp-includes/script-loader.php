@@ -77,9 +77,9 @@ function wp_default_scripts( &$scripts ) {
 		'secure' => (string) ( 'https' === parse_url( site_url(), PHP_URL_SCHEME ) ),
 	) );
 
-	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils', 'list-table'), false, 1 );
+	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), false, 1 );
 	did_action( 'init' ) && $scripts->localize( 'common', 'commonL10n', array(
-		'warnDelete' => __( "You are about to permanently delete the selected items.\n  'Cancel' to stop, 'OK' to delete." ),
+		'warnDelete' => __( "You are about to permanently delete these items.\n  'Cancel' to stop, 'OK' to delete." ),
 		'dismiss'    => __( 'Dismiss this notice.' ),
 	) );
 
@@ -288,7 +288,7 @@ function wp_default_scripts( &$scripts ) {
 		'error_uploading' => __('&#8220;%s&#8221; has failed to upload.')
 	);
 
-	$scripts->add( 'plupload', '/wp-includes/js/plupload/plupload.full.min.js', array(), '2.1.1' );
+	$scripts->add( 'plupload', '/wp-includes/js/plupload/plupload.full.min.js', array(), '2.1.8' );
 	// Back compat handles:
 	foreach ( array( 'all', 'html5', 'flash', 'silverlight', 'html4' ) as $handle ) {
 		$scripts->add( "plupload-$handle", false, array( 'plupload' ), '2.1.1' );
@@ -311,7 +311,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'comment-reply', "/wp-includes/js/comment-reply$suffix.js", array(), false, 1 );
 
-	$scripts->add( 'json2', "/wp-includes/js/json2$suffix.js", array(), '2011-02-23' );
+	$scripts->add( 'json2', "/wp-includes/js/json2$suffix.js", array(), '2015-05-03' );
 	did_action( 'init' ) && $scripts->add_data( 'json2', 'conditional', 'lt IE 8' );
 
 	$scripts->add( 'underscore', "/wp-includes/js/underscore$dev_suffix.js", array(), '1.6.0', 1 );
@@ -396,8 +396,6 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'user-suggest', "/wp-admin/js/user-suggest$suffix.js", array( 'jquery-ui-autocomplete' ), false, 1 );
 
-	$scripts->add( 'list-table', "/wp-admin/js/list-table$suffix.js", array( 'jquery' ), false, 1 );
-
 	$scripts->add( 'admin-bar', "/wp-includes/js/admin-bar$suffix.js", array(), false, 1 );
 
 	$scripts->add( 'wplink', "/wp-includes/js/wplink$suffix.js", array( 'jquery' ), false, 1 );
@@ -466,6 +464,8 @@ function wp_default_scripts( &$scripts ) {
 		),
 	) );
 
+	$scripts->add( 'wp-embed', "/wp-includes/js/wp-embed$suffix.js" );
+
 	// To enqueue media-views or media-editor, call wp_enqueue_media().
 	// Both rely on numerous settings, styles, and templates to operate correctly.
 	$scripts->add( 'media-views',  "/wp-includes/js/media-views$suffix.js",  array( 'utils', 'media-models', 'wp-plupload', 'jquery-ui-sortable', 'wp-mediaelement' ), false, 1 );
@@ -498,7 +498,7 @@ function wp_default_scripts( &$scripts ) {
 			'tagDelimiter' => _x( ',', 'tag delimiter' ),
 		) );
 
-		$scripts->add( 'post', "/wp-admin/js/post$suffix.js", array( 'suggest', 'wp-lists', 'postbox', 'tags-box', 'underscore', 'word-count' ), false, 1 );
+		$scripts->add( 'post', "/wp-admin/js/post$suffix.js", array( 'suggest', 'wp-lists', 'postbox', 'tags-box', 'underscore', 'word-count', 'wp-a11y' ), false, 1 );
 		did_action( 'init' ) && $scripts->localize( 'post', 'postL10n', array(
 			'ok' => __('OK'),
 			'cancel' => __('Cancel'),
@@ -522,6 +522,7 @@ function wp_default_scripts( &$scripts ) {
 			'published' => __('Published'),
 			'saveAlert' => __('The changes you made will be lost if you navigate away from this page.'),
 			'savingText' => __('Saving Draft&#8230;'),
+			'permalinkSaved' => __( 'Permalink saved' ),
 		) );
 
 		$scripts->add( 'press-this', "/wp-admin/js/press-this$suffix.js", array( 'jquery', 'tags-box' ), false, 1 );
@@ -829,7 +830,7 @@ function wp_just_in_time_script_localization() {
 function wp_style_loader_src( $src, $handle ) {
 	global $_wp_admin_css_colors;
 
-	if ( defined('WP_INSTALLING') )
+	if ( wp_installing() )
 		return preg_replace( '#^wp-admin/#', './', $src );
 
 	if ( 'colors' == $handle ) {

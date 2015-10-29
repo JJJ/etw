@@ -7,19 +7,25 @@
  */
 
 /**
- * Add a straight rewrite rule.
+ * Adds a rewrite rule that transforms a URL structure to a set of query vars.
+ *
+ * Any value in the $after parameter that isn't 'bottom' will result in the rule
+ * being placed at the top of the rewrite rules.
  *
  * @since 2.1.0
+ * @since 4.4.0 Array support was added to the `$query` parameter.
  *
- * @global WP_Rewrite $wp_rewrite
+ * @global WP_Rewrite $wp_rewrite WordPress Rewrite Component.
  *
- * @param string $regex    Regular Expression to match request against.
- * @param string $redirect Page to redirect to.
- * @param string $after    Optional, default is 'bottom'. Where to add rule, can also be 'top'.
+ * @param string       $regex Regular expression to match request against.
+ * @param string|array $query The corresponding query vars for this rewrite rule.
+ * @param string       $after Optional. Priority of the new rule. Accepts 'top'
+ *                            or 'bottom'. Default 'bottom'.
  */
-function add_rewrite_rule($regex, $redirect, $after = 'bottom') {
+function add_rewrite_rule( $regex, $query, $after = 'bottom' ) {
 	global $wp_rewrite;
-	$wp_rewrite->add_rule($regex, $redirect, $after);
+
+	$wp_rewrite->add_rule( $regex, $query, $after );
 }
 
 /**
@@ -36,7 +42,7 @@ function add_rewrite_rule($regex, $redirect, $after = 'bottom') {
  *
  * @param string $tag   Name of the new rewrite tag.
  * @param string $regex Regular expression to substitute the tag for in rewrite rules.
- * @param string $query String to append to the rewritten query. Must end in '='. Optional.
+ * @param string $query Optional. String to append to the rewritten query. Must end in '='. Default empty.
  */
 function add_rewrite_tag( $tag, $regex, $query = '' ) {
 	// validate the tag's name
@@ -59,12 +65,13 @@ function add_rewrite_tag( $tag, $regex, $query = '' ) {
  *
  * @since 3.0.0
  *
+ * @see WP_Rewrite::add_permastruct()
  * @global WP_Rewrite $wp_rewrite
  *
  * @param string $name   Name for permalink structure.
  * @param string $struct Permalink structure.
- * @param array  $args   Optional configuration for building the rules from the permalink structure,
- *                       see {@link WP_Rewrite::add_permastruct()} for full details.
+ * @param array  $args   Optional. Arguments for building the rules from the permalink structure,
+ *                       see WP_Rewrite::add_permastruct() for full details. Default empty array.
  */
 function add_permastruct( $name, $struct, $args = array() ) {
 	global $wp_rewrite;
@@ -85,18 +92,24 @@ function add_permastruct( $name, $struct, $args = array() ) {
  *
  * @global WP_Rewrite $wp_rewrite
  *
- * @param string   $feedname
- * @param callback $function Callback to run on feed display.
+ * @param string   $feedname Feed name.
+ * @param callable $function Callback to run on feed display.
  * @return string Feed action name.
  */
-function add_feed($feedname, $function) {
+function add_feed( $feedname, $function ) {
 	global $wp_rewrite;
-	if ( ! in_array($feedname, $wp_rewrite->feeds) ) //override the file if it is
+
+	if ( ! in_array( $feedname, $wp_rewrite->feeds ) ) {
 		$wp_rewrite->feeds[] = $feedname;
+	}
+
 	$hook = 'do_feed_' . $feedname;
+
 	// Remove default function hook
-	remove_action($hook, $hook);
-	add_action($hook, $function, 10, 1);
+	remove_action( $hook, $hook );
+
+	add_action( $hook, $function, 10, 2 );
+
 	return $hook;
 }
 
@@ -335,6 +348,9 @@ function url_to_postid( $url ) {
 	$url_split = explode('?', $url);
 	$url = $url_split[0];
 
+	// Set the correct URL scheme.
+	$url = set_url_scheme( $url );
+
 	// Add 'www.' if it is absent and should be there
 	if ( false !== strpos(home_url(), '://www.') && false === strpos($url, '://www.') )
 		$url = str_replace('://', '://www.', $url);
@@ -381,8 +397,16 @@ function url_to_postid( $url ) {
 
 			if ( $wp_rewrite->use_verbose_page_rules && preg_match( '/pagename=\$matches\[([0-9]+)\]/', $query, $varmatch ) ) {
 				// This is a verbose page match, let's check to be sure about it.
-				if ( ! get_page_by_path( $matches[ $varmatch[1] ] ) )
+				$page = get_page_by_path( $matches[ $varmatch[1] ] );
+				if ( ! $page ) {
 					continue;
+				}
+
+				$post_status_obj = get_post_status_object( $page->post_status );
+				if ( ! $post_status_obj->public && ! $post_status_obj->protected
+					&& ! $post_status_obj->private && $post_status_obj->exclude_from_search ) {
+					continue;
+				}
 			}
 
 			// Got a match.

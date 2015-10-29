@@ -295,8 +295,12 @@ function retrieve_password() {
 	 * Fires before errors are returned from a password reset request.
 	 *
 	 * @since 2.1.0
+	 * @since 4.4.0 Added the `$errors` parameter.
+	 *
+	 * @param WP_Error $errors A WP_Error object containing any errors generated
+	 *                         by using invalid credentials.
 	 */
-	do_action( 'lostpassword_post' );
+	do_action( 'lostpassword_post', $errors );
 
 	if ( $errors->get_error_code() )
 		return $errors;
@@ -309,62 +313,11 @@ function retrieve_password() {
 	// Redefining user_login ensures we return the right case in the email.
 	$user_login = $user_data->user_login;
 	$user_email = $user_data->user_email;
+	$key = get_password_reset_key( $user_data );
 
-	/**
-	 * Fires before a new password is retrieved.
-	 *
-	 * @since 1.5.0
-	 * @deprecated 1.5.1 Misspelled. Use 'retrieve_password' hook instead.
-	 *
-	 * @param string $user_login The user login name.
-	 */
-	do_action( 'retreive_password', $user_login );
-
-	/**
-	 * Fires before a new password is retrieved.
-	 *
-	 * @since 1.5.1
-	 *
-	 * @param string $user_login The user login name.
-	 */
-	do_action( 'retrieve_password', $user_login );
-
-	/**
-	 * Filter whether to allow a password to be reset.
-	 *
-	 * @since 2.7.0
-	 *
-	 * @param bool true           Whether to allow the password to be reset. Default true.
-	 * @param int  $user_data->ID The ID of the user attempting to reset a password.
-	 */
-	$allow = apply_filters( 'allow_password_reset', true, $user_data->ID );
-
-	if ( ! $allow ) {
-		return new WP_Error( 'no_password_reset', __('Password reset is not allowed for this user') );
-	} elseif ( is_wp_error( $allow ) ) {
-		return $allow;
+	if ( is_wp_error( $key ) ) {
+		return $key;
 	}
-
-	// Generate something random for a password reset key.
-	$key = wp_generate_password( 20, false );
-
-	/**
-	 * Fires when a password reset key is generated.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @param string $user_login The username for the user.
-	 * @param string $key        The generated password reset key.
-	 */
-	do_action( 'retrieve_password_key', $user_login, $key );
-
-	// Now insert the key, hashed, into the DB.
-	if ( empty( $wp_hasher ) ) {
-		require_once ABSPATH . WPINC . '/class-phpass.php';
-		$wp_hasher = new PasswordHash( 8, true );
-	}
-	$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
-	$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
 
 	$message = __('Someone requested that the password be reset for the following account:') . "\r\n\r\n";
 	$message .= network_home_url( '/' ) . "\r\n\r\n";
@@ -388,10 +341,13 @@ function retrieve_password() {
 	 * Filter the subject of the password reset email.
 	 *
 	 * @since 2.8.0
+	 * @since 4.4.0 Added the `$user_login` and `$user_data` parameters.
 	 *
-	 * @param string $title Default email title.
+	 * @param string  $title      Default email title.
+	 * @param string  $user_login The username for the user.
+	 * @param WP_User $user_data  WP_User object.
 	 */
-	$title = apply_filters( 'retrieve_password_title', $title );
+	$title = apply_filters( 'retrieve_password_title', $title, $user_login, $user_data );
 
 	/**
 	 * Filter the message body of the password reset mail.
@@ -440,7 +396,7 @@ if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set
 }
 
 //Set a cookie now to see if they are supported by the browser.
-$secure = ( 'https' === parse_url( site_url(), PHP_URL_SCHEME ) && 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
+$secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 setcookie( TEST_COOKIE, 'WP Cookie check', 0, COOKIEPATH, COOKIE_DOMAIN, $secure );
 if ( SITECOOKIEPATH != COOKIEPATH )
 	setcookie( TEST_COOKIE, 'WP Cookie check', 0, SITECOOKIEPATH, COOKIE_DOMAIN, $secure );
@@ -468,6 +424,11 @@ $interim_login = isset($_REQUEST['interim-login']);
 switch ($action) {
 
 case 'postpass' :
+	if ( ! array_key_exists( 'post_password', $_POST ) ) {
+		wp_safe_redirect( wp_get_referer() );
+		exit();
+	}
+
 	require_once ABSPATH . WPINC . '/class-phpass.php';
 	$hasher = new PasswordHash( 8, true );
 
@@ -482,7 +443,12 @@ case 'postpass' :
 	 * @param int $expires The expiry time, as passed to setcookie().
 	 */
 	$expire = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
-	$secure = ( 'https' === parse_url( home_url(), PHP_URL_SCHEME ) );
+	$referer = wp_get_referer();
+	if ( $referer ) {
+		$secure = ( 'https' === parse_url( $referer, PHP_URL_SCHEME ) );
+	} else {
+		$secure = false;
+	}
 	setcookie( 'wp-postpass_' . COOKIEHASH, $hasher->HashPassword( wp_unslash( $_POST['post_password'] ) ), $expire, COOKIEPATH, COOKIE_DOMAIN, $secure );
 
 	wp_safe_redirect( wp_get_referer() );
@@ -724,8 +690,8 @@ case 'register' :
 	$user_login = '';
 	$user_email = '';
 	if ( $http_post ) {
-		$user_login = $_POST['user_login'];
-		$user_email = $_POST['user_email'];
+		$user_login = isset( $_POST['user_login'] ) ? $_POST['user_login'] : '';
+		$user_email = isset( $_POST['user_email'] ) ? $_POST['user_email'] : '';
 		$errors = register_new_user($user_login, $user_email);
 		if ( !is_wp_error($errors) ) {
 			$redirect_to = !empty( $_POST['redirect_to'] ) ? $_POST['redirect_to'] : 'wp-login.php?checkemail=registered';

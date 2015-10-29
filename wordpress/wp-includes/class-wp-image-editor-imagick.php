@@ -208,7 +208,7 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 				$size = $this->image->getImageGeometry();
 			}
 			catch ( Exception $e ) {
-				return new WP_Error( 'invalid_image', __('Could not read image size'), $this->file );
+				return new WP_Error( 'invalid_image', __( 'Could not read image size.' ), $this->file );
 			}
 		}
 
@@ -277,8 +277,10 @@ class WP_Image_Editor_Imagick extends WP_Image_Editor {
 	 *     maintain aspect ratio according to the provided dimension.
 	 *
 	 *     @type array $size {
-	 *         @type int  ['width']  Optional. Image width.
-	 *         @type int  ['height'] Optional. Image height.
+	 *         Array of height, width values, and whether to crop.
+	 *
+	 *         @type int  $width  Image width. Optional if `$height` is specified.
+	 *         @type int  $height Image height. Optional if `$width` is specified.
 	 *         @type bool $crop   Optional. Whether to crop the image. Default false.
 	 *     }
 	 * }

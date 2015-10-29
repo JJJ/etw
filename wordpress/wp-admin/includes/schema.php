@@ -27,7 +27,7 @@ $charset_collate = $wpdb->get_charset_collate();
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string $scope Optional. The tables for which to retrieve SQL. Can be all, global, ms_global, or blog tables. Defaults to all.
  * @param int $blog_id Optional. The blog ID for which to retrieve SQL. Default is the current blog ID.
@@ -57,7 +57,16 @@ function wp_get_db_schema( $scope = 'all', $blog_id = null ) {
 	$max_index_length = 191;
 
 	// Blog specific tables.
-	$blog_tables = "CREATE TABLE $wpdb->terms (
+	$blog_tables = "CREATE TABLE $wpdb->termmeta (
+  meta_id bigint(20) unsigned NOT NULL auto_increment,
+  term_id bigint(20) unsigned NOT NULL default '0',
+  meta_key varchar(255) default NULL,
+  meta_value longtext,
+  PRIMARY KEY  (meta_id),
+  KEY term_id (term_id),
+  KEY meta_key (meta_key($max_index_length))
+) $charset_collate;
+CREATE TABLE $wpdb->terms (
  term_id bigint(20) unsigned NOT NULL auto_increment,
  name varchar(200) NOT NULL default '',
  slug varchar(200) NOT NULL default '',
@@ -411,13 +420,11 @@ function populate_options() {
 	'comment_moderation' => 0,
 	'moderation_notify' => 1,
 	'permalink_structure' => '',
-	'gzipcompression' => 0,
 	'blog_charset' => 'UTF-8',
 	'moderation_keys' => '',
 	'active_plugins' => array(),
 	'category_base' => '',
 	'ping_sites' => 'http://rpc.pingomatic.com/',
-	'advanced_edit' => 0,
 	'comment_max_links' => 2,
 	'gmt_offset' => $gmt_offset,
 
@@ -498,6 +505,7 @@ function populate_options() {
 
 	// 4.3.0
 	'finished_splitting_shared_terms' => 1,
+	'site_icon' => 0,
 	);
 
 	// 3.3
@@ -558,7 +566,7 @@ function populate_options() {
 		'can_compress_scripts', 'page_uris', 'update_core', 'update_plugins', 'update_themes', 'doing_cron',
 		'random_seed', 'rss_excerpt_length', 'secret', 'use_linksupdate', 'default_comment_status_page',
 		'wporg_popular_tags', 'what_to_show', 'rss_language', 'language', 'enable_xmlrpc', 'enable_app',
-		'embed_autourls', 'default_post_edit_rows',
+		'embed_autourls', 'default_post_edit_rows', 'gzipcompression', 'advanced_edit'
 	);
 	foreach ( $unusedoptions as $option )
 		delete_option($option);

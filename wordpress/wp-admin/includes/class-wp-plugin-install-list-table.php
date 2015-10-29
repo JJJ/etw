@@ -1,11 +1,19 @@
 <?php
 /**
- * Plugin Installer List Table class.
+ * List Table API: WP_Plugin_Install_List_Table class
  *
  * @package WordPress
- * @subpackage List_Table
+ * @subpackage Administration
+ * @since 3.1.0
+ */
+
+/**
+ * Core class used to implement displaying plugins to install in a list table.
+ *
  * @since 3.1.0
  * @access private
+ *
+ * @see WP_List_Table
  */
 class WP_Plugin_Install_List_Table extends WP_List_Table {
 
@@ -258,6 +266,7 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		/** This filter is documented in wp-admin/inclues/class-wp-list-table.php */
 		$views = apply_filters( "views_{$this->screen->id}", $views );
 
+		$this->screen->render_screen_reader_content( 'heading_views' );
 ?>
 <div class="wp-filter">
 	<ul class="filter-links">
@@ -292,7 +301,9 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 
 ?>
 <div class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
-
+<?php
+	$this->screen->render_screen_reader_content( 'heading_list' );
+?>
 	<div id="the-list"<?php echo $data_attr; ?>>
 		<?php $this->display_rows_or_placeholder(); ?>
 	</div>
@@ -492,9 +503,13 @@ class WP_Plugin_Install_List_Table extends WP_List_Table {
 		?>
 		<div class="plugin-card plugin-card-<?php echo sanitize_html_class( $plugin['slug'] ); ?>">
 			<div class="plugin-card-top">
-				<a href="<?php echo esc_url( $details_link ); ?>" class="thickbox plugin-icon"><img src="<?php echo esc_attr( $plugin_icon_url ) ?>" /></a>
 				<div class="name column-name">
-					<h4><a href="<?php echo esc_url( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h4>
+					<h3>
+						<a href="<?php echo esc_url( $details_link ); ?>" class="thickbox">
+						<?php echo $title; ?>
+						<img src="<?php echo esc_attr( $plugin_icon_url ) ?>" class="plugin-icon" alt="">
+						</a>
+					</h3>
 				</div>
 				<div class="action-links">
 					<?php

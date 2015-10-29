@@ -782,15 +782,6 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			}
 		});
 
-		dom.bind( editor.getDoc(), 'dragstart', function( event ) {
-			var node = editor.selection.getNode();
-
-			// Prevent dragging images out of the caption elements
-			if ( node.nodeName === 'IMG' && dom.getParent( node, '.wp-caption' ) ) {
-				event.preventDefault();
-			}
-		});
-
 		// Prevent IE11 from making dl.wp-caption resizable
 		if ( tinymce.Env.ie && tinymce.Env.ie > 10 ) {
 			// The 'mscontrolselect' event is supported only in IE11+
@@ -963,6 +954,42 @@ tinymce.PluginManager.add( 'wpeditimage', function( editor ) {
 			event.content = editor.wpGetImgCaption( event.content );
 		}
 	});
+
+	( function() {
+		var wrap;
+
+		editor.on( 'dragstart', function() {
+			var node = editor.selection.getNode();
+
+			if ( node.nodeName === 'IMG' ) {
+				wrap = editor.dom.getParent( node, '.mceTemp' );
+
+				if ( ! wrap && node.parentNode.nodeName === 'A' && ! hasTextContent( node.parentNode ) ) {
+					wrap = node.parentNode;
+				}
+			}
+		} );
+
+		editor.on( 'drop', function( event ) {
+			var dom = editor.dom,
+				rng = tinymce.dom.RangeUtils.getCaretRangeFromPoint( event.clientX, event.clientY, editor.getDoc() );
+
+			// Don't allow anything to be dropped in a captioned image.
+			if ( dom.getParent( rng.startContainer, '.mceTemp' ) ) {
+				event.preventDefault();
+			} else if ( wrap ) {
+				event.preventDefault();
+
+				editor.undoManager.transact( function() {
+					editor.selection.setRng( rng );
+					editor.selection.setNode( wrap );
+					dom.remove( wrap );
+				} );
+			}
+
+			wrap = null;
+		} );
+	} )();
 
 	// Add to editor.wp
 	editor.wp = editor.wp || {};

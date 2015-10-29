@@ -266,7 +266,7 @@ class wpdb {
 	 * @var array
 	 */
 	var $tables = array( 'posts', 'comments', 'links', 'options', 'postmeta',
-		'terms', 'term_taxonomy', 'term_relationships', 'commentmeta' );
+		'terms', 'term_taxonomy', 'term_relationships', 'termmeta', 'commentmeta' );
 
 	/**
 	 * List of deprecated WordPress tables
@@ -381,6 +381,15 @@ class wpdb {
 	 * @var string
 	 */
 	public $term_taxonomy;
+
+	/**
+	 * WordPress Term Meta table.
+	 *
+	 * @since 4.4.0
+	 * @access public
+	 * @var string
+	 */
+	public $termmeta;
 
 	/*
 	 * Global and Multisite tables
@@ -1043,14 +1052,40 @@ class wpdb {
 			$this->ready = false;
 			if ( ! did_action( 'template_redirect' ) ) {
 				wp_load_translations_early();
-				$this->bail( sprintf( __( '<h1>Can&#8217;t select database</h1>
-<p>We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>%1$s</code> database.</p>
-<ul>
-<li>Are you sure it exists?</li>
-<li>Does the user <code>%2$s</code> have permission to use the <code>%1$s</code> database?</li>
-<li>On some systems the name of your database is prefixed with your username, so it would be like <code>username_%1$s</code>. Could that be the problem?</li>
-</ul>
-<p>If you don\'t know how to set up a database you should <strong>contact your host</strong>. If all else fails you may find help at the <a href="https://wordpress.org/support/">WordPress Support Forums</a>.</p>' ), htmlspecialchars( $db, ENT_QUOTES ), htmlspecialchars( $this->dbuser, ENT_QUOTES ) ), 'db_select_fail' );
+
+				$message = '<h1>' . __( 'Can&#8217;t select database' ) . "</h1>\n";
+
+				$message .= '<p>' . sprintf(
+					/* translators: %s: database name */
+					__( 'We were able to connect to the database server (which means your username and password is okay) but not able to select the %s database.' ),
+					'<code>' . htmlspecialchars( $db, ENT_QUOTES ) . '</code>'
+				) . "</p>\n";
+
+				$message .= "<ul>\n";
+				$message .= '<li>' . __( 'Are you sure it exists?' ) . "</li>\n";
+
+				$message .= '<li>' . sprintf(
+					/* translators: 1: database user, 2: database name */
+					__( 'Does the user %1$s have permission to use the %2$s database?' ),
+					'<code>' . htmlspecialchars( $this->dbuser, ENT_QUOTES )  . '</code>',
+					'<code>' . htmlspecialchars( $db, ENT_QUOTES ) . '</code>'
+				) . "</li>\n";
+
+				$message .= '<li>' . sprintf(
+					/* translators: %s: database name */
+					__( 'On some systems the name of your database is prefixed with your username, so it would be like <code>username_%1$s</code>. Could that be the problem?' ),
+					htmlspecialchars( $db, ENT_QUOTES )
+				). "</li>\n";
+
+				$message .= "</ul>\n";
+
+				$message .= '<p>' . sprintf(
+					/* translators: %s: support forums URL */
+					__( 'If you don&#8217;t know how to set up a database you should <strong>contact your host</strong>. If all else fails you may find help at the <a href="%s">WordPress Support Forums</a>.' ),
+					__( 'https://wordpress.org/support/' )
+				) . "</p>\n";
+
+				$this->bail( $message, 'db_select_fail' );
 			}
 		}
 	}
@@ -1494,16 +1529,28 @@ class wpdb {
 				die();
 			}
 
-			$this->bail( sprintf( __( "
-<h1>Error establishing a database connection</h1>
-<p>This either means that the username and password information in your <code>wp-config.php</code> file is incorrect or we can't contact the database server at <code>%s</code>. This could mean your host's database server is down.</p>
-<ul>
-	<li>Are you sure you have the correct username and password?</li>
-	<li>Are you sure that you have typed the correct hostname?</li>
-	<li>Are you sure that the database server is running?</li>
-</ul>
-<p>If you're unsure what these terms mean you should probably contact your host. If you still need help you can always visit the <a href='https://wordpress.org/support/'>WordPress Support Forums</a>.</p>
-" ), htmlspecialchars( $this->dbhost, ENT_QUOTES ) ), 'db_connect_fail' );
+			$message = '<h1>' . __( 'Error establishing a database connection' ) . "</h1>\n";
+
+			$message .= '<p>' . sprintf(
+				/* translators: 1: wp-config.php. 2: database host */
+				__( 'This either means that the username and password information in your %1$s file is incorrect or we can&#8217;t contact the database server at %2$s. This could mean your host&#8217;s database server is down.' ),
+				'<code>wp-config.php</code>',
+				'<code>' . htmlspecialchars( $this->dbhost, ENT_QUOTES ) . '</code>'
+			) . "</p>\n";
+
+			$message .= "<ul>\n";
+			$message .= '<li>' . __( 'Are you sure you have the correct username and password?' ) . "</li>\n";
+			$message .= '<li>' . __( 'Are you sure that you have typed the correct hostname?' ) . "</li>\n";
+			$message .= '<li>' . __( 'Are you sure that the database server is running?' ) . "</li>\n";
+			$message .= "</ul>\n";
+
+			$message .= '<p>' . sprintf(
+				/* translators: %s: support forums URL */
+				__( 'If you&#8217;re unsure what these terms mean you should probably contact your host. If you still need help you can always visit the <a href="%s">WordPress Support Forums</a>.' ),
+				__( 'https://wordpress.org/support/' )
+			) . "</p>\n";
+
+			$this->bail( $message, 'db_connect_fail' );
 
 			return false;
 		} elseif ( $this->dbh ) {
@@ -1586,16 +1633,29 @@ class wpdb {
 			return false;
 		}
 
+		wp_load_translations_early();
+
+		$message = '<h1>' . __( 'Error reconnecting to the database' ) . "</h1>\n";
+
+		$message .= '<p>' . sprintf(
+			/* translators: %s: database host */
+			__( 'This means that we lost contact with the database server at %s. This could mean your host&#8217;s database server is down.' ),
+			'<code>' . htmlspecialchars( $this->dbhost, ENT_QUOTES ) . '</code>'
+		) . "</p>\n";
+
+		$message .= "<ul>\n";
+		$message .= '<li>' . __( 'Are you sure that the database server is running?' ) . "</li>\n";
+		$message .= '<li>' . __( 'Are you sure that the database server is not under particularly heavy load?' ) . "</li>\n";
+		$message .= "</ul>\n";
+
+		$message .= '<p>' . sprintf(
+			/* translators: %s: support forums URL */
+			__( 'If you&#8217;re unsure what these terms mean you should probably contact your host. If you still need help you can always visit the <a href="%s">WordPress Support Forums</a>.' ),
+			__( 'https://wordpress.org/support/' )
+		) . "</p>\n";
+
 		// We weren't able to reconnect, so we better bail.
-		$this->bail( sprintf( ( "
-<h1>Error reconnecting to the database</h1>
-<p>This means that we lost contact with the database server at <code>%s</code>. This could mean your host's database server is down.</p>
-<ul>
-	<li>Are you sure that the database server is running?</li>
-	<li>Are you sure that the database server is not under particularly heavy load?</li>
-</ul>
-<p>If you're unsure what these terms mean you should probably contact your host. If you still need help you can always visit the <a href='https://wordpress.org/support/'>WordPress Support Forums</a>.</p>
-" ), htmlspecialchars( $this->dbhost, ENT_QUOTES ) ), 'db_connect_fail' );
+		$this->bail( $message, 'db_connect_fail' );
 
 		// Call dead_db() if bail didn't die, because this database is no more. It has ceased to be (at least temporarily).
 		dead_db();
@@ -1770,6 +1830,7 @@ class wpdb {
 	 * @param string       $table  Table name
 	 * @param array        $data   Data to insert (in column => value pairs).
 	 *                             Both $data columns and $data values should be "raw" (neither should be SQL escaped).
+	 *                             Sending a null value will cause the column to be set to NULL - the corresponding format is ignored in this case.
 	 * @param array|string $format Optional. An array of formats to be mapped to each of the value in $data.
 	 *                             If string, that format will be used for all of the values in $data.
 	 *                             A format is one of '%d', '%f', '%s' (integer, float, string).
@@ -1794,6 +1855,7 @@ class wpdb {
 	 * @param string       $table  Table name
 	 * @param array        $data   Data to insert (in column => value pairs).
 	 *                             Both $data columns and $data values should be "raw" (neither should be SQL escaped).
+	 *                             Sending a null value will cause the column to be set to NULL - the corresponding format is ignored in this case.
 	 * @param array|string $format Optional. An array of formats to be mapped to each of the value in $data.
 	 *                             If string, that format will be used for all of the values in $data.
 	 *                             A format is one of '%d', '%f', '%s' (integer, float, string).
@@ -1818,6 +1880,7 @@ class wpdb {
 	 * @param string       $table  Table name
 	 * @param array        $data   Data to insert (in column => value pairs).
 	 *                             Both $data columns and $data values should be "raw" (neither should be SQL escaped).
+	 *                             Sending a null value will cause the column to be set to NULL - the corresponding format is ignored in this case.
 	 * @param array|string $format Optional. An array of formats to be mapped to each of the value in $data.
 	 *                             If string, that format will be used for all of the values in $data.
 	 *                             A format is one of '%d', '%f', '%s' (integer, float, string).
@@ -1839,6 +1902,11 @@ class wpdb {
 
 		$formats = $values = array();
 		foreach ( $data as $value ) {
+			if ( is_null( $value['value'] ) ) {
+				$formats[] = 'NULL';
+				continue;
+			}
+
 			$formats[] = $value['format'];
 			$values[]  = $value['value'];
 		}
@@ -1866,9 +1934,12 @@ class wpdb {
 	 * @param string       $table        Table name
 	 * @param array        $data         Data to update (in column => value pairs).
 	 *                                   Both $data columns and $data values should be "raw" (neither should be SQL escaped).
+	 *                                   Sending a null value will cause the column to be set to NULL - the corresponding
+	 *                                   format is ignored in this case.
 	 * @param array        $where        A named array of WHERE clauses (in column => value pairs).
 	 *                                   Multiple clauses will be joined with ANDs.
 	 *                                   Both $where columns and $where values should be "raw".
+	 *                                   Sending a null value will create an IS NULL comparison - the corresponding format will be ignored in this case.
 	 * @param array|string $format       Optional. An array of formats to be mapped to each of the values in $data.
 	 *                                   If string, that format will be used for all of the values in $data.
 	 *                                   A format is one of '%d', '%f', '%s' (integer, float, string).
@@ -1895,10 +1966,20 @@ class wpdb {
 
 		$fields = $conditions = $values = array();
 		foreach ( $data as $field => $value ) {
+			if ( is_null( $value['value'] ) ) {
+				$fields[] = "`$field` = NULL";
+				continue;
+			}
+
 			$fields[] = "`$field` = " . $value['format'];
 			$values[] = $value['value'];
 		}
 		foreach ( $where as $field => $value ) {
+			if ( is_null( $value['value'] ) ) {
+				$conditions[] = "`$field` IS NULL";
+				continue;
+			}
+
 			$conditions[] = "`$field` = " . $value['format'];
 			$values[] = $value['value'];
 		}
@@ -1927,6 +2008,7 @@ class wpdb {
 	 * @param array        $where        A named array of WHERE clauses (in column => value pairs).
 	 *                                   Multiple clauses will be joined with ANDs.
 	 *                                   Both $where columns and $where values should be "raw".
+	 *                                   Sending a null value will create an IS NULL comparison - the corresponding format will be ignored in this case.
 	 * @param array|string $where_format Optional. An array of formats to be mapped to each of the values in $where.
 	 *                                   If string, that format will be used for all of the items in $where.
 	 *                                   A format is one of '%d', '%f', '%s' (integer, float, string).
@@ -1945,6 +2027,11 @@ class wpdb {
 
 		$conditions = $values = array();
 		foreach ( $where as $field => $value ) {
+			if ( is_null( $value['value'] ) ) {
+				$conditions[] = "`$field` IS NULL";
+				continue;
+			}
+
 			$conditions[] = "`$field` = " . $value['format'];
 			$values[] = $value['value'];
 		}
@@ -2405,7 +2492,7 @@ class wpdb {
 		}
 
 		// Skip this entirely if this isn't a MySQL database.
-		if ( false === $this->is_mysql ) {
+		if ( empty( $this->is_mysql ) ) {
 			return false;
 		}
 
@@ -2454,7 +2541,7 @@ class wpdb {
 		$columnkey = strtolower( $column );
 
 		// Skip this entirely if this isn't a MySQL database.
-		if ( false === $this->is_mysql ) {
+		if ( empty( $this->is_mysql ) ) {
 			return false;
 		}
 

@@ -1,65 +1,71 @@
 <?php
 /**
+ * Administration API: WP_List_Table class
+ *
+ * @package WordPress
+ * @subpackage List_Table
+ * @since 3.1.0
+ */
+
+/**
  * Base class for displaying a list of items in an ajaxified HTML table.
  *
  * @since 3.1.0
  * @access private
- *
- * @package WordPress
- * @subpackage List_Table
  */
 class WP_List_Table {
 
 	/**
-	 * The current list of items
+	 * The current list of items.
 	 *
 	 * @since 3.1.0
-	 * @var array
 	 * @access public
+	 * @var array
 	 */
 	public $items;
 
 	/**
-	 * Various information about the current table
+	 * Various information about the current table.
 	 *
 	 * @since 3.1.0
-	 * @var array
 	 * @access protected
+	 * @var array
 	 */
 	protected $_args;
 
 	/**
-	 * Various information needed for displaying the pagination
+	 * Various information needed for displaying the pagination.
 	 *
 	 * @since 3.1.0
+	 * @access protected
 	 * @var array
 	 */
 	protected $_pagination_args = array();
 
 	/**
-	 * The current screen
+	 * The current screen.
 	 *
 	 * @since 3.1.0
-	 * @var object
 	 * @access protected
+	 * @var object
 	 */
 	protected $screen;
 
 	/**
-	 * Cached bulk actions
+	 * Cached bulk actions.
 	 *
 	 * @since 3.1.0
-	 * @var array
 	 * @access private
+	 * @var array
 	 */
 	private $_actions;
 
 	/**
-	 * Cached pagination output
+	 * Cached pagination output.
 	 *
 	 * @since 3.1.0
-	 * @var string
 	 * @access private
+	 * @var string
 	 */
 	private $_pagination;
 
@@ -67,20 +73,34 @@ class WP_List_Table {
 	 * The view switcher modes.
 	 *
 	 * @since 4.1.0
-	 * @var array
 	 * @access protected
+	 * @var array
 	 */
 	protected $modes = array();
 
 	/**
-	 * Stores the value returned by ->get_column_info()
+	 * Stores the value returned by ->get_column_info().
 	 *
+	 * @since 4.1.0
+	 * @access protected
 	 * @var array
 	 */
 	protected $_column_headers;
 
+	/**
+	 * {@internal Missing Summary}
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $compat_fields = array( '_args', '_pagination_args', 'screen', '_actions', '_pagination' );
 
+	/**
+	 * {@internal Missing Summary}
+	 *
+	 * @access protected
+	 * @var array
+	 */
 	protected $compat_methods = array( 'set_pagination_args', 'get_views', 'get_bulk_actions', 'bulk_actions',
 		'row_actions', 'months_dropdown', 'view_switcher', 'comments_bubble', 'get_items_per_page', 'pagination',
 		'get_sortable_columns', 'get_column_info', 'get_table_classes', 'display_tablenav', 'extra_tablenav',
@@ -381,6 +401,8 @@ class WP_List_Table {
 
 		if ( empty( $views ) )
 			return;
+
+		$this->screen->render_screen_reader_content( 'heading_views' );
 
 		echo "<ul class='subsubsub'>\n";
 		foreach ( $views as $class => $view ) {
@@ -734,6 +756,10 @@ class WP_List_Table {
 			$infinite_scroll = $this->_pagination_args['infinite_scroll'];
 		}
 
+		if ( 'top' === $which && $total_pages > 1 ) {
+			$this->screen->render_screen_reader_content( 'heading_pagination' );
+		}
+
 		$output = '<span class="displaying-num">' . sprintf( _n( '%s item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
 
 		$current = $this->get_pagenum();
@@ -1007,6 +1033,38 @@ class WP_List_Table {
 	}
 
 	/**
+	 * If 'orderby' is set, return it.
+	 *
+	 * @access protected
+	 * @since 4.4.0
+	 *
+	 * @return string The value of 'orderby' or empty string.
+	 */
+	protected function get_orderby() {
+		if ( isset( $_GET['orderby'] ) ) {
+			return $_GET['orderby'];
+		}
+
+		return '';
+	}
+
+	/**
+	 * If 'order' is 'desc', return it. Else return 'asc'.
+	 *
+	 * @access protected
+	 * @since 4.4.0
+	 *
+	 * @return string 'desc' or 'asc'.
+	 */
+	protected function get_order() {
+		if ( isset( $_GET['order'] ) && 'desc' === $_GET['order'] ) {
+			return 'desc';
+		}
+
+		return 'asc';
+	}
+
+	/**
 	 * Print column headers, accounting for hidden and sortable columns.
 	 *
 	 * @since 3.1.0
@@ -1022,15 +1080,8 @@ class WP_List_Table {
 		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 		$current_url = remove_query_arg( 'paged', $current_url );
 
-		if ( isset( $_GET['orderby'] ) )
-			$current_orderby = $_GET['orderby'];
-		else
-			$current_orderby = '';
-
-		if ( isset( $_GET['order'] ) && 'desc' === $_GET['order'] )
-			$current_order = 'desc';
-		else
-			$current_order = 'asc';
+		$current_orderby = $this->get_orderby();
+		$current_order = $this->get_order();
 
 		if ( ! empty( $columns['cb'] ) ) {
 			static $cb_counter = 1;
@@ -1092,6 +1143,8 @@ class WP_List_Table {
 		$singular = $this->_args['singular'];
 
 		$this->display_tablenav( 'top' );
+
+		$this->screen->render_screen_reader_content( 'heading_list' );
 ?>
 <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
 	<thead>
@@ -1141,13 +1194,14 @@ class WP_List_Table {
 		if ( 'top' === $which ) {
 			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
 		}
-		if ( $this->has_items() ) : ?>
+		?>
 	<div class="tablenav <?php echo esc_attr( $which ); ?>">
 
+		<?php if ( $this->has_items() ): ?>
 		<div class="alignleft actions bulkactions">
 			<?php $this->bulk_actions( $which ); ?>
 		</div>
-<?php
+		<?php endif;
 		$this->extra_tablenav( $which );
 		$this->pagination( $which );
 ?>
@@ -1155,7 +1209,6 @@ class WP_List_Table {
 		<br class="clear" />
 	</div>
 <?php
-		endif;
 	}
 
 	/**

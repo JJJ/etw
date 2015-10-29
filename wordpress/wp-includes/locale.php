@@ -42,6 +42,14 @@ class WP_Locale {
 	public $weekday_abbrev;
 
 	/**
+	 * Stores the default start of the week.
+	 *
+	 * @since 4.4.0
+	 * @var string
+	 */
+	public $start_of_week;
+
+	/**
 	 * Stores the translated strings for the full month names.
 	 *
 	 * @since 2.1.0
@@ -118,6 +126,9 @@ class WP_Locale {
 		$this->weekday_initial[ __( 'Friday' ) ]    = /* translators: one-letter abbreviation of the weekday */ _x( 'F', 'Friday initial' );
 		$this->weekday_initial[ __( 'Saturday' ) ]  = /* translators: one-letter abbreviation of the weekday */ _x( 'S', 'Saturday initial' );
 
+		// Start of the week.
+		$this->start_of_week = /* translators: default start of the week. 0 = Sunday, 1 = Monday */ _x( '1', 'start of week' );
+
 		// Abbreviations for each day.
 		$this->weekday_abbrev[__('Sunday')]    = /* translators: three-letter abbreviation of the weekday */ __('Sun');
 		$this->weekday_abbrev[__('Monday')]    = /* translators: three-letter abbreviation of the weekday */ __('Mon');
@@ -165,12 +176,16 @@ class WP_Locale {
 		// See http://php.net/number_format
 
 		/* translators: $thousands_sep argument for http://php.net/number_format, default is , */
-		$trans = __('number_format_thousands_sep');
-		$this->number_format['thousands_sep'] = ('number_format_thousands_sep' == $trans) ? ',' : $trans;
+		$thousands_sep = __( 'number_format_thousands_sep' );
+		// Replace space with a non-breaking space to avoid wrapping. Also replace entities with actual character.
+		$thousands_sep = str_replace( array( ' ', '&nbsp;', '&#160;' ), "\xA0", $thousands_sep );
+
+		$this->number_format['thousands_sep'] = ( 'number_format_thousands_sep' === $thousands_sep ) ? ',' : $thousands_sep;
 
 		/* translators: $dec_point argument for http://php.net/number_format, default is . */
-		$trans = __('number_format_decimal_point');
-		$this->number_format['decimal_point'] = ('number_format_decimal_point' == $trans) ? '.' : $trans;
+		$decimal_point = __( 'number_format_decimal_point' );
+
+		$this->number_format['decimal_point'] = ( 'number_format_decimal_point' === $decimal_point ) ? '.' : $decimal_point;
 
 		// Set text direction.
 		if ( isset( $GLOBALS['text_direction'] ) )

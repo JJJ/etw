@@ -129,12 +129,13 @@ add_filter( 'the_title', 'wptexturize'   );
 add_filter( 'the_title', 'convert_chars' );
 add_filter( 'the_title', 'trim'          );
 
-add_filter( 'the_content', 'wptexturize'        );
-add_filter( 'the_content', 'convert_smilies'    );
-add_filter( 'the_content', 'convert_chars'      );
-add_filter( 'the_content', 'wpautop'            );
-add_filter( 'the_content', 'shortcode_unautop'  );
-add_filter( 'the_content', 'prepend_attachment' );
+add_filter( 'the_content', 'wptexturize'                       );
+add_filter( 'the_content', 'convert_smilies'                   );
+add_filter( 'the_content', 'convert_chars'                     );
+add_filter( 'the_content', 'wpautop'                           );
+add_filter( 'the_content', 'shortcode_unautop'                 );
+add_filter( 'the_content', 'prepend_attachment'                );
+add_filter( 'the_content', 'wp_make_content_images_responsive' );
 
 add_filter( 'the_excerpt',     'wptexturize'      );
 add_filter( 'the_excerpt',     'convert_smilies'  );
@@ -155,6 +156,8 @@ add_filter( 'comment_excerpt', 'convert_chars' );
 add_filter( 'list_cats',         'wptexturize' );
 
 add_filter( 'wp_sprintf', 'wp_sprintf_l', 10, 2 );
+
+add_filter( 'widget_text', 'balanceTags' );
 
 // RSS filters
 add_filter( 'the_title_rss',      'strip_tags'                    );
@@ -200,9 +203,19 @@ add_filter( 'nav_menu_meta_box_object', '_wp_nav_menu_meta_box_object'        );
 add_filter( 'pingback_ping_source_uri', 'pingback_ping_source_uri'            );
 add_filter( 'xmlrpc_pingback_error',    'xmlrpc_pingback_error'               );
 add_filter( 'title_save_pre',           'trim'                                );
-add_filter( 'get_comment_metadata',     'wp_lazyload_comment_meta',     10, 2 );
 
 add_filter( 'http_request_host_is_external', 'allowed_http_request_hosts', 10, 2 );
+
+// REST API filters.
+add_action( 'xmlrpc_rsd_apis',            'rest_output_rsd' );
+add_action( 'wp_head',                    'rest_output_link_wp_head', 10, 0 );
+add_action( 'template_redirect',          'rest_output_link_header', 11, 0 );
+add_action( 'auth_cookie_malformed',      'rest_cookie_collect_status' );
+add_action( 'auth_cookie_expired',        'rest_cookie_collect_status' );
+add_action( 'auth_cookie_bad_username',   'rest_cookie_collect_status' );
+add_action( 'auth_cookie_bad_hash',       'rest_cookie_collect_status' );
+add_action( 'auth_cookie_valid',          'rest_cookie_collect_status' );
+add_filter( 'rest_authentication_errors', 'rest_cookie_check_errors', 100 );
 
 // Actions
 add_action( 'wp_head',             '_wp_render_title_tag',            1     );
@@ -293,8 +306,9 @@ add_action( 'begin_fetch_post_thumbnail_html', '_wp_post_thumbnail_class_filter_
 add_action( 'end_fetch_post_thumbnail_html',   '_wp_post_thumbnail_class_filter_remove' );
 
 // Redirect Old Slugs
-add_action( 'template_redirect', 'wp_old_slug_redirect'              );
-add_action( 'post_updated',      'wp_check_for_changed_slugs', 12, 3 );
+add_action( 'template_redirect',  'wp_old_slug_redirect'              );
+add_action( 'post_updated',       'wp_check_for_changed_slugs', 12, 3 );
+add_action( 'attachment_updated', 'wp_check_for_changed_slugs', 12, 3 );
 
 // Nonce check for Post Previews
 add_action( 'init', '_show_post_preview' );
@@ -342,6 +356,11 @@ add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
 add_action( 'after_password_reset', 'wp_password_change_notification' );
 add_action( 'register_new_user',      'wp_send_new_user_notifications' );
 add_action( 'edit_user_created_user', 'wp_send_new_user_notifications' );
+
+// REST API actions.
+add_action( 'init',          'rest_api_init' );
+add_action( 'rest_api_init', 'rest_api_default_filters', 10, 1 );
+add_action( 'parse_request', 'rest_api_loaded' );
 
 /**
  * Filters formerly mixed into wp-includes
@@ -410,6 +429,7 @@ add_action( 'init', 'wp_widgets_init', 1 );
 // Don't remove. Wrong way to disable.
 add_action( 'template_redirect', '_wp_admin_bar_init', 0 );
 add_action( 'admin_init', '_wp_admin_bar_init' );
+add_action( 'before_signup_header', '_wp_admin_bar_init' );
 add_action( 'wp_footer', 'wp_admin_bar_render', 1000 );
 add_action( 'in_admin_header', 'wp_admin_bar_render', 0 );
 
@@ -417,5 +437,33 @@ add_action( 'in_admin_header', 'wp_admin_bar_render', 0 );
 add_action( 'media_buttons', 'media_buttons' );
 add_filter( 'image_send_to_editor', 'image_add_caption', 20, 8 );
 add_filter( 'media_send_to_editor', 'image_media_send_to_editor', 10, 3 );
+
+// Embeds
+add_action( 'parse_query',          'wp_oembed_parse_query'                );
+
+add_action( 'wp_head',              'wp_oembed_add_discovery_links'        );
+add_action( 'wp_head',              'wp_oembed_add_host_js'                );
+
+add_action( 'embed_head',           'print_emoji_detection_script'         );
+add_action( 'embed_head',           'print_emoji_styles'                   );
+add_action( 'embed_head',           'print_embed_styles'                   );
+add_action( 'embed_head',           'wp_print_head_scripts',         20    );
+add_action( 'embed_head',           'wp_print_styles',               20    );
+add_action( 'embed_head',           'wp_no_robots'                         );
+add_action( 'embed_head',           'rel_canonical'                        );
+add_action( 'embed_head',           'locale_stylesheet'                    );
+
+add_action( 'embed_footer',         'print_embed_scripts'                  );
+add_action( 'embed_footer',         'wp_print_footer_scripts',       20    );
+
+add_filter( 'excerpt_more',         'wp_embed_excerpt_more',         20    );
+add_filter( 'the_excerpt_embed',    'wptexturize'                          );
+add_filter( 'the_excerpt_embed',    'convert_chars'                        );
+add_filter( 'the_excerpt_embed',    'wpautop'                              );
+add_filter( 'the_excerpt_embed',    'shortcode_unautop'                    );
+add_filter( 'the_excerpt_embed',    'wp_embed_excerpt_attachment'          );
+
+add_filter( 'oembed_dataparse',     'wp_filter_oembed_result',       10, 3 );
+add_filter( 'oembed_response_data', 'get_oembed_response_data_rich', 10, 4 );
 
 unset( $filter, $action );

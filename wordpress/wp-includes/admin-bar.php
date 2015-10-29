@@ -1,8 +1,10 @@
 <?php
 /**
- * Admin Bar
+ * Toolbar API: Top-level Toolbar functionality
  *
- * This code handles the building and rendering of the press bar.
+ * @package WordPress
+ * @subpackage Toolbar
+ * @since 3.1.0
  */
 
 /**
@@ -434,6 +436,12 @@ function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
 			'title'  => __( 'Plugins' ),
 			'href'   => network_admin_url( 'plugins.php' ),
 		) );
+		$wp_admin_bar->add_menu( array(
+			'parent' => 'network-admin',
+			'id'     => 'network-admin-o',
+			'title'  => __( 'Settings' ),
+			'href'   => network_admin_url( 'settings.php' ),
+		) );
 	}
 
 	// Add site links
@@ -530,7 +538,7 @@ function wp_admin_bar_shortlink_menu( $wp_admin_bar ) {
  *
  * @since 3.1.0
  *
- * @global object   $tag
+ * @global WP_Term  $tag
  * @global WP_Query $wp_the_query
  *
  * @param WP_Admin_Bar $wp_admin_bar
@@ -897,6 +905,10 @@ function is_admin_bar_showing() {
 	// For all these types of requests, we never want an admin bar.
 	if ( defined('XMLRPC_REQUEST') || defined('DOING_AJAX') || defined('IFRAME_REQUEST') )
 		return false;
+
+	if ( is_embed() ) {
+		return false;
+	}
 
 	// Integrated into the admin.
 	if ( is_admin() )

@@ -10,16 +10,21 @@
  * Display the permalink for the current post.
  *
  * @since 1.2.0
+ * @since 4.4.0 Added the `$post` parameter.
+ *
+ * @param int|WP_Post $post Optional. Post ID or post object. Default is the global `$post`.
  */
-function the_permalink() {
+function the_permalink( $post = 0 ) {
 	/**
 	 * Filter the display of the permalink for the current post.
 	 *
 	 * @since 1.5.0
+	 * @since 4.4.0 Added the `$post` parameter.
 	 *
-	 * @param string $permalink The permalink for the current post.
+	 * @param string      $permalink The permalink for the current post.
+	 * @param int|WP_Post $post      Post ID, WP_Post object, or 0. Default 0.
 	 */
-	echo esc_url( apply_filters( 'the_permalink', get_permalink() ) );
+	echo esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
 }
 
 /**
@@ -91,12 +96,13 @@ function permalink_anchor( $mode = 'id' ) {
  *
  * @see get_permalink()
  *
- * @param int|WP_Post $id        Optional. Post ID or post object. Default is the current post.
+ * @param int|WP_Post $post      Optional. Post ID or post object. Default is the global `$post`.
  * @param bool        $leavename Optional. Whether to keep post name or page name. Default false.
+ *
  * @return string|false The permalink URL or false if post does not exist.
  */
-function get_the_permalink( $id = 0, $leavename = false ) {
-	return get_permalink( $id, $leavename );
+function get_the_permalink( $post = 0, $leavename = false ) {
+	return get_permalink( $post, $leavename );
 }
 
 /**
@@ -104,11 +110,11 @@ function get_the_permalink( $id = 0, $leavename = false ) {
  *
  * @since 1.0.0
  *
- * @param int|WP_Post $id        Optional. Post ID or post object. Default current post.
+ * @param int|WP_Post $post      Optional. Post ID or post object. Default is the global `$post`.
  * @param bool        $leavename Optional. Whether to keep post name or page name. Default false.
  * @return string|false The permalink URL or false if post does not exist.
  */
-function get_permalink( $id = 0, $leavename = false ) {
+function get_permalink( $post = 0, $leavename = false ) {
 	$rewritecode = array(
 		'%year%',
 		'%monthnum%',
@@ -123,11 +129,10 @@ function get_permalink( $id = 0, $leavename = false ) {
 		$leavename? '' : '%pagename%',
 	);
 
-	if ( is_object($id) && isset($id->filter) && 'sample' == $id->filter ) {
-		$post = $id;
+	if ( is_object( $post ) && isset( $post->filter ) && 'sample' == $post->filter ) {
 		$sample = true;
 	} else {
-		$post = get_post($id);
+		$post = get_post( $post );
 		$sample = false;
 	}
 
@@ -254,7 +259,7 @@ function get_post_permalink( $id = 0, $leavename = false, $sample = false ) {
 
 	$slug = $post->post_name;
 
-	$draft_or_pending = isset( $post->post_status ) && in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft', 'future' ) );
+	$draft_or_pending = get_post_status( $id ) && in_array( get_post_status( $id ), array( 'draft', 'pending', 'auto-draft', 'future' ) );
 
 	$post_type = get_post_type_object($post->post_type);
 
@@ -386,6 +391,9 @@ function get_attachment_link( $post = null, $leavename = false ) {
 
 	$post = get_post( $post );
 	$parent = ( $post->post_parent > 0 && $post->post_parent != $post->ID ) ? get_post( $post->post_parent ) : false;
+	if ( $parent && ! in_array( $parent->post_type, get_post_types() ) ) {
+		$parent = false;
+	}
 
 	if ( $wp_rewrite->using_permalinks() && $parent ) {
 		if ( 'page' == $parent->post_type )
@@ -403,6 +411,8 @@ function get_attachment_link( $post = null, $leavename = false ) {
 
 		if ( ! $leavename )
 			$link = str_replace( '%postname%', $name, $link );
+	} elseif ( $wp_rewrite->using_permalinks() && ! $leavename ) {
+		$link = home_url( user_trailingslashit( $post->post_name ) );
 	}
 
 	if ( ! $link )
@@ -1010,7 +1020,7 @@ function get_search_link( $query = '' ) {
 		$link = home_url('?s=' . urlencode($search) );
 	} else {
 		$search = urlencode($search);
-		$search = str_replace('%2F', '/', $search); // %2F(/) is not valid within a URL, send it unencoded.
+		$search = str_replace('%2F', '/', $search); // %2F(/) is not valid within a URL, send it un-encoded.
 		$link = str_replace( '%search%', $search, $permastruct );
 		$link = home_url( user_trailingslashit( $link, 'search' ) );
 	}
@@ -1540,7 +1550,7 @@ function get_next_post( $in_same_term = false, $excluded_terms = '', $taxonomy =
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param bool         $in_same_term   Optional. Whether post should be in a same taxonomy term.
  * @param array|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
@@ -1628,6 +1638,18 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 	$adjacent = $previous ? 'previous' : 'next';
 	$op = $previous ? '<' : '>';
 	$order = $previous ? 'DESC' : 'ASC';
+
+	/**
+	 * Filter the excluded term ids
+	 *
+	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
+	 * of adjacency, 'next' or 'previous'.
+	 *
+	 * @since 4.4.0
+	 *
+	 * @param string $excluded_terms Array of excluded term IDs.
+	 */
+	$excluded_terms = apply_filters( "get_{$adjacent}_post_excluded_terms", $excluded_terms );
 
 	/**
 	 * Filter the JOIN clause in the SQL for an adjacent post query.
@@ -2320,13 +2342,17 @@ function posts_nav_link( $sep = '', $prelabel = '', $nxtlabel = '' ) {
  * Return navigation to next/previous post when applicable.
  *
  * @since 4.1.0
+ * @since 4.4.0 Introduced the `in_same_term`, `excluded_terms`, and `taxonomy` arguments.
  *
  * @param array $args {
  *     Optional. Default post navigation arguments. Default empty array.
  *
- *     @type string $prev_text          Anchor text to display in the previous post link. Default `%title`.
- *     @type string $next_text          Anchor text to display in the next post link. Default `%title`.
- *     @type string $screen_reader_text Screen reader text for nav element. Default 'Post navigation'.
+ *     @type string       $prev_text          Anchor text to display in the previous post link. Default '%title'.
+ *     @type string       $next_text          Anchor text to display in the next post link. Default '%title'.
+ *     @type bool         $in_same_term       Whether link should be in a same taxonomy term. Default false.
+ *     @type array|string $excluded_terms     Array or comma-separated list of excluded term IDs. Default empty.
+ *     @type string       $taxonomy           Taxonomy, if `$in_same_term` is true. Default 'category'.
+ *     @type string       $screen_reader_text Screen reader text for nav element. Default 'Post navigation'.
  * }
  * @return string Markup for post links.
  */
@@ -2334,12 +2360,29 @@ function get_the_post_navigation( $args = array() ) {
 	$args = wp_parse_args( $args, array(
 		'prev_text'          => '%title',
 		'next_text'          => '%title',
+		'in_same_term'       => false,
+		'excluded_terms'     => '',
+		'taxonomy'           => 'category',
 		'screen_reader_text' => __( 'Post navigation' ),
 	) );
 
 	$navigation = '';
-	$previous   = get_previous_post_link( '<div class="nav-previous">%link</div>', $args['prev_text'] );
-	$next       = get_next_post_link( '<div class="nav-next">%link</div>', $args['next_text'] );
+
+	$previous = get_previous_post_link(
+		'<div class="nav-previous">%link</div>',
+		$args['prev_text'],
+		$args['in_same_term'],
+		$args['excluded_terms'],
+		$args['taxonomy']
+	);
+
+	$next = get_next_post_link(
+		'<div class="nav-next">%link</div>',
+		$args['next_text'],
+		$args['in_same_term'],
+		$args['excluded_terms'],
+		$args['taxonomy']
+	);
 
 	// Only add markup if there's somewhere to navigate to.
 	if ( $previous || $next ) {
@@ -2578,7 +2621,7 @@ function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
 function get_next_comments_link( $label = '', $max_page = 0 ) {
 	global $wp_query;
 
-	if ( !is_singular() || !get_option('page_comments') )
+	if ( ! is_singular() )
 		return;
 
 	$page = get_query_var('cpage');
@@ -2632,7 +2675,7 @@ function next_comments_link( $label = '', $max_page = 0 ) {
  * @return string|void HTML-formatted link for the previous page of comments.
  */
 function get_previous_comments_link( $label = '' ) {
-	if ( !is_singular() || !get_option('page_comments') )
+	if ( ! is_singular() )
 		return;
 
 	$page = get_query_var('cpage');
@@ -2680,7 +2723,7 @@ function previous_comments_link( $label = '' ) {
 function paginate_comments_links($args = array()) {
 	global $wp_rewrite;
 
-	if ( !is_singular() || !get_option('page_comments') )
+	if ( ! is_singular() )
 		return;
 
 	$page = get_query_var('cpage');
@@ -2725,7 +2768,7 @@ function get_the_comments_navigation( $args = array() ) {
 	$navigation = '';
 
 	// Are there comments to navigate through?
-	if ( get_comment_pages_count() > 1 && get_option( 'page_comments' ) ) {
+	if ( get_comment_pages_count() > 1 ) {
 		$args = wp_parse_args( $args, array(
 			'prev_text'          => __( 'Older comments' ),
 			'next_text'          => __( 'Newer comments' ),
@@ -2877,9 +2920,9 @@ function get_shortcut_link() {
  *
  * @since 3.0.0
  *
- * @param  string $path   Optional. Path relative to the home url. Default empty.
- * @param  string $scheme Optional. Scheme to give the home url context. Accepts
- *                        'http', 'https', or 'relative'. Default null.
+ * @param  string      $path   Optional. Path relative to the home url. Default empty.
+ * @param  string|null $scheme Optional. Scheme to give the home url context. Accepts
+ *                             'http', 'https', 'relative', 'rest', or null. Default null.
  * @return string Home url link with optional path appended.
 */
 function home_url( $path = '', $scheme = null ) {
@@ -2901,7 +2944,7 @@ function home_url( $path = '', $scheme = null ) {
  * @param  int         $blog_id     Optional. Blog ID. Default null (current blog).
  * @param  string      $path        Optional. Path relative to the home URL. Default empty.
  * @param  string|null $orig_scheme Optional. Scheme to give the home URL context. Accepts
- *                                  'http', 'https', 'relative', or null. Default null.
+ *                                  'http', 'https', 'relative', 'rest', or null. Default null.
  * @return string Home URL link with optional path appended.
 */
 function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
@@ -2936,7 +2979,8 @@ function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
 	 *
 	 * @param string      $url         The complete home URL including scheme and path.
 	 * @param string      $path        Path relative to the home URL. Blank string if no path is specified.
-	 * @param string|null $orig_scheme Scheme to give the home URL context. Accepts 'http', 'https', 'relative' or null.
+	 * @param string|null $orig_scheme Scheme to give the home URL context. Accepts 'http', 'https',
+	 *                                 'relative', 'rest', or null.
 	 * @param int|null    $blog_id     Blog ID, or null for the current blog.
 	 */
 	return apply_filters( 'home_url', $url, $path, $orig_scheme, $blog_id );
@@ -3313,12 +3357,14 @@ function self_admin_url($path = '', $scheme = 'admin') {
 }
 
 /**
- * Set the scheme for a URL
+ * Sets the scheme for a URL.
  *
  * @since 3.4.0
+ * @since 4.4.0 The 'rest' scheme was added.
  *
- * @param string $url    Absolute url that includes a scheme
- * @param string $scheme Optional. Scheme to give $url. Currently 'http', 'https', 'login', 'login_post', 'admin', or 'relative'.
+ * @param string      $url    Absolute url that includes a scheme
+ * @param string|null $scheme Optional. Scheme to give $url. Currently 'http', 'https', 'login',
+ *                            'login_post', 'admin', 'relative', 'rest', 'rpc', or null. Default null.
  * @return string $url URL with chosen scheme.
  */
 function set_url_scheme( $url, $scheme = null ) {
@@ -3349,10 +3395,10 @@ function set_url_scheme( $url, $scheme = null ) {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $url         The complete URL including scheme and path.
-	 * @param string $scheme      Scheme applied to the URL. One of 'http', 'https', or 'relative'.
-	 * @param string $orig_scheme Scheme requested for the URL. One of 'http', 'https', 'login',
-	 *                            'login_post', 'admin', 'rpc', or 'relative'.
+	 * @param string      $url         The complete URL including scheme and path.
+	 * @param string      $scheme      Scheme applied to the URL. One of 'http', 'https', or 'relative'.
+	 * @param string|null $orig_scheme Scheme requested for the URL. One of 'http', 'https', 'login',
+	 *                                 'login_post', 'admin', 'relative', 'rest', 'rpc', or null.
 	 */
 	return apply_filters( 'set_url_scheme', $url, $scheme, $orig_scheme );
 }
@@ -3634,7 +3680,7 @@ function the_shortlink( $text = '', $title = '', $before = '', $after = '' ) {
  *     @type string $default        URL for the default image or a default type. Accepts '404' (return
  *                                  a 404 instead of a default image), 'retro' (8bit), 'monsterid' (monster),
  *                                  'wavatar' (cartoon face), 'indenticon' (the "quilt"), 'mystery', 'mm',
- *                                  or 'mysterman' (The Oyster Man), 'blank' (transparent GIF), or
+ *                                  or 'mysteryman' (The Oyster Man), 'blank' (transparent GIF), or
  *                                  'gravatar_default' (the Gravatar logo). Default is the value of the
  *                                  'avatar_default' option, with a fallback of 'mystery'.
  *     @type bool   $force_default  Whether to always show the default image, never the Gravatar. Default false.
@@ -3668,7 +3714,7 @@ function get_avatar_url( $id_or_email, $args = null ) {
  *     @type string $default        URL for the default image or a default type. Accepts '404' (return
  *                                  a 404 instead of a default image), 'retro' (8bit), 'monsterid' (monster),
  *                                  'wavatar' (cartoon face), 'indenticon' (the "quilt"), 'mystery', 'mm',
- *                                  or 'mysterman' (The Oyster Man), 'blank' (transparent GIF), or
+ *                                  or 'mysteryman' (The Oyster Man), 'blank' (transparent GIF), or
  *                                  'gravatar_default' (the Gravatar logo). Default is the value of the
  *                                  'avatar_default' option, with a fallback of 'mystery'.
  *     @type bool   $force_default  Whether to always show the default image, never the Gravatar. Default false.

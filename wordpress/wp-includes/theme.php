@@ -771,7 +771,7 @@ function validate_current_theme() {
 	 *
 	 * @param bool true Validation flag to check the current theme.
 	 */
-	if ( defined('WP_INSTALLING') || ! apply_filters( 'validate_current_theme', true ) )
+	if ( wp_installing() || ! apply_filters( 'validate_current_theme', true ) )
 		return true;
 
 	if ( get_template() != WP_DEFAULT_THEME && !file_exists(get_template_directory() . '/index.php') ) {
@@ -1752,14 +1752,6 @@ function current_theme_supports( $feature ) {
 	if ( !isset( $_wp_theme_features[$feature] ) )
 		return false;
 
-	if ( 'title-tag' == $feature ) {
-		// Don't confirm support unless called internally.
-		$trace = debug_backtrace();
-		if ( ! in_array( $trace[1]['function'], array( '_wp_render_title_tag', 'wp_title' ) ) ) {
-			return false;
-		}
-	}
-
 	// If no args passed then no extra checks need be performed
 	if ( func_num_args() <= 1 )
 		return true;
@@ -1897,8 +1889,11 @@ function check_theme_switched() {
 /**
  * Includes and instantiates the WP_Customize_Manager class.
  *
- * Fires on a preview frame request (when ?wp_customize=on is in the URL) and
- * on the Customizer interface page (wp-admin/customize.php).
+ * Loads the Customizer at plugins_loaded when accessing the customize.php admin
+ * page or when any request includes a wp_customize=on param, either as a GET
+ * query var or as POST data. This param is a signal for whether to bootstrap
+ * the Customizer when WordPress is loading, especially in the Customizer preview
+ * or when making Customizer Ajax requests for widgets or menus.
  *
  * @since 3.4.0
  *
@@ -1907,8 +1902,9 @@ function check_theme_switched() {
 function _wp_customize_include() {
 	if ( ! ( ( isset( $_REQUEST['wp_customize'] ) && 'on' == $_REQUEST['wp_customize'] )
 		|| ( is_admin() && 'customize.php' == basename( $_SERVER['PHP_SELF'] ) )
-	) )
+	) ) {
 		return;
+	}
 
 	require_once ABSPATH . WPINC . '/class-wp-customize-manager.php';
 	$GLOBALS['wp_customize'] = new WP_Customize_Manager();

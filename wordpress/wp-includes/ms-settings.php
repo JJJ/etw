@@ -136,7 +136,7 @@ if ( !isset( $current_site ) || !isset( $current_blog ) ) {
 	}
 
 	// @todo Investigate when exactly this can occur.
-	if ( empty( $current_blog ) && defined( 'WP_INSTALLING' ) ) {
+	if ( empty( $current_blog ) && wp_installing() ) {
 		$current_blog = new stdClass;
 		$current_blog->blog_id = $blog_id = 1;
 	}
@@ -219,13 +219,6 @@ wp_start_object_cache();
 
 if ( ! $current_site instanceof WP_Network ) {
 	$current_site = new WP_Network( $current_site );
-}
-
-if ( empty( $current_site->site_name ) ) {
-	$current_site->site_name = get_site_option( 'site_name' );
-	if ( ! $current_site->site_name ) {
-		$current_site->site_name = ucfirst( $current_site->domain );
-	}
 }
 
 // Define upload directory constants

@@ -1,19 +1,19 @@
 <?php
 /**
- * Comments List Table class.
+ * List Table API: WP_Comments_List_Table class
  *
  * @package WordPress
- * @subpackage List_Table
+ * @subpackage Administration
  * @since 3.1.0
  */
 
 /**
- * Comments List Table class.
+ * Core class used to implement displaying comments in a list table.
  *
- * @package WordPress
- * @subpackage List_Table
  * @since 3.1.0
  * @access private
+ *
+ * @see WP_List_Table
  */
 class WP_Comments_List_Table extends WP_List_Table {
 
@@ -249,7 +249,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 		if ( !EMPTY_TRASH_DAYS )
 			unset($stati['trash']);
 
-		$link = 'edit-comments.php';
+		$link = admin_url( 'edit-comments.php' );
 		if ( !empty($comment_type) && 'all' != $comment_type )
 			$link = add_query_arg( 'comment_type', $comment_type, $link );
 
@@ -442,6 +442,8 @@ class WP_Comments_List_Table extends WP_List_Table {
 		wp_nonce_field( "fetch-list-" . get_class( $this ), '_ajax_fetch_list_nonce' );
 
 		$this->display_tablenav( 'top' );
+
+		$this->screen->render_screen_reader_content( 'heading_list' );
 
 ?>
 <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
@@ -697,7 +699,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 
 			$author_ip = get_comment_author_IP( $comment );
 			if ( $author_ip ) {
-				$author_ip_url = add_query_arg( array( 's' => $author_ip, 'mode' => 'detail' ), 'edit-comments.php' );
+				$author_ip_url = add_query_arg( array( 's' => $author_ip, 'mode' => 'detail' ), admin_url( 'edit-comments.php' ) );
 				if ( 'spam' === $comment_status ) {
 					$author_ip_url = add_query_arg( 'comment_status', 'spam', $author_ip_url );
 				}

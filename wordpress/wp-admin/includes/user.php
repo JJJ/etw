@@ -107,12 +107,12 @@ function edit_user( $user_id = 0 ) {
 	/* checking that username has been typed */
 	if ( $user->user_login == '' )
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.' ) );
-		
+
 	/* checking that nickname has been typed */
- 	if ( $update && empty( $user->nickname ) ) { 
-		$errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) ); 
+	if ( $update && empty( $user->nickname ) ) {
+		$errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) );
 	}
-	
+
 	/* checking the password has been typed twice */
 	/**
 	 * Fires before the password and confirm password fields are checked for congruity.
@@ -125,25 +125,13 @@ function edit_user( $user_id = 0 ) {
 	 */
 	do_action_ref_array( 'check_passwords', array( $user->user_login, &$pass1, &$pass2 ) );
 
-	if ( $update ) {
-		if ( empty($pass1) && !empty($pass2) )
-			$errors->add( 'pass', __( '<strong>ERROR</strong>: You entered your new password only once.' ), array( 'form-field' => 'pass1' ) );
-		elseif ( !empty($pass1) && empty($pass2) )
-			$errors->add( 'pass', __( '<strong>ERROR</strong>: You entered your new password only once.' ), array( 'form-field' => 'pass2' ) );
-	} else {
-		if ( empty($pass1) )
-			$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter your password.' ), array( 'form-field' => 'pass1' ) );
-		elseif ( empty($pass2) )
-			$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter your password twice.' ), array( 'form-field' => 'pass2' ) );
-	}
-
 	/* Check for "\" in password */
 	if ( false !== strpos( wp_unslash( $pass1 ), "\\" ) )
 		$errors->add( 'pass', __( '<strong>ERROR</strong>: Passwords may not contain the character "\\".' ), array( 'form-field' => 'pass1' ) );
 
 	/* checking the password has been typed twice the same */
 	if ( $pass1 != $pass2 )
-		$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in the two password fields.' ), array( 'form-field' => 'pass1' ) );
+		$errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
 
 	if ( !empty( $pass1 ) )
 		$user->user_pass = $pass1;
@@ -153,6 +141,11 @@ function edit_user( $user_id = 0 ) {
 
 	if ( !$update && username_exists( $user->user_login ) )
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ));
+
+	/** This filter is documented in wp-includes/user-functions.php */
+	if ( in_array( $user->user_login, apply_filters( 'illegal_user_logins', array() ) ) ) {
+		$errors->add( 'illegal_user_login', __( '<strong>ERROR</strong>: Sorry, that username is not allowed.' ) );
+	}
 
 	/* checking email address */
 	if ( empty( $user->user_email ) ) {
@@ -246,7 +239,7 @@ function get_user_to_edit( $user_id ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int $user_id User ID.
  * @return array
@@ -276,7 +269,7 @@ function get_users_drafts( $user_id ) {
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb
+ * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param int $id User ID.
  * @param int $reassign Optional. Reassign posts and links to new User ID.

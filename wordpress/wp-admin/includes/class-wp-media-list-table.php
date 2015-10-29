@@ -1,21 +1,29 @@
 <?php
 /**
- * Media Library List Table class.
+ * List Table API: WP_Media_List_Table class
  *
  * @package WordPress
- * @subpackage List_Table
+ * @subpackage Administration
+ * @since 3.1.0
+ */
+
+/**
+ * Core class used to implement displaying media items in a list table.
+ *
  * @since 3.1.0
  * @access private
+ *
+ * @see WP_List_Table
  */
 class WP_Media_List_Table extends WP_List_Table {
 	/**
-	 * Store the pending comment count for each post
+	 * Holds the number of pending comments for each post.
 	 *
-	 * @access public
 	 * @since 4.4.0
 	 * @var array
+	 * @access protected
 	 */
-	public $pending_count = array();
+	protected $comment_pending_count = array();
 
 	private $detached;
 
@@ -217,6 +225,8 @@ class WP_Media_List_Table extends WP_List_Table {
 		global $mode;
 
 		$views = $this->get_views();
+
+		$this->screen->render_screen_reader_content( 'heading_views' );
 ?>
 <div class="wp-filter">
 	<div class="filter-items">
@@ -470,8 +480,8 @@ class WP_Media_List_Table extends WP_List_Table {
 					<?php echo $title ?></a><?php
 			} else {
 				echo $title;
-			} ?></strong>,
-			<?php echo get_the_time( __( 'Y/m/d' ) ); ?><br />
+			} ?></strong>
+			<br />
 			<?php
 			if ( $user_can_edit ):
 				$detach_url = add_query_arg( array(
@@ -503,8 +513,8 @@ class WP_Media_List_Table extends WP_List_Table {
 	public function column_comments( $post ) {
 		echo '<div class="post-com-count-wrapper">';
 
-		if ( isset( $this->pending_count[ $post->ID ] ) ) {
-			$pending_comments = $this->pending_count[ $post->ID ];
+		if ( isset( $this->comment_pending_count[ $post->ID ] ) ) {
+			$pending_comments = $this->comment_pending_count[ $post->ID ];
 		} else {
 			$pending_comments = get_pending_comments_num( $post->ID );
 		}
@@ -580,7 +590,7 @@ class WP_Media_List_Table extends WP_List_Table {
 		$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
 		reset( $wp_query->posts );
 
-		$this->pending_count = get_pending_comments_num( $post_ids );
+		$this->comment_pending_count = get_pending_comments_num( $post_ids );
 
 		add_filter( 'the_title','esc_html' );
 
