@@ -2,10 +2,11 @@
 Contributors: johnjamesjacoby, stuttter
 Tags: taxonomy, term, meta, metadata, color, colors
 Requires at least: 4.2
-Tested up to: 4.3
-Stable tag: 0.1.1
+Tested up to: 4.4
+Stable tag: 0.1.4
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
 
 == Description ==
 
@@ -19,13 +20,20 @@ This plugin requires [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ 
 
 = Also checkout =
 
-* [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ "Sort taxonomy terms, your way.")
-* [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
+* [WP Chosen](https://wordpress.org/plugins/wp-chosen/ "Make long, unwieldy select boxes much more user-friendly.")
+* [WP Pretty Filters](https://wordpress.org/plugins/wp-pretty-filters/ "Makes post filters better match what's already in Media & Attachments.")
+* [WP Event Calendar](https://wordpress.org/plugins/wp-event-calendar/ "The best way to manage events in WordPress.")
+* [WP Media Categories](https://wordpress.org/plugins/wp-media-categories/ "Add categories to media & attachments.")
+* [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ "Metadata, for taxonomy terms.")
 * [WP Term Order](https://wordpress.org/plugins/wp-term-order/ "Sort taxonomy terms, your way.")
+* [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
+* [WP Term Colors](https://wordpress.org/plugins/wp-term-colors/ "Pretty colors for categories, tags, and other taxonomy terms.")
 * [WP Term Icons](https://wordpress.org/plugins/wp-term-icons/ "Pretty icons for categories, tags, and other taxonomy terms.")
 * [WP Term Visibility](https://wordpress.org/plugins/wp-term-visibility/ "Visibilities for categories, tags, and other taxonomy terms.")
+* [WP User Activity](https://wordpress.org/plugins/wp-user-activity/ "The best way to log activity in WordPress.")
+* [WP User Avatars](https://wordpress.org/plugins/wp-user-avatars/ "Allow users to upload avatars or choose them from your media library.")
 * [WP User Groups](https://wordpress.org/plugins/wp-user-groups/ "Group users together with taxonomies & terms.")
-* [WP Event Calendar](https://wordpress.org/plugins/wp-event-calendar/ "Flexible events, with a calendar view.")
+* [WP User Profiles](https://wordpress.org/plugins/wp-user-profiles/ "A sophisticated way to edit users in WordPress.")
 
 == Screenshots ==
 
@@ -63,7 +71,7 @@ $terms = get_terms( 'category', array(
 	'parent'     => 0,
 	'hide_empty' => false,
 
-	// Query by color using the "wp-term-meta" plugin!
+	// Query by color
 	'meta_query' => array( array(
 		'key'   => 'color',
 		'value' => '#c0ffee'
@@ -80,6 +88,14 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-term-color
 http://github.com/stuttter/wp-term-colors/
 
 == Changelog ==
+
+
+= 0.1.4 =
+* Update textdomain
+* Update headers & meta
+
+= 0.1.3 =
+* Updated metadata UI class
 
 = 0.1.1 =
 * Updated form field classes
