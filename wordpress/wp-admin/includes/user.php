@@ -142,8 +142,10 @@ function edit_user( $user_id = 0 ) {
 	if ( !$update && username_exists( $user->user_login ) )
 		$errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ));
 
-	/** This filter is documented in wp-includes/user-functions.php */
-	if ( in_array( $user->user_login, apply_filters( 'illegal_user_logins', array() ) ) ) {
+	/** This filter is documented in wp-includes/user.php */
+	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
+
+	if ( in_array( strtolower( $user->user_login ), array_map( 'strtolower', $illegal_logins ) ) ) {
 		$errors->add( 'illegal_user_login', __( '<strong>ERROR</strong>: Sorry, that username is not allowed.' ) );
 	}
 
@@ -174,14 +176,18 @@ function edit_user( $user_id = 0 ) {
 		$user_id = wp_update_user( $user );
 	} else {
 		$user_id = wp_insert_user( $user );
+		$notify  = isset( $_POST['send_user_notification'] ) ? 'both' : 'admin';
+
 		/**
 		  * Fires after a new user has been created.
 		  *
 		  * @since 4.4.0
 		  *
-		  * @param int $user_id ID of the newly created user.
+		  * @param int    $user_id ID of the newly created user.
+		  * @param string $notify  Type of notification that should happen. See {@see wp_send_new_user_notifications()}
+		  *                        for more information on possible values.
 		  */
-		do_action( 'edit_user_created_user', $user_id );
+		do_action( 'edit_user_created_user', $user_id, $notify );
 	}
 	return $user_id;
 }

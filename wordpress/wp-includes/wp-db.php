@@ -1132,6 +1132,7 @@ class wpdb {
 
 		$class = get_class( $this );
 		if ( function_exists( '__' ) ) {
+			/* translators: %s: database access abstraction class, usually wpdb or a class extending wpdb */
 			_doing_it_wrong( $class, sprintf( __( '%s must set a database connection for use with escaping.' ), $class ), E_USER_NOTICE );
 		} else {
 			_doing_it_wrong( $class, sprintf( '%s must set a database connection for use with escaping.', $class ), E_USER_NOTICE );
@@ -2810,11 +2811,21 @@ class wpdb {
 						$charset = $value['charset'];
 					}
 
+					if ( $this->charset ) {
+						$connection_charset = $this->charset;
+					} else {
+						if ( $this->use_mysqli ) {
+							$connection_charset = mysqli_character_set_name( $this->dbh );
+						} else {
+							$connection_charset = mysql_client_encoding();
+						}
+					}
+
 					if ( is_array( $value['length'] ) ) {
-						$queries[ $col ] = $this->prepare( "CONVERT( LEFT( CONVERT( %s USING $charset ), %.0f ) USING {$this->charset} )", $value['value'], $value['length']['length'] );
+						$queries[ $col ] = $this->prepare( "CONVERT( LEFT( CONVERT( %s USING $charset ), %.0f ) USING $connection_charset )", $value['value'], $value['length']['length'] );
 					} else if ( 'binary' !== $charset ) {
 						// If we don't have a length, there's no need to convert binary - it will always return the same result.
-						$queries[ $col ] = $this->prepare( "CONVERT( CONVERT( %s USING $charset ) USING {$this->charset} )", $value['value'] );
+						$queries[ $col ] = $this->prepare( "CONVERT( CONVERT( %s USING $charset ) USING $connection_charset )", $value['value'] );
 					}
 
 					unset( $data[ $col ]['db'] );

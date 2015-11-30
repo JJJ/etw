@@ -129,30 +129,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Get the value of the 'orderby' query var.
-	 *
-	 * @access protected
-	 * @since 4.4.0
-	 *
-	 * @return string The value of 'orderby'.
-	 */
-	protected function get_orderby() {
-		return strtolower( get_query_var( 'orderby' ) );
-	}
-
-	/**
-	 * Get the value of the 'order' query var.
-	 *
-	 * @access protected
-	 * @since 4.4.0
-	 *
-	 * @return string The value of 'order'.
-	 */
-	protected function get_order() {
-		return strtolower( get_query_var( 'order' ) );
-	}
-
-	/**
 	 *
 	 * @global array    $avail_post_stati
 	 * @global WP_Query $wp_query
@@ -175,6 +151,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		if ( $this->hierarchical_display ) {
 			$total_items = $wp_query->post_count;
+		} elseif ( $wp_query->found_posts || $this->get_pagenum() === 1 ) {
+			$total_items = $wp_query->found_posts;
 		} else {
 			$post_counts = (array) wp_count_posts( $post_type, 'readable' );
 
@@ -194,8 +172,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 			}
 		}
 
-		$total_pages = ceil( $total_items / $per_page );
-
 		if ( ! empty( $_REQUEST['mode'] ) ) {
 			$mode = $_REQUEST['mode'] === 'excerpt' ? 'excerpt' : 'list';
 			set_user_setting ( 'posts_list_mode', $mode );
@@ -207,7 +183,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
-			'total_pages' => $total_pages,
 			'per_page' => $per_page
 		) );
 	}
@@ -490,7 +465,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		 * list table.
 		 *
 		 * @since 4.4.0
-		 * 
+		 *
 		 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
 		 */
 		do_action( 'manage_posts_extra_tablenav', $which );
@@ -505,16 +480,6 @@ class WP_Posts_List_Table extends WP_List_Table {
 			return 'delete_all';
 
 		return parent::current_action();
-	}
-
-	/**
-	 * @global string $mode
-	 * @param string $which
-	 */
-	protected function pagination( $which ) {
-		global $mode;
-
-		parent::pagination( $which );
 	}
 
 	/**
@@ -647,13 +612,10 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global string $mode
 	 * @param array $posts
 	 * @param int $level
 	 */
 	private function _display_rows( $posts, $level = 0 ) {
-		global $mode;
-
 		// Create array of post IDs.
 		$post_ids = array();
 

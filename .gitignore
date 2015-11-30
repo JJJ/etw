@@ -1,4 +1,5 @@
 .DS_Store
+import.xml
 /.htaccess
 /.config.php
 /.nginx-conf

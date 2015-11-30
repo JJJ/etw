@@ -1085,6 +1085,20 @@ th.action-links {
 	color: #fff;
 }
 
+.wp-filter .favorites-form {
+	display: none;
+	margin: 0 -20px;
+	padding: 20px;
+	border-top: 1px solid #eee;
+	background: #fafafa;
+	overflow: hidden;
+	width: 100%;
+}
+
+.show-favorites-form .wp-filter .favorites-form {
+	display: block;
+}
+
 .filter-drawer {
 	display: none;
 	margin: 0 -20px;
@@ -1538,6 +1552,8 @@ form.upgrade .hint {
 #screen-meta-links .show-settings:active {
 	-webkit-box-shadow: none;
 	box-shadow: none;
+	-webkit-transform: none;
+	-ms-transform: none;
 	transform: none;
 }
 
@@ -1981,20 +1997,25 @@ html.wp-toolbar {
 ------------------------------------------------------------------------------*/
 
 .nav-tab {
+	float: left;
 	border: 1px solid #ccc;
 	border-bottom: none;
+	margin-left: 0.5em; /* half the font size so set the font size properly */
+	padding: 5px 10px;
+	font-size: 14px;
+	line-height: 24px;
+	font-weight: 600;
 	background: #e4e4e4;
 	color: #555;
+	text-decoration: none;
+	white-space: nowrap;
 }
 
-.nav-tab,
+h3 .nav-tab, /* Back-compat for pre-4.4 */
 .nav-tab-small .nav-tab {
-	display: inline-block;
-	margin: -4px 4px -1px 0;
 	padding: 5px 14px;
 	font-size: 12px;
 	line-height: 16px;
-	text-decoration: none;
 }
 
 .nav-tab:hover,
@@ -2003,37 +2024,41 @@ html.wp-toolbar {
 	color: #464646;
 }
 
+.nav-tab-active,
+.nav-tab:focus:active {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
 .nav-tab-active {
+	margin-bottom: -1px;
 	color: #464646;
 }
 
 .nav-tab-active,
 .nav-tab-active:hover,
-.nav-tab-active:focus {
+.nav-tab-active:focus,
+.nav-tab-active:focus:active {
 	border-bottom: 1px solid #f1f1f1;
 	background: #f1f1f1;
 	color: #000;
 }
 
 h1.nav-tab-wrapper, /* Back-compat for pre-4.4 */
-h2.nav-tab-wrapper,
+.wrap h2.nav-tab-wrapper, /* higher specificity to override .wrap > h2:first-child */
 h3.nav-tab-wrapper {
 	border-bottom: 1px solid #ccc;
 	margin: 0;
-	padding: 9px 15px 0 10px;
-	font-size: 23px;
-	font-weight: 400;
-	line-height: 29px;
+	padding: 9px 15px 0 0;
+	line-height: inherit;
 }
 
-h1 .nav-tab, /* Back-compat for pre-4.4 */
-h2 .nav-tab {
-	padding: 6px 10px;
-	font-weight: 600;
-	font-size: 15px;
-	line-height: 24px;
+/* contain floats */
+.nav-tab-wrapper:after {
+	content: "";
+	display: table;
+	clear: both;
 }
-
 
 /*------------------------------------------------------------------------------
   26.0 - Misc
@@ -2743,7 +2768,7 @@ body.index-php #TB_window.thickbox-loading:before {
 	body.plugins-php #TB_window.thickbox-loading:before,
 	body.update-core-php #TB_window.thickbox-loading:before,
 	body.index-php #TB_window.thickbox-loading:before {
-		background: #fcfcfc url(../images/spinner-2x.gif) no-repeat center;
+		background-image: url(../images/spinner-2x.gif);
 	}
 }
 
@@ -2884,6 +2909,7 @@ img {
 .js .postbox .handlediv:focus {
 	-webkit-box-shadow: none;
 	box-shadow: none;
+	outline: none;
 }
 
 .js .postbox .handlediv:focus .toggle-indicator:before {
@@ -3580,6 +3606,21 @@ img {
 	/* Keep full-width boxes on Edit Post page from causing horizontal scroll */
 	div#post-body.metabox-holder.columns-1 {
 		overflow-x: hidden;
+	}
+
+	h1.nav-tab-wrapper,
+	.wrap h2.nav-tab-wrapper,
+	h3.nav-tab-wrapper {
+		padding-left: 0;
+		border-bottom: 0;
+	}
+
+	h1 .nav-tab,
+	h2 .nav-tab,
+	h3 .nav-tab {
+		margin-top: 10px;
+		margin-right: 10px;
+		border-bottom: 1px solid #ccc;
 	}
 }
 

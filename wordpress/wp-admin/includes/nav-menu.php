@@ -154,7 +154,7 @@ function wp_initial_nav_menu_meta_boxes() {
 	if ( get_user_option( 'metaboxhidden_nav-menus' ) !== false || ! is_array($wp_meta_boxes) )
 		return;
 
-	$initial_meta_boxes = array( 'add-page', 'add-post', 'add-custom-links', 'add-category' );
+	$initial_meta_boxes = array( 'add-post-type-page', 'add-post-type-post', 'add-custom-links', 'add-category' );
 	$hidden_meta_boxes = array();
 
 	foreach ( array_keys($wp_meta_boxes['nav-menus']) as $context ) {
@@ -202,7 +202,7 @@ function wp_nav_menu_post_type_meta_boxes() {
 			$id = $post_type->name;
 			// Give pages a higher priority.
 			$priority = ( 'page' == $post_type->name ? 'core' : 'default' );
-			add_meta_box( "add-{$id}", $post_type->labels->name, 'wp_nav_menu_item_post_type_meta_box', 'nav-menus', 'side', $priority, $post_type );
+			add_meta_box( "add-post-type-{$id}", $post_type->labels->name, 'wp_nav_menu_item_post_type_meta_box', 'nav-menus', 'side', $priority, $post_type );
 		}
 	}
 }
@@ -899,10 +899,16 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 		 */
 		$walker_class_name = apply_filters( 'wp_edit_nav_menu_walker', 'Walker_Nav_Menu_Edit', $menu_id );
 
-		if ( class_exists( $walker_class_name, false ) )
+		if ( class_exists( $walker_class_name ) ) {
 			$walker = new $walker_class_name;
-		else
-			return new WP_Error( 'menu_walker_not_exist', sprintf( __('The Walker class named <strong>%s</strong> does not exist.'), $walker_class_name ) );
+		} else {
+			return new WP_Error( 'menu_walker_not_exist',
+				/* translators: %s: walker class name */
+				sprintf( __( 'The Walker class named %s does not exist.' ),
+					'<strong>' . $walker_class_name . '</strong>'
+				)
+			);
+		}
 
 		$some_pending_menu_items = $some_invalid_menu_items = false;
 		foreach ( (array) $menu_items as $menu_item ) {
@@ -1043,7 +1049,12 @@ function wp_nav_menu_update_menu_items ( $nav_menu_selected_id, $nav_menu_select
 	/** This action is documented in wp-includes/nav-menu.php */
 	do_action( 'wp_update_nav_menu', $nav_menu_selected_id );
 
-	$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' . sprintf( __( '<strong>%1$s</strong> has been updated.' ), $nav_menu_selected_title ) . '</p></div>';
+	$messages[] = '<div id="message" class="updated notice is-dismissible"><p>' .
+		/* translators: %s: nav menu title */
+		sprintf( __( '%s has been updated.' ),
+			'<strong>' . $nav_menu_selected_title . '</strong>'
+		) . '</p></div>';
+
 	unset( $menu_items, $unsorted_menu_items );
 
 	return $messages;

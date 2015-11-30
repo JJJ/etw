@@ -330,7 +330,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'imgareaselect', "/wp-includes/js/imgareaselect/jquery.imgareaselect$suffix.js", array('jquery'), false, 1 );
 
-	$scripts->add( 'mediaelement', "/wp-includes/js/mediaelement/mediaelement-and-player.min.js", array('jquery'), '2.17.0', 1 );
+	$scripts->add( 'mediaelement', "/wp-includes/js/mediaelement/mediaelement-and-player.min.js", array('jquery'), '2.18.1', 1 );
 	did_action( 'init' ) && $scripts->localize( 'mediaelement', 'mejsL10n', array(
 		'language' => get_bloginfo( 'language' ),
 		'strings'  => array(
@@ -487,6 +487,9 @@ function wp_default_scripts( &$scripts ) {
 			'replyApprove' => __( 'Approve and Reply' ),
 			'reply' => __( 'Reply' ),
 			'warnQuickEdit' => __( "Are you sure you want to edit this comment?\nThe changes you made will be lost." ),
+			'docTitleComments' => __( 'Comments' ),
+			/* translators: %s: comments count */
+			'docTitleCommentsCount' => __( 'Comments (%s)' ),
 		) );
 
 		$scripts->add( 'xfn', "/wp-admin/js/xfn$suffix.js", array('jquery'), false, 1 );
@@ -562,9 +565,10 @@ function wp_default_scripts( &$scripts ) {
 			'comma' => trim( _x( ',', 'tag delimiter' ) ),
 		) );
 
-		$scripts->add( 'inline-edit-tax', "/wp-admin/js/inline-edit-tax$suffix.js", array( 'jquery' ), false, 1 );
+		$scripts->add( 'inline-edit-tax', "/wp-admin/js/inline-edit-tax$suffix.js", array( 'jquery', 'wp-a11y' ), false, 1 );
 		did_action( 'init' ) && $scripts->localize( 'inline-edit-tax', 'inlineEditL10n', array(
-			'error' => __('Error while saving the changes.')
+			'error' => __( 'Error while saving the changes.' ),
+			'saved' => __( 'Changes saved.' ),
 		) );
 
 		$scripts->add( 'plugin-install', "/wp-admin/js/plugin-install$suffix.js", array( 'jquery', 'thickbox' ), false, 1 );
@@ -579,6 +583,7 @@ function wp_default_scripts( &$scripts ) {
 			'l10n'       => array(
 				'updating'          => __( 'Updating...' ), // no ellipsis
 				'updated'           => __( 'Updated!' ),
+				'updateFailedShort' => __( 'Update Failed!' ),
 				/* translators: Error string for a failed update */
 				'updateFailed'      => __( 'Update Failed: %s' ),
 				/* translators: Plugin name and version */
@@ -727,17 +732,19 @@ function wp_default_styles( &$styles ) {
 	$styles->add( 'open-sans', $open_sans_font_url );
 
 	// Includes CSS
-	$styles->add( 'admin-bar',         "/wp-includes/css/admin-bar$suffix.css", array( 'open-sans', 'dashicons' ) );
-	$styles->add( 'wp-auth-check',     "/wp-includes/css/wp-auth-check$suffix.css", array( 'dashicons' ) );
-	$styles->add( 'editor-buttons',    "/wp-includes/css/editor$suffix.css", array( 'dashicons' ) );
-	$styles->add( 'media-views',       "/wp-includes/css/media-views$suffix.css", array( 'buttons', 'dashicons', 'wp-mediaelement' ) );
-	$styles->add( 'wp-pointer',        "/wp-includes/css/wp-pointer$suffix.css", array( 'dashicons' ) );
-	$styles->add( 'customize-preview', "/wp-includes/css/customize-preview$suffix.css" );
+	$styles->add( 'admin-bar',            "/wp-includes/css/admin-bar$suffix.css", array( 'open-sans', 'dashicons' ) );
+	$styles->add( 'wp-auth-check',        "/wp-includes/css/wp-auth-check$suffix.css", array( 'dashicons' ) );
+	$styles->add( 'editor-buttons',       "/wp-includes/css/editor$suffix.css", array( 'dashicons' ) );
+	$styles->add( 'media-views',          "/wp-includes/css/media-views$suffix.css", array( 'buttons', 'dashicons', 'wp-mediaelement' ) );
+	$styles->add( 'wp-pointer',           "/wp-includes/css/wp-pointer$suffix.css", array( 'dashicons' ) );
+	$styles->add( 'customize-preview',    "/wp-includes/css/customize-preview$suffix.css" );
+	$styles->add( 'wp-embed-template-ie', "/wp-includes/css/wp-embed-template-ie$suffix.css" );
+	$styles->add_data( 'wp-embed-template-ie', 'conditional', 'lte IE 8' );
 
 	// External libraries and friends
 	$styles->add( 'imgareaselect',       '/wp-includes/js/imgareaselect/imgareaselect.css', array(), '0.9.8' );
 	$styles->add( 'wp-jquery-ui-dialog', "/wp-includes/css/jquery-ui-dialog$suffix.css", array( 'dashicons' ) );
-	$styles->add( 'mediaelement',        "/wp-includes/js/mediaelement/mediaelementplayer.min.css", array(), '2.17.0' );
+	$styles->add( 'mediaelement',        "/wp-includes/js/mediaelement/mediaelementplayer.min.css", array(), '2.18.1' );
 	$styles->add( 'wp-mediaelement',     "/wp-includes/js/mediaelement/wp-mediaelement.css", array( 'mediaelement' ) );
 	$styles->add( 'thickbox',            '/wp-includes/js/thickbox/thickbox.css', array( 'dashicons' ) );
 

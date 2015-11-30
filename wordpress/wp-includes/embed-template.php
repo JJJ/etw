@@ -14,11 +14,9 @@ if ( ! headers_sent() ) {
 	header( 'X-WP-embed: true' );
 }
 
-wp_enqueue_style( 'open-sans' );
-
 ?>
 <!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> class="no-js">
 <head>
 	<title><?php echo wp_get_document_title(); ?></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -123,13 +121,22 @@ if ( have_posts() ) :
 			<div class="wp-embed-footer">
 				<div class="wp-embed-site-title">
 					<?php
-					printf(
+					$site_title = sprintf(
 						'<a href="%s" target="_top"><img src="%s" srcset="%s 2x" width="32" height="32" alt="" class="wp-embed-site-icon"/><span>%s</span></a>',
 						esc_url( home_url() ),
 						esc_url( get_site_icon_url( 32, admin_url( 'images/w-logo-blue.png' ) ) ),
 						esc_url( get_site_icon_url( 64, admin_url( 'images/w-logo-blue.png' ) ) ),
 						esc_html( get_bloginfo( 'name' ) )
 					);
+
+					/**
+					 * Filter the site title HTML in the embed footer.
+					 *
+					 * @since 4.4.0
+					 *
+					 * @param string $site_title The site title HTML.
+					 */
+					echo apply_filters( 'embed_site_title_html', $site_title );
 					?>
 				</div>
 
@@ -142,61 +149,6 @@ if ( have_posts() ) :
 					 */
 					do_action( 'embed_content_meta');
 					?>
-					<?php if ( get_comments_number() || comments_open() ) : ?>
-						<div class="wp-embed-comments">
-							<a href="<?php comments_link(); ?>" target="_top">
-								<span class="dashicons dashicons-admin-comments"></span>
-								<?php
-								printf(
-									_n(
-										'%s <span class="screen-reader-text">Comment</span>',
-										'%s <span class="screen-reader-text">Comments</span>',
-										get_comments_number()
-									),
-									number_format_i18n( get_comments_number() )
-								);
-								?>
-							</a>
-						</div>
-					<?php endif; ?>
-					<div class="wp-embed-share">
-						<button type="button" class="wp-embed-share-dialog-open"
-						        aria-label="<?php esc_attr_e( 'Open sharing dialog' ); ?>">
-							<span class="dashicons dashicons-share"></span>
-						</button>
-					</div>
-				</div>
-			</div>
-			<div class="wp-embed-share-dialog hidden">
-				<div class="wp-embed-share-dialog-content">
-					<div class="wp-embed-share-dialog-text">
-						<ul class="wp-embed-share-tabs" role="tablist">
-							<li id="wp-embed-share-tab-button-wordpress" class="wp-embed-share-tab-button" role="presentation">
-								<button role="tab" aria-controls="wp-embed-share-tab-wordpress" aria-selected="true" tabindex="0"><?php esc_html_e( 'WordPress Embed' ); ?></button>
-							</li>
-							<li id="wp-embed-share-tab-button-embed" class="wp-embed-share-tab-button" role="presentation">
-								<button role="tab" aria-controls="wp-embed-share-tab-html" aria-selected="false" tabindex="-1"><?php esc_html_e( 'HTML Embed' ); ?></button>
-							</li>
-						</ul>
-						<div id="wp-embed-share-tab-wordpress" class="wp-embed-share-tab" role="tabpanel" aria-labelledby="wp-embed-share-tab-button-wordpress" aria-hidden="false">
-							<input type="text" value="<?php the_permalink(); ?>" class="wp-embed-share-input" tabindex="0" readonly/>
-
-							<p class="wp-embed-share-description">
-								<?php _e( 'Copy and paste this URL into your WordPress site to embed' ); ?>
-							</p>
-						</div>
-						<div id="wp-embed-share-tab-html" class="wp-embed-share-tab" role="tabpanel" aria-labelledby="wp-embed-share-tab-button-html" aria-hidden="true">
-							<textarea class="wp-embed-share-input" tabindex="0" readonly><?php echo esc_textarea( get_post_embed_html( null, 600, 400 ) ); ?></textarea>
-
-							<p class="wp-embed-share-description">
-								<?php _e( 'Copy and paste this code into your site to embed' ); ?>
-							</p>
-						</div>
-					</div>
-
-					<button type="button" class="wp-embed-share-dialog-close" aria-label="<?php esc_attr_e( 'Close sharing dialog' ); ?>">
-						<span class="dashicons dashicons-no"></span>
-					</button>
 				</div>
 			</div>
 		</div>
@@ -222,13 +174,16 @@ else :
 		<div class="wp-embed-footer">
 			<div class="wp-embed-site-title">
 				<?php
-				printf(
+				$site_title = sprintf(
 					'<a href="%s" target="_top"><img src="%s" srcset="%s 2x" width="32" height="32" alt="" class="wp-embed-site-icon"/><span>%s</span></a>',
 					esc_url( home_url() ),
 					esc_url( get_site_icon_url( 32, admin_url( 'images/w-logo-blue.png' ) ) ),
 					esc_url( get_site_icon_url( 64, admin_url( 'images/w-logo-blue.png' ) ) ),
 					esc_html( get_bloginfo( 'name' ) )
 				);
+
+				/** This filter is documented in wp-includes/embed-template.php */
+				echo apply_filters( 'embed_site_title_html', $site_title );
 				?>
 			</div>
 		</div>

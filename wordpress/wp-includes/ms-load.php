@@ -93,10 +93,17 @@ function ms_site_check() {
 	}
 
 	if ( '2' == $blog->deleted ) {
-		if ( file_exists( WP_CONTENT_DIR . '/blog-inactive.php' ) )
+		if ( file_exists( WP_CONTENT_DIR . '/blog-inactive.php' ) ) {
 			return WP_CONTENT_DIR . '/blog-inactive.php';
-		else
-			wp_die( sprintf( __( 'This site has not been activated yet. If you are having problems activating your site, please contact <a href="mailto:%1$s">%1$s</a>.' ), str_replace( '@', ' AT ', get_site_option( 'admin_email', 'support@' . get_current_site()->domain ) ) ) );
+		} else {
+			$admin_email = str_replace( '@', ' AT ', get_site_option( 'admin_email', 'support@' . get_current_site()->domain ) );
+			wp_die(
+				/* translators: %s: admin email link */
+				sprintf( __( 'This site has not been activated yet. If you are having problems activating your site, please contact %s.' ),
+					sprintf( '<a href="mailto:%s">%s</a>', $admin_email )
+				)
+			);
+		}
 	}
 
 	if ( $blog->archived == '1' || $blog->spam == '1' ) {
@@ -110,7 +117,7 @@ function ms_site_check() {
 }
 
 /**
- * Retrieve a network object by its domain and path.
+ * Retrieve the closest matching network for a domain and path.
  *
  * @since 3.9.0
  * @since 4.4.0 Converted to a wrapper for WP_Network::get_by_path()
@@ -298,7 +305,10 @@ function ms_not_installed( $domain, $path ) {
 		) . '</p>';
 	}
 	$msg .= '<p><strong>' . __( 'What do I do now?' ) . '</strong> ';
-	$msg .= __( 'Read the <a target="_blank" href="https://codex.wordpress.org/Debugging_a_WordPress_Network">bug report</a> page. Some of the guidelines there may help you figure out what went wrong.' );
+	/* translators: %s: Codex URL */
+	$msg .= sprintf( __( 'Read the <a href="%s" target="_blank">bug report</a> page. Some of the guidelines there may help you figure out what went wrong.' ),
+		__( 'https://codex.wordpress.org/Debugging_a_WordPress_Network' )
+	);
 	$msg .= ' ' . __( 'If you&#8217;re still stuck with this message, then check that your database contains the following tables:' ) . '</p><ul>';
 	foreach ( $wpdb->tables('global') as $t => $table ) {
 		if ( 'sitecategories' == $t )

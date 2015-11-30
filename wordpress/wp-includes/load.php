@@ -397,7 +397,13 @@ function wp_set_wpdb_vars() {
 
 	if ( is_wp_error( $prefix ) ) {
 		wp_load_translations_early();
-		wp_die( __( '<strong>ERROR</strong>: <code>$table_prefix</code> in <code>wp-config.php</code> can only contain numbers, letters, and underscores.' ) );
+		wp_die(
+			/* translators: 1: $table_prefix 2: wp-config.php */
+			sprintf( __( '<strong>ERROR</strong>: %1$s in %2$s can only contain numbers, letters, and underscores.' ),
+				'<code>$table_prefix</code>',
+				'<code>wp-config.php</code>'
+			)
+		);
 	}
 }
 
@@ -546,6 +552,13 @@ function wp_get_mu_plugins() {
 function wp_get_active_and_valid_plugins() {
 	$plugins = array();
 	$active_plugins = (array) get_option( 'active_plugins', array() );
+
+	// Check for hacks file if the option is enabled
+	if ( get_option( 'hack_file' ) && file_exists( ABSPATH . 'my-hacks.php' ) ) {
+		_deprecated_file( 'my-hacks.php', '1.5' );
+		array_unshift( $plugins, ABSPATH . 'my-hacks.php' );
+	}
+
 	if ( empty( $active_plugins ) || wp_installing() )
 		return $plugins;
 

@@ -159,6 +159,47 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 }
 
 /**
+ * Determines if the date should be declined.
+ *
+ * If the locale specifies that month names require a genitive case in certain
+ * formats (like 'j F Y'), the month name will be replaced with a correct form.
+ *
+ * @since 4.4.0
+ *
+ * @param string $date Formatted date string.
+ * @return string The date, declined if locale specifies it.
+ */
+function wp_maybe_decline_date( $date ) {
+	global $wp_locale;
+
+	/* translators: If months in your language require a genitive case,
+	 * translate this to 'on'. Do not translate into your own language.
+	 */
+	if ( 'on' === _x( 'off', 'decline months names: on or off' ) ) {
+		// Match a format like 'j F Y' or 'j. F'
+		if ( @preg_match( '#^\d{1,2}\.? \w+#u', $date ) ) {
+			$months = $wp_locale->month;
+
+			foreach ( $months as $key => $month ) {
+				$months[ $key ] = '#' . $month . '#';
+			}
+
+			$date = preg_replace( $months, $wp_locale->month_genitive, $date );
+		}
+	}
+
+	// Used for locale-specific rules
+	$locale = get_locale();
+
+	if ( 'ca' === $locale ) {
+		// " de abril| de agost| de octubre..." -> " d'abril| d'agost| d'octubre..."
+		$date = preg_replace( '# de ([ao])#i', " d'\\1", $date );
+	}
+
+	return $date;
+}
+
+/**
  * Convert integer number to format based on the locale.
  *
  * @since 2.3.0
@@ -260,8 +301,8 @@ function get_weekstartend( $mysqlstring, $start_of_week = '' ) {
 	// The most recent week start day on or before $day.
 	$start = $day - DAY_IN_SECONDS * ( $weekday - $start_of_week );
 
-	// $start + 7 days - 1 second.
-	$end = $start + 7 * DAY_IN_SECONDS - 1;
+	// $start + 1 week - 1 second.
+	$end = $start + WEEK_IN_SECONDS - 1;
 	return compact( 'start', 'end' );
 }
 
@@ -831,6 +872,7 @@ function wp_removable_query_args() {
 		'untrashed',
 		'update',
 		'updated',
+		'wp-post-new-reload',
 	);
 
 	/**
@@ -2556,9 +2598,9 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 		}
 		a {
 			color: #0073aa;
-			text-decoration: none;
 		}
-		a:hover {
+		a:hover,
+		a:active {
 			color: #00a0d2;
 		}
 		a:focus {
@@ -2610,12 +2652,9 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 		}
 
 		.button:focus  {
-			-webkit-box-shadow:
-				0 0 0 1px #5b9dd9,
-				0 0 2px 1px rgba(0, 115, 170, .8);
-			box-shadow:
-				0 0 0 1px #5b9dd9,
-				0 0 2px 1px rgba(0, 115, 170, .8);
+			border-color: #5b9dd9;
+			-webkit-box-shadow: 0 0 3px rgba( 0, 115, 170, .8 );
+			box-shadow: 0 0 3px rgba( 0, 115, 170, .8 );
 			outline: none;
 		}
 
@@ -3741,11 +3780,16 @@ function _doing_it_wrong( $function, $message, $version ) {
 	if ( WP_DEBUG && apply_filters( 'doing_it_wrong_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
 			$version = is_null( $version ) ? '' : sprintf( __( '(This message was added in version %s.)' ), $version );
-			$message .= ' ' . __( 'Please see <a href="https://codex.wordpress.org/Debugging_in_WordPress">Debugging in WordPress</a> for more information.' );
+			/* translators: %s: Codex URL */
+			$message .= ' ' . sprintf( __( 'Please see <a href="%s">Debugging in WordPress</a> for more information.' ),
+				__( 'https://codex.wordpress.org/Debugging_in_WordPress' )
+			);
 			trigger_error( sprintf( __( '%1$s was called <strong>incorrectly</strong>. %2$s %3$s' ), $function, $message, $version ) );
 		} else {
 			$version = is_null( $version ) ? '' : sprintf( '(This message was added in version %s.)', $version );
-			$message .= ' Please see <a href="https://codex.wordpress.org/Debugging_in_WordPress">Debugging in WordPress</a> for more information.';
+			$message .= sprintf( ' Please see <a href="%s">Debugging in WordPress</a> for more information.',
+				'https://codex.wordpress.org/Debugging_in_WordPress'
+			);
 			trigger_error( sprintf( '%1$s was called <strong>incorrectly</strong>. %2$s %3$s', $function, $message, $version ) );
 		}
 	}

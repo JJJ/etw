@@ -268,10 +268,10 @@ class WP_List_Table {
 	/**
 	 * An internal method that sets all the necessary pagination arguments
 	 *
-	 * @param array $args An associative array with information about the pagination
+	 * @since 3.1.0
 	 * @access protected
 	 *
-	 * @param array|string $args
+	 * @param array|string $args Array or string of arguments with information about the pagination.
 	 */
 	protected function set_pagination_args( $args ) {
 		$args = wp_parse_args( $args, array(
@@ -902,6 +902,10 @@ class WP_List_Table {
 		$columns = $this->get_columns();
 		$column = '';
 
+		if ( empty( $columns ) ) {
+			return $column;
+		}
+
 		// We need a primary defined so responsive views show something,
 		// so let's fall back to the first non-checkbox column.
 		foreach ( $columns as $col => $column_name ) {
@@ -937,7 +941,7 @@ class WP_List_Table {
 	 * @return string The name of the primary column.
 	 */
 	protected function get_primary_column_name() {
-		$columns = $this->get_columns();
+		$columns = get_column_headers( $this->screen );
 		$default = $this->get_default_primary_column_name();
 
 		// If the primary column doesn't exist fall back to the

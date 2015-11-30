@@ -204,45 +204,39 @@ class WP_Comments_List_Table extends WP_List_Table {
 		//, number_format_i18n($num_comments->moderated) ), "<span class='comment-count'>" . number_format_i18n($num_comments->moderated) . "</span>"),
 		//, number_format_i18n($num_comments->spam) ), "<span class='spam-comment-count'>" . number_format_i18n($num_comments->spam) . "</span>")
 		$stati = array(
-			'all' => str_replace( '%s', '<span class="all-count">%s</span>',
-				/* translators: %s: all comments count */
-				_nx_noop(
-					'All <span class="count">(%s)</span>',
-					'All <span class="count">(%s)</span>',
-					'comments'
-				)
+			/* translators: %s: all comments count */
+			'all' => _nx_noop(
+				'All <span class="count">(%s)</span>',
+				'All <span class="count">(%s)</span>',
+				'comments'
 			), // singular not used
-			'moderated' => str_replace( '%s', '<span class="pending-count">%s</span>',
-				/* translators: %s: pending comments count */
-				_nx_noop(
-					'Pending <span class="count">(%s)</span>',
-					'Pending <span class="count">(%s)</span>',
-					'comments'
-				)
+
+			/* translators: %s: pending comments count */
+			'moderated' => _nx_noop(
+				'Pending <span class="count">(%s)</span>',
+				'Pending <span class="count">(%s)</span>',
+				'comments'
 			),
-			'approved' => str_replace( '%s', '<span class="approved-count">%s</span>',
-				/* translators: %s: approved comments count */
-				_nx_noop(
-					'Approved <span class="count">(%s)</span>',
-					'Approved <span class="count">(%s)</span>',
-					'comments'
-				)
+
+			/* translators: %s: approved comments count */
+			'approved' => _nx_noop(
+				'Approved <span class="count">(%s)</span>',
+				'Approved <span class="count">(%s)</span>',
+				'comments'
 			),
-			'spam' => str_replace( '%s', '<span class="spam-count">%s</span>',
-				/* translators: %s: spam comments count */
-				_nx_noop(
-					'Spam <span class="count">(%s)</span>',
-					'Spam <span class="count">(%s)</span>',
-					'comments'
-				)
+
+			/* translators: %s: spam comments count */
+			'spam' => _nx_noop(
+				'Spam <span class="count">(%s)</span>',
+				'Spam <span class="count">(%s)</span>',
+				'comments'
 			),
-			'trash' => str_replace( '%s', '<span class="trash-count">%s</span>',
-				/* translators: %s: trashed comments count */
-				_nx_noop(
-					'Trash <span class="count">(%s)</span>',
-					'Trash <span class="count">(%s)</span>',
-					'comments'
-				)
+
+			/* translators: %s: trashed comments count */
+			'trash' => _nx_noop(
+				'Trash <span class="count">(%s)</span>',
+				'Trash <span class="count">(%s)</span>',
+				'comments'
 			)
 		);
 
@@ -266,9 +260,12 @@ class WP_Comments_List_Table extends WP_List_Table {
 			if ( !empty( $_REQUEST['s'] ) )
 				$link = add_query_arg( 's', esc_attr( wp_unslash( $_REQUEST['s'] ) ), $link );
 			*/
-			$status_links[$status] = "<a href='$link'$class>" . sprintf(
+			$status_links[ $status ] = "<a href='$link'$class>" . sprintf(
 				translate_nooped_plural( $label, $num_comments->$status ),
-				number_format_i18n( $num_comments->$status )
+				sprintf( '<span class="%s-count">%s</span>',
+					( 'moderated' === $status ) ? 'pending' : $status,
+					number_format_i18n( $num_comments->$status )
+				)
 			) . '</a>';
 		}
 
@@ -477,12 +474,15 @@ class WP_Comments_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global WP_Post $post
+	 * @global WP_Post    $post
+	 * @global WP_Comment $comment
 	 *
-	 * @param object $comment
+	 * @param WP_Comment $item
 	 */
-	public function single_row( $comment ) {
-		global $post;
+	public function single_row( $item ) {
+		global $post, $comment;
+
+		$comment = $item;
 
 		$the_comment_class = wp_get_comment_status( $comment );
 		if ( ! $the_comment_class ) {
@@ -499,7 +499,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 		$this->single_row_columns( $comment );
 		echo "</tr>\n";
 
-		$post = null;
+		unset( $post, $comment );
 	}
 
  	/**
@@ -507,6 +507,8 @@ class WP_Comments_List_Table extends WP_List_Table {
  	 *
  	 * @since 4.3.0
  	 * @access protected
+ 	 *
+ 	 * @global string $comment_status Status for the current listed comments.
  	 *
  	 * @param object $comment     Comment being acted upon.
  	 * @param string $column_name Current column name.
@@ -693,7 +695,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 				$email = apply_filters( 'comment_email', $comment->comment_author_email, $comment );
 
 				if ( ! empty( $email ) && '@' !== $email ) {
-					printf( '<a href=\'mailto:%1$s\'>%1$s</a><br />', $email );
+					printf( '<a href="%1$s">%2$s</a><br />', esc_url( 'mailto:' . $email ), esc_html( $email ) );
 				}
 			}
 
@@ -703,7 +705,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 				if ( 'spam' === $comment_status ) {
 					$author_ip_url = add_query_arg( 'comment_status', 'spam', $author_ip_url );
 				}
-				printf( '<a href="%s">%s</a>', esc_url( $author_ip_url ), $author_ip );
+				printf( '<a href="%1$s">%2$s</a>', esc_url( $author_ip_url ), esc_html( $author_ip ) );
 			}
 		}
 	}
@@ -712,14 +714,15 @@ class WP_Comments_List_Table extends WP_List_Table {
 	 * @access public
 	 */
 	public function column_date( $comment ) {
-		$comment_url = esc_url( get_comment_link( $comment ) );
 		echo '<div class="submitted-on">';
-		/* translators: 2: comment date, 3: comment time */
-		printf( __( '<a href="%1$s">%2$s at %3$s</a>' ), $comment_url,
+		echo '<a href="' . esc_url( get_comment_link( $comment ) ) . '">';
+		/* translators: 1: comment date, 2: comment time */
+		printf( __( '%1$s at %2$s' ),
 			/* translators: comment date format. See http://php.net/date */
 			get_comment_date( __( 'Y/m/d' ), $comment ),
 			get_comment_date( get_option( 'time_format' ), $comment )
 		);
+		echo '</a>';
 		echo '</div>';
 	}
 

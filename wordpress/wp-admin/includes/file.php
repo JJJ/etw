@@ -39,6 +39,7 @@ $wp_file_descriptions = array(
 	'video.php' => __('Video Attachment Template'),
 	'audio.php' => __('Audio Attachment Template'),
 	'application.php' => __('Application Attachment Template'),
+	'my-hacks.php' => __( 'my-hacks.php (legacy hacks support)' ),
 	'.htaccess' => __( '.htaccess (for rewrite rules )' ),
 	// Deprecated files
 	'wp-layout.css' => __( 'Stylesheet' ),
@@ -164,9 +165,18 @@ function wp_tempnam( $filename = '', $dir = '' ) {
 		return wp_tempnam( dirname( $filename ), $dir );
 	}
 
+	// Suffix some random data to avoid filename conflicts
+	$temp_filename .= '-' . wp_generate_password( 6, false );
 	$temp_filename .= '.tmp';
 	$temp_filename = $dir . wp_unique_filename( $dir, $temp_filename );
-	touch( $temp_filename );
+
+	$fp = @fopen( $temp_filename, 'x' );
+	if ( ! $fp && is_writable( $dir ) && file_exists( $temp_filename ) ) {
+		return wp_tempnam( $filename, $dir );
+	}
+	if ( $fp ) {
+		fclose( $fp );
+	}
 
 	return $temp_filename;
 }
@@ -345,7 +355,9 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 	if ( 'wp_handle_upload' === $action ) {
 		$move_new_file = @ move_uploaded_file( $file['tmp_name'], $new_file );
 	} else {
-		$move_new_file = @ rename( $file['tmp_name'], $new_file );
+		// use copy and unlink because rename breaks streams.
+		$move_new_file = @ copy( $file['tmp_name'], $new_file );
+		unlink( $file['tmp_name'] );
 	}
 
 	if ( false === $move_new_file ) {
@@ -854,7 +866,7 @@ function WP_Filesystem( $args = false, $context = false, $allow_relaxed_file_own
 	if ( ! $method )
 		return false;
 
-	if ( ! class_exists( "WP_Filesystem_$method", false  ) ) {
+	if ( ! class_exists( "WP_Filesystem_$method" ) ) {
 
 		/**
 		 * Filter the path for a specific filesystem method class file.

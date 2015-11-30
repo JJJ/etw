@@ -155,11 +155,18 @@ function wp_install_defaults( $user_id ) {
 	if ( is_multisite() ) {
 		$first_post = get_site_option( 'first_post' );
 
-		if ( empty($first_post) )
-			$first_post = __( 'Welcome to <a href="SITE_URL">SITE_NAME</a>. This is your first post. Edit or delete it, then start writing!' );
+		if ( ! $first_post ) {
+			/* translators: %s: site link */
+			$first_post = __( 'Welcome to %s. This is your first post. Edit or delete it, then start blogging!' );
+		}
 
-		$first_post = str_replace( "SITE_URL", esc_url( network_home_url() ), $first_post );
-		$first_post = str_replace( "SITE_NAME", get_current_site()->site_name, $first_post );
+		$first_post = sprintf( $first_post,
+			sprintf( '<a href="%s">%s</a>', esc_url( network_home_url() ), get_current_site()->site_name )
+		);
+
+		// Back-compat for pre-4.4
+		$first_post = str_replace( 'SITE_URL', esc_url( network_home_url() ), $first_post );
+		$first_post = str_replace( 'SITE_NAME', get_current_site()->site_name, $first_post );
 	} else {
 		$first_post = __( 'Welcome to WordPress. This is your first post. Edit or delete it, then start writing!' );
 	}
@@ -538,7 +545,7 @@ function upgrade_all() {
 	if ( $wp_current_db_version < 33056 )
 		upgrade_431();
 
-	if ( $wp_current_db_version < 34030 )
+	if ( $wp_current_db_version < 35700 )
 		upgrade_440();
 
 	maybe_disable_link_manager();
@@ -1612,6 +1619,14 @@ function upgrade_440() {
 	if ( $wp_current_db_version < 34030 ) {
 		$wpdb->query( "ALTER TABLE {$wpdb->options} MODIFY option_name VARCHAR(191)" );
 	}
+
+	// Remove the unused 'add_users' role.
+	$roles = wp_roles();
+	foreach ( $roles->role_objects as $role ) {
+		if ( $role->has_cap( 'add_users' ) ) {
+			$role->remove_cap( 'add_users' );
+		}
+	}
 }
 
 /**
@@ -2195,6 +2210,7 @@ function dbDelta( $queries = '', $execute = true ) {
 				$keyname = $tableindex->Key_name;
 				$index_ary[$keyname]['columns'][] = array('fieldname' => $tableindex->Column_name, 'subpart' => $tableindex->Sub_part);
 				$index_ary[$keyname]['unique'] = ($tableindex->Non_unique == 0)?true:false;
+				$index_ary[$keyname]['index_type'] = $tableindex->Index_type;
 			}
 
 			// For each actual index in the index array.
@@ -2206,6 +2222,9 @@ function dbDelta( $queries = '', $execute = true ) {
 					$index_string .= 'PRIMARY ';
 				} elseif ( $index_data['unique'] ) {
 					$index_string .= 'UNIQUE ';
+				}
+				if ( 'FULLTEXT' === strtoupper( $index_data['index_type'] ) ) {
+					$index_string .= 'FULLTEXT ';
 				}
 				$index_string .= 'KEY ';
 				if ($index_name != 'PRIMARY') {

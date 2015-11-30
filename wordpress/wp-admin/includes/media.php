@@ -248,7 +248,7 @@ function media_send_to_editor($html) {
 ?>
 <script type="text/javascript">
 var win = window.dialogArguments || opener || parent || top;
-win.send_to_editor('<?php echo addslashes($html); ?>');
+win.send_to_editor( <?php echo wp_json_encode( $html ); ?> );
 </script>
 <?php
 	exit;
@@ -1484,7 +1484,9 @@ function get_media_item( $attachment_id, $args = null ) {
 			$delete = "<a href='" . wp_nonce_url( "post.php?action=delete&amp;post=$attachment_id", 'delete-post_' . $attachment_id ) . "' id='del[$attachment_id]' class='delete-permanently'>" . __( 'Delete Permanently' ) . '</a>';
 		} elseif ( !MEDIA_TRASH ) {
 			$delete = "<a href='#' class='del-link' onclick=\"document.getElementById('del_attachment_$attachment_id').style.display='block';return false;\">" . __( 'Delete' ) . "</a>
-			 <div id='del_attachment_$attachment_id' class='del-attachment' style='display:none;'><p>" . sprintf( __( 'You are about to delete <strong>%s</strong>.' ), $filename ) . "</p>
+			 <div id='del_attachment_$attachment_id' class='del-attachment' style='display:none;'>" .
+			 /* translators: %s: file name */
+			'<p>' . sprintf( __( 'You are about to delete %s.' ), '<strong>' . $filename . '</strong>' ) . "</p>
 			 <a href='" . wp_nonce_url( "post.php?action=delete&amp;post=$attachment_id", 'delete-post_' . $attachment_id ) . "' id='del[$attachment_id]' class='button'>" . __( 'Continue' ) . "</a>
 			 <a href='#' class='button' onclick=\"this.parentNode.style.display='none';return false;\">" . __( 'Cancel' ) . "</a>
 			 </div>";
@@ -2776,7 +2778,7 @@ function edit_form_image_editor( $post ) {
 		);
 	?>
 
-	<label for="content"><strong><?php _e( 'Description' ); ?></strong><?php
+	<label for="attachment_content"><strong><?php _e( 'Description' ); ?></strong><?php
 	if ( preg_match( '#^(audio|video)/#', $post->post_mime_type ) ) {
 		echo ': ' . __( 'Displayed on attachment pages.' );
 	} ?></label>
@@ -2810,8 +2812,8 @@ function attachment_submitbox_metadata() {
 	$att_url = wp_get_attachment_url( $post->ID );
 ?>
 	<div class="misc-pub-section misc-pub-attachment">
-			<label for="attachment_url"><?php _e( 'File URL:' ); ?></label>
-			<input type="text" class="widefat urlfield" readonly="readonly" name="attachment_url" value="<?php echo esc_attr($att_url); ?>" />
+		<label for="attachment_url"><?php _e( 'File URL:' ); ?></label>
+		<input type="text" class="widefat urlfield" readonly="readonly" name="attachment_url" id="attachment_url" value="<?php echo esc_attr( $att_url ); ?>" />
 	</div>
 	<div class="misc-pub-section misc-pub-filename">
 		<?php _e( 'File name:' ); ?> <strong><?php echo $filename; ?></strong>

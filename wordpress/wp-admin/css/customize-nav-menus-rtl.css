@@ -172,10 +172,9 @@
 	right: -10px;
 	width: 10px;
 	height: 40px;
-	background: -webkit-linear-gradient(right, rgba(250,250,250,0) 0%,rgba(250,250,250,1) 100%);
 	background: -webkit-gradient(linear, right top, left top, from(rgba(250,250,250,0)), to(rgba(250,250,250,1)));
 	background: -webkit-linear-gradient(right, rgba(250,250,250,0) 0%, rgba(250,250,250,1) 100%);
-	background: linear-gradient(to left, rgba(250,250,250,0) 0%,rgba(250,250,250,1) 100%);
+	background: linear-gradient(to left, rgba(250,250,250,0) 0%, rgba(250,250,250,1) 100%);
 }
 
 .reordering .menu-item .item-controls,
@@ -200,6 +199,8 @@
 	width: 30px;
 	height: 38px;
 	margin-left: 0 !important;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 	outline: none;
 	overflow: hidden;
 	cursor: pointer;
@@ -530,6 +531,9 @@
 
 .menu-item-bar .item-delete:hover,
 .menu-item-bar .item-delete:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	outline: none;
 	color: #f00;
 }
 
@@ -619,6 +623,9 @@
 	position: absolute;
 	top: 5px;
 	left: 5px;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	outline: none;
 	cursor: pointer;
 }
 
@@ -725,6 +732,9 @@
 	color: #82878c;
 	width: 30px;
 	height: 38px;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	outline: none;
 	cursor: pointer;
 }
 

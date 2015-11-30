@@ -1811,7 +1811,7 @@ class WP_Query {
 		if ( $this->is_feed && ( !empty($qv['withcomments']) || ( empty($qv['withoutcomments']) && $this->is_singular ) ) )
 			$this->is_comment_feed = true;
 
-		if ( !( $this->is_singular || $this->is_archive || $this->is_search || $this->is_feed || $this->is_trackback || $this->is_404 || $this->is_admin || $this->is_comments_popup || $this->is_robots ) )
+		if ( !( $this->is_singular || $this->is_archive || $this->is_search || $this->is_feed || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || $this->is_trackback || $this->is_404 || $this->is_admin || $this->is_comments_popup || $this->is_robots ) )
 			$this->is_home = true;
 
 		// Correct is_* for page_on_front and page_for_posts
@@ -1833,11 +1833,25 @@ class WP_Query {
 		}
 
 		if ( '' != $qv['pagename'] ) {
-			$this->queried_object = get_page_by_path($qv['pagename']);
-			if ( !empty($this->queried_object) )
+			$this->queried_object = get_page_by_path( $qv['pagename'] );
+
+			if ( $this->queried_object && 'attachment' == $this->queried_object->post_type ) {
+				if ( preg_match( "/^[^%]*%(?:postname)%/", get_option( 'permalink_structure' ) ) ) {
+					// See if we also have a post with the same slug
+					$post = get_page_by_path( $qv['pagename'], OBJECT, 'post' );
+					if ( $post ) {
+						$this->queried_object = $post;
+						$this->is_page = false;
+						$this->is_single = true;
+					}
+				}
+			}
+
+			if ( ! empty( $this->queried_object ) ) {
 				$this->queried_object_id = (int) $this->queried_object->ID;
-			else
-				unset($this->queried_object);
+			} else {
+				unset( $this->queried_object );
+			}
 
 			if  ( 'page' == get_option('show_on_front') && isset($this->queried_object_id) && $this->queried_object_id == get_option('page_for_posts') ) {
 				$this->is_page = false;

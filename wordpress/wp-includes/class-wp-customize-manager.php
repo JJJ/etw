@@ -192,6 +192,37 @@ final class WP_Customize_Manager {
 		require_once( ABSPATH . WPINC . '/class-wp-customize-section.php' );
 		require_once( ABSPATH . WPINC . '/class-wp-customize-control.php' );
 
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-color-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-media-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-upload-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-image-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-background-image-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-cropped-image-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-site-icon-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-header-image-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-theme-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-widget-area-customize-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-widget-form-customize-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-item-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-location-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-name-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-auto-add-control.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-new-menu-control.php' );
+
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menus-panel.php' );
+
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-themes-section.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-sidebar-section.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-section.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-new-menu-section.php' );
+
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-filter-setting.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-header-image-setting.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-background-image-setting.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-item-setting.php' );
+		require_once( ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-setting.php' );
+
 		/**
 		 * Filter the core Customizer components to load.
 		 *
@@ -628,6 +659,36 @@ final class WP_Customize_Manager {
 	public function set_post_value( $setting_id, $value ) {
 		$this->unsanitized_post_values();
 		$this->_post_values[ $setting_id ] = $value;
+
+		/**
+		 * Announce when a specific setting's unsanitized post value has been set.
+		 *
+		 * Fires when the {@see WP_Customize_Manager::set_post_value()} method is called.
+		 *
+		 * The dynamic portion of the hook name, `$setting_id`, refers to the setting ID.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param mixed                $value Unsanitized setting post value.
+		 * @param WP_Customize_Manager $this  WP_Customize_Manager instance.
+		 */
+		do_action( "customize_post_value_set_{$setting_id}", $value, $this );
+
+		/**
+		 * Announce when any setting's unsanitized post value has been set.
+		 *
+		 * Fires when the {@see WP_Customize_Manager::set_post_value()} method is called.
+		 *
+		 * This is useful for <code>WP_Customize_Setting</code> instances to watch
+		 * in order to update a cached previewed value.
+		 *
+		 * @since 4.4.0
+		 *
+		 * @param string               $setting_id Setting ID.
+		 * @param mixed                $value      Unsanitized setting post value.
+		 * @param WP_Customize_Manager $this       WP_Customize_Manager instance.
+		 */
+		do_action( 'customize_post_value_set', $setting_id, $value, $this );
 	}
 
 	/**
@@ -1002,7 +1063,7 @@ final class WP_Customize_Manager {
 	 * @since 4.2.0
 	 *
 	 * @param array $setting_ids The setting IDs to add.
-	 * @return WP_Customize_Setting The settings added.
+	 * @return array The WP_Customize_Setting objects added.
 	 */
 	public function add_dynamic_settings( $setting_ids ) {
 		$new_settings = array();
@@ -1302,7 +1363,7 @@ final class WP_Customize_Manager {
 	 */
 	protected function _cmp_priority( $a, $b ) {
 		if ( $a->priority === $b->priority ) {
-			return $a->instance_number - $a->instance_number;
+			return $a->instance_number - $b->instance_number;
 		} else {
 			return $a->priority - $b->priority;
 		}
@@ -1473,14 +1534,15 @@ final class WP_Customize_Manager {
 	 * @return string URL for link to close Customizer.
 	 */
 	public function get_return_url() {
+		$referer = wp_get_referer();
 		if ( $this->return_url ) {
 			$return_url = $this->return_url;
+		} else if ( $referer && 'customize.php' !== basename( parse_url( $referer, PHP_URL_PATH ) ) ) {
+			$return_url = $referer;
 		} else if ( $this->preview_url ) {
 			$return_url = $this->preview_url;
-		} else if ( current_user_can( 'edit_theme_options' ) || current_user_can( 'switch_themes' ) ) {
-			$return_url = admin_url( 'themes.php' );
 		} else {
-			$return_url = admin_url();
+			$return_url = home_url( '/' );
 		}
 		return $return_url;
 	}
