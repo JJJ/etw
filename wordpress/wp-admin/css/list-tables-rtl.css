@@ -877,8 +877,9 @@ p.pagenav {
 .row-actions {
 	color: #ddd;
 	font-size: 13px;
-	visibility: hidden;
 	padding: 2px 0 0;
+	position: relative;
+	right: -9999em;
 }
 
 /* ticket #34150 */
@@ -891,11 +892,12 @@ p.pagenav {
 	color: #000;
 }
 
+.no-js .row-actions,
 tr:hover .row-actions,
 .mobile .row-actions,
 .row-actions.visible,
 div.comment-item:hover .row-actions {
-	visibility: visible;
+	position: static;
 }
 
 /* deprecated */
@@ -2090,6 +2092,12 @@ div.action-links,
 		padding-top: 2px;
 	}
 
+	#wpbody-content .wp-list-table.plugins .plugin-title,
+	#wpbody-content .wp-list-table.plugins .theme-title {
+		padding-left: 12px;
+		white-space: normal;
+	}
+
 	.wp-list-table.plugins .plugin-title,
 	.wp-list-table.plugins .theme-title {
 		padding-top: 13px;
@@ -2147,7 +2155,7 @@ div.action-links,
 	.wp-list-table.plugins .plugin-title strong,
 	.wp-list-table.plugins .theme-title strong {
 		font-size: 1.4em;
-		line-height: 1.6em;
+		line-height: 1.5;
 	}
 
 	/* Add New plugins page */

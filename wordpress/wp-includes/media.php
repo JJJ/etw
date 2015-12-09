@@ -1061,8 +1061,8 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 			$image_ratio_compare = 0;
 		}
 
-		// If the new ratio differs by less than 0.01, use it.
-		if ( abs( $image_ratio - $image_ratio_compare ) < 0.01 ) {
+		// If the new ratio differs by less than 0.002, use it.
+		if ( abs( $image_ratio - $image_ratio_compare ) < 0.002 ) {
 			// Add the URL, descriptor, and value to the sources array to be returned.
 			$sources[ $image['width'] ] = array(
 				'url'        => $image_baseurl . $image['file'],
@@ -1206,11 +1206,13 @@ function wp_calculate_image_sizes( $size, $image_src = null, $image_meta = null,
  * @return string Converted content with 'srcset' and 'sizes' attributes added to images.
  */
 function wp_make_content_images_responsive( $content ) {
-	$images = get_media_embedded_in_content( $content, 'img' );
+	if ( ! preg_match_all( '/<img [^>]+>/', $content, $matches ) ) {
+		return $content;
+	}
 
 	$selected_images = $attachment_ids = array();
 
-	foreach( $images as $image ) {
+	foreach( $matches[0] as $image ) {
 		if ( false === strpos( $image, ' srcset=' ) && preg_match( '/wp-image-([0-9]+)/i', $image, $class_id ) &&
 			( $attachment_id = absint( $class_id[1] ) ) ) {
 
@@ -1273,6 +1275,28 @@ function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 	if ( preg_match( '/-e[0-9]{13}/', $image_meta['file'], $img_edit_hash ) &&
 		strpos( wp_basename( $image_src ), $img_edit_hash[0] ) === false ) {
 
+		return $image;
+	}
+
+	$base_url = trailingslashit( _wp_upload_dir_baseurl() );
+	$image_base_url = $base_url;
+
+	$dirname = dirname( $image_meta['file'] );
+	if ( $dirname !== '.' ) {
+		$image_base_url .= trailingslashit( $dirname );
+	}
+
+	$all_sizes = wp_list_pluck( $image_meta['sizes'], 'file' );
+
+	foreach ( $all_sizes as $key => $file ) {
+		$all_sizes[ $key ] = $image_base_url . $file;
+	}
+
+	// Add the original image.
+	$all_sizes[] = $base_url . $image_meta['file'];
+
+	// Bail early if the image src doesn't match any of the known image sizes.
+	if ( ! in_array( $image_src, $all_sizes ) ) {
 		return $image;
 	}
 
@@ -2977,7 +3001,7 @@ function wp_prepare_attachment_for_js( $attachment ) {
 		'type'        => $type,
 		'subtype'     => $subtype,
 		'icon'        => wp_mime_type_icon( $attachment->ID ),
-		'dateFormatted' => mysql2date( get_option('date_format'), $attachment->post_date ),
+		'dateFormatted' => mysql2date( __( 'F j, Y' ), $attachment->post_date ),
 		'nonces'      => array(
 			'update' => false,
 			'delete' => false,
@@ -3506,12 +3530,11 @@ function get_media_embedded_in_content( $content, $types = null ) {
 	 * Filter the embedded media types that are allowed to be returned from the content blob.
 	 *
 	 * @since 4.2.0
-	 * @since 4.4.0 Added 'img' to the allowed types.
 	 *
 	 * @param array $allowed_media_types An array of allowed media types. Default media types are
-	 *                                   'audio', 'video', 'object', 'embed', 'iframe', and 'img'.
+	 *                                   'audio', 'video', 'object', 'embed', and 'iframe'.
 	 */
-	$allowed_media_types = apply_filters( 'media_embedded_in_content_allowed_types', array( 'audio', 'video', 'object', 'embed', 'iframe', 'img' ) );
+	$allowed_media_types = apply_filters( 'media_embedded_in_content_allowed_types', array( 'audio', 'video', 'object', 'embed', 'iframe' ) );
 
 	if ( ! empty( $types ) ) {
 		if ( ! is_array( $types ) ) {
