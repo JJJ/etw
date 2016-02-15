@@ -1064,14 +1064,16 @@ function links_popup_script($text = 'Links', $width=400, $height=400, $file='lin
 }
 
 /**
+ * Legacy function that retrieved the value of a link's link_rating field.
+ *
  * @since 1.0.1
  * @deprecated 2.1.0 Use sanitize_bookmark_field()
  * @see sanitize_bookmark_field()
  *
- * @param object $link
- * @return mixed
+ * @param object $link Link object.
+ * @return mixed Value of the 'link_rating' field, false otherwise.
  */
-function get_linkrating($link) {
+function get_linkrating( $link ) {
 	_deprecated_function( __FUNCTION__, '2.1', 'sanitize_bookmark_field()' );
 	return sanitize_bookmark_field('link_rating', $link->link_rating, $link->link_id, 'display');
 }
@@ -1195,7 +1197,7 @@ function create_user($username, $password, $email) {
  * Unused function.
  *
  * @deprecated 2.5.0
-*/
+ */
 function gzip_compression() {
 	_deprecated_function( __FUNCTION__, '2.5' );
 	return false;
@@ -1613,7 +1615,7 @@ function get_the_author_ID() {
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
  * @see the_author_meta()
-*/
+ */
 function the_author_ID() {
 	_deprecated_function( __FUNCTION__, '2.8', 'the_author_meta(\'ID\')' );
 	the_author_meta('ID');
@@ -1755,12 +1757,20 @@ function translate_with_context( $text, $domain = 'default' ) {
 }
 
 /**
- * A version of _n(), which supports contexts.
+ * Legacy version of _n(), which supports contexts.
+ *
  * Strips everything from the translation after the last bar.
  *
  * @since 2.7.0
  * @deprecated 3.0.0 Use _nx()
  * @see _nx()
+ *
+ * @param string $single The text to be used if the number is singular.
+ * @param string $plural The text to be used if the number is plural.
+ * @param int    $number The number to compare against to use either the singular or plural form.
+ * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
+ *                       Default 'default'.
+ * @return string The translated singular or plural form.
  */
 function _nc( $single, $plural, $number, $domain = 'default' ) {
 	_deprecated_function( __FUNCTION__, '2.9', '_nx()' );
@@ -1962,17 +1972,20 @@ function get_attachment_innerHTML($id = 0, $fullsize = false, $max_dims = false)
 }
 
 /**
- * Retrieve bookmark data based on ID.
+ * Retrieves bookmark data based on ID.
  *
  * @since 2.0.0
  * @deprecated 2.1.0 Use get_bookmark()
  * @see get_bookmark()
  *
- * @param int $bookmark_id ID of link
- * @param string $output OBJECT, ARRAY_N, or ARRAY_A
- * @return object|array
+ * @param int    $bookmark_id ID of link
+ * @param string $output      Optional. Type of output. Accepts OBJECT, ARRAY_N, or ARRAY_A.
+ *                            Default OBJECT.
+ * @param string $filter      Optional. How to filter the link for output. Accepts 'raw', 'edit',
+ *                            'attribute', 'js', 'db', or 'display'. Default 'raw'.
+ * @return object|array Bookmark object or array, depending on the type specified by `$output`.
  */
-function get_link($bookmark_id, $output = OBJECT, $filter = 'raw') {
+function get_link( $bookmark_id, $output = OBJECT, $filter = 'raw' ) {
 	_deprecated_function( __FUNCTION__, '2.1', 'get_bookmark()' );
 	return get_bookmark($bookmark_id, $output, $filter);
 }
@@ -2035,10 +2048,16 @@ function js_escape( $text ) {
 }
 
 /**
- * Escaping for HTML blocks.
+ * Legacy escaping for HTML blocks.
  *
  * @deprecated 2.8.0 Use esc_html()
  * @see esc_html()
+ *
+ * @param string       $string        String to escape.
+ * @param string       $quote_style   Unused.
+ * @param false|string $charset       Unused.
+ * @param false        $double_encode Whether to double encode. Unused.
+ * @return string Escaped `$string`.
  */
 function wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false ) {
 	_deprecated_function( __FUNCTION__, '2.8', 'esc_html()' );
@@ -2079,10 +2098,10 @@ function attribute_escape( $text ) {
  * @deprecated 2.8.0 Use wp_register_sidebar_widget()
  * @see wp_register_sidebar_widget()
  *
- * @param string|int $name Widget ID.
- * @param callable $output_callback Run when widget is called.
- * @param string $classname Classname widget option.
- * @param mixed $params ,... Widget parameters.
+ * @param string|int $name            Widget ID.
+ * @param callable   $output_callback Run when widget is called.
+ * @param string     $classname       Optional. Classname widget option. Default empty.
+ * @param mixed      $params ,...     Widget parameters.
  */
 function register_sidebar_widget($name, $output_callback, $classname = '') {
 	_deprecated_function( __FUNCTION__, '2.8', 'wp_register_sidebar_widget()' );
@@ -2328,20 +2347,20 @@ function update_usermeta( $user_id, $meta_key, $meta_value ) {
 }
 
 /**
- * Get users for the blog.
+ * Get users for the site.
  *
- * For setups that use the multi-blog feature. Can be used outside of the
- * multi-blog feature.
+ * For setups that use the multisite feature. Can be used outside of the
+ * multisite feature.
  *
  * @since 2.2.0
  * @deprecated 3.1.0 Use get_users()
  * @see get_users()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
- * @uses $blog_id The Blog id of the blog for those that use more than one blog
+ * @global wpdb $wpdb    WordPress database abstraction object.
+ * @global int  $blog_id The site ID of the site for those that use more than one site.
  *
- * @param int $id Blog ID.
- * @return array List of users that are part of that Blog ID
+ * @param int $id Site ID.
+ * @return array List of users that are part of that site ID
  */
 function get_users_of_blog( $id = '' ) {
 	_deprecated_function( __FUNCTION__, '3.1', 'get_users()' );
@@ -2378,6 +2397,10 @@ function automatic_feed_links( $add = true ) {
  * @since 1.5.0
  * @deprecated 3.0.0 Use get_the_author_meta()
  * @see get_the_author_meta()
+ *
+ * @param string    $field User meta field.
+ * @param false|int $user Optional. User ID to retrieve the field for. Default false (current user).
+ * @return string The author's field from the current author's DB object.
  */
 function get_profile( $field, $user = false ) {
 	_deprecated_function( __FUNCTION__, '3.0', 'get_the_author_meta()' );
@@ -2389,11 +2412,14 @@ function get_profile( $field, $user = false ) {
 }
 
 /**
- * Number of posts user has written.
+ * Retrieves the number of posts a user has written.
  *
  * @since 0.71
  * @deprecated 3.0.0 Use count_user_posts()
  * @see count_user_posts()
+ *
+ * @param int $userid User to count posts for.
+ * @return int Number of posts the given user has written.
  */
 function get_usernumposts( $userid ) {
 	_deprecated_function( __FUNCTION__, '3.0', 'count_user_posts()' );
@@ -2422,8 +2448,8 @@ function funky_javascript_callback($matches) {
  * @since 1.5.0
  * @deprecated 3.0.0
  *
- * @uses $is_macIE
- * @uses $is_winIE
+ * @global $is_macIE
+ * @global $is_winIE
  *
  * @param string $text Text to be made safe.
  * @return string Fixed text.
@@ -2529,16 +2555,18 @@ function wp_timezone_supported() {
 }
 
 /**
- * Display editor: TinyMCE, HTML, or both.
+ * Displays an editor: TinyMCE, HTML, or both.
  *
  * @since 2.1.0
  * @deprecated 3.3.0 Use wp_editor()
  * @see wp_editor()
  *
- * @param string $content Textarea content.
- * @param string $id Optional, default is 'content'. HTML ID attribute value.
- * @param string $prev_id Optional, not used
- * @param bool $media_buttons Optional, default is true. Whether to display media buttons.
+ * @param string $content       Textarea content.
+ * @param string $id            Optional. HTML ID attribute value. Default 'content'.
+ * @param string $prev_id       Optional. Unused.
+ * @param bool   $media_buttons Optional. Whether to display media buttons. Default true.
+ * @param int    $tab_index     Optional. Unused.
+ * @param bool   $extended      Optional. Unused.
  * @param int $tab_index Optional, not used
  */
 function the_editor($content, $id = 'content', $prev_id = 'title', $media_buttons = true, $tab_index = 2, $extended = true) {
@@ -2765,13 +2793,13 @@ function wp_admin_bar_dashboard_view_site_menu( $wp_admin_bar ) {
 }
 
 /**
- * Checks if the current user belong to a given blog.
+ * Checks if the current user belong to a given site.
  *
  * @since MU
  * @deprecated 3.3.0 Use is_user_member_of_blog()
  * @see is_user_member_of_blog()
  *
- * @param int $blog_id Blog ID
+ * @param int $blog_id Site ID
  * @return bool True if the current users belong to $blog_id, false if not.
  */
 function is_blog_user( $blog_id = 0 ) {
@@ -3634,4 +3662,57 @@ function wp_get_http( $url, $file_path = false, $red = 1 ) {
 function force_ssl_login( $force = null ) {
 	_deprecated_function( __FUNCTION__, '4.4', 'force_ssl_admin()' );
 	return force_ssl_admin( $force );
+}
+
+/**
+ * Retrieve path of comment popup template in current or parent template.
+ *
+ * @since 1.5.0
+ * @deprecated 4.5.0
+ *
+ * @return string Full path to comments popup template file.
+ */
+function get_comments_popup_template() {
+	_deprecated_function( __FUNCTION__, '4.5' );
+
+	return '';
+}
+
+/**
+ * Whether the current URL is within the comments popup window.
+ *
+ * @since 1.5.0
+ * @deprecated 4.5.0
+ *
+ * @return bool
+ */
+function is_comments_popup() {
+	_deprecated_function( __FUNCTION__, '4.5' );
+
+	return false;
+}
+
+/**
+ * Display the JS popup script to show a comment.
+ *
+ * @since 0.71
+ * @deprecated 4.5.0
+ */
+function comments_popup_script() {
+	_deprecated_function( __FUNCTION__, '4.5' );
+}
+
+/**
+ * Adds element attributes to open links in new windows.
+ *
+ * @since 0.71
+ * @deprecated 4.5.0
+ *
+ * @param string $text Content to replace links to open in a new window.
+ * @return string Content that has filtered links.
+ */
+function popuplinks( $text ) {
+	_deprecated_function( __FUNCTION__, '4.5' );
+	$text = preg_replace('/<a (.+?)>/i', "<a $1 target='_blank' rel='external'>", $text);
+	return $text;
 }

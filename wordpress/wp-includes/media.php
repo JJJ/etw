@@ -878,6 +878,31 @@ function wp_get_attachment_image_url( $attachment_id, $size = 'thumbnail', $icon
 }
 
 /**
+ * Get the attachment path relative to the upload directory.
+ *
+ * @since 4.4.1
+ * @access private
+ *
+ * @param string $file Attachment file name.
+ * @return string Attachment path relative to the upload directory.
+ */
+function _wp_get_attachment_relative_path( $file ) {
+	$dirname = dirname( $file );
+
+	if ( '.' === $dirname ) {
+		return '';
+	}
+
+	if ( false !== strpos( $dirname, 'wp-content/uploads' ) ) {
+		// Get the directory name relative to the upload directory (back compat for pre-2.7 uploads)
+		$dirname = substr( $dirname, strpos( $dirname, 'wp-content/uploads' ) + 18 );
+		$dirname = ltrim( $dirname, '/' );
+	}
+
+	return $dirname;
+}
+
+/**
  * Caches and returns the base URL of the uploads directory.
  *
  * @since 4.4.0
@@ -971,6 +996,16 @@ function wp_get_attachment_image_srcset( $attachment_id, $size = 'medium', $imag
  * @return string|bool          The 'srcset' attribute value. False on error or when only one source exists.
  */
 function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attachment_id = 0 ) {
+	/**
+	 * Let plugins pre-filter the image meta to be able to fix inconsistencies in the stored data.
+	 *
+	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
+	 * @param array  $size_array    Array of width and height values in pixels (in that order).
+	 * @param string $image_src     The 'src' of the image.
+	 * @param int    $attachment_id The image attachment ID or 0 if not supplied.
+	 */
+	$image_meta = apply_filters( 'wp_calculate_image_srcset_meta', $image_meta, $size_array, $image_src, $attachment_id );
+
 	if ( empty( $image_meta['sizes'] ) ) {
 		return false;
 	}
@@ -987,7 +1022,6 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	}
 
 	$image_basename = wp_basename( $image_meta['file'] );
-	$image_baseurl = _wp_upload_dir_baseurl();
 
 	/*
 	 * WordPress flattens animated GIFs into one frame when generating intermediate sizes.
@@ -1004,19 +1038,15 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 		return false;
 	}
 
-	// Uploads are (or have been) in year/month sub-directories.
-	if ( $image_basename !== $image_meta['file'] ) {
-		$dirname = dirname( $image_meta['file'] );
+	// Retrieve the uploads sub-directory from the full size image.
+	$dirname = _wp_get_attachment_relative_path( $image_meta['file'] );
 
-		if ( $dirname !== '.' ) {
-			$image_baseurl = trailingslashit( $image_baseurl ) . $dirname;
-		}
+	if ( $dirname ) {
+		$dirname = trailingslashit( $dirname );
 	}
 
-	$image_baseurl = trailingslashit( $image_baseurl );
-
-	// Calculate the image aspect ratio.
-	$image_ratio = $image_height / $image_width;
+	$image_baseurl = _wp_upload_dir_baseurl();
+	$image_baseurl = trailingslashit( $image_baseurl ) . $dirname;
 
 	/*
 	 * Images that have been edited in WordPress after being uploaded will
@@ -1038,31 +1068,54 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	// Array to hold URL candidates.
 	$sources = array();
 
+	/**
+	 * To make sure the ID matches our image src, we will check to see if any sizes in our attachment
+	 * meta match our $image_src. If no matches are found we don't return a srcset to avoid serving
+	 * an incorrect image. See #35045.
+	 */
+	$src_matched = false;
+
 	/*
 	 * Loop through available images. Only use images that are resized
 	 * versions of the same edit.
 	 */
 	foreach ( $image_sizes as $image ) {
 
+		// If the file name is part of the `src`, we've confirmed a match.
+		if ( ! $src_matched && false !== strpos( $image_src, $dirname . $image['file'] ) ) {
+			$src_matched = true;
+		}
+
 		// Filter out images that are from previous edits.
 		if ( $image_edited && ! strpos( $image['file'], $image_edit_hash[0] ) ) {
 			continue;
 		}
 
-		// Filter out images that are wider than '$max_srcset_image_width'.
-		if ( $max_srcset_image_width && $image['width'] > $max_srcset_image_width ) {
+		/*
+		 * Filter out images that are wider than '$max_srcset_image_width' unless
+		 * that file is in the 'src' attribute.
+		 */
+		if ( $max_srcset_image_width && $image['width'] > $max_srcset_image_width &&
+			false === strpos( $image_src, $image['file'] ) ) {
+
 			continue;
 		}
 
-		// Calculate the new image ratio.
-		if ( $image['width'] ) {
-			$image_ratio_compare = $image['height'] / $image['width'];
+		/**
+		 * To check for varying crops, we calculate the expected size of the smaller
+		 * image if the larger were constrained by the width of the smaller and then
+		 * see if it matches what we're expecting.
+		 */
+		if ( $image_width > $image['width'] ) {
+			$constrained_size = wp_constrain_dimensions( $image_width, $image_height, $image['width'] );
+			$expected_size = array( $image['width'], $image['height'] );
 		} else {
-			$image_ratio_compare = 0;
+			$constrained_size = wp_constrain_dimensions( $image['width'], $image['height'], $image_width );
+			$expected_size = array( $image_width, $image_height );
 		}
 
-		// If the new ratio differs by less than 0.002, use it.
-		if ( abs( $image_ratio - $image_ratio_compare ) < 0.002 ) {
+		// If the image dimensions are within 1px of the expected size, use it.
+		if ( abs( $constrained_size[0] - $expected_size[0] ) <= 1 && abs( $constrained_size[1] - $expected_size[1] ) <= 1 ) {
 			// Add the URL, descriptor, and value to the sources array to be returned.
 			$sources[ $image['width'] ] = array(
 				'url'        => $image_baseurl . $image['file'],
@@ -1096,7 +1149,7 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	$sources = apply_filters( 'wp_calculate_image_srcset', $sources, $size_array, $image_src, $image_meta, $attachment_id );
 
 	// Only return a 'srcset' value if there is more than one source.
-	if ( count( $sources ) < 2 ) {
+	if ( ! $src_matched || count( $sources ) < 2 ) {
 		return false;
 	}
 
@@ -1275,28 +1328,6 @@ function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 	if ( preg_match( '/-e[0-9]{13}/', $image_meta['file'], $img_edit_hash ) &&
 		strpos( wp_basename( $image_src ), $img_edit_hash[0] ) === false ) {
 
-		return $image;
-	}
-
-	$base_url = trailingslashit( _wp_upload_dir_baseurl() );
-	$image_base_url = $base_url;
-
-	$dirname = dirname( $image_meta['file'] );
-	if ( $dirname !== '.' ) {
-		$image_base_url .= trailingslashit( $dirname );
-	}
-
-	$all_sizes = wp_list_pluck( $image_meta['sizes'], 'file' );
-
-	foreach ( $all_sizes as $key => $file ) {
-		$all_sizes[ $key ] = $image_base_url . $file;
-	}
-
-	// Add the original image.
-	$all_sizes[] = $base_url . $image_meta['file'];
-
-	// Bail early if the image src doesn't match any of the known image sizes.
-	if ( ! in_array( $image_src, $all_sizes ) ) {
 		return $image;
 	}
 
@@ -2132,9 +2163,9 @@ function wp_get_attachment_id3_keys( $attachment, $context = 'display' ) {
  *     @type string $src      URL to the source of the audio file. Default empty.
  *     @type string $loop     The 'loop' attribute for the `<audio>` element. Default empty.
  *     @type string $autoplay The 'autoplay' attribute for the `<audio>` element. Default empty.
- *     @type string $preload  The 'preload' attribute for the `<audio>` element. Default empty.
+ *     @type string $preload  The 'preload' attribute for the `<audio>` element. Default 'none'.
  *     @type string $class    The 'class' attribute for the `<audio>` element. Default 'wp-audio-shortcode'.
- *     @type string $style    The 'style' attribute for the `<audio>` element. Default 'width: 100%'.
+ *     @type string $style    The 'style' attribute for the `<audio>` element. Default 'width: 100%; visibility: hidden;'.
  * }
  * @param string $content Shortcode content.
  * @return string|void HTML content to display audio.
@@ -2169,7 +2200,9 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 		'src'      => '',
 		'loop'     => '',
 		'autoplay' => '',
-		'preload'  => 'none'
+		'preload'  => 'none',
+		'class'    => 'wp-audio-shortcode',
+		'style'    => 'width: 100%; visibility: hidden;'
 	);
 	foreach ( $default_types as $type ) {
 		$defaults_atts[$type] = '';
@@ -2231,13 +2264,15 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 	 *
 	 * @param string $class CSS class or list of space-separated classes.
 	 */
+	$atts['class'] = apply_filters( 'wp_audio_shortcode_class', $atts['class'] );
+
 	$html_atts = array(
-		'class'    => apply_filters( 'wp_audio_shortcode_class', 'wp-audio-shortcode' ),
+		'class'    => $atts['class'],
 		'id'       => sprintf( 'audio-%d-%d', $post_id, $instance ),
 		'loop'     => wp_validate_boolean( $atts['loop'] ),
 		'autoplay' => wp_validate_boolean( $atts['autoplay'] ),
 		'preload'  => $atts['preload'],
-		'style'    => 'width: 100%; visibility: hidden;',
+		'style'    => $atts['style'],
 	);
 
 	// These ones should just be omitted altogether if they are blank
@@ -2376,6 +2411,7 @@ function wp_video_shortcode( $attr, $content = '' ) {
 		'preload'  => 'metadata',
 		'width'    => 640,
 		'height'   => 360,
+		'class'    => 'wp-video-shortcode',
 	);
 
 	foreach ( $default_types as $type ) {
@@ -2465,8 +2501,10 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	 *
 	 * @param string $class CSS class or list of space-separated classes.
 	 */
+	$atts['class'] = apply_filters( 'wp_video_shortcode_class', $atts['class'] );
+
 	$html_atts = array(
-		'class'    => apply_filters( 'wp_video_shortcode_class', 'wp-video-shortcode' ),
+		'class'    => $atts['class'],
 		'id'       => sprintf( 'video-%d-%d', $post_id, $instance ),
 		'width'    => absint( $atts['width'] ),
 		'height'   => absint( $atts['height'] ),

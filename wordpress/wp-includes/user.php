@@ -7,7 +7,7 @@
  */
 
 /**
- * Authenticate user with remember capability.
+ * Authenticates and logs a user in with 'remember' capability.
  *
  * The credentials is an array that has 'user_login', 'user_password', and
  * 'remember' indices. If the credentials is not given, then the log in form
@@ -104,7 +104,7 @@ function wp_signon( $credentials = array(), $secure_cookie = '' ) {
 }
 
 /**
- * Authenticate the user using the username and password.
+ * Authenticate a user, confirming the username and password are valid.
  *
  * @since 2.8.0
  *
@@ -278,7 +278,7 @@ function wp_validate_logged_in_cookie( $user_id ) {
  * @param int          $userid      User ID.
  * @param array|string $post_type   Optional. Single post type or array of post types to count the number of posts for. Default 'post'.
  * @param bool         $public_only Optional. Whether to only return counts for public posts. Default false.
- * @return int Number of posts the user has written in this post type.
+ * @return string Number of posts the user has written in this post type.
  */
 function count_user_posts( $userid, $post_type = 'post', $public_only = false ) {
 	global $wpdb;
@@ -1682,6 +1682,7 @@ function wp_update_user($userdata) {
 	}
 
 	wp_cache_delete( $user['user_email'], 'useremail' );
+	wp_cache_delete( $user['user_nicename'], 'userslugs' );
 
 	// Merge old and new fields with new fields overwriting old ones.
 	$userdata = array_merge( $user, $userdata );
@@ -1689,7 +1690,7 @@ function wp_update_user($userdata) {
 
 	if ( ! is_wp_error( $user_id ) ) {
 
-		$blog_name = wp_specialchars_decode( get_option( 'blogname' ) );
+		$blog_name = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
 		if ( ! empty( $send_password_change_email ) ) {
 
@@ -1741,7 +1742,7 @@ All at ###SITENAME###
 			$pass_change_email['message'] = str_replace( '###USERNAME###', $user['user_login'], $pass_change_email['message'] );
 			$pass_change_email['message'] = str_replace( '###ADMIN_EMAIL###', get_option( 'admin_email' ), $pass_change_email['message'] );
 			$pass_change_email['message'] = str_replace( '###EMAIL###', $user['user_email'], $pass_change_email['message'] );
-			$pass_change_email['message'] = str_replace( '###SITENAME###', get_option( 'blogname' ), $pass_change_email['message'] );
+			$pass_change_email['message'] = str_replace( '###SITENAME###', $blog_name, $pass_change_email['message'] );
 			$pass_change_email['message'] = str_replace( '###SITEURL###', home_url(), $pass_change_email['message'] );
 
 			wp_mail( $pass_change_email['to'], sprintf( $pass_change_email['subject'], $blog_name ), $pass_change_email['message'], $pass_change_email['headers'] );
@@ -1795,7 +1796,7 @@ All at ###SITENAME###
 			$email_change_email['message'] = str_replace( '###USERNAME###', $user['user_login'], $email_change_email['message'] );
 			$email_change_email['message'] = str_replace( '###ADMIN_EMAIL###', get_option( 'admin_email' ), $email_change_email['message'] );
 			$email_change_email['message'] = str_replace( '###EMAIL###', $user['user_email'], $email_change_email['message'] );
-			$email_change_email['message'] = str_replace( '###SITENAME###', get_option( 'blogname' ), $email_change_email['message'] );
+			$email_change_email['message'] = str_replace( '###SITENAME###', $blog_name, $email_change_email['message'] );
 			$email_change_email['message'] = str_replace( '###SITEURL###', home_url(), $email_change_email['message'] );
 
 			wp_mail( $email_change_email['to'], sprintf( $email_change_email['subject'], $blog_name ), $email_change_email['message'], $email_change_email['headers'] );
@@ -1897,8 +1898,13 @@ function wp_get_user_contact_methods( $user = null ) {
 /**
  * The old private function for setting up user contact methods.
  *
+ * Use wp_get_user_contact_methods() instead.
+ *
  * @since 2.9.0
  * @access private
+ *
+ * @param WP_User $user Optional. WP_User object. Default null.
+ * @return array Array of contact methods and their labels.
  */
 function _wp_get_user_contactmethods( $user = null ) {
 	return wp_get_user_contact_methods( $user );
@@ -1963,7 +1969,7 @@ function get_password_reset_key( $user ) {
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param bool true           Whether to allow the password to be reset. Default true.
+	 * @param bool $allow         Whether to allow the password to be reset. Default true.
 	 * @param int  $user_data->ID The ID of the user attempting to reset a password.
 	 */
 	$allow = apply_filters( 'allow_password_reset', true, $user->ID );
@@ -2053,6 +2059,10 @@ function check_password_reset_key($key, $login) {
 	} else {
 		$pass_key = $row->user_activation_key;
 		$expiration_time = false;
+	}
+
+	if ( ! $pass_key ) {
+		return new WP_Error( 'invalid_key', __( 'Invalid key' ) );
 	}
 
 	$hash_is_correct = $wp_hasher->CheckPassword( $key, $pass_key );

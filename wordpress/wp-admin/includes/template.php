@@ -8,10 +8,10 @@
  * @subpackage Administration
  */
 
-/** Walker_Category_Checklist class */ 
+/** Walker_Category_Checklist class */
 require_once( ABSPATH . 'wp-admin/includes/class-walker-category-checklist.php' );
 
-/** WP_Internal_Pointers class */ 
+/** WP_Internal_Pointers class */
 require_once( ABSPATH . 'wp-admin/includes/class-wp-internal-pointers.php' );
 
 //
@@ -1483,7 +1483,7 @@ function find_posts_div($found_action = '') {
 ?>
 	<div id="find-posts" class="find-box" style="display: none;">
 		<div id="find-posts-head" class="find-box-head">
-			<?php _e( 'Find Posts or Pages' ); ?>
+			<?php _e( 'Attach to existing content' ); ?>
 			<div id="find-posts-close"></div>
 		</div>
 		<div class="find-box-inside">
@@ -1683,8 +1683,7 @@ function _post_states($post) {
 	if ( 'draft' == $post->post_status && 'draft' != $post_status )
 		$post_states['draft'] = __('Draft');
 	if ( 'pending' == $post->post_status && 'pending' != $post_status )
-		/* translators: post state */
-		$post_states['pending'] = _x('Pending', 'post state');
+		$post_states['pending'] = _x('Pending', 'post status');
 	if ( is_sticky($post->ID) )
 		$post_states['sticky'] = __('Sticky');
 
@@ -2055,7 +2054,7 @@ function wp_star_rating( $args = array() ) {
 		$title = sprintf( __( '%s rating' ), number_format_i18n( $rating, 1 ) );
 	}
 
-	$output = '<div class="star-rating" title="' . esc_attr( $title ) . '">';
+	$output = '<div class="star-rating">';
 	$output .= '<span class="screen-reader-text">' . $title . '</span>';
 	$output .= str_repeat( '<div class="star star-full"></div>', $full_stars );
 	$output .= str_repeat( '<div class="star star-half"></div>', $half_stars );

@@ -261,6 +261,9 @@ class Custom_Image_Header {
 	 * Random image option is on by default if no header has been set.
 	 *
 	 * @since 3.0.0
+	 *
+	 * @param string $type The header type. One of 'default' (for the Uploaded Images control)
+	 *                     or 'uploaded' (for the Uploaded Images control).
 	 */
 	public function show_header_selector( $type = 'default' ) {
 		if ( 'default' == $type ) {
@@ -282,14 +285,13 @@ class Custom_Image_Header {
 		foreach ( $headers as $header_key => $header ) {
 			$header_thumbnail = $header['thumbnail_url'];
 			$header_url = $header['url'];
-			$header_desc = empty( $header['description'] ) ? '' : $header['description'];
-			$header_alt_text = empty( $header['alt_text'] ) ? $header_desc : $header['alt_text'];
+			$header_alt_text = empty( $header['alt_text'] ) ? '' : $header['alt_text'];
 			echo '<div class="default-header">';
 			echo '<label><input name="default-header" type="radio" value="' . esc_attr( $header_key ) . '" ' . checked( $header_url, get_theme_mod( 'header_image' ), false ) . ' />';
 			$width = '';
 			if ( !empty( $header['attachment_id'] ) )
 				$width = ' width="230"';
-			echo '<img src="' . set_url_scheme( $header_thumbnail ) . '" alt="' . esc_attr( $header_alt_text ) .'" title="' . esc_attr( $header_desc ) . '"' . $width . ' /></label>';
+			echo '<img src="' . set_url_scheme( $header_thumbnail ) . '" alt="' . esc_attr( $header_alt_text ) .'"' . $width . ' /></label>';
 			echo '</div>';
 		}
 		echo '<div class="clear"></div></div>';
@@ -970,15 +972,13 @@ wp_nonce_field( 'custom-header-options', '_wpnonce-custom-header-options' ); ?>
 	 * Choose a header image, selected from existing uploaded and default headers,
 	 * or provide an array of uploaded header data (either new, or from media library).
 	 *
+	 * @since 3.4.0
+	 *
 	 * @param mixed $choice Which header image to select. Allows for values of 'random-default-image',
 	 * 	for randomly cycling among the default images; 'random-uploaded-image', for randomly cycling
 	 * 	among the uploaded images; the key of a default image registered for that theme; and
 	 * 	the key of an image uploaded for that theme (the basename of the URL).
 	 *  Or an array of arguments: attachment_id, url, width, height. All are required.
-	 *
-	 * @since 3.4.0
-	 *
-	 * @param array|object|string $choice
 	 */
 	final public function set_header_image( $choice ) {
 		if ( is_array( $choice ) || is_object( $choice ) ) {

@@ -297,26 +297,6 @@ function is_tax( $taxonomy = '', $term = '' ) {
 }
 
 /**
- * Whether the current URL is within the comments popup window.
- *
- * @since 1.5.0
- *
- * @global WP_Query $wp_query Global WP_Query instance.
- *
- * @return bool
- */
-function is_comments_popup() {
-	global $wp_query;
-
-	if ( ! isset( $wp_query ) ) {
-		_doing_it_wrong( __FUNCTION__, __( 'Conditional query tags do not work before the query is run. Before then, they always return false.' ), '3.1' );
-		return false;
-	}
-
-	return $wp_query->is_comments_popup();
-}
-
-/**
  * Is the query for an existing date archive?
  *
  * @since 1.5.0
@@ -862,6 +842,7 @@ function the_comment() {
  * @link https://codex.wordpress.org/Function_Reference/WP_Query Codex page.
  *
  * @since 1.5.0
+ * @since 4.5.0 Removed the `$comments_popup` property.
  */
 class WP_Query {
 
@@ -1230,15 +1211,6 @@ class WP_Query {
 	public $is_embed = false;
 
 	/**
-	 * Set if query is within comments popup window.
-	 *
-	 * @since 1.5.0
-	 * @access public
-	 * @var bool
-	 */
-	public $is_comments_popup = false;
-
-	/**
 	 * Set if query is paged
 	 *
 	 * @since 1.5.0
@@ -1332,24 +1304,6 @@ class WP_Query {
 	 public $thumbnails_cached = false;
 
 	/**
-	 * Whether the term meta cache for matched posts has been primed.
-	 *
-	 * @since 4.4.0
-	 * @access protected
-	 * @var bool
-	 */
-	public $updated_term_meta_cache = false;
-
-	/**
-	 * Whether the comment meta cache for matched posts has been primed.
-	 *
-	 * @since 4.4.0
-	 * @access protected
-	 * @var bool
-	 */
-	public $updated_comment_meta_cache = false;
-
-	/**
 	 * Cached list of search stopwords.
 	 *
 	 * @since 3.7.0
@@ -1389,7 +1343,6 @@ class WP_Query {
 		$this->is_trackback = false;
 		$this->is_home = false;
 		$this->is_404 = false;
-		$this->is_comments_popup = false;
 		$this->is_paged = false;
 		$this->is_admin = false;
 		$this->is_attachment = false;
@@ -1441,6 +1394,7 @@ class WP_Query {
 	 * Fills in the query variables, which do not exist within the parameter.
 	 *
 	 * @since 2.1.0
+	 * @since 4.4.0 Removed the `comments_popup` public query variable.
 	 * @access public
 	 *
 	 * @param array $array Defined query variables.
@@ -1476,7 +1430,6 @@ class WP_Query {
 			, 'feed'
 			, 'tb'
 			, 'paged'
-			, 'comments_popup'
 			, 'meta_key'
 			, 'meta_value'
 			, 'preview'
@@ -1485,6 +1438,7 @@ class WP_Query {
 			, 'title'
 			, 'fields'
 			, 'menu_order'
+			, 'embed'
 		);
 
 		foreach ( $keys as $key ) {
@@ -1511,6 +1465,8 @@ class WP_Query {
 	 *              array key to `$orderby`.
 	 * @since 4.4.0 Introduced `$post_name__in` and `$title` parameters. `$s` was updated to support excluded
 	 *              search terms, by prepending a hyphen.
+	 * @since 4.5.0 Removed the `$comments_popup` parameter.
+	 *              Introduced the `$comment_status` and `$ping_status` parameters.
 	 * @access public
 	 *
 	 * @param string|array $query {
@@ -1527,9 +1483,9 @@ class WP_Query {
 	 *     @type array        $category__in            An array of category IDs (OR in, no children).
 	 *     @type array        $category__not_in        An array of category IDs (NOT in).
 	 *     @type string       $category_name           Use category slug (not name, this or any children).
+	 *     @type string       $comment_status          Comment status.
 	 *     @type int          $comments_per_page       The number of comments to return per page.
 	 *                                                 Default 'comments_per_page' option.
-	 *     @type int|string   $comments_popup          Whether the query is within the comments popup. Default empty.
 	 *     @type array        $date_query              An associative array of WP_Date_Query arguments.
 	 *                                                 {@see WP_Date_Query::__construct()}
 	 *     @type int          $day                     Day of the month. Default empty. Accepts numbers 1-31.
@@ -1546,7 +1502,7 @@ class WP_Query {
 	 *     @type string       $meta_compare            Comparison operator to test the 'meta_value'.
 	 *     @type string       $meta_key                Custom field key.
 	 *     @type array        $meta_query              An associative array of WP_Meta_Query arguments.
-	 *                                                 {@see WP_Meta_Query->queries}
+	 *                                                 {@see WP_Meta_Query}
 	 *     @type string       $meta_value              Custom field value.
 	 *     @type int          $meta_value_num          Custom field value number.
 	 *     @type int          $menu_order              The menu order of the posts.
@@ -1573,6 +1529,7 @@ class WP_Query {
 	 *     @type int          $page_id                 Page ID.
 	 *     @type string       $pagename                Page slug.
 	 *     @type string       $perm                    Show posts if user has the appropriate capability.
+	 *     @type string       $ping_status             Ping status.
 	 *     @type array        $post__in                An array of post IDs to retrieve, sticky posts will be included
 	 *     @type string       $post_mime_type          The mime type of the post. Used for 'attachment' post_type.
 	 *     @type array        $post__not_in            An array of post IDs not to retrieve. Note: a string of comma-
@@ -1785,14 +1742,15 @@ class WP_Query {
 		if ( '' != $qv['feed'] )
 			$this->is_feed = true;
 
+		if ( '' != $qv['embed'] ) {
+			$this->is_embed = true;
+		}
+
 		if ( '' != $qv['tb'] )
 			$this->is_trackback = true;
 
 		if ( '' != $qv['paged'] && ( intval($qv['paged']) > 1 ) )
 			$this->is_paged = true;
-
-		if ( '' != $qv['comments_popup'] )
-			$this->is_comments_popup = true;
 
 		// if we're previewing inside the write screen
 		if ( '' != $qv['preview'] )
@@ -1811,7 +1769,7 @@ class WP_Query {
 		if ( $this->is_feed && ( !empty($qv['withcomments']) || ( empty($qv['withoutcomments']) && $this->is_singular ) ) )
 			$this->is_comment_feed = true;
 
-		if ( !( $this->is_singular || $this->is_archive || $this->is_search || $this->is_feed || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || $this->is_trackback || $this->is_404 || $this->is_admin || $this->is_comments_popup || $this->is_robots ) )
+		if ( !( $this->is_singular || $this->is_archive || $this->is_search || $this->is_feed || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || $this->is_trackback || $this->is_404 || $this->is_admin || $this->is_robots ) )
 			$this->is_home = true;
 
 		// Correct is_* for page_on_front and page_for_posts
@@ -1820,6 +1778,9 @@ class WP_Query {
 			// pagename can be set and empty depending on matched rewrite rules. Ignore an empty pagename.
 			if ( isset($_query['pagename']) && '' == $_query['pagename'] )
 				unset($_query['pagename']);
+
+			unset( $_query['embed'] );
+
 			if ( empty($_query) || !array_diff( array_keys($_query), array('preview', 'page', 'paged', 'cpage') ) ) {
 				$this->is_page = true;
 				$this->is_home = false;
@@ -1891,7 +1852,7 @@ class WP_Query {
 		if ( '404' == $qv['error'] )
 			$this->set_404();
 
-		$this->is_embed = isset( $qv['embed'] ) && ( $this->is_singular || $this->is_404 );
+		$this->is_embed = $this->is_embed && ( $this->is_singular || $this->is_404 );
 
 		$this->query_vars_hash = md5( serialize( $this->query_vars ) );
 		$this->query_vars_changed = false;
@@ -1914,7 +1875,7 @@ class WP_Query {
 	 * @access protected
 	 * @since 3.1.0
 	 *
-	 * @param array &$q The query variables
+	 * @param array $q The query variables. Passed by reference.
 	 */
 	public function parse_tax_query( &$q ) {
 		if ( ! empty( $q['tax_query'] ) && is_array( $q['tax_query'] ) ) {
@@ -2300,7 +2261,7 @@ class WP_Query {
 				$like = '%' . $wpdb->esc_like( $q['s'] ) . '%';
 			}
 
-			$search_orderby = '(CASE ';
+			$search_orderby = '';
 
 			// sentence match in 'post_title'
 			if ( $like ) {
@@ -2321,7 +2282,10 @@ class WP_Query {
 			if ( $like ) {
 				$search_orderby .= $wpdb->prepare( "WHEN $wpdb->posts.post_content LIKE %s THEN 4 ", $like );
 			}
-			$search_orderby .= 'ELSE 5 END)';
+
+			if ( $search_orderby ) {
+				$search_orderby = '(CASE ' . $search_orderby . 'ELSE 5 END)';
+			}
 		} else {
 			// single word or sentence search
 			$search_orderby = reset( $q['search_orderby_title'] ) . ' DESC';
@@ -2771,9 +2735,6 @@ class WP_Query {
 			$where .= " AND $wpdb->posts.post_name IN ('" . implode( "' ,'", $q['post_name__in'] ) . "')";
 		}
 
-		if ( intval($q['comments_popup']) )
-			$q['p'] = absint($q['comments_popup']);
-
 		// If an attachment is requested by number, let it supersede any post number.
 		if ( $q['attachment_id'] )
 			$q['p'] = absint($q['attachment_id']);
@@ -2807,19 +2768,21 @@ class WP_Query {
 		}
 
 		// If a search pattern is specified, load the posts that match.
-		if ( ! empty( $q['s'] ) ) {
+		if ( strlen( $q['s'] ) ) {
 			$search = $this->parse_search( $q );
 		}
 
-		/**
-		 * Filter the search SQL that is used in the WHERE clause of WP_Query.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param string   $search Search SQL for WHERE clause.
-		 * @param WP_Query $this   The current WP_Query object.
-		 */
-		$search = apply_filters_ref_array( 'posts_search', array( $search, &$this ) );
+		if ( ! $q['suppress_filters'] ) {
+			/**
+			 * Filter the search SQL that is used in the WHERE clause of WP_Query.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string   $search Search SQL for WHERE clause.
+			 * @param WP_Query $this   The current WP_Query object.
+			 */
+			$search = apply_filters_ref_array( 'posts_search', array( $search, &$this ) );
+		}
 
 		// Taxonomies
 		if ( !$this->is_singular ) {
@@ -2876,6 +2839,9 @@ class WP_Query {
 						} else {
 							$q['term_id'] = $queried_items['terms'][0];
 						}
+
+						// Take the first one we find.
+						break;
 					}
 				}
 			}
@@ -3028,15 +2994,18 @@ class WP_Query {
 			if ( ! empty( $q['search_orderby_title'] ) && ( empty( $q['orderby'] ) && ! $this->is_feed ) || ( isset( $q['orderby'] ) && 'relevance' === $q['orderby'] ) )
 				$search_orderby = $this->parse_search_order( $q );
 
-			/**
-			 * Filter the ORDER BY used when ordering search results.
-			 *
-			 * @since 3.7.0
-			 *
-			 * @param string   $search_orderby The ORDER BY clause.
-			 * @param WP_Query $this           The current WP_Query instance.
-			 */
-			$search_orderby = apply_filters( 'posts_search_orderby', $search_orderby, $this );
+			if ( ! $q['suppress_filters'] ) {
+				/**
+				 * Filter the ORDER BY used when ordering search results.
+				 *
+				 * @since 3.7.0
+				 *
+				 * @param string   $search_orderby The ORDER BY clause.
+				 * @param WP_Query $this           The current WP_Query instance.
+				 */
+				$search_orderby = apply_filters( 'posts_search_orderby', $search_orderby, $this );
+			}
+
 			if ( $search_orderby )
 				$orderby = $orderby ? $search_orderby . ', ' . $orderby : $search_orderby;
 		}
@@ -3058,6 +3027,14 @@ class WP_Query {
 			}
 		} elseif ( isset( $q['has_password'] ) ) {
 			$where .= sprintf( " AND $wpdb->posts.post_password %s ''", $q['has_password'] ? '!=' : '=' );
+		}
+
+		if ( ! empty( $q['comment_status'] ) ) {
+			$where .= $wpdb->prepare( " AND $wpdb->posts.comment_status = %s ", $q['comment_status'] );
+		}
+
+		if ( ! empty( $q['ping_status'] ) )  {
+			$where .= $wpdb->prepare( " AND $wpdb->posts.ping_status = %s ", $q['ping_status'] );
 		}
 
 		if ( 'any' == $post_type ) {
@@ -3228,7 +3205,7 @@ class WP_Query {
 				$cgroupby = "$wpdb->comments.comment_id";
 			} else { // Other non singular e.g. front
 				$cjoin = "JOIN $wpdb->posts ON ( $wpdb->comments.comment_post_ID = $wpdb->posts.ID )";
-				$cwhere = "WHERE post_status = 'publish' AND comment_approved = '1'";
+				$cwhere = "WHERE ( post_status = 'publish' OR ( post_status = 'inherit' && post_type = 'attachment' ) ) AND comment_approved = '1'";
 				$cgroupby = '';
 			}
 
@@ -3679,7 +3656,6 @@ class WP_Query {
 				$this->is_attachment = true;
 			}
 			$post_status_obj = get_post_status_object($status);
-			//$type = get_post_type($this->posts[0]);
 
 			// If the post_status was specifically requested, let it pass through.
 			if ( !$post_status_obj->public && ! in_array( $status, $q_status ) ) {
@@ -3805,6 +3781,9 @@ class WP_Query {
 	 * @access private
 	 *
 	 * @global wpdb $wpdb WordPress database abstraction object.
+	 *
+	 * @param array  $q      Query variables.
+	 * @param string $limits LIMIT clauses of the query.
 	 */
 	private function set_found_posts( $q, $limits ) {
 		global $wpdb;
@@ -4384,11 +4363,14 @@ class WP_Query {
 	 * Whether the current URL is within the comments popup window.
 	 *
 	 * @since 3.1.0
+	 * @deprecated 4.5.0
 	 *
 	 * @return bool
 	 */
 	public function is_comments_popup() {
-		return (bool) $this->is_comments_popup;
+		_deprecated_function( __FUNCTION__, '4.5' );
+
+		return false;
 	}
 
 	/**
@@ -4874,14 +4856,6 @@ class WP_Query {
 	 *               another value if filtered by a plugin.
 	 */
 	public function lazyload_term_meta( $check, $term_id ) {
-		/*
-		 * We only do this once per `WP_Query` instance.
-		 * Can't use `remove_filter()` because of non-unique object hashes.
-		 */
-		if ( $this->updated_term_meta_cache ) {
-			return $check;
-		}
-
 		// We can only lazyload if the entire post object is present.
 		$posts = array();
 		foreach ( $this->posts as $post ) {
@@ -4915,13 +4889,13 @@ class WP_Query {
 			 */
 			if ( isset( $term_ids[ $term_id ] ) ) {
 				update_termmeta_cache( array_keys( $term_ids ) );
-				$this->updated_term_meta_cache = true;
+				remove_filter( 'get_term_metadata', array( $this, 'lazyload_term_meta' ), 10, 2 );
 			}
 		}
 
 		// If no terms were found, there's no need to run this again.
 		if ( empty( $term_ids ) ) {
-			$this->updated_term_meta_cache = true;
+			remove_filter( 'get_term_metadata', array( $this, 'lazyload_term_meta' ), 10, 2 );
 		}
 
 		return $check;
@@ -4940,14 +4914,6 @@ class WP_Query {
 	 * @return mixed The original value of `$check`, to not affect 'get_comment_metadata'.
 	 */
 	public function lazyload_comment_meta( $check, $comment_id ) {
-		/*
-		 * We only do this once per `WP_Query` instance.
-		 * Can't use `remove_filter()` because of non-unique object hashes.
-		 */
-		if ( $this->updated_comment_meta_cache ) {
-			return $check;
-		}
-
 		// Don't use `wp_list_pluck()` to avoid by-reference manipulation.
 		$comment_ids = array();
 		if ( is_array( $this->comments ) ) {
@@ -4963,9 +4929,9 @@ class WP_Query {
 		 */
 		if ( in_array( $comment_id, $comment_ids ) ) {
 			update_meta_cache( 'comment', $comment_ids );
-			$this->updated_comment_meta_cache = true;
+			remove_filter( 'get_comment_metadata', array( $this, 'lazyload_comment_meta' ), 10, 2 );
 		} elseif ( empty( $comment_ids ) ) {
-			$this->updated_comment_meta_cache = true;
+			remove_filter( 'get_comment_metadata', array( $this, 'lazyload_comment_meta' ), 10, 2 );
 		}
 
 		return $check;
@@ -4985,6 +4951,10 @@ class WP_Query {
  */
 function wp_old_slug_redirect() {
 	global $wp_query, $wp_rewrite;
+
+	if ( get_queried_object() ) {
+		return;
+	}
 
 	if ( '' !== $wp_query->query_vars['name'] ) :
 		global $wpdb;

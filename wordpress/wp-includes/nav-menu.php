@@ -77,7 +77,7 @@ function is_nav_menu( $menu ) {
 }
 
 /**
- * Register navigation menus for a theme.
+ * Registers navigation menu locations for a theme.
  *
  * @since 3.0.0
  *
@@ -94,7 +94,7 @@ function register_nav_menus( $locations = array() ) {
 }
 
 /**
- * Unregisters a navigation menu for a theme.
+ * Unregisters a navigation menu location for a theme.
  *
  * @global array $_wp_registered_nav_menus
  *
@@ -115,7 +115,7 @@ function unregister_nav_menu( $location ) {
 }
 
 /**
- * Register a navigation menu for a theme.
+ * Registers a navigation menu location for a theme.
  *
  * @since 3.0.0
  *
@@ -126,7 +126,7 @@ function register_nav_menu( $location, $description ) {
 	register_nav_menus( array( $location => $description ) );
 }
 /**
- * Returns an array of all registered navigation menus in a theme
+ * Returns all registered navigation menu locations in a theme.
  *
  * @since 3.0.0
  *
@@ -154,7 +154,7 @@ function get_nav_menu_locations() {
 }
 
 /**
- * Whether a registered nav menu location has a menu assigned to it.
+ * Determines whether a registered nav menu location has a menu assigned to it.
  *
  * @since 3.0.0
  *
@@ -182,7 +182,7 @@ function has_nav_menu( $location ) {
 }
 
 /**
- * Determine whether the given ID is a nav menu item.
+ * Determines whether the given ID is a nav menu item.
  *
  * @since 3.0.0
  *
@@ -194,7 +194,7 @@ function is_nav_menu_item( $menu_item_id = 0 ) {
 }
 
 /**
- * Create a Navigation Menu.
+ * Creates a navigation menu.
  *
  * @since 3.0.0
  *
@@ -417,7 +417,9 @@ function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item
 			$original_title = $original_object->post_title;
 		} elseif ( 'post_type_archive' == $args['menu-item-type'] ) {
 			$original_object = get_post_type_object( $args['menu-item-object'] );
-			$original_title = $original_object->labels->archives;
+			if ( $original_object ) {
+				$original_title = $original_object->labels->archives;
+			}
 		}
 
 		if ( $args['menu-item-title'] == $original_title )
@@ -737,7 +739,8 @@ function wp_setup_nav_menu_item( $menu_item ) {
 				$menu_item->url = get_permalink( $menu_item->object_id );
 
 				$original_object = get_post( $menu_item->object_id );
-				$original_title = $original_object->post_title;
+				/** This filter is documented in wp-includes/post-template.php */
+				$original_title = apply_filters( 'the_title', $original_object->post_title, $original_object->ID );
 
 				if ( '' === $original_title ) {
 					/* translators: %d: ID of a post */
@@ -928,13 +931,14 @@ function _wp_delete_post_menu_item( $object_id = 0 ) {
 }
 
 /**
- * Callback for handling a menu item when its original object is deleted.
+ * Serves as a callback for handling a menu item when its original object is deleted.
  *
  * @since 3.0.0
  * @access private
  *
- * @param int $object_id The ID of the original object being trashed.
- *
+ * @param int    $object_id Optional. The ID of the original object being trashed. Default 0.
+ * @param int    $tt_id     Term taxonomy ID. Unused.
+ * @param string $taxonomy  Taxonomy slug.
  */
 function _wp_delete_tax_menu_item( $object_id = 0, $tt_id, $taxonomy ) {
 	$object_id = (int) $object_id;

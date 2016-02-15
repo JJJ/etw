@@ -118,10 +118,11 @@ function translate( $text, $domain = 'default' ) {
  */
 function before_last_bar( $string ) {
 	$last_bar = strrpos( $string, '|' );
-	if ( false === $last_bar )
+	if ( false === $last_bar ) {
 		return $string;
-	else
+	} else {
 		return substr( $string, 0, $last_bar );
+	}
 }
 
 /**
@@ -444,6 +445,7 @@ function _n_noop( $singular, $plural, $domain = null ) {
  *
  * @param string $singular Singular form to be localized.
  * @param string $plural   Plural form to be localized.
+ * @param string $context  Context information for the translators.
  * @param string $domain   Optional. Text domain. Unique identifier for retrieving translated strings.
  *                         Default null.
  * @return array {
@@ -891,7 +893,7 @@ function wp_get_installed_translations( $type ) {
 	$language_data = array();
 
 	foreach ( $files as $file ) {
-		if ( '.' === $file[0] || is_dir( $file ) ) {
+		if ( '.' === $file[0] || is_dir( WP_LANG_DIR . "$dir/$file" ) ) {
 			continue;
 		}
 		if ( substr( $file, -3 ) !== '.po' ) {
@@ -954,11 +956,11 @@ function wp_get_pomo_file_data( $po_file ) {
  *     @type array    $translations                 List of available translations. Default result of
  *                                                  wp_get_available_translations().
  *     @type string   $selected                     Language which should be selected. Default empty.
- *     @type bool|int $echo                         Whether to echo or return the generated markup. Accepts 0, 1, or their
- *                                                  bool equivalents. Default 1.
+ *     @type bool|int $echo                         Whether to echo the generated markup. Accepts 0, 1, or their
+ *                                                  boolean equivalents. Default 1.
  *     @type bool     $show_available_translations  Whether to show available translations. Default true.
  * }
- * @return string HTML content only if 'echo' argument is 0.
+ * @return string HTML content
  */
 function wp_dropdown_languages( $args = array() ) {
 

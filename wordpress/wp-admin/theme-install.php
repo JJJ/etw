@@ -154,7 +154,7 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 			<p class="install-help"><?php _e( 'If you have marked themes as favorites on WordPress.org, you can browse them here.' ); ?></p>
 
 			<p>
-				<label for="user"><?php _e( 'Your WordPress.org username:' ); ?></label>
+				<label for="wporg-username-input"><?php _e( 'Your WordPress.org username:' ); ?></label>
 				<input type="search" id="wporg-username-input" value="<?php echo esc_attr( $user ); ?>" />
 				<input type="button" class="button button-secondary favorites-form-submit" value="<?php esc_attr_e( 'Get Favorites' ); ?>" />
 			</p>
@@ -195,7 +195,6 @@ include(ABSPATH . 'wp-admin/admin-header.php');
 	<p class="no-themes"><?php _e( 'No themes found. Try a different search.' ); ?></p>
 	<span class="spinner"></span>
 
-	<br class="clear" />
 <?php
 if ( $tab ) {
 	/**
@@ -259,7 +258,7 @@ if ( $tab ) {
 					<# if ( data.rating ) { #>
 						<div class="theme-rating">
 							{{{ data.stars }}}
-							<span class="num-ratings">({{ data.num_ratings }})</span>
+							<span class="num-ratings" aria-hidden="true">({{ data.num_ratings }})</span>
 						</div>
 					<# } else { #>
 						<span class="no-rating"><?php _e( 'This theme has not been rated yet.' ); ?></span>
