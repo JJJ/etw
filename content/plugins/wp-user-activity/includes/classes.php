@@ -176,9 +176,16 @@ abstract class WP_User_Activity_Type {
 			return false;
 		}
 
+		// Prefer fullname over display_name
+		if ( ! empty( $user->first_name ) && ! empty( $user->last_name ) ) {
+			$display_name = "{$user->first_name} {$user->last_name}";
+		} else {
+			$display_name = $user->display_name;
+		}
+
 		// Set author defaults
 		$avatar = '';
-		$author = esc_html( $user->display_name );
+		$author = esc_html( $display_name );
 
 		// Get avatar
 		if ( true === $r['author_avatar'] ) {
@@ -188,9 +195,13 @@ abstract class WP_User_Activity_Type {
 		// Link user if a link was found
 		if ( true === $r['author_link'] ) {
 			$link = $this->get_activity_author_url( $user );
+
 			if ( false !== $link ) {
 				$avatar = '<a href="' . esc_url( $link ) . '" class="wp-user-activity user-link alignleft">' . $avatar . '</a>';
-				$author = '<a href="' . esc_url( $link ) . '" class="wp-user-activity user-link">' . esc_html( $user->display_name ) . '</a>';
+				$author = '<a href="' . esc_url( $link ) . '" class="wp-user-activity user-link">' . esc_html( $display_name ) . '</a>';
+			} else {
+				$avatar = '<span class="wp-user-activity alignleft">' . $avatar . '</span>';
+				$author = '<span class="wp-user-activity">' . esc_html( $display_name ) . '</span>';
 			}
 		}
 
@@ -206,7 +217,19 @@ abstract class WP_User_Activity_Type {
 	 * @param  int  $post
 	 */
 	protected function get_activity_author( $post = 0 ) {
-		return get_user_by( 'id', get_post( $post )->post_author );
+
+		// Try to get author of post
+		$author = get_post( $post )->post_author;
+		$user   = get_user_by( 'id', $author );
+
+		// Support for unknown user
+		if ( empty( $user ) ) {
+			$user = new WP_User();
+			$user->ID           = 0;
+			$user->display_name = __( 'Someone', 'wp-user-activity' );
+		}
+
+		return $user;
 	}
 
 	/**
@@ -216,12 +239,15 @@ abstract class WP_User_Activity_Type {
 	 */
 	protected function get_activity_author_url( $user = 0 ) {
 
+		// No link
+		$link = false;
+
 		// If in admin, user admin area links
 		if ( is_admin() && current_user_can( 'edit_user', $user->ID ) ) {
 			$link = get_edit_user_link( $user->ID );
 
 		// Link to author URL if not in admin
-		} else {
+		} elseif ( ! empty( $user->ID ) ) {
 			$link = get_author_posts_url( $user->ID );
 		}
 
@@ -261,7 +287,7 @@ abstract class WP_User_Activity_Type {
 			$url       = get_edit_post_link( $post->ID );
 
 		// View link
-		} elseif ( is_post_type_viewable( $post->post_type ) ) {
+		} elseif ( is_post_type_viewable( get_post_type_object( $post->post_type ) ) ) {
 			$classes[] = 'view-link';
 			$url       = get_post_permalink( $post->ID );
 		}
