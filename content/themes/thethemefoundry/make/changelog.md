@@ -1,3 +1,20 @@
+## 1.6.7
+
+* Bug fix: Builder content would lose paragraphs and line breaks in some situations when switching between editors.
+* Improved: Better styling of the WooCommerce cart page on narrow screens < 480px wide.
+* Updated: Font Awesome icon library updated to version 4.5.0.
+* Updated: The latest list of Google fonts.
+* Changed: Make now only supports WordPress 4.2 and higher.
+
+## 1.6.6
+
+* Updated: Styles in the Builder and Customizer are now compatible with WordPress 4.4.
+* Improved: Range slider options in the Customizer now perform better.
+* Fixed: Some font family options didn't work correctly if the Global body font was not set to the default.
+* Fixed: Custom logo attachment ID couldn't be determined from its URL in some situations.
+* Fixed: The Button format wrapped awkwardly to the next line if too long.
+* Fixed: Builder script now requires WP's media views script as a dependency.
+
 ## 1.6.5
 
 * Improved: Site title and tagline are now treated as screen reader text when hidden (instead of removed) for better accessibility.
