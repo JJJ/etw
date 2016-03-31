@@ -9,6 +9,7 @@
  * and handle the sanitization & saving of values.
  *
  * @since 0.1.1
+ * @version 0.1.9
  *
  * @package Plugins/Terms/Metadata/UI
  */
@@ -34,7 +35,7 @@ class WP_Term_Meta_UI {
 	/**
 	 * @var string Database version
 	 */
-	protected $db_version = 201501010001;
+	protected $db_version = 201601010001;
 
 	/**
 	 * @var string Database version
@@ -81,9 +82,24 @@ class WP_Term_Meta_UI {
 	public $basename = '';
 
 	/**
-	 * @var boo Whether to use fancy UI
+	 * @var array Which taxonomies are being targeted?
+	 */
+	public $taxonomies = array();
+
+	/**
+	 * @var bool Whether to use fancy UI
 	 */
 	public $fancy = false;
+
+	/**
+	 * @var bool Whether to show a column
+	 */
+	public $has_column = true;
+
+	/**
+	 * @var bool Whether to show fields
+	 */
+	public $has_fields = true;
 
 	/**
 	 * Hook into queries, admin screens, and more!
@@ -93,40 +109,118 @@ class WP_Term_Meta_UI {
 	public function __construct( $file = '' ) {
 
 		// Setup plugin
-		$this->file     = $file;
-		$this->url      = plugin_dir_url( $this->file );
-		$this->path     = plugin_dir_path( $this->file );
-		$this->basename = plugin_basename( $this->file );
-		$this->fancy    = apply_filters( "wp_fancy_term_{$this->meta_key}", true );
+		$this->file       = $file;
+		$this->url        = plugin_dir_url( $this->file );
+		$this->path       = plugin_dir_path( $this->file );
+		$this->basename   = plugin_basename( $this->file );
+		$this->fancy      = apply_filters( "wp_fancy_term_{$this->meta_key}", true );
+
+		// Only look for taxonomies if not already set
+		if ( empty( $this->taxonomies ) ) {
+			$this->taxonomies = $this->get_taxonomies();
+		}
+
+		// Maybe build db version key
+		if ( empty( $this->db_version_key ) ) {
+			$this->db_version_key = "wpdb_term_{$this->meta_key}_version";
+		}
+
+		// Register Meta
+		$this->register_meta();
 
 		// Queries
 		add_action( 'create_term', array( $this, 'save_meta' ), 10, 2 );
 		add_action( 'edit_term',   array( $this, 'save_meta' ), 10, 2 );
 
-		// Get visible taxonomies
-		$taxonomies = $this->get_taxonomies();
+		// Term meta orderby
+		add_filter( 'terms_clauses',     array( $this, 'terms_clauses'     ), 10, 3 );
+		add_filter( 'get_terms_orderby', array( $this, 'get_terms_orderby' ), 10, 1 );
 
 		// Always hook these in, for ajax actions
-		foreach ( $taxonomies as $value ) {
+		foreach ( $this->taxonomies as $value ) {
 
-			// Unfancy gets the column
-			add_filter( "manage_edit-{$value}_columns",          array( $this, 'add_column_header' ) );
-			add_filter( "manage_{$value}_custom_column",         array( $this, 'add_column_value'  ), 10, 3 );
-			add_filter( "manage_edit-{$value}_sortable_columns", array( $this, 'sortable_columns'  ) );
+			// Has column?
+			if ( true === $this->has_column ) {
+				add_filter( "manage_edit-{$value}_columns",          array( $this, 'add_column_header' ) );
+				add_filter( "manage_{$value}_custom_column",         array( $this, 'add_column_value'  ), 10, 3 );
+				add_filter( "manage_edit-{$value}_sortable_columns", array( $this, 'sortable_columns'  ) );
+			}
 
-			add_action( "{$value}_add_form_fields",  array( $this, 'add_form_field'  ) );
-			add_action( "{$value}_edit_form_fields", array( $this, 'edit_form_field' ) );
+			// Has fields?
+			if ( true === $this->has_fields ) {
+				add_action( "{$value}_add_form_fields",  array( $this, 'add_form_field'  ) );
+				add_action( "{$value}_edit_form_fields", array( $this, 'edit_form_field' ) );
+			}
 		}
 
 		// ajax actions
-		$ajax_key = "ajax_{$this->meta_key}_terms";
-		add_action( "wp_{$ajax_key}", array( $this, 'ajax_update' ) );
+		add_action( "wp_ajax_{$this->meta_key}_terms", array( $this, 'ajax_update' ) );
 
 		// Only blog admin screens
 		if ( is_blog_admin() || doing_action( 'wp_ajax_inline_save_tax' ) ) {
-			add_action( 'admin_init',         array( $this, 'admin_init' ) );
-			add_action( 'load-edit-tags.php', array( $this, 'edit_tags'  ) );
+
+			// Every admin page
+			add_action( 'admin_init', array( $this, 'admin_init' ) );
+
+			// Bail if taxonomy does not include colors
+			if ( ! empty( $_REQUEST['taxonomy'] ) && in_array( $_REQUEST['taxonomy'], $this->taxonomies, true ) ) {
+				add_action( 'load-edit-tags.php', array( $this, 'edit_tags_page' ) );
+				add_action( 'load-term.php',      array( $this, 'term_page'      ) );
+			}
 		}
+
+		// Pass ths object into an action
+		do_action( "wp_term_meta_{$this->meta_key}_init", $this );
+	}
+
+	/**
+	 * Register term meta, key, and callbacks
+	 *
+	 * @since 0.1.5
+	 */
+	public function register_meta() {
+		register_meta(
+			'term',
+			$this->meta_key,
+			array( $this, 'sanitize_callback' ),
+			array( $this, 'auth_callback'     )
+		);
+	}
+
+	/**
+	 * Stub method for sanitizing meta data
+	 *
+	 * @since 0.1.5
+	 *
+	 * @param   mixed $data
+	 * @return  mixed
+	 */
+	public function sanitize_callback( $data = '' ) {
+		return $data;
+	}
+
+	/**
+	 * Stub method for authorizing the saving of meta data
+	 *
+	 * @since 0.1.5
+	 *
+	 * @param  bool    $allowed
+	 * @param  string  $meta_key
+	 * @param  int     $post_id
+	 * @param  int     $user_id
+	 * @param  string  $cap
+	 * @param  array   $caps
+	 *
+	 * @return boolean
+	 */
+	public function auth_callback( $allowed = false, $meta_key = '', $post_id = 0, $user_id = 0, $cap = '', $caps = array() ) {
+
+		// Bail if incorrect meta key
+		if ( $meta_key !== $this->meta_key ) {
+			return $allowed;
+		}
+
+		return $allowed;
 	}
 
 	/**
@@ -145,15 +239,97 @@ class WP_Term_Meta_UI {
 	 *
 	 * @since 0.1.0
 	 */
-	public function edit_tags() {
+	public function edit_tags_page() {
+		add_action( 'admin_head-edit-tags.php',          array( $this, 'help_tabs'       ) );
+		add_action( 'admin_head-edit-tags.php',          array( $this, 'admin_head'      ) );
+		add_action( 'admin_print_scripts-edit-tags.php', array( $this, 'enqueue_scripts' ) );
+		add_action( 'quick_edit_custom_box',             array( $this, 'quick_edit_meta' ), 10, 3 );
+	}
 
-		// Enqueue javascript
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'admin_head',            array( $this, 'help_tabs'       ) );
-		add_action( 'admin_head',            array( $this, 'admin_head'      ) );
+	/**
+	 * Administration area hooks
+	 *
+	 * @since 0.1.9
+	 */
+	public function term_page() {
+		add_action( 'admin_head-term.php',          array( $this, 'admin_head'      ) );
+		add_action( 'admin_print_scripts-term.php', array( $this, 'enqueue_scripts' ) );
+	}
 
-		// Quick edit
-		add_action( 'quick_edit_custom_box', array( $this, 'quick_edit_meta' ), 10, 3 );
+	/** Get Terms *************************************************************/
+
+	/**
+	 * Filter `get_terms_args` and tweak for meta_query orderby's
+	 *
+	 * @since 0.1.5
+	 *
+	 * @param  string  $orderby
+	 * @param  array   $args
+	 * @param  array   $taxonomies
+	 */
+	public function get_terms_orderby( $orderby = '' ) {
+
+		// Ordering by meta key
+		if ( ! empty( $_REQUEST['orderby'] ) && ( $this->meta_key === $_REQUEST['orderby'] ) ) {
+			$orderby = 'meta_value';
+		}
+
+		return $orderby;
+	}
+
+	/**
+	 * Filter get_terms() and maybe order by meta data
+	 *
+	 * @since 0.1.5
+	 *
+	 * @param  array  $clauses
+	 * @param  array  $taxonomies
+	 * @param  array  $args
+	 */
+	public function terms_clauses( $clauses = array(), $taxonomies = array(), $args = array() ) {
+		global $wpdb;
+
+		// Default allowed keys & primary key
+		$allowed_keys = array( $this->meta_key );
+
+		// Set allowed keys
+		$allowed_keys[] = 'meta_value';
+		$allowed_keys[] = 'meta_value_num';
+
+		// Tweak orderby
+		$orderby = isset( $args[ 'orderby' ] )
+			? $args[ 'orderby' ]
+			: '';
+
+		// Bail if no orderby or allowed_keys
+		if ( ! in_array( $orderby, $allowed_keys, true ) ) {
+			return $clauses;
+		}
+
+		// Join term meta data
+		$clauses['join'] .= " INNER JOIN {$wpdb->termmeta} AS tm ON t.term_id = tm.term_id";
+
+		// Maybe order by term meta
+		switch ( $args[ 'orderby' ] ) {
+			case $this->meta_key :
+			case 'meta_value' :
+				if ( ! empty( $this->key_type ) ) {
+					$clauses['orderby'] = "ORDER BY CAST(tm.meta_value AS tm)";
+				} else {
+					$clauses['orderby'] = "ORDER BY tm.meta_value";
+				}
+				$clauses['fields'] .= ', tm.*';
+				$clauses['where']  .= " AND tm.meta_key = '{$this->meta_key}'";
+				break;
+			case 'meta_value_num':
+				$clauses['orderby'] = "ORDER BY tm.meta_value+0";
+				$clauses['fields'] .= ', tm.*';
+				$clauses['where']  .= " AND tm.meta_key = '{$this->meta_key}'";
+				break;
+		}
+
+		// Return maybe modified clauses
+		return $clauses;
 	}
 
 	/** Assets ****************************************************************/
@@ -408,7 +584,7 @@ class WP_Term_Meta_UI {
 	public function quick_edit_meta( $column_name = '', $screen = '', $name = '' ) {
 
 		// Bail if not the meta_key column on the `edit-tags` screen for a visible taxonomy
-		if ( ( $this->meta_key !== $column_name ) || ( 'edit-tags' !== $screen ) || ! in_array( $name, $this->get_taxonomies() ) ) {
+		if ( ( $this->meta_key !== $column_name ) || ( 'edit-tags' !== $screen ) || ! in_array( $name, $this->taxonomies ) ) {
 			return false;
 		} ?>
 

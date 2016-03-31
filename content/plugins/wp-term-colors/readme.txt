@@ -1,9 +1,9 @@
 === WP Term Colors ===
 Contributors: johnjamesjacoby, stuttter
 Tags: taxonomy, term, meta, metadata, color, colors
-Requires at least: 4.2
+Requires at least: 4.4
 Tested up to: 4.4
-Stable tag: 0.1.4
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -16,7 +16,9 @@ WP Term Colors allows users to assign colors to any visible category, tag, or ta
 
 = Dependencies =
 
-This plugin requires [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ "Metadata, for taxonomy terms.")
+Not since WordPress 4.4.
+
+Install the [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ "Metadata, for taxonomy terms.") plugin if you're on an earlier version.
 
 = Also checkout =
 
@@ -24,7 +26,6 @@ This plugin requires [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ 
 * [WP Pretty Filters](https://wordpress.org/plugins/wp-pretty-filters/ "Makes post filters better match what's already in Media & Attachments.")
 * [WP Event Calendar](https://wordpress.org/plugins/wp-event-calendar/ "The best way to manage events in WordPress.")
 * [WP Media Categories](https://wordpress.org/plugins/wp-media-categories/ "Add categories to media & attachments.")
-* [WP Term Meta](https://wordpress.org/plugins/wp-term-meta/ "Metadata, for taxonomy terms.")
 * [WP Term Order](https://wordpress.org/plugins/wp-term-order/ "Sort taxonomy terms, your way.")
 * [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
 * [WP Term Colors](https://wordpress.org/plugins/wp-term-colors/ "Pretty colors for categories, tags, and other taxonomy terms.")
@@ -89,6 +90,8 @@ http://github.com/stuttter/wp-term-colors/
 
 == Changelog ==
 
+= 0.2.0 =
+* Update base class
 
 = 0.1.4 =
 * Update textdomain
