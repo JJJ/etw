@@ -22,7 +22,6 @@ function flox_get_default_network_options() {
 	// Stuttter Specific
 	$network_wide_plugins['brutus/brutus.php']                           = $timestamp;
 	$network_wide_plugins['user-switching/user-switching.php']           = $timestamp;
-	$network_wide_plugins['wp-term-meta/wp-term-meta.php']               = $timestamp;
 	$network_wide_plugins['wp-term-order/wp-term-order.php']             = $timestamp;
 	$network_wide_plugins['wp-term-colors/wp-term-colors.php']           = $timestamp;
 	$network_wide_plugins['wp-user-activity/wp-user-activity.php']       = $timestamp;
