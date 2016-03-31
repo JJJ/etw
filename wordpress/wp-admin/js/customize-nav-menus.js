@@ -19,12 +19,13 @@
 	api.Menus.data = {
 		itemTypes: [],
 		l10n: {},
-		menuItemTransport: 'postMessage',
+		settingTransport: 'refresh',
 		phpIntMax: 0,
 		defaultSettingValues: {
 			nav_menu: {},
 			nav_menu_item: {}
-		}
+		},
+		locationSlugMappedToName: {}
 	};
 	if ( 'undefined' !== typeof _wpCustomizeNavMenusSettings ) {
 		$.extend( api.Menus.data, _wpCustomizeNavMenusSettings );
@@ -186,6 +187,8 @@
 
 			// Close the panel if the URL in the preview changes
 			api.previewer.bind( 'url', this.close );
+
+			self.delegateEvents();
 		},
 
 		// Search input change handler.
@@ -215,7 +218,7 @@
 					.prop( 'tabIndex', -1 )
 					.removeClass( 'is-visible' );
 			}
-			
+
 			this.searchTerm = event.target.value;
 			this.pages.search = 1;
 			this.doSearch( 1 );
@@ -611,15 +614,21 @@
 			});
 		},
 
-		saveManageColumnsState: function() {
-			var hidden = this.hidden();
-			$.post( wp.ajax.settings.url, {
-				action: 'hidden-columns',
-				hidden: hidden,
+		saveManageColumnsState: _.debounce( function() {
+			var panel = this;
+			if ( panel._updateHiddenColumnsRequest ) {
+				panel._updateHiddenColumnsRequest.abort();
+			}
+
+			panel._updateHiddenColumnsRequest = wp.ajax.post( 'hidden-columns', {
+				hidden: panel.hidden(),
 				screenoptionnonce: $( '#screenoptionnonce' ).val(),
 				page: 'nav-menus'
-			});
-		},
+			} );
+			panel._updateHiddenColumnsRequest.always( function() {
+				panel._updateHiddenColumnsRequest = null;
+			} );
+		}, 2000 ),
 
 		checked: function( column ) {
 			this.container.addClass( 'field-' + column + '-active' );
@@ -630,12 +639,10 @@
 		},
 
 		hidden: function() {
-			this.hidden = function() {
-				return $( '.hide-column-tog' ).not( ':checked' ).map( function() {
-					var id = this.id;
-					return id.substring( id, id.length - 5 );
-				}).get().join( ',' );
-			};
+			return $( '.hide-column-tog' ).not( ':checked' ).map( function() {
+				var id = this.id;
+				return id.substring( 0, id.length - 5 );
+			}).get().join( ',' );
 		}
 	} );
 
@@ -805,19 +812,21 @@
 		/**
 		 * @param {array} themeLocations
 		 */
-		updateAssignedLocationsInSectionTitle: function( themeLocations ) {
+		updateAssignedLocationsInSectionTitle: function( themeLocationSlugs ) {
 			var section = this,
 				$title;
 
 			$title = section.container.find( '.accordion-section-title:first' );
 			$title.find( '.menu-in-location' ).remove();
-			_.each( themeLocations, function( themeLocation ) {
-				var $label = $( '<span class="menu-in-location"></span>' );
-				$label.text( api.Menus.data.l10n.menuLocation.replace( '%s', themeLocation ) );
+			_.each( themeLocationSlugs, function( themeLocationSlug ) {
+				var $label, locationName;
+				$label = $( '<span class="menu-in-location"></span>' );
+				locationName = api.Menus.data.locationSlugMappedToName[ themeLocationSlug ];
+				$label.text( api.Menus.data.l10n.menuLocation.replace( '%s', locationName ) );
 				$title.append( $label );
 			});
 
-			section.container.toggleClass( 'assigned-to-menu-location', 0 !== themeLocations.length );
+			section.container.toggleClass( 'assigned-to-menu-location', 0 !== themeLocationSlugs.length );
 
 		},
 
@@ -2307,7 +2316,7 @@
 			customizeId = 'nav_menu_item[' + String( placeholderId ) + ']';
 			settingArgs = {
 				type: 'nav_menu_item',
-				transport: 'postMessage',
+				transport: api.Menus.data.settingTransport,
 				previewer: api.previewer
 			};
 			setting = api.create( customizeId, customizeId, {}, settingArgs );
@@ -2396,7 +2405,7 @@
 			// Register the menu control setting.
 			api.create( customizeId, customizeId, {}, {
 				type: 'nav_menu',
-				transport: 'postMessage',
+				transport: api.Menus.data.settingTransport,
 				previewer: api.previewer
 			} );
 			api( customizeId ).set( $.extend(
@@ -2483,10 +2492,6 @@
 			}
 		} );
 
-		api.previewer.bind( 'refresh', function() {
-			api.previewer.refresh();
-		});
-
 		// Open and focus menu control.
 		api.previewer.bind( 'focus-nav-menu-item-control', api.Menus.focusMenuItemControl );
 	} );
@@ -2532,7 +2537,7 @@
 				newCustomizeId = 'nav_menu[' + String( update.term_id ) + ']';
 				newSetting = api.create( newCustomizeId, newCustomizeId, settingValue, {
 					type: 'nav_menu',
-					transport: 'postMessage',
+					transport: api.Menus.data.settingTransport,
 					previewer: api.previewer
 				} );
 
@@ -2680,7 +2685,7 @@
 				newCustomizeId = 'nav_menu_item[' + String( update.post_id ) + ']';
 				newSetting = api.create( newCustomizeId, newCustomizeId, settingValue, {
 					type: 'nav_menu_item',
-					transport: 'postMessage',
+					transport: api.Menus.data.settingTransport,
 					previewer: api.previewer
 				} );
 

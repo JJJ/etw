@@ -5,7 +5,7 @@
 .media-item .describe {
 	border-collapse: collapse;
 	width: 100%;
-	border-top: 1px solid #dfdfdf;
+	border-top: 1px solid #ddd;
 	clear: both;
 	cursor: default;
 }
@@ -124,8 +124,8 @@
 
 .media-upload-form .media-item,
 .media-upload-form .media-item .error {
-	-webkit-box-shadow: 0 1px 0 #dfdfdf;
-	box-shadow: 0 1px 0 #dfdfdf;
+	-webkit-box-shadow: 0 1px 0 #ddd;
+	box-shadow: 0 1px 0 #ddd;
 }
 
 #media-items:empty {
@@ -242,7 +242,7 @@
 
 .find-box-head {
 	background: #fcfcfc;
-	border-bottom: 1px solid #dfdfdf;
+	border-bottom: 1px solid #ddd;
 	height: 36px;
 	font-size: 18px;
 	font-weight: 600;
@@ -326,7 +326,7 @@
 .find-box-buttons {
 	padding: 8px 16px;
 	background: #fcfcfc;
-	border-top: 1px solid #dfdfdf;
+	border-top: 1px solid #ddd;
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -492,7 +492,7 @@ border color while dragging a file over the uploader drop area */
 	content: "\f153";
 	display: block;
 	font: normal 16px/1 dashicons;
-	color: #bbb;
+	color: #b4b9be;
 }
 
 .upload-php .mode-grid .media-sidebar .media-uploader-status .upload-dismiss-errors:focus:before,
@@ -609,7 +609,7 @@ border color while dragging a file over the uploader drop area */
 }
 
 .media-frame.mode-grid .attachments-browser .no-media {
-	color: #999;
+	color: #666; /* same as no plugins and no themes */
 	font-size: 18px;
 	font-style: normal;
 	margin: 0;
@@ -909,7 +909,9 @@ border color while dragging a file over the uploader drop area */
 
 .media-disabled,
 .imgedit-settings .disabled {
-	color: grey;
+	/* WCAG 1.4.3 Text or images of text that are part of an inactive user
+	   interface component ... have no contrast requirement. */
+	color: #a0a5aa;
 }
 
 .A1B1 {

@@ -223,6 +223,20 @@
 			});
 		});
 
+		/**
+		 * Custom Logo
+		 *
+		 * Toggle the wp-custom-logo body class when a logo is added or removed.
+		 *
+		 * @since 4.5.0
+		 */
+		api( 'custom_logo', function( setting ) {
+			$( 'body' ).toggleClass( 'wp-custom-logo', !! setting.get() );
+			setting.bind( function( attachmentId ) {
+				$( 'body' ).toggleClass( 'wp-custom-logo', !! attachmentId );
+			} );
+		} );
+
 		api.trigger( 'preview-ready' );
 	});
 

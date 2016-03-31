@@ -159,6 +159,7 @@ body {
 
 #customize-theme-controls .accordion-section-title:after {
 	content: "\f341";
+	color: #a0a5aa;
 }
 
 #customize-theme-controls .accordion-section-content {
@@ -610,6 +611,10 @@ p.customize-section-description {
 #customize-preview iframe {
 	width: 100%;
 	height: 100%;
+	position: absolute;
+}
+#customize-preview iframe + iframe {
+	visibility: hidden;
 }
 
 .wp-full-overlay-sidebar {
@@ -645,6 +650,7 @@ p.customize-section-description {
 	user-select: none;
 }
 
+/* @todo maybe no more used? */
 .customize-control .dropdown-arrow {
 	position: absolute;
 	top: 0;
@@ -705,10 +711,6 @@ p.customize-section-description {
  */
 
 .ios .wp-full-overlay {
-	position: relative;
-}
-
-.ios #customize-preview {
 	position: relative;
 }
 
@@ -806,6 +808,11 @@ p.customize-section-description {
 	position: relative;
 	text-align: center;
 	cursor: default;
+	border: 1px dashed #b4b9be;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	min-height: 40px;
 }
 
 .customize-control-media .inner,
@@ -843,7 +850,7 @@ p.customize-section-description {
 .customize-control-header .inner,
 .customize-control-header .inner .dashicons {
 	line-height: 20px;
-	top: 10px;
+	top: 8px;
 }
 
 .customize-control-header .list .inner,
@@ -939,16 +946,6 @@ p.customize-section-description {
 	100% { color: #d4b146; }
 }
 
-.customize-control-media .actions,
-.customize-control-upload .actions,
-.customize-control-image .actions,
-.customize-control-background .actions,
-.customize-control-cropped_image .actions,
-.customize-control-site_icon .actions,
-.customize-control-header .actions {
-	margin-bottom: 32px;
-}
-
 .customize-control-header .choice {
 	position: relative;
 	display: block;
@@ -964,7 +961,6 @@ p.customize-section-description {
 .customize-control-image img,
 .customize-control-background img,
 .customize-control-cropped_image img,
-.customize-control-site_icon img,
 .customize-control-header img {
 	width: 100%;
 	-webkit-border-radius: 2px;
@@ -1220,7 +1216,7 @@ body.cheatin {
 }
 
 body.cheatin h1 {
-	border-bottom: 1px solid #dadada;
+	border-bottom: 1px solid #ddd;
 	clear: both;
 	color: #666;
 	font: 24px "Open Sans", sans-serif;
@@ -1278,6 +1274,7 @@ body.cheatin p {
 
 /* Reordering */
 .reorder-toggle {
+	color: #0073aa;
 	float: left;
 	padding: 5px 8px;
 	text-decoration: none;
@@ -1287,6 +1284,10 @@ body.cheatin p {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+.reorder-toggle:hover {
+	color: #00a0d2;
 }
 
 .reorder-toggle:focus {
@@ -1446,7 +1447,7 @@ body.adding-widget .add-new-widget:before,
 	z-index: 1;
 	width: 300px;
 	background: #eee;
-	border-bottom: 1px solid #e4e4e4;
+	border-bottom: 1px solid #e5e5e5;
 }
 
 /* search field container */
@@ -1479,7 +1480,7 @@ body.adding-widget .add-new-widget:before,
 	position: relative;
 	padding: 20px 60px 20px 15px;
 	background: #fff;
-	border-bottom: 1px solid #e4e4e4;
+	border-bottom: 1px solid #e5e5e5;
 	cursor: pointer;
 	display: none;
 }
@@ -1529,6 +1530,12 @@ body.adding-widget .add-new-widget:before,
 	}
 
 	.wp-full-overlay.expanded {
+		margin-right: 0;
+	}
+
+	/* when the sidebar is collapsed and switching to responsive view,
+	   bring it back see ticket #35220 */
+	.wp-full-overlay.collapsed #customize-controls {
 		margin-right: 0;
 	}
 

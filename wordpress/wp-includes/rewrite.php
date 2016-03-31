@@ -212,7 +212,7 @@ function add_permastruct( $name, $struct, $args = array() ) {
 }
 
 /**
- * Remove permalink structure.
+ * Removes a permalink structure.
  *
  * Can only be used to remove permastructs that were added using add_permastruct().
  * Built-in permastructs cannot be removed.
@@ -447,7 +447,7 @@ function wp_resolve_numeric_slug_conflicts( $query_vars = array() ) {
 }
 
 /**
- * Examine a url and try to determine the post ID it represents.
+ * Examine a URL and try to determine the post ID it represents.
  *
  * Checks are supposedly from the hosted site blog.
  *
@@ -487,7 +487,8 @@ function url_to_postid( $url ) {
 	$url = $url_split[0];
 
 	// Set the correct URL scheme.
-	$url = set_url_scheme( $url );
+	$scheme = parse_url( home_url(), PHP_URL_SCHEME );
+	$url = set_url_scheme( $url, $scheme );
 
 	// Add 'www.' if it is absent and should be there
 	if ( false !== strpos(home_url(), '://www.') && false === strpos($url, '://www.') )

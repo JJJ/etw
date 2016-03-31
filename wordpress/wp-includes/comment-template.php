@@ -1344,8 +1344,10 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	 *
 	 * @since 4.5.0
 	 *
+	 * @see WP_Comment_Query::__construct()
+	 *
 	 * @param array $comment_args {
-	 *     Array of arguments. See WP_Comment_Query::__construct() for detailed descriptions.
+	 *     Array of WP_Comment_Query arguments.
 	 *
 	 *     @type string|array $orderby                   Field(s) to order by.
 	 *     @type string       $order                     Order of results. Accepts 'ASC' or 'DESC'.
@@ -1392,9 +1394,6 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	 * @param int   $post_ID  Post ID.
 	 */
 	$wp_query->comments = apply_filters( 'comments_array', $comments_flat, $post->ID );
-
-	// Set up lazy-loading for comment metadata.
-	add_action( 'get_comment_metadata', array( $wp_query, 'lazyload_comment_meta' ), 10, 2 );
 
 	$comments = &$wp_query->comments;
 	$wp_query->comment_count = count($wp_query->comments);
@@ -2030,6 +2029,8 @@ function wp_list_comments( $args = array(), $comments = null ) {
 	if ( null === $r['reverse_top_level'] )
 		$r['reverse_top_level'] = ( 'desc' == get_option('comment_order') );
 
+	wp_queue_comments_for_comment_meta_lazyload( $_comments );
+
 	if ( empty( $r['walker'] ) ) {
 		$walker = new Walker_Comment;
 	} else {
@@ -2146,9 +2147,21 @@ function comment_form( $args = array(), $post_id = null ) {
 		'fields'               => $fields,
 		'comment_field'        => '<p class="comment-form-comment"><label for="comment">' . _x( 'Comment', 'noun' ) . '</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p>',
 		/** This filter is documented in wp-includes/link-template.php */
-		'must_log_in'          => '<p class="must-log-in">' . sprintf( __( 'You must be <a href="%s">logged in</a> to post a comment.' ), wp_login_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) ) ) . '</p>',
+		'must_log_in'          => '<p class="must-log-in">' . sprintf(
+		                              /* translators: %s: login URL */
+		                              __( 'You must be <a href="%s">logged in</a> to post a comment.' ),
+		                              wp_login_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) )
+		                          ) . '</p>',
 		/** This filter is documented in wp-includes/link-template.php */
-		'logged_in_as'         => '<p class="logged-in-as">' . sprintf( __( '<a href="%1$s" aria-label="Logged in as %2$s. Edit your profile.">Logged in as %2$s</a>. <a href="%3$s">Log out?</a>' ), get_edit_user_link(), $user_identity, wp_logout_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) ) ) . '</p>',
+		'logged_in_as'         => '<p class="logged-in-as">' . sprintf(
+		                              /* translators: 1: edit user link, 2: accessibility text, 3: user name, 4: logout URL */
+		                              __( '<a href="%1$s" aria-label="%2$s">Logged in as %3$s</a>. <a href="%4$s">Log out?</a>' ),
+		                              get_edit_user_link(),
+		                              /* translators: %s: user name */
+		                              esc_attr( sprintf( __( 'Logged in as %s. Edit your profile.' ), $user_identity ) ),
+		                              $user_identity,
+		                              wp_logout_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) )
+		                          ) . '</p>',
 		'comment_notes_before' => '<p class="comment-notes"><span id="email-notes">' . __( 'Your email address will not be published.' ) . '</span>'. ( $req ? $required_text : '' ) . '</p>',
 		'comment_notes_after'  => '',
 		'id_form'              => 'commentform',

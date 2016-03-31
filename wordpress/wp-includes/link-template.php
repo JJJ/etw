@@ -904,30 +904,31 @@ function edit_tag_link( $link = '', $before = '', $after = '', $tag = null ) {
 }
 
 /**
- * Retrieve edit term url.
+ * Retrieves the URL for editing a given term.
  *
  * @since 3.1.0
+ * @since 4.5.0 The `$taxonomy` argument was made optional.
  *
  * @param int    $term_id     Term ID.
- * @param string $taxonomy    Taxonomy.
- * @param string $object_type The object type. Used to highlight the proper post type menu on the linked page.
+ * @param string $taxonomy    Optional. Taxonomy. Defaults to the taxonomy of the term identified by `$term_id`.
+ * @param string $object_type Optional. The object type. Used to highlight the proper post type menu on the linked page.
  *                            Defaults to the first object_type associated with the taxonomy.
  * @return string|null The edit term link URL for the given term, or null on failure.
  */
-function get_edit_term_link( $term_id, $taxonomy, $object_type = '' ) {
-	$tax = get_taxonomy( $taxonomy );
-	if ( ! $tax || ! current_user_can( $tax->cap->edit_terms ) ) {
-		return;
-	}
-
+function get_edit_term_link( $term_id, $taxonomy = '', $object_type = '' ) {
 	$term = get_term( $term_id, $taxonomy );
 	if ( ! $term || is_wp_error( $term ) ) {
 		return;
 	}
 
+	$tax = get_taxonomy( $term->taxonomy );
+	if ( ! $tax || ! current_user_can( $tax->cap->edit_terms ) ) {
+		return;
+	}
+
 	$args = array(
 		'taxonomy' => $taxonomy,
-		'term_id'  => $term->term_id,
+		'tag_ID'   => $term->term_id,
 	);
 
 	if ( $object_type ) {
@@ -1221,7 +1222,7 @@ function get_preview_post_link( $post = null, $query_args = array(), $preview_li
 	$post_type_object = get_post_type_object( $post->post_type );
 	if ( is_post_type_viewable( $post_type_object ) ) {
 		if ( ! $preview_link ) {
-			$preview_link = get_permalink( $post );
+			$preview_link = set_url_scheme( get_permalink( $post ) );
 		}
 
 		$query_args['preview'] = 'true';
@@ -2925,7 +2926,7 @@ function get_shortcut_link() {
 }
 
 /**
- * Retrieve the URL for the current site where the front-end is accessible.
+ * Retrieve the URL for the current site where the front end is accessible.
  *
  * Returns the 'home' option with the appropriate protocol, 'https' if
  * {@see is_ssl()} and 'http' otherwise. If `$scheme` is 'http' or 'https',
@@ -2943,7 +2944,7 @@ function home_url( $path = '', $scheme = null ) {
 }
 
 /**
- * Retrieve the URL for a given site where the front-end is accessible.
+ * Retrieve the URL for a given site where the front end is accessible.
  *
  * Returns the 'home' option with the appropriate protocol, 'https' if
  * {@see is_ssl()} and 'http' otherwise. If `$scheme` is 'http' or 'https',
