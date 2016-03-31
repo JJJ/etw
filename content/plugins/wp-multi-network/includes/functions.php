@@ -3,27 +3,11 @@
 /**
  * WP Multi Network Functions
  *
- * @package WPMN
- * @subpackage Functions
+ * @package Plugins/Network/Functions
  */
 
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
-
-if ( ! function_exists( 'wp_get_scheme' ) ) :
-/**
- * Return the scheme in use based on is_ssl()
- *
- * @since 1.7.0
- *
- * @return string
- */
-function wp_get_scheme() {
-	return is_ssl()
-		? 'https://'
-		: 'http://';
-}
-endif;
 
 /**
  * Check to see if a network exists. Will check the networks object before
@@ -51,6 +35,57 @@ function get_networks() {
 }
 
 /**
+ *
+ * Return array of networks for which user is super admin, or FALSE if none
+ *
+ * @since 1.3
+ * @return array | FALSE
+ */
+function user_has_networks( $user_id = 0 ) {
+	global $wpdb;
+
+	// Use current user
+	if ( empty( $user_id ) ) {
+		global $current_user;
+
+		$user_id    = $current_user->ID;
+		$user_login = $current_user->user_login;
+
+	// Use passed user ID
+	} else {
+		$user_id    = (int) $user_id;
+		$user_info  = get_userdata( $user_id );
+		$user_login = $user_info->user_login;
+	}
+
+	// Setup the networks array
+	$my_networks = array();
+
+	// If multisite, get some site meta
+	if ( is_multisite() ) {
+
+		// Get the network admins
+		$sql        = "SELECT site_id, meta_value FROM {$wpdb->sitemeta} WHERE meta_key = %s";
+		$query      = $wpdb->prepare( $sql, 'site_admins' );
+		$all_admins = $wpdb->get_results( $query );
+
+		foreach( (array) $all_admins as $network ) {
+			$network_admins = maybe_unserialize( $network->meta_value );
+			if ( in_array( $user_login, $network_admins, true ) ) {
+				$my_networks[] = (int) $network->site_id;
+			}
+		}
+	}
+
+	// If there are no networks, return false
+	if ( empty( $my_networks ) ) {
+		$my_networks = false;
+	}
+
+	return apply_filters( 'networks_user_is_network_admin', $my_networks, $user_id );
+}
+
+/**
  * Get main site for a network
  *
  * @param int|stdClass $network Network ID or object, null for current network
@@ -60,22 +95,29 @@ function get_main_site_for_network( $network = null ) {
 	global $wpdb;
 
 	// Get network
-	if ( empty( $network ) ) {
-		$network = $GLOBALS['current_site'];
-	} elseif ( ! is_object( $network ) ) {
-		$network = wp_get_network( $network );
-	}
+	$network = ! empty( $network )
+		? wp_get_network( $network )
+		: $GLOBALS['current_site'];
 
 	// Network not found
 	if ( empty( $network ) ) {
 		return false;
 	}
 
-	if ( ! $primary_id = wp_cache_get( 'network:' . $network->id . ':main_site', 'site-options' ) ) {
-		$sql        = "SELECT blog_id FROM {$wpdb->blogs} WHERE domain = %s AND path = %s";
-		$query      = $wpdb->prepare( $sql, $network->domain, $network->path );
-		$primary_id = $wpdb->get_var( $query );
-		wp_cache_add( 'network:' . $network->id . ':main_site', $primary_id, 'site-options' );
+	// Use object site ID
+	if ( ! empty( $network->blog_id ) ) {
+		$primary_id = $network->blog_id;
+
+	// Look for cached value
+	} else {
+		$primary_id = wp_cache_get( "network:{$network->id}:main_site", 'site-options' );
+
+		if ( false === $primary_id ) {
+			$sql        = "SELECT blog_id FROM {$wpdb->blogs} WHERE domain = %s AND path = %s";
+			$query      = $wpdb->prepare( $sql, $network->domain, $network->path );
+			$primary_id = $wpdb->get_var( $query );
+			wp_cache_add( "network:{$network->id}:main_site", $primary_id, 'site-options' );
+		}
 	}
 
 	return (int) $primary_id;
@@ -289,7 +331,9 @@ function add_network( $args = array() ) {
 	$r['path']   = str_replace( ' ', '', strtolower( $r['path']   ) );
 
 	// Check for existing network
-	$network = get_network_by_path( $r['domain'], $r['path'] );
+	$sql     = "SELECT * FROM {$wpdb->site} WHERE domain = %s AND path = %s LIMIT 1";
+	$query   = $wpdb->prepare( $sql, $r['domain'], $r['path'] );
+	$network = $wpdb->get_row( $query );
 
 	if ( ! empty( $network ) ) {
 		return new WP_Error( 'network_exists', __( 'Network already exists.', 'wp-multi-network' ) );
@@ -320,7 +364,7 @@ function add_network( $args = array() ) {
 		);
 
 		// Bail if blog could not be created
-		if ( is_a( $new_blog_id, 'WP_Error' ) ) {
+		if ( is_wp_error( $new_blog_id ) ) {
 			return $new_blog_id;
 		}
 
@@ -431,18 +475,27 @@ function update_network( $id, $domain, $path = '' ) {
 		return new WP_Error( 'network_not_exist', __( 'Network does not exist.', 'wp-multi-network' ) );
 	}
 
-	// Set the arrays for updating the db
-	$update = array( 'domain' => $domain );
-	if ( ! empty( $path ) ) {
-		$update['path'] = $path;
+	// Get main site for this network
+	$site_id = get_main_site_for_network( $id );
+	$path    = wp_sanitize_site_path( $path );
+
+	// Bail if site URL is invalid
+	if ( ! wp_validate_site_url( $domain, $path, $site_id ) ) {
+		return new WP_Error( 'blog_bad', sprintf( __( 'The site "%s" is invalid, not available, or already exists.', 'wp-multi-network' ), $domain . $path ) );
 	}
 
+	// Set the arrays for updating the db
+	$where  = array( 'id' => $network->id );
+	$update = array(
+		'domain' => $domain,
+		'path'   => $path
+	);
+
 	// Attempt to update the network
-	$where         = array( 'id' => $network->id );
 	$update_result = $wpdb->update( $wpdb->site, $update, $where );
 
 	// Bail if update failed
-	if ( empty( $update_result ) ) {
+	if ( is_wp_error( $update_result ) ) {
 		return new WP_Error( 'network_not_updated', __( 'Network could not be updated.', 'wp-multi-network' ) );
 	}
 
@@ -496,11 +549,14 @@ function update_network( $id, $domain, $path = '' ) {
 				$value = $wpdb->get_row( $prep );
 
 				// Update if value exists
-				if ( ! empty( $value ) ) {
+				if ( ! empty( $value ) && ( false !== strpos( $value->option_value, $old_path ) ) ) {
 					$new_value = str_replace( $old_path, $full_path, $value->option_value );
 					update_blog_option( $site->blog_id, $option_name, $new_value );
 				}
 			}
+
+			// Refresh blog details
+			refresh_blog_details( $site->blog_id );
 		}
 	}
 
@@ -509,6 +565,9 @@ function update_network( $id, $domain, $path = '' ) {
 		'domain' => $network->domain,
 		'path'   => $network->path
 	) );
+
+	// Network updated
+	return true;
 }
 
 /**
@@ -565,14 +624,14 @@ function delete_network( $id, $delete_blogs = false ) {
 }
 
 /**
- * Move a blog from one network to another
+ * Move a site to a new network
  *
  * @since 1.3
  *
- * @param integer $site_id ID of blog to move
- * @param integer $new_network_id ID of destination network
+ * @param  integer  $site_id         ID of site to move
+ * @param  integer  $new_network_id  ID of destination network
  */
-function move_site( $site_id, $new_network_id ) {
+function move_site( $site_id = 0, $new_network_id = 0 ) {
 	global $wpdb;
 
 	// Get the site
@@ -596,65 +655,19 @@ function move_site( $site_id, $new_network_id ) {
 		return true;
 	}
 
-	// Store the old network ID for using later
-	$old_network_id = (int) $site->site_id;
-	$old_network    = wp_get_network( $old_network_id );
-
-	// No change
-	if ( $old_network_id === $new_network_id ) {
-		return new WP_Error( 'blog_not_moved', __( 'Site was not moved.', 'wp-multi-network' ) );
-	}
-
-	// New network is not zero
-	if ( 0 !== $new_network_id ) {
-		$new_network = wp_get_network( $new_network_id );
-		if ( empty( $new_network ) ) {
-			return new WP_Error( 'network_not_exist', __( 'Network does not exist.', 'wp-multi-network' ) );
-		}
-
-		// Tweak the domain and path if needed
-		// If the site domain is the same as the network domain on a subdomain
-		// install, don't prepend old "hostname"
-		if ( is_subdomain_install() && ( $site->domain !== $old_network->domain ) ) {
-			$ex_dom = substr( $site->domain, 0, ( strpos( $site->domain, '.' ) + 1 ) );
-			$domain = $ex_dom . $new_network->domain;
-		} else {
-			$domain = $new_network->domain;
-		}
-		$path = substr( $site->path, strlen( $old_network->path ) );
-
-	// New network is zero (orphan)
-	} else {
-
-		// Mock a zero network object
-		$new_network = new WP_Network( (object) array(
-			'domain' => 'network.zero',
-			'path'   => '/',
-			'id'     => '0'
-		) );
-
-		// Set domain & path to that of the current site
-		$domain = $site->domain;
-		$path   = $site->path;
-	}
-
 	// Move the site is the blogs table
-	$where  = array( 'blog_id' => $site->blog_id );
-	$update = array(
-		'site_id' => $new_network->id,
-		'domain'  => $domain,
-		'path'    => $path
-	);
-	$update_result = $wpdb->update( $wpdb->blogs, $update, $where );
+	$where  = array( 'blog_id' => $site->blog_id  );
+	$update = array( 'site_id' => $new_network_id );
+	$result = $wpdb->update( $wpdb->blogs, $update, $where );
 
 	// Bail if site could not be moved
-	if ( empty( $update_result ) ) {
+	if ( empty( $result ) ) {
 		return new WP_Error( 'blog_not_moved', __( 'Site could not be moved.', 'wp-multi-network' ) );
 	}
 
 	// Update old network count
-	if ( 0 !== $old_network_id ) {
-		switch_to_network( $old_network_id );
+	if ( 0 !== $site->site_id ) {
+		switch_to_network( $site->site_id );
 		wp_update_network_site_counts();
 		restore_current_network();
 	}
@@ -666,31 +679,14 @@ function move_site( $site_id, $new_network_id ) {
 		restore_current_network();
 	}
 
-	// Change relevant blog options
-	$options_table = $wpdb->get_blog_prefix( $site->blog_id ) . 'options';
-	$old_domain    = $old_network->domain . $old_network->path;
-	$new_domain    = $new_network->domain . $new_network->path;
-
-	// Update all site options
-	foreach ( network_options_list() as $option_name ) {
-		$sql    = "SELECT * FROM {$options_table} WHERE option_name = %s";
-		$prep   = $wpdb->prepare( $sql, $option_name );
-		$option = $wpdb->get_row( $prep );
-
-		// No value, so skip it
-		if ( empty( $option ) ) {
-			continue;
-		}
-
-		$new_value = str_replace( $old_domain, $new_domain, $option->option_value );
-		update_blog_option( $site->blog_id, $option_name, $new_value );
-	}
-
-	// Delete rewrite rules for site at old URL
-	delete_blog_option( $site_id, 'rewrite_rules' );
+	// Refresh blog details
+	refresh_blog_details( $site_id );
 
 	// Site moved
-	do_action( 'move_site', $site_id, $old_network_id, $new_network_id );
+	do_action( 'move_site', $site_id, $site->site_id, $new_network_id );
+
+	// Return the new network ID as confirmation
+	return $new_network_id;
 }
 
 /**
@@ -702,8 +698,7 @@ function move_site( $site_id, $new_network_id ) {
 function network_options_list() {
 	return apply_filters( 'network_options_list', array(
 		'siteurl',
-		'home',
-		'fileupload_url'
+		'home'
 	) );
 }
 
@@ -728,172 +723,3 @@ function network_options_to_copy() {
 		'welcome_email'         => __( 'Content of welcome email'               , 'wp-multi-network' )
 	) );
 }
-
-/**
- *
- * Return array of networks for which user is super admin, or FALSE if none
- *
- * @since 1.3
- * @return array | FALSE
- */
-function user_has_networks( $user_id = 0 ) {
-	global $wpdb;
-
-	// Use current user
-	if ( empty( $user_id ) ) {
-		global $current_user;
-
-		$user_id    = $current_user->ID;
-		$user_login = $current_user->user_login;
-
-	// Use passed user ID
-	} else {
-		$user_id    = (int) $user_id;
-		$user_info  = get_userdata( $user_id );
-		$user_login = $user_info->user_login;
-	}
-
-	// If multisite, get some site meta
-	if ( is_multisite() ) {
-
-		// Get the network admins
-		$network_admin_records = $wpdb->get_results( $wpdb->prepare( "SELECT site_id, meta_value FROM {$wpdb->sitemeta} WHERE meta_key = %s", 'site_admins' ) );
-
-		// Setup the networks array
-		$my_networks = array();
-
-		foreach( (array) $network_admin_records as $network ) {
-			$admins = maybe_unserialize( $network->meta_value );
-			if ( in_array( $user_login, $admins ) ) {
-				$my_networks[] = (int) $network->site_id;
-			}
-		}
-
-	// If not multisite, use existing site
-	} else {
-		$my_networks = array();
-	}
-
-	// If there are no networks, return false
-	if ( empty( $my_networks ) ) {
-		$my_networks = false;
-	}
-
-	return apply_filters( 'networks_user_is_network_admin', $my_networks, $user_id );
-}
-
-if ( ! function_exists( 'wp_get_main_network' ) ) :
-/**
- * Get the main network
- *
- * Uses the same logic as {@see is_main_network}, but returns the network object
- * instead.
- *
- * @return stdClass|null
- */
-function wp_get_main_network() {
-
-	// Bail if not multisite
-	if ( ! is_multisite() ) {
-		return null;
-	}
-
-	// Return main network ID
-	return wp_get_network( get_main_network_id() );
-}
-endif;
-
-if ( ! function_exists( 'get_network_option' ) ) :
-/**
- * Get an option from a given network
- *
- * Switches to the specified network internally to operate on it.
- *
- * @param int $network_id ID of network.
- * @param string $key Option key
- * @param mixed $default Default value if option doesn't exist
- * @return mixed Value set for the option if it exists, `$default` if it doesn't. `WP_Error` instance if invalid network ID is passed.
- */
-function get_network_option( $network_id, $key, $default = false ) {
-	if ( ! switch_to_network( $network_id, true ) ) {
-		return new WP_Error( 'wpmn.network_missing', __( 'Network does not exist', 'wp-multi-network' ), array( 'status' => 400 ) );
-	}
-
-	$result = get_site_option( $key, $default );
-
-	restore_current_network();
-
-	return $result;
-}
-endif;
-
-if ( ! function_exists( 'add_network_option' ) ) :
-/**
- * Add an option from a given network
- *
- * Switches to the specified network internally to operate on it.
- *
- * @param int $network_id ID of network.
- * @param string $key Option key.
- * @param mixed $value Option value, can be anything.
- * @return boolean|WP_Error True if the option is added, false if not addedd. `WP_Error` instance if invalid network ID is passed.
- */
-function add_network_option( $network_id, $key, $value ) {
-	if ( ! switch_to_network( $network_id, true ) ) {
-		return new WP_Error( 'wpmn.network_missing', __( 'Network does not exist', 'wp-multi-network' ), array( 'status' => 400 ) );
-	}
-
-	$result = add_site_option( $key, $value );
-
-	restore_current_network();
-
-	return $result;
-}
-endif;
-
-if ( ! function_exists( 'update_network_option' ) ) :
-/**
- * Update an option from a given network
- *
- * Switches to the specified network internally to operate on it.
- *
- * @param int $network_id ID of network.
- * @param string $key Option key.
- * @param mixed $value Option value, can be anything.
- * @return boolean|WP_Error True if the option is updated, false if not updated. `WP_Error` instance if invalid network ID is passed.
- */
-function update_network_option( $network_id, $key, $value ) {
-	if ( ! switch_to_network( $network_id, true ) ) {
-		return new WP_Error( 'wpmn.network_missing', __( 'Network does not exist', 'wp-multi-network' ), array( 'status' => 400 ) );
-	}
-
-	$result = update_site_option( $key, $value );
-
-	restore_current_network();
-
-	return $result;
-}
-endif;
-
-if ( ! function_exists( 'delete_network_option' ) ) :
-/**
- * Delete an option from a given network
- *
- * Switches to the specified network internally to operate on it.
- *
- * @param int $network_id ID of network.
- * @param string $key Option key.
- * @return boolean|WP_Error True if the option is deleted, false if not deleted. `WP_Error` instance if invalid network ID is passed.
- */
-function delete_network_option( $network_id, $key ) {
-	if ( ! switch_to_network( $network_id, true ) ) {
-		return new WP_Error( 'wpmn.network_missing', __( 'Network does not exist', 'wp-multi-network' ), array( 'status' => 400 ) );
-	}
-
-	$result = delete_site_option( $key );
-
-	restore_current_network();
-
-	return $result;
-}
-endif;

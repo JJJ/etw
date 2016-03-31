@@ -3,7 +3,7 @@
 /**
  * Metaboxes related to moving a site to a different network
  *
- * @package Networks/Metaboxes/Site/Move
+ * @package Plugins/Networks/Metaboxes/Site/Move
  */
 
 // Exit if accessed directly
@@ -29,20 +29,24 @@ function wpmn_move_site_list_metabox( $site = null ) {
 			<th><?php echo esc_html( get_blog_option( $site->blog_id, 'blogname' ) ); ?></th>
 			<td>
 				<select name="to" id="to">
-
 					<option value="0">
 						<?php esc_html_e( '&mdash; No Network &mdash;', 'wp-multi-network' ); ?>
-					</option>
+					</option><?php
 
-					<?php foreach ( $networks as $new_network ) : ?>
+					// Loop through networks
+					foreach ( $networks as $new_network ) :
 
-						<option value="<?php echo esc_attr( $new_network->id ); ?>" <?php selected( $site->site_id, $new_network->id ); ?>>
-							<?php echo esc_html( $new_network->domain ); ?>
-						</option>
+						// Option value is network ID
+						?><option value="<?php echo esc_attr( $new_network->id ); ?>" <?php selected( $site->site_id, $new_network->id ); ?>><?php
 
-					<?php endforeach; ?>
+						// Include scheme, domain, & path
+						echo wp_get_scheme() . esc_html( $new_network->domain . '/' . ltrim( $new_network->path, '/' ) );
 
-				</select>
+						?></option><?php
+
+					endforeach;
+
+				?></select>
 			</td>
 		</tr>
 	</table>
