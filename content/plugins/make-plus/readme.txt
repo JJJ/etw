@@ -2,9 +2,9 @@
 Contributors: thethemefoundry, dstrojny, jupiterwise, scottrrollo, tollmanz
 Donate link: https://thethemefoundry.com
 Tags: woocommerce, sidebars, widgets, customizer, fonts, typekit, demo content, page builder
-Requires at least: 4.0
-Tested up to: 4.3.1
-Stable tag: 1.6.5
+Requires at least: 4.2
+Tested up to: 4.4.0
+Stable tag: 1.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,6 +31,16 @@ Make gives you the flexibility to build the site that you want. Make Plus makes 
 For more information, please see the [Make Plus support page](https://thethemefoundry.com/docs/make-docs/).
 
 == Changelog ==
+
+= 1.6.6 =
+
+* New filter: `ttfmp_post_list_post_title_element` modifies the wrapper element for titles in Posts List items.
+* Bug fix: Not all necessary weights were included in the Google font URL in some situations.
+* Bug fix: "Ghost" widget areas were occasionally appearing on the Widgets screen after their associated Columns section had been deleted.
+* Bug fix: Choosing a Quick Start template on a blank page that was already published caused the page to be duplicated.
+* Bug fix: Incorrect button styles on individual columns that were converted to widget areas.
+* Updated: new Dutch translation.
+* Changed: Make Plus now only supports WordPress 4.2 and higher.
 
 = 1.6.5 =
 
@@ -245,6 +255,6 @@ For more information, please see the [Make Plus support page](https://thethemefo
 
 == Upgrade Notice ==
 
-= 1.6.5 =
+= 1.6.6 =
 
-Enhanced font weight controls, bug fixes.
+New `ttfmp_post_list_post_title_element` filter, new Dutch translation, several bug fixes.

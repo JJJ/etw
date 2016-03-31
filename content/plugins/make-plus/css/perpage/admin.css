@@ -1,0 +1,36 @@
+/*---------------------------------------------------------
+ Per-page (per-page.css)
+-------------------------------------------------------- */
+
+.ttfmp-perpage-options li {
+	padding: 0 0 2px;
+}
+
+.ttfmp-perpage-options li.ttfmp-perpage-header {
+	padding: 14px 0 6px;
+	font-weight: bold;
+}
+
+.ttfmp-perpage-options li.ttfmp-perpage-header.first {
+	padding-top: 0;
+}
+
+.ttfmake-builder-active .default-only,
+.ttfmake-default-active .builder-only {
+	display: none;
+	/*reset*/
+}
+
+.ttfmp-perpage-options .override-label {
+	font: 16px/1 Dashicons;
+}
+
+.ttfmp-perpage-options .override-label.active:after {
+	color: #0073aa;
+	content: "\f225";
+}
+
+.ttfmp-perpage-options .override-label.inactive:after {
+	color: #666;
+	content: "\f103";
+}

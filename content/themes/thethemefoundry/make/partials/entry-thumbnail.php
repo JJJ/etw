@@ -10,8 +10,8 @@ if ( is_attachment() ) :
 	$thumbnail_size = 'full';
 	$thumbnail_html = '<a href="' . wp_get_attachment_url() . '">' . wp_get_attachment_image( $thumbnail_id, $thumbnail_size ) . '</a>';
 else:
-	$thumb_key    = 'layout-' . ttfmake_get_view() . '-featured-images';
-	$thumb_option = ttfmake_sanitize_choice( get_theme_mod( $thumb_key, ttfmake_get_default( $thumb_key ) ), $thumb_key );
+	$thumb_key    = 'layout-' . make_get_current_view() . '-featured-images';
+	$thumb_option = make_get_thememod_value( $thumb_key );
 	$thumbnail_id = get_post_thumbnail_id();
 
 	if ( 'post-header' === $thumb_option ) :
@@ -31,7 +31,7 @@ endif;
 	<?php if ( ! is_singular() ) : ?></a><?php endif; ?>
 	<?php if ( is_singular() && has_excerpt( $thumbnail_id ) ) : ?>
 	<figcaption class="entry-thumbnail-caption">
-		<?php echo ttfmake_sanitize_text( get_post( $thumbnail_id )->post_excerpt ); ?>
+		<?php echo Make()->thememod()->sanitize_text( get_post( $thumbnail_id )->post_excerpt ); ?>
 	</figcaption>
 	<?php endif; ?>
 </figure>

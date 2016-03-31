@@ -1,0 +1,132 @@
+/*---------------------------------------------------------
+ EDD (edd.scss)
+-------------------------------------------------------- */
+
+.builder-section-downloads .builder-section-content {
+	max-width: 1024px;
+	margin: 0 auto;
+	padding: 0 32px;
+	padding: 0 3.2rem;
+}
+
+.builder-section-downloads.has-background {
+	padding: 52px 0 44px;
+	padding: 5.2rem 0 4.4rem;
+}
+
+.builder-edd-downloads-section-title {
+	position: relative;
+	z-index: 2;
+	max-width: 1024px;
+	margin-right: auto;
+	margin-left: auto;
+	padding: 0 32px;
+	padding: 0 3.2rem;
+}
+
+.edd-download {
+	margin: 66px 0 88px;
+	margin: 6.6rem 0 8.8rem;
+	padding-bottom: 22px;
+	padding-bottom: 2.2rem;
+	border-bottom: 1px solid #eaecee;
+}
+
+.edd_download_inner {
+	margin: 0;
+	margin-bottom: 44px;
+	padding: 0;
+}
+
+.edd_download_title {
+	margin-bottom: 6px;
+	font-size: 17px;
+}
+
+.edd-submit.button.blue,
+#edd-purchase-button,
+.edd-submit,
+input[type=submit].edd-submit,
+#edd_checkout_cart a.edd-cart-saving-button {
+	padding: 10px 12px;
+	border: 0;
+	color: #535353;
+	background: #eaecee;
+	font-size: 17px;
+	font-weight: bold;
+}
+
+.edd-submit.button.blue.active,
+.edd-submit.button.blue:focus,
+.edd-submit.button.blue:hover {
+	color: #535353;
+	background: #eaecee;
+}
+
+.edd_price {
+	color: #289a00;
+	text-decoration: underline;
+}
+
+.edd-cart-added-alert {
+	color: #289a00;
+}
+
+#edd_final_total_wrap {
+	border: 0 !important;
+}
+
+#edd_checkout_form_wrap #edd_final_total_wrap {
+	background-color: #eaecee;
+}
+
+#edd_checkout_cart .edd_cart_header_row th {
+	background: none;
+}
+
+#edd_checkout_cart td,
+#edd_checkout_cart th,
+#edd_checkout_form_wrap fieldset {
+	border-color: #eaecee;
+}
+
+#edd_download_pagination {
+	display: none;
+}
+
+.edd_download_columns_1 .edd_download,
+.edd_download_columns_2 .edd_download,
+.edd_download_columns_3 .edd_download,
+.edd_download_columns_4 .edd_download {
+	width: 100% !important;
+	margin-right: 0;
+}
+
+@media screen and (min-width: 800px) {
+	.edd_download_columns_2 .edd_download {
+		width: 48.33333% !important;
+		margin-right: 3.33333%;
+	}
+
+	.edd_download_columns_2 .edd_download.last {
+		margin-right: 0;
+	}
+
+	.edd_download_columns_3 .edd_download {
+		width: 31.11111% !important;
+		margin-right: 3.33333%;
+	}
+
+	.edd_download_columns_3 .edd_download.last {
+		margin-right: 0;
+	}
+
+	.edd_download_columns_4 .edd_download {
+		width: 22.5% !important;
+		margin-right: 3.33333%;
+	}
+
+	.edd_download_columns_4 .edd_download.last {
+		margin-right: 0;
+	}
+}

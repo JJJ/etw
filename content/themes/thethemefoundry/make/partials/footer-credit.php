@@ -3,8 +3,6 @@
  * @package Make
  */
 
-$footer_text   = get_theme_mod( 'footer-text', false );
-
 /**
  * Allow toggling of the footer credit.
  *
@@ -15,9 +13,9 @@ $footer_text   = get_theme_mod( 'footer-text', false );
 $footer_credit = apply_filters( 'make_show_footer_credit', true );
 ?>
 
-<?php if ( $footer_text || ttfmake_is_preview() ) : ?>
+<?php if ( make_get_thememod_value( 'footer-text' ) || is_customize_preview() ) : ?>
 <div class="footer-text">
-	<?php echo ttfmake_sanitize_text( $footer_text ); ?>
+	<?php echo make_get_thememod_value( 'footer-text' ); ?>
 </div>
 <?php endif; ?>
 
