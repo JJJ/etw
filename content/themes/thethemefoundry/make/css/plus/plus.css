@@ -1,3 +1,18 @@
+a.ttfmake-customize-plus {
+	display: inline-block;
+	position: relative;
+	top: -1px;
+	margin-left: 8px;
+	padding: 3px 6px !important;
+	line-height: 1.5 !important;
+	font-size: 9px !important;
+	color: #ffffff !important;
+	background-color: #d54e21;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	-webkit-font-smoothing: subpixel-antialiased !important;
+	margin-left: 0;
+}
 #ttfmake-plus-metabox h3:after,
 #customize-control-ttfmake_footer-whitelabel-heading span:after,
 #customize-control-ttfmake_font-typekit-font-heading span:after,
@@ -5,7 +20,6 @@
 .make-plus-products .ttfmake-menu-list-item-link-icon-wrapper:before,
 .ttfmp-import-message strong:after,
 #accordion-section-ttfmake_stylekit h3:before,
-a.ttfmake-customize-plus,
 #ttfmake-menu-list-item-link-plus h4:after {
 	content: "Plus";
 	position: relative;
@@ -29,14 +43,6 @@ a.ttfmake-customize-plus,
 }
 .edit-text-column-link {
 	right: 0;
-}
-a.ttfmake-customize-plus {
-	margin-left: 0;
-}
-#accordion-section-ttfmake_stylekit h3:before {
-	float: right;
-	top: 2px;
-	margin-right: 30px;
 }
 .ttfmp-import-message strong {
 	display: inline-block;

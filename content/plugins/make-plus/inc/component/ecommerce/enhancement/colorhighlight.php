@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight
  *
- * @since 1.7.0.
+ * Add a Highlight color to Make's color settings. Used by the EDD component.
+ *
+ * @since 1.2.0.
+ * @since 1.7.0. Moved to a separate class.
  */
 final class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
@@ -80,20 +83,17 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight extends MAKE
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_settings_thememod_loaded
+	 *
 	 * @param MAKE_Settings_ThemeModInterface $settings
 	 *
 	 * @return bool
 	 */
 	public function add_setting( MAKE_Settings_ThemeModInterface $settings ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_loaded' !== current_action() ) {
-			return false;
-		}
-
 		return $settings->add_settings( array(
 			$this->setting_id => array(
 				'default'  => '#289a00',
-				'sanitize' => array( $settings, 'maybe_hash_hex_color' ),
+				'sanitize' => 'maybe_hash_hex_color',
 				'is_style' => true,
 			),
 		) );
@@ -104,16 +104,13 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight extends MAKE
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function add_control( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// Highlight Color control
 		$section_id = 'make_color';
 
@@ -127,7 +124,7 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight extends MAKE
 		) );
 
 		// Control
-		$control_id = 'make_' . $setting_id;
+		$control_id = 'ttfmake_' . $setting_id;
 		$args = array(
 			'settings'     => $setting_id,
 			'section'      => $section_id,
@@ -169,8 +166,8 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight extends MAKE
 		$args['description'] = apply_filters( 'makeplus_ecommerce_colorhighlight_description', $args['description'] );
 
 		// Position control right after the Detail Color, if possible
-		if ( $wp_customize->get_control( 'make_color-detail' ) instanceof WP_Customize_Control ) {
-			$args['priority'] = $wp_customize->get_control( 'make_color-detail' )->priority + 1;
+		if ( $wp_customize->get_control( 'ttfmake_color-detail' ) instanceof WP_Customize_Control ) {
+			$args['priority'] = $wp_customize->get_control( 'ttfmake_color-detail' )->priority + 1;
 		}
 
 		// Add the control
@@ -192,14 +189,11 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_ColorHighlight extends MAKE
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function convert_old_setting() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		// Bail if this conversion process has already been run.
 		if ( true === get_theme_mod( 'makeplus-ecommerce-colorhighlight-converted' ) ) {
 			return;

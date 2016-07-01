@@ -12,6 +12,16 @@
 	var api = wp.customize,
 		Make;
 
+	/**
+	 * MakePreview
+	 *
+	 * Starts with the following data properties added via script localization:
+	 * - ajaxurl
+	 * - webfonturl
+	 * - fontSettings
+	 * - styleSettings
+	 */
+
 	// Shared functionality
 	Make = $.extend(MakePreview, {
 		cache: {
@@ -23,6 +33,7 @@
 		sendRequest: function(data, callback) {
 			var self = this;
 
+			// Allow additional data to be added to Ajax requests
 			if ('undefined' !== typeof data.action && 'object' === typeof self.cache.ajax[data.action]) {
 				data = $.extend(data, self.cache.ajax[data.action]);
 			}

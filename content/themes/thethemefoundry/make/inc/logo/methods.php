@@ -11,7 +11,7 @@
  *
  * @since 1.7.0.
  */
-class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsInterface, MAKE_Util_HookInterface {
+final class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsInterface, MAKE_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -21,6 +21,7 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 	 */
 	protected $dependencies = array(
 		'thememod' => 'MAKE_Settings_ThemeModInterface',
+		'sanitize' => 'MAKE_Settings_SanitizeInterface',
 		'legacy'   => 'MAKE_Logo_LegacyInterface',
 	);
 
@@ -89,7 +90,7 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 		add_action( 'make_style_loaded', array( $this, 'set_logo_max_width' ) );
 
 		// Logo conversion
-		add_action( 'after_setup_theme', array( $this, 'convert_old_logo_settings' ) );
+		add_action( 'after_setup_theme', array( $this, 'convert_old_logo_settings' ), 30 );
 
 		// Hooking has occurred.
 		self::$hooked = true;
@@ -172,7 +173,7 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 				'ttfmake_custom_logo_max_width',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make-plus' ),
+					esc_html__( 'Use the %s hook instead.', 'make' ),
 					'<code>make_logo_max_width</code>'
 				)
 			);
@@ -183,7 +184,7 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 			 * @since 1.0.0.
 			 * @deprecated 1.7.0.
 			 *
-			 * @param string|int    $width    The maximum width, in pixels.
+			 * @param int $width    The maximum width, in pixels.
 			 */
 			$width = apply_filters( 'ttfmake_custom_logo_max_width', $width );
 		}
@@ -193,7 +194,7 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string|int    $width    The maximum width, in pixels.
+		 * @param int $width    The maximum width, in pixels.
 		 */
 		return apply_filters( 'make_logo_max_width', $width );
 	}
@@ -203,14 +204,13 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_style_loaded
+	 *
 	 * @param MAKE_Style_ManagerInterface $style
+	 *
+	 * @return void
 	 */
 	public function set_logo_max_width( MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_style_loaded' !== current_action() ) {
-			return;
-		}
-
 		$max_width = absint( $this->get_logo_max_width() );
 
 		if ( $this->custom_logo_is_supported() && $this->has_logo() && $this->default_max_width !== $max_width ) {
@@ -218,6 +218,7 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 				'selectors' => 'img.custom-logo',
 				'declarations' => array(
 					'max-width' => "{$max_width}px",
+					'width'     => '100%',
 				),
 			) );
 		}
@@ -226,20 +227,17 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 	/**
 	 * Convert the theme's legacy custom logo mods to the Core version.
 	 *
-	 * Since Core relies on one attachment for all sizes of the logo, this converted looks for a retina-sized
+	 * Since Core relies on one attachment for all sizes of the logo, this converter looks for a retina-sized
 	 * logo first, and falls back on the regular. This helps to ensure that the largest image size becomes
 	 * the custom logo attachment.
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function convert_old_logo_settings() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		// Don't bother if the Core custom logo isn't supported
 		if ( ! $this->custom_logo_is_supported() ) {
 			return;
@@ -253,9 +251,9 @@ class MAKE_Logo_Methods extends MAKE_Util_Modules implements MAKE_Logo_MethodsIn
 		$logo_value = '';
 
 		if ( false !== $retina = get_theme_mod( 'logo-retina', false ) ) {
-			$logo_value = $this->thememod()->sanitize_image( $retina, true );
+			$logo_value = $this->sanitize()->sanitize_image( $retina, true );
 		} else if ( false !== $regular = get_theme_mod( 'logo-regular', false ) ) {
-			$logo_value = $this->thememod()->sanitize_image( $regular, true );
+			$logo_value = $this->sanitize()->sanitize_image( $regular, true );
 		}
 
 		if ( is_int( $logo_value ) && $logo_value > 0 ) {

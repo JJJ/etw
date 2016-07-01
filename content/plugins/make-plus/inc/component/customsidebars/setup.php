@@ -6,9 +6,11 @@
 /**
  * Class MAKEPLUS_Component_Sidebar_Manager
  *
+ * Enhanced sidebar layout options when additional sidebars are available.
+ *
  * @since 1.7.0.
  */
-class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+final class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -78,16 +80,13 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_choices_loaded
+	 *
 	 * @param MAKE_Choices_ManagerInterface $choices
 	 *
 	 * @return bool
 	 */
 	public function add_sidebar_choices( MAKE_Choices_ManagerInterface $choices ) {
-		// Only run this in the proper hook context.
-		if ( 'make_choices_loaded' !== current_action() ) {
-			return false;
-		}
-
 		$sidebars = $this->sidebars()->get_sidebars();
 		if ( empty( $sidebars ) ) {
 			return false;
@@ -124,16 +123,13 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_settings_thememod_loaded
+	 *
 	 * @param MAKE_Settings_ThemeModInterface $settings
 	 *
 	 * @return bool
 	 */
 	public function convert_layout_settings( MAKE_Settings_ThemeModInterface $settings ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_loaded' !== current_action() ) {
-			return false;
-		}
-
 		// Bail if the choice sets haven't been added
 		if ( ! $settings->choices()->choice_set_exists( 'makeplus-sidebars-left' ) || ! $settings->choices()->choice_set_exists( 'makeplus-sidebars-right' ) ) {
 			return false;
@@ -175,7 +171,7 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 			$value = 1;
 		}
 
-		return $this->theme()->thememod()->sanitize_choice( $value, $setting_id );
+		return $this->theme()->sanitize()->sanitize_choice( $value, $setting_id );
 	}
 
 	/**
@@ -183,14 +179,13 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
+	 *
+	 * @return void
 	 */
 	public function convert_layout_controls( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// Bail if the choice set hasn't been added
 		if ( ! $this->theme()->choices()->choice_set_exists( 'makeplus-sidebars-left' ) || ! $this->theme()->choices()->choice_set_exists( 'makeplus-sidebars-right' ) ) {
 			return;
@@ -201,7 +196,7 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 		foreach ( $views as $view ) {
 			foreach ( array( 'left', 'right' ) as $location ) {
 				$setting_id = 'layout-' . $view . '-sidebar-' . $location;
-				$control = $wp_customize->get_control( 'make_' . $setting_id );
+				$control = $wp_customize->get_control( 'ttfmake_' . $setting_id );
 
 				if ( $control instanceof WP_Customize_Control ) {
 					$control->label   = ( 'left' === $location ) ? __( 'Left sidebar', 'make-plus' ) : __( 'Right sidebar', 'make-plus' );
@@ -213,20 +208,17 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 	}
 
 	/**
-	 * Modify the output of the has_sidebar test to account for sidebar IDs.
+	 * Modify the output of the has_sidebar test to account for sidebar ID strings.
 	 *
 	 * @since 1.7.0.
+	 *
+	 * @hooked filter make_has_sidebar
 	 *
 	 * @param mixed $has_sidebar
 	 *
 	 * @return bool
 	 */
 	public function convert_sidebar_test_result( $has_sidebar ) {
-		// Only run this in the proper hook context.
-		if ( 'make_has_sidebar' !== current_filter() ) {
-			return $has_sidebar;
-		}
-
 		if ( ! $has_sidebar ) {
 			return false;
 		} else {
@@ -239,16 +231,14 @@ class MAKEPLUS_Component_CustomSidebars_Setup extends MAKEPLUS_Util_Modules impl
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter make_sidebar_left
+	 * @hooked filter make_sidebar_right
+	 *
 	 * @param string $sidebar_id    The ID of the current sidebar.
 	 *
 	 * @return string
 	 */
 	public function display_custom_sidebar( $sidebar_id ) {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_filter(), array( 'make_sidebar_left', 'make_sidebar_right' ) ) ) {
-			return $sidebar_id;
-		}
-
 		$view = $this->theme()->view()->get_current_view();
 		$location = str_replace( 'make_sidebar_', '', current_filter() );
 		$sidebar_choice = $this->theme()->thememod()->get_value( 'layout-' . $view . '-sidebar-' . $location );

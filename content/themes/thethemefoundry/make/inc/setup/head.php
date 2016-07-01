@@ -5,10 +5,12 @@
 
 /**
  * Class MAKE_Setup_Head
+ *
+ * Set up the contents of the document head.
  * 
  * @since 1.7.0.
  */
-class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterface, MAKE_Util_HookInterface {
+final class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterface, MAKE_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -17,6 +19,7 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 * @var array
 	 */
 	protected $dependencies = array(
+		'error'         => 'MAKE_Error_CollectorInterface',
 		'compatibility' => 'MAKE_Compatibility_MethodsInterface',
 		'scripts'       => 'MAKE_Setup_ScriptsInterface',
 	);
@@ -73,13 +76,11 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 *
 	 * @since 1.0.0.
 	 *
+	 * @hooked action wp_head
+	 *
 	 * @return void
 	 */
 	public function js_detection() {
-		// Only run this in the proper hook context.
-		if ( 'wp_head' !== current_action() ) {
-			return;
-		}
 		?>
 		<script type="text/javascript">
 			/* <![CDATA[ */
@@ -94,14 +95,11 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_head
+	 *
 	 * @return void
 	 */
 	public function dns_prefetch() {
-		// Only run this in the proper hook context.
-		if ( 'wp_head' !== current_action() ) {
-			return;
-		}
-		
 		// Google fonts
 		if ( ! is_customize_preview() && $this->scripts()->get_google_url() ) : ?>
 			<link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -113,13 +111,11 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 *
 	 * @since 1.0.0.
 	 *
+	 * @hooked action wp_head
+	 *
 	 * @return void
 	 */
 	public function meta_charset() {
-		// Only run this in the proper hook context.
-		if ( 'wp_head' !== current_action() ) {
-			return;
-		}
 		?>
 		<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<?php
@@ -130,13 +126,11 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 *
 	 * @since 1.0.0.
 	 *
+	 * @hooked action wp_head
+	 *
 	 * @return void
 	 */
 	public function meta_viewport() {
-		// Only run this in the proper hook context.
-		if ( 'wp_head' !== current_action() ) {
-			return;
-		}
 		?>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<?php
@@ -148,14 +142,11 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 * @since 1.0.0.
 	 * @since 1.7.0. Added conditional wrapper.
 	 *
+	 * @hooked action wp_head
+	 *
 	 * @return void
 	 */
 	public function pingback() {
-		// Only run this in the proper hook context.
-		if ( 'wp_head' !== current_action() ) {
-			return;
-		}
-
 		if ( is_singular() && pings_open( get_queried_object() ) ) : ?>
 			<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<?php endif;
@@ -169,16 +160,13 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 *
 	 * @since 1.6.2.
 	 *
+	 * @hooked action wp_head
+	 *
 	 * @return void
 	 */
 	public function backcompat_icons() {
-		// Only run this in the proper hook context.
-		if ( 'wp_head' !== current_action() ) {
-			return;
-		}
-
 		// Core Site Icon option overrides Make's deprecated Favicon and Apple Touch Icon settings
-		if ( false === get_option( 'site_icon', false ) ) :
+		if ( ! get_option( 'site_icon' ) ) :
 			// Favicon
 			$logo_favicon = make_get_thememod_value( 'logo-favicon' );
 			if ( ! empty( $logo_favicon ) ) :
@@ -200,6 +188,17 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 				?>
 				<link rel="apple-touch-icon" href="<?php echo esc_url( $logo_apple_touch ); ?>" />
 			<?php endif;
+
+			// Add a Make Notice if old settings are still in use
+			if ( ! empty( $logo_favicon ) || ! empty( $logo_apple_touch ) ) :
+				$this->error()->add_error(
+					'make_deprecated_site_icon',
+					wp_kses(
+						__( 'This site is using the old Favicon and Apple Touch Icon settings, which were deprecated in version 1.6.2. Go to <em>General &rarr; Site Identity</em> in the Customizer to switch to the new, improved Site Icon setting.', 'make' ),
+						array( 'em' => true )
+					)
+				);
+			endif;
 		endif;
 	}
 
@@ -211,16 +210,13 @@ class MAKE_Setup_Head extends MAKE_Util_Modules implements MAKE_Setup_HeadInterf
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_deprecated_function_run
+	 *
 	 * @param string $function
 	 *
 	 * @return void
 	 */
 	public function backcompat_head_actions( $function ) {
-		// Only run this in the proper hook context.
-		if ( 'make_deprecated_function_run' !== current_action() ) {
-			return;
-		}
-
 		// Don't bother if this is happening during wp_head already.
 		if ( doing_action( 'wp_head' ) || did_action( 'wp_head' ) ) {
 			return;

@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Admin_Notice
  *
+ * Register and display notices in the Admin interface.
+ *
  * @since 1.6.0.
+ * @since 1.7.0. Changed class name from TTFMP_Admin_Notice
  */
 final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEPLUS_Admin_NoticeInterface, MAKEPLUS_Util_HookInterface, MAKEPLUS_Util_LoadInterface {
 	/**
@@ -130,6 +133,9 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	/**
 	 * Register an admin notice.
 	 *
+	 * A registered notice will be displayed in the notice section of the UI, beneath the page title,
+	 * if the conditions specified in the notice arguments are met.
+	 *
 	 * @since 1.6.0.
 	 *
 	 * @param string    $id         A unique ID string for the admin notice.
@@ -138,7 +144,7 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	 *
 	 * @return bool                 True if the admin notice was successfully registered.
 	 */
-	public function register_admin_notice( $id, $message, $args = array() ) {
+	public function register_admin_notice( $id, $message, array $args = array() ) {
 		// Sanitize ID
 		$id = sanitize_key( $id );
 
@@ -167,6 +173,9 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	/**
 	 * Register a one time admin notice.
 	 *
+	 * One time notices are specific to a user and are stored in the database as a transient for display
+	 * during a later page load. Once one has been displayed, it is removed from the database.
+	 *
 	 * @since 1.7.0.
 	 *
 	 * @param string       $message    The content of the admin notice.
@@ -175,7 +184,7 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	 *
 	 * @return bool                    True if the admin notice was successfully registered.
 	 */
-	public function register_one_time_admin_notice( $message, WP_User $user = null, $args = array() ) {
+	public function register_one_time_admin_notice( $message, WP_User $user = null, array $args = array() ) {
 		// Prep args
 		$defaults = array(
 			'dismiss' => true,   // Whether notice is dismissible
@@ -251,12 +260,13 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string|object    $screen    The screen to display the notices on.
-	 * @return array                       Array of notices to display on the specified screen.
+	 * @param  WP_Screen|null $screen    The screen to display the notices on.
+	 *
+	 * @return array                     Array of notices to display on the specified screen.
 	 */
-	private function get_notices( $screen = '' ) {
-		if ( ! $screen ) {
-			return array();
+	private function get_notices( WP_Screen $screen = null ) {
+		if ( is_null( $screen ) ) {
+			$screen = get_current_screen();
 		}
 
 		// Get the array of notices that the current user has already dismissed
@@ -270,7 +280,7 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 				||
 				! current_user_can( $args['cap'] )
 				||
-				in_array( $id, (array) $dismissed )
+				in_array( $id, $dismissed )
 			) {
 				unset( $notices[ $id ] );
 			}
@@ -360,20 +370,17 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action admin_notices
+	 *
 	 * @return void
 	 */
 	public function admin_notices() {
-		// Only run this in the proper hook context.
-		if ( 'admin_notices' !== current_action() ) {
-			return;
-		}
-
 		// Make sure files are loaded first.
 		if ( ! $this->is_loaded() ) {
 			$this->load();
 		}
 
-		$current_notices = $this->get_notices( get_current_screen() );
+		$current_notices = $this->get_notices();
 
 		if ( ! empty( $current_notices ) ) {
 			$this->render_notices( $current_notices );
@@ -433,13 +440,11 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action admin_print_footer_scripts
+	 *
 	 * @return void
 	 */
 	public function print_admin_notices_js() {
-		// Only run this in the proper hook context.
-		if ( 'admin_print_footer_scripts' !== current_action() ) {
-			return;
-		}
 		?>
 		<script type="application/javascript">
 			/* Make admin notices */
@@ -473,10 +478,12 @@ final class MAKEPLUS_Admin_Notice extends MAKEPLUS_Util_Modules implements MAKEP
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action wp_ajax_makeplus_hide_notice
+	 *
 	 * @return void
 	 */
 	public function handle_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_makeplus_hide_notice' !== current_action() ) {
 			return;
 		}

@@ -89,14 +89,13 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  array    $settings         Array of setting definitions to add.
-	 * @param  array    $default_props    Array of default properties for each setting definition.
-	 * @param  bool     $overwrite        True overwrites an existing setting definition.
+	 * @param  array $settings         Array of setting definitions to add.
+	 * @param  array $default_props    Array of default properties for each setting definition.
+	 * @param  bool  $overwrite        True overwrites an existing setting definition.
 	 *
-	 * @return bool                       True if all settings were added or updated, false if there was an error.
+	 * @return bool                    True if all settings were added or updated, false if there was an error.
 	 */
-	public function add_settings( $settings, $default_props = array(), $overwrite = false ) {
-		$settings = (array) $settings;
+	public function add_settings( array $settings, array $default_props = array(), $overwrite = false ) {
 		$existing_settings = $this->settings;
 		$new_settings = array();
 		$return = true;
@@ -143,9 +142,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  array    $properties    The array of properties to check.
+	 * @param array $properties    The array of properties to check.
 	 *
-	 * @return bool                    True if all required properties are present.
+	 * @return bool                True if all required properties are present.
 	 */
 	protected function has_required_properties( $properties ) {
 		$properties = (array) $properties;
@@ -164,13 +163,13 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	}
 
 	/**
-	 * Remove setting definitions from the collection.
+	 * Remove one or more setting definitions from the collection.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  array|string    $setting_ids    The array of settings to remove, or 'all'.
+	 * @param array|string $setting_ids    The array of settings to remove, or 'all'.
 	 *
-	 * @return bool                            True if all setting definitions were successfully removed, false if there was an error.
+	 * @return bool                        True if all setting definitions were successfully removed, false if there was an error.
 	 */
 	public function remove_settings( $setting_ids ) {
 		if ( 'all' === $setting_ids ) {
@@ -200,9 +199,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $property    The property to get, or 'all'.
+	 * @param  string $property    The property to get, or 'all'.
 	 *
-	 * @return array                  An array of setting definitions and their specified properties.
+	 * @return array               An array of setting definitions and their specified properties.
 	 */
 	public function get_settings( $property = 'all' ) {
 		if ( 'all' === $property ) {
@@ -266,10 +265,10 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The ID of the setting to set.
-	 * @param  mixed     $value         The value to assign to the setting.
+	 * @param string $setting_id    The ID of the setting to set.
+	 * @param mixed  $value         The value to assign to the setting.
 	 *
-	 * @return bool                     True if value was successfully set.
+	 * @return bool                 True if value was successfully set.
 	 */
 	abstract function set_value( $setting_id, $value );
 
@@ -281,9 +280,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The ID of the setting to unset.
+	 * @param string $setting_id    The ID of the setting to unset.
 	 *
-	 * @return bool                     True if the value was successfully unset.
+	 * @return bool                 True if the value was successfully unset.
 	 */
 	abstract function unset_value( $setting_id );
 
@@ -295,9 +294,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The ID of the setting to retrieve.
+	 * @param string $setting_id    The ID of the setting to retrieve.
 	 *
-	 * @return mixed|null               The value of the setting as it is in the database, or undefined if the setting doesn't exist.
+	 * @return mixed|null           The value of the setting as it is in the database, or undefined if the setting doesn't exist.
 	 */
 	abstract function get_raw_value( $setting_id );
 	
@@ -335,9 +334,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string|array    $value         The current value of the setting.
-		 * @param string          $setting_id    The id of the setting.
-		 * @param string          $context       Optional. The context in which a setting needs to be sanitized.
+		 * @param mixed  $value         The current value of the setting.
+		 * @param string $setting_id    The id of the setting.
+		 * @param string $context       Optional. The context in which a setting needs to be sanitized.
 		 */
 		return apply_filters( "make_settings_{$this->type}_current_value", $value, $setting_id, $context );
 	}
@@ -347,7 +346,7 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The ID of the setting to retrieve.
+	 * @param string $setting_id    The ID of the setting to retrieve.
 	 *
 	 * @return mixed|null
 	 */
@@ -364,8 +363,8 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string|array    $default_value    The default value of the setting.
-		 * @param string          $setting_id       The id of the setting.
+		 * @param string|array $default_value    The default value of the setting.
+		 * @param string       $setting_id       The id of the setting.
 		 */
 		return apply_filters( "make_settings_{$this->type}_default_value", $default_value, $setting_id );
 	}
@@ -375,8 +374,8 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string        $setting_id    The ID of the setting to retrieve.
-	 * @param  mixed|null    $value         A value to compare to the default.
+	 * @param  string     $setting_id    The ID of the setting to retrieve.
+	 * @param  mixed|null $value         Optional. A value to compare to the default.
 	 *
 	 * @return bool
 	 */
@@ -392,12 +391,12 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	}
 
 	/**
-	 * Get the name of the callback function used to sanitize a particular setting.
+	 * Get the name of the callback function used to sanitize a particular setting, in a particular context.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The ID of the setting to retrieve.
-	 * @param  string    $context       Optional. The context in which a setting needs to be sanitized.
+	 * @param string $setting_id    The ID of the setting to retrieve.
+	 * @param string $context       Optional. The context in which a setting needs to be sanitized.
 	 *
 	 * @return string|null
 	 */
@@ -419,9 +418,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string|array    $callback      The name of the callback function.
-		 * @param string          $setting_id    The id of the setting.
-		 * @param string          $context       The context in which the setting needs to be sanitized.
+		 * @param string|array $callback      The name of the callback function.
+		 * @param string       $setting_id    The id of the setting.
+		 * @param string       $context       The context in which the setting needs to be sanitized.
 		 */
 		return apply_filters( "make_settings_{$this->type}_sanitize_callback", $callback, $setting_id, $context );
 	}
@@ -433,8 +432,8 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $setting_id
-	 * @param $context
+	 * @param string $setting_id
+	 * @param string $context
 	 *
 	 * @return bool
 	 */
@@ -455,9 +454,9 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  mixed     $value         The value to sanitize.
-	 * @param  string    $setting_id    The ID of the setting to retrieve.
-	 * @param  string    $context       Optional. The context in which a setting needs to be sanitized.
+	 * @param mixed  $value         The value to sanitize.
+	 * @param string $setting_id    The ID of the setting to retrieve.
+	 * @param string $context       Optional. The context in which a setting needs to be sanitized.
 	 *
 	 * @return mixed
 	 */
@@ -476,188 +475,19 @@ abstract class MAKE_Settings_Base extends MAKE_Util_Modules implements MAKE_Sett
 				 *
 				 * @since 1.7.0.
 				 *
-				 * @param array     $value         The array of parameters, initially containing only the value to be sanitized.
-				 * @param string    $callback      The callable that will accept parameters.
-				 * @param string    $setting_id    The id of the setting being sanitized.
+				 * @param array  $value         The array of parameters, initially containing only the value to be sanitized.
+				 * @param string $setting_id    The id of the setting being sanitized.
+				 * @param string $callback      The callable that will accept parameters.
 				 */
-				$prepared_value = apply_filters( "make_settings_{$this->type}_sanitize_callback_parameters", (array) $value, $callback, $setting_id );
+				$prepared_value = apply_filters( "make_settings_{$this->type}_sanitize_callback_parameters", (array) $value, $setting_id, $callback );
 
+				// Run the callback
 				$sanitized_value = call_user_func_array( $callback, $prepared_value );
 			} else {
 				$this->error()->add_error( 'make_settings_callback_not_valid', sprintf( __( 'The sanitize callback (%1$s) for "%2$s" is not valid.', 'make' ), esc_html( print_r( $callback, true ) ), esc_html( $setting_id ) ) );
 			}
 		}
 
-		/**
-		 * Filter: Modify the sanitized value for a particular setting.
-		 *
-		 * @since 1.7.0.
-		 *
-		 * @param string|array    $default_value    The default value of the setting.
-		 * @param string          $setting_id       The id of the setting.
-		 * @param  string         $context          Optional. The context in which a setting needs to be sanitized.
-		 */
-		return apply_filters( "make_settings_{$this->type}_sanitized_value", $sanitized_value, $setting_id, $context );
-	}
-
-	/**
-	 * Sanitize a string to ensure that it is a float number.
-	 *
-	 * @since 1.5.0.
-	 *
-	 * @param  string|float    $value    The value to sanitize.
-	 *
-	 * @return float                     The sanitized value.
-	 */
-	public function sanitize_float( $value ) {
-		return floatval( $value );
-	}
-
-	/**
-	 * Sanitizes a hex color.
-	 *
-	 * This is a copy of the core function sanitize_hex_color().
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  string         $color    The proposed color.
-	 *
-	 * @return string|null              The sanitized color.
-	 */
-	public function sanitize_hex_color( $color ) {
-		if ( '' === $color ) {
-			return '';
-		}
-
-		// 3 or 6 hex digits, or the empty string.
-		if ( preg_match('|^#([A-Fa-f0-9]{3}){1,2}$|', $color ) ) {
-			return $color;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Sanitizes a hex color without a hash. Use sanitize_hex_color() when possible.
-	 *
-	 * This is a copy of the core function sanitize_hex_color_no_hash().
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  string         $color    The proposed color.
-	 *
-	 * @return string|null              The sanitized color.
-	 */
-	public function sanitize_hex_color_no_hash( $color ) {
-		$color = ltrim( $color, '#' );
-
-		if ( '' === $color ) {
-			return '';
-		}
-
-		return $this->sanitize_hex_color( '#' . $color ) ? $color : null;
-	}
-
-	/**
-	 * Ensures that any hex color is properly hashed.
-	 *
-	 * This is a copy of the core function maybe_hash_hex_color().
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  string         $color    The proposed color.
-	 *
-	 * @return string|null              The sanitized color.
-	 */
-	public function maybe_hash_hex_color( $color ) {
-		if ( $unhashed = $this->sanitize_hex_color_no_hash( $color ) ) {
-			return '#' . $unhashed;
-		}
-
-		return $color;
-	}
-
-	/**
-	 * Sanitize the value of an image setting.
-	 *
-	 * If the given value is a URL instead of an attachment ID, this tries to find the URL's associated attachment.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param      $value
-	 * @param bool $raw
-	 *
-	 * @return int|string    The attachment ID, or a sanitized URL if the attachment can't be found.
-	 */
-	public function sanitize_image( $value, $raw = false ) {
-		if ( is_string( $value ) && 0 === strpos( $value, 'http' ) ) {
-			// Value is URL. Try to find the attachment ID.
-			$find_attachment = attachment_url_to_postid( $value );
-			if ( 0 !== $find_attachment ) {
-				return $find_attachment;
-			}
-
-			// Attachment ID is unavailable. Return sanitized URL.
-			if ( true === $raw ) {
-				return esc_url_raw( $value );
-			} else {
-				return esc_url( $value );
-			}
-		} else {
-			// Value is not URL. Treat as attachment ID.
-			return absint( $value );
-		}
-	}
-
-	/**
-	 * Wrapper for using the sanitize_image method with raw set to true.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param $value
-	 *
-	 * @return int|string
-	 */
-	public function sanitize_image_raw( $value ) {
-		return $this->sanitize_image( $value, true );
-	}
-
-	/**
-	 * Allow only certain tags and attributes in a string.
-	 *
-	 * @since  1.0.0.
-	 *
-	 * @param  string    $string    The unsanitized string.
-	 *
-	 * @return string               The sanitized string.
-	 */
-	public function sanitize_text( $string ) {
-		global $allowedtags;
-		$expandedtags = $allowedtags;
-
-		// span
-		$expandedtags['span'] = array();
-
-		// Enable id, class, and style attributes for each tag
-		foreach ( $expandedtags as $tag => $attributes ) {
-			$expandedtags[ $tag ]['id']    = true;
-			$expandedtags[ $tag ]['class'] = true;
-			$expandedtags[ $tag ]['style'] = true;
-		}
-
-		// br (doesn't need attributes)
-		$expandedtags['br'] = array();
-
-		/**
-		 * Customize the tags and attributes that are allowed during text sanitization.
-		 *
-		 * @since 1.4.3
-		 *
-		 * @param array     $expandedtags    The list of allowed tags and attributes.
-		 * @param string    $string          The text string being sanitized.
-		 */
-		$expandedtags = apply_filters( 'make_sanitize_text_allowed_tags', $expandedtags, $string );
-
-		return wp_kses( $string, $expandedtags );
+		return $sanitized_value;
 	}
 }

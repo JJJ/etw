@@ -6,6 +6,8 @@
 /**
  * Class MAKE_Style_Manager
  *
+ * Manage and output dynamically-generated style rules.
+ *
  * @since 1.7.0.
  */
 final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_ManagerInterface, MAKE_Util_HookInterface, MAKE_Util_LoadInterface {
@@ -24,10 +26,22 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 		'css'           => 'MAKE_Style_CSSInterface',
 	);
 
-
+	/**
+	 * Ajax action name for retrieving dynamic styles as a file.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @var string
+	 */
 	private $file_action = 'make-css';
 
-
+	/**
+	 * Ajax action name for retrieving dynamic styles as an inline style block.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @var string
+	 */
 	private $inline_action = 'make-css-inline';
 
 	/**
@@ -53,8 +67,8 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param MAKE_APIInterface $api
-	 * @param array             $modules
+	 * @param MAKE_APIInterface|null $api
+	 * @param array                  $modules
 	 */
 	public function __construct( MAKE_APIInterface $api = null, array $modules = array() ) {
 		// Module defaults.
@@ -127,15 +141,16 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 		 * before the style definitions are loaded.
 		 *
 		 * @since 1.7.0.
+		 *        
+		 * @param MAKE_Style_ManagerInterface $style    The style object.
 		 */
-		do_action( 'make_style_before_load' );
+		do_action( 'make_style_before_load', $this );
 
 		$file_bases = array(
 			'thememod-typography',
 			'thememod-color',
 			'thememod-background',
 			'thememod-layout',
-			'builder',
 		);
 
 		// Load the style includes.
@@ -179,9 +194,9 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 		 * This action gives a developer the opportunity to add or modify dynamic styles
 		 * and run additional load routines.
 		 *
-		 * @since 1.2.3.
+		 * @since 1.7.0.
 		 *
-		 * @param MAKE_Style_Manager    $style    The styles object
+		 * @param MAKE_Style_Manager $style    The style object
 		 */
 		do_action( 'make_style_loaded', $this );
 	}
@@ -197,7 +212,13 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 		return $this->loaded;
 	}
 
-
+	/**
+	 * Output dynamically-generated style rules as an inline code block.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @return void
+	 */
 	public function get_styles_as_inline() {
 		if ( ! $this->is_loaded() ) {
 			$this->load();
@@ -207,24 +228,35 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 		 * Action: Fires before the inline CSS rules are rendered and output.
 		 *
 		 * @since 1.7.0.
+		 *        
+		 * @param MAKE_Style_ManagerInterface $style    The style object.
 		 */
-		do_action( 'make_style_before_inline' );
+		do_action( 'make_style_before_inline', $this );
 
 		// Echo the rules.
 		if ( $this->css()->has_rules() ) {
 			echo "\n<!-- Begin Make Inline CSS -->\n<style type=\"text/css\">\n";
 
-			echo stripslashes( wp_filter_nohtml_kses( $this->css()->build() ) );
+			echo stripslashes( wp_strip_all_tags( $this->css()->build() ) );
 
-			echo "\n</style>\n<!-- End Make Inline Custom CSS -->\n";
+			echo "\n</style>\n<!-- End Make Inline CSS -->\n";
 		}
 	}
 
-
+	/**
+	 * Ajax callback to retrieve inline style rules.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked action wp_ajax_make-css-inline
+	 * @hooked action wp_ajax_nopriv_make-css-inline
+	 *
+	 * @return void
+	 */
 	public function get_styles_as_inline_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( ! in_array( current_action(), array( 'wp_ajax_' . $this->inline_action, 'wp_ajax_nopriv_' . $this->inline_action ) ) ) {
-			wp_die();
+			return;
 		}
 		
 		$this->get_styles_as_inline();
@@ -234,14 +266,19 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 	}
 
 	/**
+	 * Ajax callback to retrieve style rules as a file.
+	 * 
+	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_ajax_make-css
+	 * @hooked action wp_ajax_nopriv_make-css
 	 *
 	 * @return void
 	 */
 	public function get_styles_as_file() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( ! in_array( current_action(), array( 'wp_ajax_' . $this->file_action, 'wp_ajax_nopriv_' . $this->file_action ) ) ) {
-			wp_die();
+			return;
 		}
 
 		if ( ! $this->is_loaded() ) {
@@ -252,32 +289,16 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 		 * Action: Fires before the CSS rules are rendered and output as a file.
 		 *
 		 * @since 1.7.0.
+		 *        
+		 * @param MAKE_Style_ManagerInterface $style    The style object.
 		 */
-		do_action( 'make_style_before_file' );
-
-		/**
-		 * Filter: Set whether the dynamic stylesheet will send headers telling the browser
-		 * to cache the request. Set to false to turn off these headers.
-		 *
-		 * @since 1.7.0.
-		 *
-		 * @param bool    $cache_headers
-		 */
-		if ( ( ! defined( 'SCRIPT_DEBUG' ) || false === SCRIPT_DEBUG ) && true === apply_filters( 'make_style_file_cache_headers', true ) ) {
-			// Set headers for caching
-			// @link http://stackoverflow.com/a/15000868
-			// @link http://www.mobify.com/blog/beginners-guide-to-http-cache-headers/
-			$expires = HOUR_IN_SECONDS;
-			header( 'Pragma: public' );
-			header( 'Cache-Control: private, max-age=' . $expires );
-			header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + $expires ) . ' GMT' );
-		}
+		do_action( 'make_style_before_file', $this );
 
 		// Set header for content type.
 		header( 'Content-type: text/css' );
 
 		// Echo the rules.
-		echo wp_filter_nohtml_kses( $this->css()->build() );
+		echo stripslashes( wp_strip_all_tags( $this->css()->build() ) );
 
 		// End the Ajax response.
 		wp_die();
@@ -297,12 +318,17 @@ final class MAKE_Style_Manager extends MAKE_Util_Modules implements MAKE_Style_M
 	/**
 	 * Make sure theme option CSS is added to TinyMCE last, to override other styles.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $stylesheets    List of stylesheets added to TinyMCE.
-	 * @return string                    Modified list of stylesheets.
+	 * @param string $stylesheets    List of stylesheets added to TinyMCE.
+	 *
+	 * @return string                Modified list of stylesheets.
 	 */
 	function mce_css( $stylesheets ) {
+		if ( ! $this->is_loaded() ) {
+			$this->load();
+		}
+
 		if ( $this->css()->has_rules() ) {
 			$stylesheets .= ',' . $this->get_file_url();
 		}

@@ -14,14 +14,15 @@ class MAKE_Customizer_Control_Html extends WP_Customize_Control {
 	/**
 	 * The current setting name.
 	 *
-	 * This is a hack, since the HTML control is not actually associated with any settings. It must be linked to a valid
-	 * setting before it will render, however.
+	 * Starting in WP 4.5, a control with no associated settings should pass an empty array for this property.
+	 *
+	 * @link https://core.trac.wordpress.org/ticket/35926
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @var   string    The current setting name.
+	 * @var   string|array    The current setting name.
 	 */
-	public $settings = 'make-customize-control-html';
+	public $settings = array();
 
 	/**
 	 * The control type.
@@ -51,6 +52,13 @@ class MAKE_Customizer_Control_Html extends WP_Customize_Control {
 	 * @param array                $args
 	 */
 	public function __construct( WP_Customize_Manager $manager, $id, array $args ) {
+		// Add a dummy setting for the control
+		// This is no longer needed in WP 4.5, which is also when the get_previewable_devices() method was added.
+		// TODO remove this when 4.4 support is dropped.
+		if ( ! method_exists( $manager, 'get_previewable_devices' ) ) {
+			$this->settings = 'make-customize-control-html';
+		}
+		
 		parent::__construct( $manager, $id, $args );
 
 		// Ensure this instance maintains the proper type value.

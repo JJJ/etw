@@ -20,7 +20,7 @@
 	MakePlus = $.extend(MakeControls, MakePlusFontWeight);
 
 	MakePlus = $.extend(MakePlus, {
-		controlPrefix: 'make_',
+		controlPrefix: 'ttfmake_',
 
 		/**
 		 * Bind events to the font controls.

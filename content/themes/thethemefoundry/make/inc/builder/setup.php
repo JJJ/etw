@@ -82,14 +82,11 @@ class MAKE_Builder_Setup extends MAKE_Util_Modules implements MAKE_Builder_Setup
 	 *
 	 * @since 1.6.1.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function frontend_builder_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		if ( ttfmake_is_builder_page() ) {
 			$sections = ttfmake_get_section_data( get_the_ID() );
 
@@ -124,16 +121,13 @@ class MAKE_Builder_Setup extends MAKE_Util_Modules implements MAKE_Builder_Setup
 	 *
 	 * @since 1.4.5
 	 *
+	 * @hooked action make_style_loaded
+	 *
 	 * @param MAKE_Style_ManagerInterface $style    The style manager instance.
 	 *
 	 * @return void
 	 */
 	public function builder_styles( MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_style_loaded' !== current_action() ) {
-			return;
-		}
-
 		if ( ttfmake_is_builder_page() ) {
 			$sections = ttfmake_get_section_data( get_the_ID() );
 
@@ -162,6 +156,8 @@ class MAKE_Builder_Setup extends MAKE_Util_Modules implements MAKE_Builder_Setup
 	 *
 	 * @since 1.4.5
 	 *
+	 * @hooked action make_builder_banner_css
+	 *
 	 * @param array                       $data     The banner's section data.
 	 * @param int                         $id       The banner's section ID.
 	 * @param MAKE_Style_ManagerInterface $style    The style manager instance.
@@ -169,11 +165,6 @@ class MAKE_Builder_Setup extends MAKE_Util_Modules implements MAKE_Builder_Setup
 	 * @return void
 	 */
 	public function builder_banner_styles( array $data, $id, MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_builder_banner_css' !== current_action() ) {
-			return;
-		}
-
 		$prefix = 'builder-section-';
 		$id = sanitize_title_with_dashes( $data['id'] );
 		/**

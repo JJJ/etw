@@ -3,8 +3,15 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_Component_EDD_Setup
+ *
+ * Integrate the Easy Digital Downloads plugin into Make's theme settings and Builder.
+ *
+ * @since 1.1.0.
+ * @since 1.7.0. Changed class name from TTFMP_EDD.
+ */
+final class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -105,16 +112,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Enqueue styles and scripts
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
+	 *
+	 * @hooked action wp_enqueue_scripts
 	 *
 	 * @return void
 	 */
 	public function enqueue_frontend() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Styles
 		wp_enqueue_style(
 			'makeplus-edd-frontend',
@@ -135,16 +139,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.1.0.
 	 *
-	 * @param  array    $file_paths    The original array of file paths.
+	 * @hooked filter edd_template_paths
 	 *
-	 * @return array                   The modified array of file paths.
+	 * @param array $file_paths    The original array of file paths.
+	 *
+	 * @return array               The modified array of file paths.
 	 */
 	public function filter_template_paths( $file_paths ) {
-		// Only run this in the proper hook context.
-		if ( 'edd_template_paths' !== current_filter() ) {
-			return $file_paths;
-		}
-
 		$new_path = array( makeplus_get_plugin_directory() . 'inc/component/edd/templates' );
 		return array_merge( $new_path, $file_paths );
 	}
@@ -154,19 +155,16 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  string    $class    The download item classes.
-	 * @param  int       $id       The download post ID.
-	 * @param  array     $atts     The shortcode atts.
-	 * @param  int       $i        The output counter.
+	 * @hooked filter edd_download_class
 	 *
-	 * @return string              The modified download item classes.
+	 * @param string $class    The download item classes.
+	 * @param int    $id       The download post ID.
+	 * @param array  $atts     The shortcode atts.
+	 * @param int    $i        The output counter.
+	 *
+	 * @return string          The modified download item classes.
 	 */
 	public function edd_download_class( $class, $id, $atts, $i ) {
-		// Only run this in the proper hook context.
-		if ( 'edd_download_class' !== current_filter() ) {
-			return $class;
-		}
-
 		if ( ! isset( $atts['columns'] ) || 1 == $atts['columns'] || is_null( $i ) ) {
 			return $class;
 		}
@@ -183,16 +181,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_view_is_shop
+	 *
 	 * @param bool $is_shop
 	 *
 	 * @return bool
 	 */
 	public function is_shop( $is_shop ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_view_is_shop' !== current_filter() ) {
-			return $is_shop;
-		}
-
 		if (
 			is_post_type_archive( 'download' )
 			||
@@ -211,16 +206,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_view_is_product
+	 *
 	 * @param bool $is_product
 	 *
 	 * @return bool
 	 */
 	public function is_product( $is_product ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_view_is_product' !== current_filter() ) {
-			return $is_product;
-		}
-
 		$post = get_post();
 		$parent_post_type = ( $post instanceof WP_Post ) ? get_post_type( $post->post_parent ) : '';
 
@@ -240,16 +232,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_admin_view_is_product
+	 *
 	 * @param bool $is_product
 	 *
 	 * @return bool
 	 */
 	public function admin_is_product( $is_product ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_admin_view_is_product' !== current_filter() ) {
-			return $is_product;
-		}
-
 		global $typenow;
 
 		if ( isset( $typenow ) && 'download' === $typenow ) {
@@ -260,18 +249,15 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	}
 
 	/**
-	 * Add theme support for various E-Commerce enhancements.
+	 * Add theme support for various Ecommerce enhancements.
 	 *
 	 * @since 1.7.0.
+	 *
+	 * @hooked action makeplus_components_loaded
 	 *
 	 * @return void
 	 */
 	public function add_ecommerce_support() {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_components_loaded' !== current_action() ) {
-			return;
-		}
-
 		// Layout: Shop
 		add_theme_support( 'makeplus-ecommerce-layoutshop' );
 
@@ -290,16 +276,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.2.0.
 	 *
+	 * @hooked filter makeplus_ecommerce_layoutshop_description
+	 *
 	 * @param string $text
 	 *
 	 * @return string
 	 */
 	public function layoutshop_description( $text ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_ecommerce_layoutshop_description' !== current_filter() ) {
-			return $text;
-		}
-
 		$description = __( 'For Easy Digital Downloads, this view consists of download archives and related category and tag archives.', 'make-plus' );
 
 		if ( '' !== $text ) {
@@ -314,16 +297,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.2.0.
 	 *
+	 * @hooked filter makeplus_ecommerce_layoutproduct_description
+	 *
 	 * @param string $text
 	 *
 	 * @return string
 	 */
 	public function layoutproduct_description( $text ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_ecommerce_layoutproduct_description' !== current_filter() ) {
-			return $text;
-		}
-
 		$description = __( 'For Easy Digital Downloads, this view consists of single downloads.', 'make-plus' );
 
 		if ( '' !== $text ) {
@@ -338,16 +318,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.5.0.
 	 *
+	 * @hooked filter makeplus_ecommerce_colorhighlight_description
+	 *
 	 * @param string $text
 	 *
 	 * @return string
 	 */
 	public function colorhighlight_description( $text ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_ecommerce_colorhighlight_description' !== current_filter() ) {
-			return $text;
-		}
-
 		$description = __( 'For Easy Digital Downloads, used for prices and alerts.', 'make-plus' );
 
 		if ( '' !== $text ) {
@@ -362,16 +339,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string $value    The current value of the setting.
+	 * @hooked filter make_settings_thememod_current_value
 	 *
-	 * @return string           The modified value of the setting.
+	 * @param string $value    The current value of the setting.
+	 *
+	 * @return string          The modified value of the setting.
 	 */
 	public function thememod_value( $value, $setting_id ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_current_value' !== current_filter() ) {
-			return $value;
-		}
-
 		switch ( $setting_id ) {
 			case 'layout-shop-featured-images' :
 				$value = 'thumbnail';
@@ -393,16 +367,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 *
 	 * @since 1.0.0.
 	 *
+	 * @hooked action make_style_loaded
+	 *
 	 * @param MAKE_Style_ManagerInterface $style
 	 *
 	 * @return void
 	 */
 	public function add_styles( MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_style_loaded' !== current_action() ) {
-			return;
-		}
-
 		// Get setting values
 		$color_secondary = $style->thememod()->get_value( 'color-secondary' );
 		$color_highlight = $style->thememod()->get_value( 'color-highlight' );
@@ -451,17 +422,15 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Enqueue the JS and CSS for the admin.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  string    $hook_suffix    The suffix for the screen.
+	 * @hooked action admin_enqueue_scripts
+	 *
+	 * @param string $hook_suffix    The suffix for the screen.
+	 *
 	 * @return void
 	 */
 	public function admin_enqueue( $hook_suffix ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Have to be careful with this test because this function was introduced in Make 1.2.0.
 		$post_type_supports_builder = ( function_exists( 'ttfmake_post_type_supports_builder' ) ) ? ttfmake_post_type_supports_builder( get_post_type() ) : false;
 
@@ -488,17 +457,14 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	 * @since 1.2.0.
 	 * @since 1.6.1. Updated to work with the TinyMCE overlay.
 	 *
+	 * @hooked action admin_footer-post.php
+	 * @hooked action admin_footer-post-new.php
+	 *
 	 * @return void
 	 */
 	public function admin_inline_script() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'admin_footer-post.php', 'admin_footer-post-new.php' ) ) ) {
-			return;
-		}
-
 		// Have to be careful with this test because this function was introduced in Make 1.2.0.
 		$post_type_supports_builder = ( function_exists( 'ttfmake_post_type_supports_builder' ) ) ? ttfmake_post_type_supports_builder( get_post_type() ) : false;
-		$post_type_is_page          = ( 'page' === get_post_type() );
 
 		if (
 			( $post_type_supports_builder || 'page' === get_post_type() )
@@ -521,18 +487,15 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Add new section defaults.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  array $defaults    The default section defaults.
+	 * @hooked filter make_section_defaults
 	 *
-	 * @return array              The augmented section defaults.
+	 * @param array $defaults    The default section defaults.
+	 *
+	 * @return array             The augmented section defaults.
 	 */
 	public function section_defaults( $defaults ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_defaults' !== current_filter() ) {
-			return $defaults;
-		}
-
 		$new_defaults = array(
 			'edd-downloads-title'            => '',
 			'edd-downloads-background-image' => 0,
@@ -555,20 +518,17 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Add new section choices.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  array  $choices         The existing choices.
-	 * @param  string $key             The key for the section setting.
-	 * @param  string $section_type    The section type.
+	 * @hooked filter make_section_choices
 	 *
-	 * @return array                   The choices for the particular section_type / key combo.
+	 * @param array  $choices         The existing choices.
+	 * @param string $key             The key for the section setting.
+	 * @param string $section_type    The section type.
+	 *
+	 * @return array                  The choices for the particular section_type / key combo.
 	 */
 	public function section_choices( $choices, $key, $section_type ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_choices' !== current_filter() ) {
-			return $choices;
-		}
-
 		if ( count( $choices ) > 1 || ! in_array( $section_type, array( 'edd-downloads' ) ) ) {
 			return $choices;
 		}
@@ -644,10 +604,11 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Add a category prefix to a value.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  string    $value    The original value.
-	 * @return string              The modified value.
+	 * @param string $value    The original value.
+	 *
+	 * @return string          The modified value.
 	 */
 	private function prefix_cat( $value ) {
 		return 'cat_' . $value;
@@ -656,10 +617,11 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Add a tag prefix to a value.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  string    $value    The original value.
-	 * @return string              The modified value.
+	 * @param string value    The original value.
+	 *
+	 * @return string         The modified value.
 	 */
 	private function prefix_tag( $value ) {
 		return 'tag_' . $value;
@@ -668,16 +630,13 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Register the Downloads section.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
+	 *
+	 * @hooked action after_setup_theme
 	 *
 	 * @return void
 	 */
 	public function register_downloads_section() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		ttfmake_add_section(
 			'downloads',
 			__( 'Downloads', 'make-plus' ),
@@ -730,11 +689,11 @@ class MAKEPLUS_Component_EDD_Setup extends MAKEPLUS_Util_Modules implements MAKE
 	/**
 	 * Save the data for the Product Grid section.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  array $data    The data from the $_POST array for the section.
+	 * @param array $data    The data from the $_POST array for the section.
 	 *
-	 * @return array          The cleaned data.
+	 * @return array         The cleaned data.
 	 */
 	public function save_downloads( $data ) {
 		// Checkbox fields will not be set if they are unchecked.

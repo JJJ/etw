@@ -109,14 +109,11 @@ final class MAKE_Compatibility_KeyConverter extends MAKE_Util_Modules implements
 	 *
 	 * @since  1.3.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function set_up_theme_mod_conversions() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		// Set up the necessary filters
 		foreach ( $this->get_key_conversions() as $key => $value ) {
 			add_filter( 'theme_mod_' . $key, array( $this, 'convert_theme_mods_filter' ), 11 );
@@ -128,15 +125,12 @@ final class MAKE_Compatibility_KeyConverter extends MAKE_Util_Modules implements
 	 *
 	 * @since  1.3.0.
 	 *
+	 * @hooked filter theme_mod_{$key}
+	 *
 	 * @param  mixed    $value    The current value.
 	 * @return mixed              The modified value.
 	 */
 	public function convert_theme_mods_filter( $value ) {
-		// Only run this in the proper hook context.
-		if ( 0 !== strpos( current_filter(), 'theme_mod_' ) ) {
-			return $value;
-		}
-
 		$new_mod_name = str_replace( 'theme_mod_', '', current_filter() );
 		$conversions  = $this->get_key_conversions();
 		$mods         = get_theme_mods();

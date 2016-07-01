@@ -4,11 +4,12 @@
  */
 
 /**
- * class MAKE_GallerySlider_Methods
+ * Class MAKE_GallerySlider_Setup
  *
- * A class that defines the slider for the gallery section.
+ * Enhances the core [gallery] shortcode with a slider option.
  *
  * @since 1.0.0.
+ * @since 1.7.0. Renamed from TTFMAKE_Gallery_Slider
  */
 class MAKE_GallerySlider_Setup extends MAKE_Util_Modules implements MAKE_GallerySlider_SetupInterface, MAKE_Util_HookInterface {
 	/**
@@ -70,16 +71,13 @@ class MAKE_GallerySlider_Setup extends MAKE_Util_Modules implements MAKE_Gallery
 	/**
 	 * Enqueue the admin script that handles the slider settings in the Media Manager
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action wp_enqueue_media
 	 *
 	 * @return void
 	 */
 	function enqueue_media() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_media' !== current_action() ) {
-			return;
-		}
-
 		wp_enqueue_script(
 			'make-admin-gallery-settings',
 			$this->scripts()->get_js_directory_uri() . '/galleryslider/galleryslider.js',
@@ -92,16 +90,14 @@ class MAKE_GallerySlider_Setup extends MAKE_Util_Modules implements MAKE_Gallery
 	/**
 	 * Markup for the slider settings in the Media Manager
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action print_media_templates
 	 *
 	 * @return void
 	 */
 	function print_media_templates() {
-		// Only run this in the proper hook context.
-		if ( 'print_media_templates' !== current_action() ) {
-			return;
-		}
-	?>
+		?>
 		<script type="text/html" id="tmpl-ttfmake-gallery-settings">
 			<h3 style="float:left;margin-top:10px;"><?php esc_html_e( 'Slider Settings', 'make' ); ?></h3>
 			<label class="setting">
@@ -143,16 +139,14 @@ class MAKE_GallerySlider_Setup extends MAKE_Util_Modules implements MAKE_Gallery
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @param  string    $output    The original shortcode output.
-	 * @param  array     $attr      The shortcode attrs.
-	 * @return string               The modified gallery code.
+	 * @hooked filter post_gallery
+	 *
+	 * @param string $output    The original shortcode output.
+	 * @param array  $attr      The shortcode attrs.
+	 *
+	 * @return string           The modified gallery code.
 	 */
 	function render_gallery( $output, $attr ) {
-		// Only run this in the proper hook context.
-		if ( 'post_gallery' !== current_filter() ) {
-			return $output;
-		}
-
 		// Only use this alternative output if the slider is set to true
 		if ( isset( $attr['ttfmake_slider'] ) && true == $attr['ttfmake_slider'] ) {
 			// Add Cycle2 as a dependency for the Frontend script

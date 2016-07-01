@@ -5,10 +5,13 @@
 
 /**
  * Class MAKEPLUS_Component_Builder_Enhancement_SectionID
+ * 
+ * Add a Section ID configuration setting to all Builder sections.
  *
- * @since 1.7.0.
+ * @since 1.6.0.
+ * @since 1.7.0. Moved to a separate class.
  */
-class MAKEPLUS_Component_Builder_Enhancement_SectionID implements MAKEPLUS_Util_HookInterface {
+final class MAKEPLUS_Component_Builder_Enhancement_SectionID implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * Indicator of whether the hook routine has been run.
 	 *
@@ -60,16 +63,13 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionID implements MAKEPLUS_Util_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $args    The section args.
+	 * @hooked filter make_add_section
 	 *
-	 * @return array             The modified section args.
+	 * @param array $args    The section args.
+	 *
+	 * @return array         The modified section args.
 	 */
 	public function modify_section( $args ) {
-		// Only run this in the proper hook context.
-		if ( 'make_add_section' !== current_filter() ) {
-			return $args;
-		}
-
 		// Bail if Make doesn't have the required method
 		if ( ! method_exists( 'TTFMAKE_Builder_Save', 'section_html_id' ) ) {
 			return $args;
@@ -112,17 +112,14 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionID implements MAKEPLUS_Util_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $clean_data       The section data that has already been sanitized.
-	 * @param  array    $original_data    The original unsanitized section data.
+	 * @hooked filter make_prepare_data_section
 	 *
-	 * @return array                      The amended array of sanitized section data.
+	 * @param array $clean_data       The section data that has already been sanitized.
+	 * @param array $original_data    The original unsanitized section data.
+	 *
+	 * @return array                  The amended array of sanitized section data.
 	 */
 	public function save_data( $clean_data, $original_data ) {
-		// Only run this in the proper hook context.
-		if ( 'make_prepare_data_section' !== current_filter() ) {
-			return $clean_data;
-		}
-
 		if ( isset( $original_data['section-html-id'] ) ) {
 			$clean_data['section-html-id'] = sanitize_key( $original_data['section-html-id'] );
 		}
@@ -135,10 +132,10 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionID implements MAKEPLUS_Util_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $id              The HTML id attribute for a particular section.
-	 * @param  array     $section_data    The stored data for a particular section.
+	 * @param string $id              The HTML id attribute for a particular section.
+	 * @param array  $section_data    The stored data for a particular section.
 	 *
-	 * @return string                     The modified id.
+	 * @return string                 The modified id.
 	 */
 	public function add_section_html_id( $id, $section_data ) {
 		if ( isset( $section_data['section-html-id'] ) && ! empty( $section_data['section-html-id'] ) ) {

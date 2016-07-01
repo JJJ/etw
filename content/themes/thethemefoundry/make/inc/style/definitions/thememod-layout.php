@@ -8,8 +8,10 @@ if ( ! isset( $this ) || ! $this instanceof MAKE_Style_ManagerInterface ) {
 	return;
 }
 
+$is_style_preview = isset( $_POST['make-preview'] );
+
 // Header padding
-if ( ! $this->thememod()->is_default( 'header-hide-padding-bottom' ) && true === $this->thememod()->get_value( 'header-hide-padding-bottom' ) ) {
+if ( $is_style_preview || ( ! $this->thememod()->is_default( 'header-hide-padding-bottom' ) && true === $this->thememod()->get_value( 'header-hide-padding-bottom' ) ) ) {
 	$this->css()->add( array(
 		'selectors'    => array( '.site-content' ),
 		'declarations' => array(
@@ -19,7 +21,7 @@ if ( ! $this->thememod()->is_default( 'header-hide-padding-bottom' ) && true ===
 }
 
 // Footer padding
-if ( ! $this->thememod()->is_default( 'footer-hide-padding-top' ) && true === $this->thememod()->get_value( 'footer-hide-padding-top' ) ) {
+if ( $is_style_preview || ( ! $this->thememod()->is_default( 'footer-hide-padding-top' ) && true === $this->thememod()->get_value( 'footer-hide-padding-top' ) ) ) {
 	$this->css()->add( array(
 		'selectors'    => array( '.site-content' ),
 		'declarations' => array(
@@ -31,7 +33,7 @@ if ( ! $this->thememod()->is_default( 'footer-hide-padding-top' ) && true === $t
 // Featured image alignment
 foreach ( array( 'blog', 'archive', 'search', 'post', 'page' ) as $view ) {
 	$key = "layout-$view-featured-images-alignment";
-	if ( ! $this->thememod()->is_default( $key ) ) {
+	if ( $is_style_preview || ! $this->thememod()->is_default( $key ) ) {
 		$this->css()->add( array(
 			'selectors'    => array( ".view-$view .entry-header .entry-thumbnail" ),
 			'declarations' => array(

@@ -1,0 +1,376 @@
+/*! jQuery UI - v1.10.4 - 2015-05-20
+* http://jqueryui.com
+* Includes: jquery.ui.core.css, jquery.ui.accordion.css, jquery.ui.tabs.css, jquery.ui.theme.css
+* To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Trebuchet%20MS%2CTahoma%2CVerdana%2CArial%2Csans-serif&fwDefault=normal&fsDefault=1.1em&cornerRadius=0px&bgColorHeader=%23eaecee&bgTextureHeader=flat&bgImgOpacityHeader=35&borderColorHeader=%23ffffff&fcHeader=%23171717&iconColorHeader=%23171717&bgColorContent=%23ffffff&bgTextureContent=flat&bgImgOpacityContent=100&borderColorContent=%23ffffff&fcContent=%23171717&iconColorContent=%23171717&bgColorDefault=%23eaecee&bgTextureDefault=flat&bgImgOpacityDefault=100&borderColorDefault=%23eaecee&fcDefault=%23b9bcbf&iconColorDefault=%23b9bcbf&bgColorHover=%233070d1&bgTextureHover=flat&bgImgOpacityHover=100&borderColorHover=%233070d1&fcHover=%23eaecee&iconColorHover=%23eaecee&bgColorActive=%233070d1&bgTextureActive=flat&bgImgOpacityActive=65&borderColorActive=%233070d1&fcActive=%23eaecee&iconColorActive=%23eaecee&bgColorHighlight=%23ffe45c&bgTextureHighlight=flat&bgImgOpacityHighlight=75&borderColorHighlight=%23fed22f&fcHighlight=%23363636&iconColorHighlight=%23228ef1&bgColorError=%23b81900&bgTextureError=flat&bgImgOpacityError=18&borderColorError=%23cd0a0a&fcError=%23ffffff&iconColorError=%23ffd27a&bgColorOverlay=%23666666&bgTextureOverlay=flat&bgImgOpacityOverlay=20&opacityOverlay=50&bgColorShadow=%23000000&bgTextureShadow=flat&bgImgOpacityShadow=10&opacityShadow=0&thicknessShadow=0&offsetTopShadow=0&offsetLeftShadow=0&cornerRadiusShadow=0
+* Icon and image-related styles removed by The Theme Foundry
+* Copyright 2015 jQuery Foundation and other contributors; Licensed MIT */
+
+
+/* Layout helpers
+----------------------------------*/
+
+.builder-section-panels .ui-helper-hidden {
+	display: none;
+}
+
+.builder-section-panels .ui-helper-hidden-accessible {
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+}
+
+.builder-section-panels .ui-helper-reset {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	text-decoration: none;
+	list-style: none;
+}
+
+.builder-section-panels .ui-helper-clearfix:before,
+.builder-section-panels .ui-helper-clearfix:after {
+	display: table;
+	border-collapse: collapse;
+	content: "";
+}
+
+.builder-section-panels .ui-helper-clearfix:after {
+	clear: both;
+}
+
+.builder-section-panels .ui-helper-clearfix {
+	min-height: 0;
+	/* support: IE7 */
+}
+
+.builder-section-panels .ui-helper-zfix {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+
+	filter: Alpha(Opacity=0);
+}
+
+.builder-section-panels .ui-front {
+	z-index: 100;
+}
+
+
+/* Interaction Cues
+----------------------------------*/
+
+.builder-section-panels .ui-state-disabled {
+	cursor: default !important;
+}
+
+
+/* Icons
+----------------------------------*/
+
+/* states and images */
+.builder-section-panels .ui-icon {
+	display: block;
+	overflow: hidden;
+	background-repeat: no-repeat;
+	text-indent: -99999px;
+}
+
+
+/* Misc visuals
+----------------------------------*/
+
+/* Overlays */
+.builder-section-panels .ui-widget-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-header {
+	display: block;
+	position: relative;
+	min-height: 0;
+	margin-top: 2px;
+	cursor: pointer;
+	/* support: IE7 */
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-icons {
+	padding-left: 2.2em;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-noicons {
+	padding-left: 0.7em;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-icons .ui-accordion-icons {
+	padding-left: 2.2em;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+	position: absolute;
+	top: 50%;
+	left: 0.5em;
+	margin-top: -8px;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-content {
+	overflow: auto;
+	border-top: 0;
+}
+
+.builder-section-panels .ui-tabs {
+	position: relative;
+	/* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+	padding: 0;
+}
+
+.builder-section-panels .ui-tabs .ui-tabs-anchor:focus {
+	outline: none;
+}
+
+.builder-section-panels .ui-tabs .ui-tabs-nav {
+	margin: 0;
+	padding: 0;
+}
+
+.builder-section-panels .ui-tabs .ui-tabs-nav li {
+	float: left;
+	position: relative;
+	top: 0;
+	margin: 0;
+	padding: 0;
+	border-bottom-width: 0;
+	white-space: nowrap;
+	list-style: none;
+}
+
+.builder-section-panels .ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+	float: left;
+	padding: 0.5em 1em;
+	text-decoration: none;
+}
+
+.builder-section-panels .ui-tabs .ui-tabs-nav li.ui-tabs-active .ui-tabs-anchor,
+.builder-section-panels .ui-tabs .ui-tabs-nav li.ui-state-disabled .ui-tabs-anchor,
+.builder-section-panels .ui-tabs .ui-tabs-nav li.ui-tabs-loading .ui-tabs-anchor {
+	cursor: text;
+}
+
+.builder-section-panels .ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active .ui-tabs-anchor {
+	cursor: pointer;
+}
+
+.builder-section-panels .ui-tabs .ui-tabs-panel {
+	display: block;
+	padding: 1em 1.4em;
+	border-width: 0;
+	background: none;
+}
+
+
+/* Component containers
+----------------------------------*/
+
+.builder-section-panels .ui-widget-content {
+	color: #171717;
+	background: transparent;
+}
+
+.builder-section-panels .ui-widget-header {
+	border: none;
+	color: #171717;
+	background: #eaecee;
+}
+
+
+/* Interaction states
+----------------------------------*/
+
+.builder-section-panels .ui-state-default,
+.builder-section-panels .ui-widget-content .ui-state-default,
+.builder-section-panels .ui-widget-header .ui-state-default {
+	border: 1px solid #eaecee;
+	color: #b9bcbf;
+	background: #eaecee;
+}
+
+.builder-section-panels .ui-state-default a,
+.builder-section-panels .ui-state-default a:link,
+.builder-section-panels .ui-state-default a:visited {
+	color: #b9bcbf;
+	text-decoration: none;
+}
+
+.builder-section-panels .ui-state-hover,
+.builder-section-panels .ui-widget-content .ui-state-hover,
+.builder-section-panels .ui-widget-header .ui-state-hover,
+.builder-section-panels .ui-state-focus,
+.builder-section-panels .ui-widget-content .ui-state-focus,
+.builder-section-panels .ui-widget-header .ui-state-focus {
+	border: 1px solid #3070d1;
+	color: #eaecee;
+	background: #3070d1;
+}
+
+.builder-section-panels .ui-state-hover a,
+.builder-section-panels .ui-state-hover a:hover,
+.builder-section-panels .ui-state-hover a:link,
+.builder-section-panels .ui-state-hover a:visited,
+.builder-section-panels .ui-state-focus a,
+.builder-section-panels .ui-state-focus a:hover,
+.builder-section-panels .ui-state-focus a:link,
+.builder-section-panels .ui-state-focus a:visited {
+	color: #eaecee;
+	text-decoration: none;
+}
+
+.builder-section-panels .ui-state-active,
+.builder-section-panels .ui-widget-content .ui-state-active,
+.builder-section-panels .ui-widget-header .ui-state-active {
+	border: 1px solid #3070d1;
+	color: #eaecee;
+	background: #3070d1;
+}
+
+.builder-section-panels .ui-state-active a,
+.builder-section-panels .ui-state-active a:link,
+.builder-section-panels .ui-state-active a:visited {
+	color: #eaecee;
+	text-decoration: none;
+}
+
+
+/* Interaction Cues
+----------------------------------*/
+
+.builder-section-panels .ui-state-highlight,
+.builder-section-panels .ui-widget-content .ui-state-highlight,
+.builder-section-panels .ui-widget-header .ui-state-highlight {
+	border: 1px solid #fed22f;
+	color: #363636;
+	background: #ffe45c;
+}
+
+.builder-section-panels .ui-state-highlight a,
+.builder-section-panels .ui-widget-content .ui-state-highlight a,
+.builder-section-panels .ui-widget-header .ui-state-highlight a {
+	color: #363636;
+}
+
+.builder-section-panels .ui-state-error,
+.builder-section-panels .ui-widget-content .ui-state-error,
+.builder-section-panels .ui-widget-header .ui-state-error {
+	border: 1px solid #cd0a0a;
+	color: #fff;
+	background: #b81900;
+}
+
+.builder-section-panels .ui-state-error a,
+.builder-section-panels .ui-widget-content .ui-state-error a,
+.builder-section-panels .ui-widget-header .ui-state-error a {
+	color: #fff;
+}
+
+.builder-section-panels .ui-state-error-text,
+.builder-section-panels .ui-widget-content .ui-state-error-text,
+.builder-section-panels .ui-widget-header .ui-state-error-text {
+	color: #fff;
+}
+
+.builder-section-panels .ui-priority-secondary,
+.builder-section-panels .ui-widget-content .ui-priority-secondary,
+.builder-section-panels .ui-widget-header .ui-priority-secondary {
+	opacity: 0.7;
+
+	filter: Alpha(Opacity=70);
+}
+
+.builder-section-panels .ui-state-disabled,
+.builder-section-panels .ui-widget-content .ui-state-disabled,
+.builder-section-panels .ui-widget-header .ui-state-disabled {
+	opacity: 0.35;
+	background-image: none;
+
+	filter: Alpha(Opacity=35);
+}
+
+.builder-section-panels .ui-state-disabled .ui-icon {
+	filter: Alpha(Opacity=35);
+	/* For IE8 - See #6059 */
+}
+
+/* Overlays */
+.builder-section-panels .ui-widget-overlay {
+	opacity: 0.5;
+	background: #666;
+
+	filter: Alpha(Opacity=50);
+}
+
+.builder-section-panels .ui-widget-shadow {
+	margin: 0 0 0 0;
+	padding: 0;
+	border-radius: 0;
+	opacity: 0;
+	background: #000;
+
+	filter: Alpha(Opacity=0);
+}
+
+/*! Additional styles */
+.builder-section-panels .builder-section-content {
+	max-width: 1024px;
+	margin: 0 auto;
+	padding: 22px 16px;
+	padding: 2.2rem 1.6rem;
+}
+
+.builder-section-panels {
+	position: relative;
+	background-repeat: repeat;
+	background-position: center;
+}
+
+.builder-section-panels.has-background {
+	padding: 52px 0 44px;
+	padding: 5.2rem 0 4.4rem;
+}
+
+.ttfmp-panels-item-title {
+	margin-bottom: 0;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	font-weight: bold;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-header:focus {
+	outline: none;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-content {
+	padding: 22px 16px;
+	padding: 2.2rem 1.6rem;
+}
+
+.builder-section-panels .ui-accordion .ui-accordion-header {
+	padding: 11px 16px;
+	padding: 1.1rem 1.6rem;
+}

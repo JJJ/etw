@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Sidebars_Manager
  *
+ * A class to manage dynamic- and user-generated sidebars.
+ *
  * @since 1.7.0.
  */
 class MAKEPLUS_Sidebars_Manager extends MAKEPLUS_Util_Modules implements MAKEPLUS_Sidebars_ManagerInterface, MAKEPLUS_Util_HookInterface {
@@ -168,7 +170,7 @@ class MAKEPLUS_Sidebars_Manager extends MAKEPLUS_Util_Modules implements MAKEPLU
 	}
 
 	/**
-	 * Remove a sidebar to the sidebars array.
+	 * Remove a sidebar from the sidebars array.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -266,20 +268,8 @@ class MAKEPLUS_Sidebars_Manager extends MAKEPLUS_Util_Modules implements MAKEPLU
 	 * @return string
 	 */
 	private function sanitize_sidebar_description( $string, $default ) {
-		$allowed_tags = array(
-			'a'      => array(
-				'href'   => true,
-				'id'     => true,
-				'target' => true,
-			),
-			'br'     => true,
-			'code'   => true,
-			'em'     => true,
-			'strong' => true,
-		);
-
 		// Strip unwanted tags
-		$sanitized_string = wp_kses( $string, $allowed_tags );
+		$sanitized_string = wp_strip_all_tags( $string );
 
 		if ( ! $sanitized_string ) {
 			return trim( $default );
@@ -296,14 +286,11 @@ class MAKEPLUS_Sidebars_Manager extends MAKEPLUS_Util_Modules implements MAKEPLU
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action widgets_init
+	 *
 	 * @return void
 	 */
 	public function register_sidebars() {
-		// Only run this in the proper hook context.
-		if ( 'widgets_init' !== current_action() ) {
-			return;
-		}
-
 		$sidebars = $this->get_sidebars();
 
 		foreach ( $sidebars as $sidebar_id => $sidebar_data ) {
@@ -312,7 +299,7 @@ class MAKEPLUS_Sidebars_Manager extends MAKEPLUS_Util_Modules implements MAKEPLU
 
 			// Get widget display args
 			if ( $this->mode()->has_make_api() ) {
-				$widget_defaults = Make()->widgets()->get_widget_display_defaults( $sidebar_id );
+				$widget_defaults = Make()->widgets()->get_widget_display_args( $sidebar_id );
 			} else {
 				$widget_defaults = array(
 					'before_widget' => '<aside id="%1$s" class="widget %2$s">',

@@ -11,6 +11,15 @@ var MakeFrontEnd = MakeFrontEnd || {};
 (function($, MakeFrontEnd) {
 	'use strict';
 
+	if ( ! MakeFrontEnd ) { return; }
+
+	/**
+	 * MakeFrontEnd
+	 *
+	 * Starts with the following data properties added via script localization:
+	 * - fitvids
+	 */
+
 	var Make = $.extend(MakeFrontEnd, {
 		/**
 		 * Object for storing data.

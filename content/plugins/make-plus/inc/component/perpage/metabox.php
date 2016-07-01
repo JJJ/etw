@@ -6,8 +6,10 @@
 /**
  * Class MAKEPLUS_Component_PerPage_Metabox
  *
+ * Render the metaboxes for post/page layout settings.
+ *
  * @since 1.0.0.
- * @since 1.7.0. Changed class name from TTFMP_PerPage_Metabox
+ * @since 1.7.0. Changed class name from TTFMP_PerPage_Metabox.
  */
 class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_PerPage_MetaboxInterface, MAKEPLUS_Util_HookInterface {
 	/**
@@ -18,9 +20,10 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	 * @var array
 	 */
 	protected $dependencies = array(
-		'sidebars' => 'MAKEPLUS_Sidebars_ManagerInterface',
-		'theme'    => 'MAKE_APIInterface',
-		'settings' => 'MAKEPLUS_Component_PerPage_SettingsInterface',
+		'compatibility' => 'MAKEPLUS_Compatibility_Methods',
+		'sidebars'      => 'MAKEPLUS_Sidebars_ManagerInterface',
+		'theme'         => 'MAKE_APIInterface',
+		'settings'      => 'MAKEPLUS_Component_PerPage_SettingsInterface',
 	);
 
 	/**
@@ -48,7 +51,7 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue' ) );
 
 		// Add the metabox
-		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
+		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ), 10, 2 );
 
 		// Save metabox data
 		add_action( 'save_post', array( $this, 'save_metabox' ), 10, 2 );
@@ -71,18 +74,15 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Enqueue Per Page scripts and styles if it is an edit screen.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action admin_enqueue_scripts
 	 *
 	 * @return void
 	 */
 	public function admin_enqueue() {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		$perpage_views = array_keys( $this->theme()->view()->get_views( 'is_perpage_view' ), true );
-		$current_view = $this->theme()->view()->get_current_view( 'admin' );
+		$current_view = $this->settings()->get_view();
 
 		if ( in_array( $current_view, $perpage_views ) ) {
 			// Style
@@ -107,26 +107,24 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Add the metabox to each qualified post type edit screen
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 * @since 1.7.4. Added the $post_type and $post parameters.
+	 *
+	 * @hooked action add_meta_boxes
+	 *
+	 * @param string $post_type    The current post type.
+	 * @param object $post         The post object.
 	 *
 	 * @return void
 	 */
-	public function add_metabox() {
-		// Only run this in the proper hook context.
-		if ( 'add_meta_boxes' !== current_action() ) {
+	public function add_metabox( $post_type, $post ) {
+		// Bail if $post isn't actually an instance of WP_Post in the current context.
+		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
 
-		// Check for deprecated filter.
-		if ( has_filter( 'ttfmp_perpage_post_types' ) ) {
-			$this->compatibility()->deprecated_hook(
-				'ttfmp_perpage_post_types',
-				'1.7.0'
-			);
-		}
-
 		$perpage_views = array_keys( $this->theme()->view()->get_views( 'is_perpage_view' ), true );
-		$current_view = $this->theme()->view()->get_current_view( 'admin' );
+		$current_view = $this->settings()->get_view();
 
 		if ( in_array( $current_view, $perpage_views ) ) {
 			$view_label = $this->theme()->view()->get_view_label( $current_view );
@@ -139,7 +137,7 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 				'makeplus-perpage-metabox',
 				$metabox_label,
 				array( $this, 'metabox_callback' ),
-				get_post_type(),
+				$post_type,
 				'side',
 				'default'
 			);
@@ -149,30 +147,49 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Wrapper for rendering the metabox.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  WP_Post $post    The current post.
+	 * @param WP_Post $post    The current post.
 	 *
 	 * @return void
 	 */
 	public function metabox_callback( WP_Post $post ) {
-		$current_view = $this->theme()->view()->get_current_view( 'admin' );
+		$current_view = $this->settings()->get_view();
 		$view_label = $this->theme()->view()->get_view_label( $current_view );
 
 		// Nonce
 		wp_nonce_field( 'save_post', 'makeplus-perpage-nonce' );
 
+		if ( has_action( "makeplus_perpage_render_metabox_{$current_view}" ) ) {
+			/**
+			 * Action: Fires before the default metabox callback for the current view is called.
+			 *
+			 * This allows for a custom metabox callback to be used in place of the default one. The provided $metabox
+			 * object has methods for rendering the standard controls used for the layout settings.
+			 *
+			 * If this action has an action hooked to it, the default callback will not be used.
+			 *
+			 * @since 1.7.0.
+			 *
+			 * @param MAKEPLUS_Component_PerPage_Metabox $metabox
+			 */
+			do_action( "makeplus_perpage_render_metabox_{$current_view}", $this );
+
+			// Do not proceed to the default callback.
+			return;
+		}
+
 		// Help blurb
 		echo '<p class="howto">';
 		printf(
 			esc_html__( '
-				These controls allow you to override the global %1$s layout settings for this %1$s only.
+				These controls allow you to override the global %1$s layout settings on this %1$s.
 			', 'make-plus' ),
 			esc_html( strtolower( $view_label ) )
 		);
 		echo '</p>';
 		echo '<p class="howto">';
-		esc_html_e( 'Start by clicking a link icon next to a setting to unlink it from the global value.', 'make-plus' );
+		esc_html_e( 'Clicking a link icon next to a setting will unlink it from the global value. Next, check the box to override.', 'make-plus' );
 		echo '</p>';
 
 		// Determine appropriate render function
@@ -193,7 +210,9 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Sanitize and save the submitted Per Page post meta data
 	 *
-	 * @since 1.0.0
+	 * @since 1.0.0.
+	 *
+	 * @hooked action save_post
 	 *
 	 * @param int     $post_id    The post ID
 	 * @param WP_Post $post       The post object
@@ -201,11 +220,6 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	 * @return void
 	 */
 	public function save_metabox( $post_id, WP_Post $post ) {
-		// Only run this in the proper hook context.
-		if ( 'save_post' !== current_action() ) {
-			return;
-		}
-
 		// Checks save status
 		$is_autosave = wp_is_post_autosave( $post_id );
 		$is_revision = wp_is_post_revision( $post_id );
@@ -226,8 +240,6 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 			delete_post_meta( $post_id, $this->settings()->get_prefix() . 'overrides' );
 			delete_post_meta( $post_id, $this->settings()->get_prefix() . 'settings' );
 		} else {
-			$current_view = $this->theme()->view()->get_current_view( 'admin' );
-
 			// Save overrides
 			$clean_overrides = array_map( 'wp_validate_boolean', $new_overrides );
 			update_post_meta( $post_id, $this->settings()->get_prefix() . 'overrides', $clean_overrides );
@@ -250,12 +262,12 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.5.1.
 	 *
-	 * @param string    $label    The content of the heading.
-	 * @param string    $class    Optional classes to add to the list item.
+	 * @param string $label    The content of the heading.
+	 * @param string $class    Optional classes to add to the list item.
 	 *
 	 * @return void
 	 */
-	private function control_heading( $label, $class = '' ) {
+	public function control_heading( $label, $class = '' ) {
 		?>
 		<li class="ttfmp-perpage-header <?php echo esc_attr( $class ); ?>"><?php echo esc_html( $label ); ?></li>
 	<?php
@@ -266,15 +278,15 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.5.1.
 	 *
-	 * @param WP_Post $post       The current post object.
-	 * @param string  $type       The type of control to render.
-	 * @param string  $setting_id The setting key.
-	 * @param string  $label      The label for a checkbox control.
-	 * @param string  $class      Optional classes to add to the list item.
+	 * @param WP_Post $post          The current post object.
+	 * @param string  $type          The type of control to render.
+	 * @param string  $setting_id    The setting key.
+	 * @param string  $label         The label for a checkbox control.
+	 * @param string  $class         Optional classes to add to the list item.
 	 *
 	 * @return void
 	 */
-	private function control_item( WP_Post $post, $type, $setting_id, $label = '', $class = '' ) {
+	public function control_item( WP_Post $post, $type, $setting_id, $label = '', $class = '' ) {
 		$overrides = $this->settings()->get_post_overrides( $post );
 		$settings  = $this->settings()->get_post_settings( $post );
 
@@ -294,14 +306,14 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Render the Override checkbox control.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string $setting_id      The setting to be overridden
-	 * @param  bool   $value
+	 * @param string $setting_id      The setting to be overridden
+	 * @param bool   $value
 	 *
 	 * @return void
 	 */
-	private function control_override( $setting_id, $value ) {
+	public function control_override( $setting_id, $value ) {
 		$id = $this->settings()->get_prefix() . 'overrides[' . $setting_id . ']';
 		?>
 		<label for="<?php echo esc_attr( $id ); ?>" class="override-label <?php echo ( $value ) ? 'active' : 'inactive'; ?>">
@@ -313,16 +325,16 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Render a checkbox control for a setting.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string $setting_id  The setting
-	 * @param  bool   $value       1 = checked
-	 * @param  string $label       The label for the checkbox
-	 * @param  bool   $override    1 = true
+	 * @param string $setting_id    The setting
+	 * @param bool   $value         1 = checked
+	 * @param string $label         The label for the checkbox
+	 * @param bool   $override      1 = true
 	 *
 	 * @return void
 	 */
-	private function control_setting_checkbox( $setting_id, $value, $label, $override ) {
+	public function control_setting_checkbox( $setting_id, $value, $label, $override ) {
 		$id = $this->settings()->get_prefix() . 'settings[' . $setting_id . ']';
 		?>
 		<label class="selectit" for="<?php echo esc_attr( $id ); ?>">
@@ -335,15 +347,16 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Render a select control for a setting.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $setting_id  The setting
-	 * @param  bool      $value       The value of the selected option
-	 * @param  string    $deprecated  Deprecated parameter
-	 * @param  bool      $override    1 = true
+	 * @param string $setting_id    The setting
+	 * @param bool   $value         The value of the selected option
+	 * @param string $deprecated    Deprecated parameter
+	 * @param bool   $override      1 = true
+	 *
 	 * @return void
 	 */
-	private function control_setting_select( $setting_id, $value, $deprecated, $override ) {
+	public function control_setting_select( $setting_id, $value, $deprecated, $override ) {
 		$id = $this->settings()->get_prefix() . 'settings[' . $setting_id . ']';
 		$choices = $this->theme()->thememod()->get_choice_set( $setting_id );
 		?>
@@ -358,9 +371,10 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Render the metabox for a post.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  WP_Post $post    The current post.
+	 * @param WP_Post $post    The current post.
+	 *
 	 * @return void
 	 */
 	private function render_metabox_post( WP_Post $post ) {
@@ -423,12 +437,13 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Render the metabox for a page.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  object    $post    The current post.
+	 * @param WP_Post $post    The current post.
+	 *
 	 * @return void
 	 */
-	private function render_metabox_page( $post ) {
+	private function render_metabox_page( WP_Post $post ) {
 		?>
 		<ul class="ttfmp-perpage-options">
 			<?php
@@ -487,12 +502,13 @@ class MAKEPLUS_Component_PerPage_Metabox extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Render the metabox for a product.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  object    $post    The current post.
+	 * @param WP_Post $post    The current post.
+	 *
 	 * @return void
 	 */
-	private function render_metabox_product( $post ) {
+	private function render_metabox_product( WP_Post $post ) {
 		?>
 		<ul class="ttfmp-perpage-options">
 			<?php

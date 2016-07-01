@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Compatibility_Methods
  *
+ * Methods to support compatibility issues.
+ *
  * @since 1.7.0.
  */
 final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules implements MAKEPLUS_Compatibility_MethodsInterface, MAKEPLUS_Util_HookInterface {
@@ -49,7 +51,7 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @var array
 	 */
-	protected $mode = array();
+	private $mode = array();
 
 	/**
 	 * Indicator of whether the hook routine has been run.
@@ -109,24 +111,29 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Set the mode for compatibility.
 	 *
+	 * The compatibility mode determines which compatibility files and modules are loaded.
+	 *
 	 * @since 1.7.0.
 	 *
 	 * @return string    $mode    The mode that was set.
 	 */
-	protected function set_mode() {
+	private function set_mode() {
 		$default_mode = 'full';
 
 		/**
 		 * Filter: Set the mode for compatibility.
 		 *
-		 * - 'full' will load all the files to enable back compatibility with deprecated code.
+		 * - 'full' will load all the files to enable back compatibility with deprecated code. (Default)
 		 * - 'current' will not load any deprecated code. Use with caution! Could result in a fatal PHP error.
 		 * - A minor release value, such as '1.6', will load files necessary for back compatibility with version 1.6.x.
-		 *   (Note that there are no separate modes for releases prior to 1.6.)
+		 *   Note that there are no separate modes for releases prior to 1.6.
+		 *
+		 * Example: If a site was originally customized with a child theme and Make Plus 1.6.x, setting the mode to 1.6
+		 * will load files necessary to enable compatibility with changes made in 1.7.x, but will skip files for 1.6.
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string    $mode    The compatibility mode to run the theme in.
+		 * @param string $mode    The compatibility mode to run the theme in.
 		 */
 		$mode = apply_filters( 'makeplus_compatibility_mode', $default_mode );
 
@@ -144,14 +151,11 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action makeplus_api_loaded
+	 *
 	 * @return void
 	 */
 	public function require_deprecated_files() {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_api_loaded' !== current_action() ) {
-			return;
-		}
-
 		if ( isset( $this->mode['deprecated'] ) && is_array( $this->mode['deprecated'] ) ) {
 			foreach ( $this->mode['deprecated'] as $version ) {
 				$file = dirname( __FILE__ ) . '/deprecated/deprecated-' . $version . '.php';
@@ -167,11 +171,15 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * Based on _deprecated_function() in WordPress core.
 	 *
-	 * @param string      $function
-	 * @param string      $version
-	 * @param string|null $replacement
-	 * @param string|null $message
-	 * @param bool        $backtrace
+	 * @since 1.7.0.
+	 *
+	 * @param string      $function    The function that was called.
+	 * @param string      $version     The version of Make that deprecated the function.
+	 * @param string|null $replacement Optional. The function that should have been called.
+	 * @param string|null $message     Optional. Full error message in place of a replacement function.
+	 * @param bool        $backtrace   Optional. True to include a backtrace in the error message.
+	 *
+	 * @return void
 	 */
 	public function deprecated_function( $function, $version, $replacement = null, $message = null, $backtrace = true ) {
 		/**
@@ -191,7 +199,7 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 
 		// Add additional messages.
 		if ( ! is_null( $replacement ) ) {
-			$message2 = sprintf( __( 'Use <strong>%s</strong> instead.', 'make-plus' ), $replacement );
+			$message2 = sprintf( __( 'Use <code>%s</code> instead.', 'make-plus' ), $replacement );
 		} else if ( ! is_null( $message ) ) {
 			$message2 = $message;
 		} else {
@@ -231,6 +239,8 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 	 * @param string $hook     The hook that was used.
 	 * @param string $version  The version of WordPress that deprecated the hook.
 	 * @param string $message  Optional. A message regarding the change. Default null.
+	 *
+	 * @return void
 	 */
 	public function deprecated_hook( $hook, $version, $message = null ) {
 		/**
@@ -274,10 +284,12 @@ final class MAKEPLUS_Compatibility_Methods extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param string $function The function that was called.
-	 * @param string $message  A message explaining what has been done incorrectly.
-	 * @param string $version  The version of WordPress where the message was added.
-	 * @param bool   $backtrace
+	 * @param string $function  The function that was called.
+	 * @param string $message   A message explaining what has been done incorrectly.
+	 * @param string $version   Optional. The version of WordPress where the message was added.
+	 * @param bool   $backtrace Optional. True to include a backtrace in the error message.
+	 *
+	 * @return void
 	 */
 	public function doing_it_wrong( $function, $message, $version = null, $backtrace = true ) {
 		/**

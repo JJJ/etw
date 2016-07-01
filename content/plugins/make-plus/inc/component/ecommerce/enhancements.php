@@ -6,9 +6,10 @@
 /**
  * Class MAKEPLUS_Component_ECommerce_Enhancements
  *
- * Various ecommerce-related theme enhancements that can be enabled via theme support.
+ * Various Ecommerce-related theme enhancements that can be enabled via theme support.
  *
- * @since 1.7.0.
+ * @since 1.2.0.
+ * @since 1.7.0. Changed class name from TTFMP_Shop_Settings.
  */
 final class MAKEPLUS_Component_ECommerce_Enhancements extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
@@ -68,16 +69,13 @@ final class MAKEPLUS_Component_ECommerce_Enhancements extends MAKEPLUS_Util_Modu
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action makeplus_components_loaded
+	 *
 	 * @param MAKEPLUS_APIInterface $api
 	 *
 	 * @return void
 	 */
 	public function load_enhancements( MAKEPLUS_APIInterface $api ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_components_loaded' !== current_action() ) {
-			return;
-		}
-
 		// Layout: Shop
 		if ( current_theme_supports( 'makeplus-ecommerce-layoutshop' ) || current_theme_supports( 'ttfmp-shop-layout-shop' ) ) {
 			if ( current_theme_supports( 'ttfmp-shop-layout-shop' ) ) {

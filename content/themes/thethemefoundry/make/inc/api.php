@@ -6,9 +6,13 @@
 /**
  * Class MAKE_API
  *
+ * Class to manage and provide access to all of the modules that make up the Make API.
+ * 
+ * Access this class via the global Make() function.
+ *
  * @since 1.7.0.
  */
-class MAKE_API extends MAKE_Util_Modules implements MAKE_APIInterface {
+final class MAKE_API extends MAKE_Util_Modules implements MAKE_APIInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -18,14 +22,15 @@ class MAKE_API extends MAKE_Util_Modules implements MAKE_APIInterface {
 	 */
 	protected $dependencies = array(
 		'l10n'                => 'MAKE_Setup_L10nInterface',
+		'notice'              => 'MAKE_Admin_NoticeInterface',
 		'error'               => 'MAKE_Error_CollectorInterface',
 		'compatibility'       => 'MAKE_Compatibility_MethodsInterface',
 		'plus'                => 'MAKE_Plus_MethodsInterface',
-		'notice'              => 'MAKE_Admin_NoticeInterface',
 		'choices'             => 'MAKE_Choices_ManagerInterface',
 		'font'                => 'MAKE_Font_ManagerInterface',
 		'view'                => 'MAKE_Layout_ViewInterface',
 		'thememod'            => 'MAKE_Settings_ThemeModInterface',
+		'sanitize'            => 'MAKE_Settings_SanitizeInterface',
 		'widgets'             => 'MAKE_Setup_WidgetsInterface',
 		'scripts'             => 'MAKE_Setup_ScriptsInterface',
 		'style'               => 'MAKE_Style_ManagerInterface',
@@ -50,14 +55,15 @@ class MAKE_API extends MAKE_Util_Modules implements MAKE_APIInterface {
 	 */
 	private $defaults = array(
 		'l10n'                => 'MAKE_Setup_L10n',
+		'notice'              => 'MAKE_Admin_Notice',
 		'error'               => 'MAKE_Error_Collector',
 		'compatibility'       => 'MAKE_Compatibility_Methods',
 		'plus'                => 'MAKE_Plus_Methods',
-		'notice'              => 'MAKE_Admin_Notice',
 		'choices'             => 'MAKE_Choices_Manager',
 		'font'                => 'MAKE_Font_Manager',
 		'view'                => 'MAKE_Layout_View',
 		'thememod'            => 'MAKE_Settings_ThemeMod',
+		'sanitize'            => 'MAKE_Settings_Sanitize',
 		'widgets'             => 'MAKE_Setup_Widgets',
 		'scripts'             => 'MAKE_Setup_Scripts',
 		'style'               => 'MAKE_Style_Manager',
@@ -112,7 +118,7 @@ class MAKE_API extends MAKE_Util_Modules implements MAKE_APIInterface {
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $module_name
+	 * @param string $module_name
 	 *
 	 * @return null
 	 */

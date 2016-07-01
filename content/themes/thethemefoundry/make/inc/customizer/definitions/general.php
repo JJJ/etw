@@ -12,6 +12,7 @@ if ( ! isset( $this ) || ! $this instanceof MAKE_Customizer_ControlsInterface ) 
 $panel = $this->prefix . 'general';
 
 // Logo
+// TODO remove this when WP 4.5 is no longer supported
 if ( $this->logo()->custom_logo_is_supported() ) {
 	$this->add_section_definitions( 'logo', array(
 		'panel'    => $panel,
@@ -23,7 +24,7 @@ if ( $this->logo()->custom_logo_is_supported() ) {
 					'label'        => __( 'Regular & Retina Logos', 'make' ),
 					'description'  => esc_html__( '
 						These settings have been deprecated in favor of the Site Logo setting provided by WordPress core.
-						Please visit the Site Identity section to configure your site icon.
+						Please visit the Site Identity section to configure your site logo.
 					', 'make' ),
 				),
 			),
@@ -55,46 +56,6 @@ if ( $this->logo()->custom_logo_is_supported() ) {
 	) );
 }
 
-// Deprecated Site Icon controls
-if ( function_exists( 'has_site_icon' ) ) {
-	$this->add_section_definitions( 'logo', array(
-		'controls' => array(
-			'logo-icons-notice' => array(
-				'control' => array(
-					'control_type' => 'MAKE_Customizer_Control_Html',
-					'label'        => __( 'Favicon & Apple Touch Icon', 'make' ),
-					'description'  => __( 'These settings have been deprecated in favor of the Site Icon setting provided by WordPress core. Please visit the Site Identity section to configure your site icon.', 'make' ),
-				),
-			),
-		)
-	), true ); // Overwrite to add additional controls to the section
-} else {
-	$this->add_section_definitions( 'logo', array(
-		'controls' => array(
-			'logo-favicon'     => array(
-				'setting' => true,
-				'control' => array(
-					'control_type' => 'WP_Customize_Image_Control',
-					'label'        => __( 'Favicon', 'make' ),
-					'description'  => __( 'File must be <strong>.png</strong> or <strong>.ico</strong> format. Optimal dimensions: <strong>32px x 32px</strong>.', 'make' ),
-					'context'      => $this->prefix . 'logo-favicon',
-					'extensions'   => array( 'png', 'ico' ),
-				),
-			),
-			'logo-apple-touch' => array(
-				'setting' => true,
-				'control' => array(
-					'control_type' => 'WP_Customize_Image_Control',
-					'label'        => __( 'Apple Touch Icon', 'make' ),
-					'description'  => __( 'File must be <strong>.png</strong> format. Optimal dimensions: <strong>152px x 152px</strong>.', 'make' ),
-					'context'      => $this->prefix . 'logo-apple-touch',
-					'extensions'   => array( 'png' ),
-				),
-			),
-		)
-	), true ); // Overwrite to add additional controls to the section
-}
-
 // Labels
 $this->add_section_definitions( 'labels', array(
 	'panel'    => $panel,
@@ -116,7 +77,6 @@ $this->add_section_definitions( 'labels', array(
 			),
 			'control' => array(
 				'label'       => __( 'Mobile Menu Label', 'make' ),
-				'description' => __( 'Resize your browser window to preview the mobile menu label.', 'make' ),
 				'type'        => 'text',
 			),
 		),
@@ -157,10 +117,17 @@ $this->add_section_definitions( 'social', array(
 	'title'       => __( 'Social Icons', 'make' ),
 	'controls'    => array(
 		'social-icons'  => array(
-			'setting' => true,
+			'setting' => array(
+				'transport' => ( isset( $wp_customize->selective_refresh ) ) ? 'postMessage' : 'refresh',
+			),
 			'control' => array(
 				'control_type' => 'MAKE_Customizer_Control_SocialIcons',
 				'description' => __( 'Add a link to each of your social profiles and we&#8217;ll add the icon to match — it&#8217;s that simple. Drag and drop to rearrange.', 'make' )
+			),
+			'partial' => array(
+				'selector'            => '.header-social-links, .footer-social-links',
+				'render_callback'     => array( $this->socialicons(), 'render_icons' ),
+				'container_inclusive' => false,
 			),
 		),
 	),

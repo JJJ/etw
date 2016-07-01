@@ -6,6 +6,8 @@
 /**
  * Class MAKE_Customizer_Controls
  *
+ * Set up the Customizer interface with the theme's settings.
+ *
  * @since 1.7.0.
  */
 final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_Customizer_ControlsInterface, MAKE_Util_HookInterface {
@@ -24,6 +26,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 		'scripts'       => 'MAKE_Setup_ScriptsInterface',
 		'logo'          => 'MAKE_Logo_MethodsInterface',
 		'socialicons'   => 'MAKE_SocialIcons_ManagerInterface',
+		'helper'        => 'MAKE_Customizer_DataHelperInterface'
 	);
 
 	/**
@@ -51,16 +54,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @var string
 	 */
-	private $prefix = 'make_';
-
-	/**
-	 * Container for helper class.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @var null
-	 */
-	private $helper = null;
+	private $prefix = 'ttfmake_';
 
 	/**
 	 * Indicator of whether the hook routine has been run.
@@ -76,18 +70,17 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param MAKE_APIInterface $api
-	 * @param array             $modules
+	 * @param MAKE_APIInterface|null $api
+	 * @param array                  $modules
 	 */
-	public function __construct(
-		MAKE_APIInterface $api,
-		array $modules = array()
-	) {
+	public function __construct( MAKE_APIInterface $api = null, array $modules = array() ) {
+		// Module defaults.
+		$modules = wp_parse_args( $modules, array(
+			'helper' => 'MAKE_Customizer_DataHelper',
+		) );
+
 		// Load dependencies.
 		parent::__construct( $api, $modules );
-
-		// Load private helper module.
-		$this->helper = new MAKE_Customizer_DataHelper( $api );
 	}
 
 	/**
@@ -146,31 +139,17 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	}
 
 	/**
-	 * Getter for the helper class.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @return MAKE_Customizer_DataHelper|null
-	 */
-	private function helper() {
-		return $this->helper;
-	}
-
-	/**
 	 * Preliminary setup for Make's custom control classes.
 	 *
 	 * @since 1.7.0.
+	 *
+	 * @hooked action customize_register
 	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function setup_control_types( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// The control types with JS templates
 		$types = array(
 			'MAKE_Customizer_Control_BackgroundPosition',
@@ -186,11 +165,20 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 		}
 
 		// Add a dummy setting for MAKE_Customize_Control_Html
-		$wp_customize->add_setting( 'make-customize-control-html', array(
-			'type'                 => 'number',
-			'default'              => 0,
-			'sanitize_callback'    => 'absint',
-		) );
+		// This is no longer needed in WP 4.5, which is also when the get_previewable_devices() method was added.
+		// TODO remove this when 4.4 support is dropped.
+		if ( ! method_exists( $wp_customize, 'get_previewable_devices' ) ) {
+			$wp_customize->add_setting( 'make-customize-control-html', array(
+				'type'                 => 'number',
+				'default'              => 0,
+				'sanitize_callback'    => 'absint',
+			) );
+		}
+
+		// Register the error display section, if supported
+		if ( method_exists( $wp_customize, 'register_section_type' ) ) {
+			$wp_customize->register_section_type( 'MAKE_Error_Section' );
+		}
 	}
 
 	/**
@@ -198,16 +186,13 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function load_definitions( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// Panel definitions.
 		$this->panel_definitions = array(
 			'general'           => array(
@@ -254,19 +239,15 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function load_mods( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		$file_bases = array(
 			'background',
-			'navigation',
 			'site-title-tagline',
 			'static-front-page',
 			'widgets',
@@ -293,7 +274,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 		 *
 		 * @since 1.3.0.
 		 *
-		 * @param array    $panels    The array of panel definitions.
+		 * @param array $panels    The array of panel definitions.
 		 */
 		return apply_filters( 'make_customizer_panels', $this->panel_definitions );
 	}
@@ -303,16 +284,13 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function add_panels( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		$priority = new MAKE_Util_Priority( 1000, 100 );
 
 		// Add panels.
@@ -332,9 +310,9 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param       $section_id
-	 * @param array $data
-	 * @param bool  $overwrite
+	 * @param string $section_id
+	 * @param array  $data
+	 * @param bool   $overwrite
 	 *
 	 * @return bool
 	 */
@@ -367,11 +345,11 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 */
 	public function get_section_definitions() {
 		/**
-		 * Filter: Modify the array of section definitions for the Customizer.
+		 * Filter: Modify the array of section/control definitions for the Customizer.
 		 *
 		 * @since 1.3.0.
 		 *
-		 * @param array    $sections    The array of section definitions.
+		 * @param array $sections    The array of section definitions.
 		 */
 		return apply_filters( 'make_customizer_sections', $this->section_definitions );
 	}
@@ -381,16 +359,13 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function add_sections( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// Bucket so each panel can have its own priority class.
 		$priority = array();
 
@@ -432,12 +407,12 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	}
 
 	/**
-	 * Register settings and controls for a section from the controls array in a section definition.
+	 * Register settings, controls, and partials for a section from the controls array in a section definition.
 	 *
 	 * @since 1.7.0.
 	 *
 	 * @param WP_Customize_Manager $wp_customize
-	 * @param                      $section
+	 * @param string               $section
 	 * @param array                $args
 	 * @param int                  $initial_priority
 	 *
@@ -462,7 +437,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 					'capability'           => 'edit_theme_options',
 					'theme_supports'       => '',
 					'default'              => $this->thememod()->get_default( $setting_id ),
-					'transport'            => $this->get_transport( $setting_id ),
+					'transport'            => $this->get_default_transport( $setting_id ),
 					'sanitize_callback'    => array( $this, 'sanitize' ),
 					'sanitize_js_callback' => ( $this->thememod()->has_sanitize_callback( $setting_id, 'to_customizer' ) ) ? array( $this, 'sanitize_js' ) : '',
 				);
@@ -517,6 +492,19 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 					$wp_customize->add_control( $control_id, $control );
 				}
 			}
+
+			// Add partial, if selective refresh is supported
+			if ( isset( $definition['partial'] ) && isset( $wp_customize->selective_refresh ) ) {
+				$partial_id = $this->prefix . 'partial_' . $setting_id;
+
+				$defaults = array(
+					'settings' => array( $setting_id ),
+				);
+
+				$partial = wp_parse_args( $definition['partial'], $defaults );
+
+				$wp_customize->selective_refresh->add_partial( $partial_id, $partial );
+			}
 		}
 
 		// Return the final priority.
@@ -528,19 +516,15 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $setting_id
+	 * @param string $setting_id
 	 *
 	 * @return string
 	 */
-	private function get_transport( $setting_id ) {
-		$postMessage_settings = array();
+	private function get_default_transport( $setting_id ) {
+		static $postMessage_settings = array();
 
-		$properties = array(
-			'is_style'
-		);
-
-		foreach ( $properties as $property ) {
-			$postMessage_settings = array_merge( $postMessage_settings, array_keys( $this->thememod()->get_settings( $property ), true ) );
+		if ( empty( $postMessage_settings ) ) {
+			$postMessage_settings = array_keys( $this->thememod()->get_settings( 'is_style' ), true );
 		}
 
 		if ( false !== array_search( $setting_id, $postMessage_settings ) ) {
@@ -555,7 +539,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param                      $value
+	 * @param mixed                $value
 	 * @param WP_Customize_Setting $setting
 	 *
 	 * @return mixed
@@ -569,7 +553,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param                      $value
+	 * @param mixed                $value
 	 * @param WP_Customize_Setting $setting
 	 *
 	 * @return mixed
@@ -584,7 +568,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 * @since 1.7.0.
 	 *
 	 * @param WP_Customize_Manager $wp_customize
-	 * @param                      $panel_id
+	 * @param string               $panel_id
 	 *
 	 * @return array
 	 */
@@ -598,11 +582,6 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 					$panel_sections[] = $section;
 				}
 			}
-		} else {
-			$this->error()->add_error( 'make_panel_not_valid', sprintf(
-				__( '"%s" is not a valid panel.', 'make' ),
-				esc_html( $panel_id )
-			) );
 		}
 
 		return $panel_sections;
@@ -614,7 +593,7 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 * @since 1.7.0.
 	 *
 	 * @param WP_Customize_Manager $wp_customize
-	 * @param                      $section_id
+	 * @param string               $section_id
 	 *
 	 * @return array
 	 */
@@ -628,11 +607,6 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 					$section_controls[] = $control;
 				}
 			}
-		} else {
-			$this->error()->add_error( 'make_section_not_valid', sprintf(
-				__( '"%s" is not a valid section.', 'make' ),
-				esc_html( $section_id )
-			) );
 		}
 
 		return $section_controls;
@@ -671,26 +645,18 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_controls_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_control_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'customize_controls_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// jQuery UI styles are for our custom Range and Buttonset controls.
 		wp_enqueue_style( 'make-jquery-ui-custom' );
 
-		// Custom styling depends on version of WP
-		// Nav menu panel was introduced in 4.3
-		$suffix = '';
-		if ( ! class_exists( 'WP_Customize_Nav_Menus' ) ) {
-			$suffix = '-legacy';
-		}
+		// Styles
 		wp_enqueue_style(
 			'make-customizer-controls',
-			$this->scripts()->get_css_directory_uri() . "/customizer/controls{$suffix}.css",
+			$this->scripts()->get_css_directory_uri() . '/customizer/controls.css',
 			array( 'make-jquery-ui-custom', 'chosen' ),
 			TTFMAKE_VERSION
 		);
@@ -727,18 +693,22 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_controls_print_footer_scripts
+	 *
 	 * @return void
 	 */
 	public function render_templates() {
-		// Only run this in the proper hook context.
-		if ( 'customize_controls_print_footer_scripts' !== current_action() ) {
-			return;
-		}
-
 		global $wp_customize;
 
 		// Social Icons
-		$control = new MAKE_Customizer_Control_SocialIcons( $wp_customize, 'temp', array() );
+		$control = new MAKE_Customizer_Control_SocialIcons(
+			$wp_customize,
+			'temp',
+			array(
+				// TODO modify this when 4.4 support is dropped.
+				'settings' => ( ! method_exists( $wp_customize, 'get_previewable_devices' ) ) ? 'make-customize-control-html' : array()
+			)
+		);
 		$control->print_sub_templates();
 	}
 
@@ -747,12 +717,14 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_ajax_make-font-choices
+	 *
 	 * @return void
 	 */
 	public function get_font_choices_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_make-font-choices' !== current_action() ) {
-			wp_die();
+			return;
 		}
 
 		$choices = $this->font()->get_font_choices();
@@ -771,12 +743,14 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_ajax_make-social-icons
+	 *
 	 * @return void
 	 */
 	public function get_socialicons_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_make-social-icons' !== current_action() ) {
-			wp_die();
+			return;
 		}
 
 		if ( ! isset( $_POST['type'] ) || ! isset( $_POST['content'] ) ) {
@@ -797,12 +771,14 @@ final class MAKE_Customizer_Controls extends MAKE_Util_Modules implements MAKE_C
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_ajax_make-social-icons-list
+	 *
 	 * @return void
 	 */
 	public function get_socialicons_list_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_make-social-icons-list' !== current_action() ) {
-			wp_die();
+			return;
 		}
 
 		wp_send_json_success( $this->socialicons()->get_icons() );

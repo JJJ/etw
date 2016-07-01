@@ -9,9 +9,9 @@
  * Support color settings for versions of WooCommerce before 2.3.
  *
  * @since 1.5.0.
- * @since 1.7.0. Changed class name from TTFMP_WooCommerce_Legacy_Color
+ * @since 1.7.0. Changed class name from TTFMP_WooCommerce_Legacy_Color.
  */
-class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_WooCommerce_LegacyColorInterface, MAKEPLUS_Util_HookInterface {
+final class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_WooCommerce_LegacyColorInterface, MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -102,16 +102,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	 * Replace the color pickers in the Frontend styles section of the UI with a note
 	 * directing users to the Customizer.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action woocommerce_settings_general
 	 *
 	 * @return void
 	 */
 	public function modify_wc_settings() {
-		// Only run this in the proper hook context.
-		if ( 'woocommerce_settings_general' !== current_action() ) {
-			return;
-		}
-
 		// Determine the callback to remove
 		$callback = $this->has_method_filter( 'woocommerce_admin_field_frontend_styles', 'WC_Settings_General', 'frontend_styles_setting' );
 
@@ -126,15 +123,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	/**
 	 * Add Frontend styles message.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action woocommerce_admin_field_frontend_styles
 	 *
 	 * @return void
 	 */
 	public function frontend_styles_setting() {
-		// Only run this in the proper hook context.
-		if ( 'woocommerce_admin_field_frontend_styles' !== current_action() ) {
-			return;
-		}
 		?>
 		<tr valign="top" class="woocommerce_frontend_css_colors">
 			<th scope="row" class="titledesc">
@@ -171,17 +166,15 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	/**
 	 * Override the WooCommerce frontend color options with the Make color settings
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  bool     $colors    Unused
-	 * @return array               The Make color settings array
+	 * @hooked filter pre_option_woocommerce_frontend_css_colors
+	 *
+	 * @param bool $colors    Unused
+	 *
+	 * @return array          The Make color settings array
 	 */
 	public function frontend_css_colors( $colors ) {
-		// Only run this in the proper hook context.
-		if ( 'pre_option_woocommerce_frontend_css_colors' !== current_filter() ) {
-			return $colors;
-		}
-
 		$colors = array(
 			'primary'    => $this->theme()->thememod()->get_value( 'color-primary' ),
 			'secondary'  => $this->theme()->thememod()->get_value( 'color-secondary' ),
@@ -196,16 +189,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	/**
 	 * Swap the normal woocommerce CSS file with the preview file in the style queue
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action wp_enqueue_scripts
 	 *
 	 * @return void
 	 */
 	public function preview_frontend_styles() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		if ( ! is_customize_preview() ) {
 			return;
 		}
@@ -230,16 +220,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	 *
 	 * Based on woocommerce_compile_less_styles() in version 2.1.9 of WooCommerce
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action wp
 	 *
 	 * @return void
 	 */
 	public function compile_preview_styles() {
-		// Only run this in the proper hook context.
-		if ( 'wp' !== current_action() ) {
-			return;
-		}
-
 		if ( ! is_customize_preview() ) {
 			return;
 		}
@@ -312,16 +299,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	/**
 	 * Re-compile the WooCommerce stylesheet when color changes are saved
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action customize_save_after
 	 *
 	 * @return void
 	 */
 	public function save_frontend_styles() {
-		// Only run this in the proper hook context.
-		if ( 'customize_save_after' !== current_action() ) {
-			return;
-		}
-
 		// Load the LESS compile function
 		if ( class_exists( 'WC' ) && ! function_exists( 'woocommerce_compile_less_styles' ) ) {
 			// Include the file with the compile function
@@ -340,12 +324,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	/**
 	 * Utility function to determine if an action/filter hook has a particular class method added to it.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string         $tag       The action/filter hook tag.
-	 * @param  string         $class     The class.
-	 * @param  string         $method    The class method.
-	 * @return bool|string               The encoded class/method id attached to the hook.
+	 * @param string $tag       The action/filter hook tag.
+	 * @param string $class     The class.
+	 * @param string $method    The class method.
+	 *
+	 * @return bool|string      The encoded class/method id attached to the hook.
 	 */
 	private function has_method_filter( $tag, $class, $method ) {
 		global $wp_filter;
@@ -373,16 +358,13 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	 *
 	 * @since 1.5.0.
 	 *
+	 * @hooked filter makeplus_ecommerce_colorhighlight_description
+	 *
 	 * @param string $text
 	 *
 	 * @return string
 	 */
 	public function color_highlight_description( $text ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_ecommerce_colorhighlight_description' !== current_filter() ) {
-			return $text;
-		}
-
 		$description = esc_html__( 'For WooCommerce, used for prices, in stock labels, and sales flash.', 'make-plus' );
 
 		if ( '' !== $text ) {
@@ -395,16 +377,17 @@ class MAKEPLUS_Component_WooCommerce_LegacyColor extends MAKEPLUS_Util_Modules i
 	/**
 	 * Add styles.
 	 *
+	 * The $style parameter is used within the included file.
+	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $style
+	 * @hooked action make_style_loaded
+	 *
+	 * @param MAKE_Style_ManagerInterface $style
+	 *
+	 * @return void
 	 */
-	public function add_styles( $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_style_loaded' !== current_action() ) {
-			return;
-		}
-
+	public function add_styles( MAKE_Style_ManagerInterface $style ) {
 		// Load the style definitions
 		$file = dirname( __FILE__ ) . '/legacycolor-definitions.php';
 		if ( is_readable( $file ) ) {

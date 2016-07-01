@@ -6,10 +6,12 @@
 /**
  * Class MAKEPLUS_Component_Parallax_Setup
  *
+ * Enable a parallax effect for section background images in the Builder.
+ *
  * @since 1.6.1
- * @since 1.7.0 Changed class name from TTFMP_Parallax
+ * @since 1.7.0 Changed class name from TTFMP_Parallax.
  */
-class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
+final class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * Indicator of whether the hook routine has been run.
 	 *
@@ -63,16 +65,15 @@ class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
 	 *
 	 * Only add it if the section supports a background image.
 	 *
-	 * @param  array    $args    The arguments defining the section.
+	 * @since 1.6.1.
 	 *
-	 * @return array             The modified arguments defining the section.
+	 * @hooked filter make_add_section
+	 *
+	 * @param array $args    The arguments defining the section.
+	 *
+	 * @return array         The modified arguments defining the section.
 	 */
 	public function add_input( $args ) {
-		// Only run this in the proper hook context.
-		if ( 'make_add_section' !== current_filter() ) {
-			return $args;
-		}
-
 		if ( isset( $args['config'] ) && is_array( $args['config'] ) ) {
 			$names = wp_list_pluck( $args['config'], 'name' );
 			if ( $priority = array_search( 'background-image', $names ) ) {
@@ -95,17 +96,14 @@ class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
 	 *
 	 * @since 1.6.1.
 	 *
-	 * @param  array    $clean_data       The section data that has already been sanitized.
-	 * @param  array    $original_data    The original unsanitized section data.
+	 * @hooked filter make_prepare_data_section
 	 *
-	 * @return array                      The amended array of sanitized section data.
+	 * @param array $clean_data       The section data that has already been sanitized.
+	 * @param array $original_data    The original unsanitized section data.
+	 *
+	 * @return array                  The amended array of sanitized section data.
 	 */
 	public function save_input( $clean_data, $original_data ) {
-		// Only run this in the proper hook context.
-		if ( 'make_prepare_data_section' !== current_filter() ) {
-			return $clean_data;
-		}
-
 		if ( isset( $original_data['parallax-enable'] ) ) {
 			$clean_data['parallax-enable'] = absint( $original_data['parallax-enable'] );
 		}
@@ -118,17 +116,14 @@ class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
 	 *
 	 * @since 1.6.1.
 	 *
-	 * @param  string    $classes         The space-separated list of classes for a particular section.
-	 * @param  array     $section_data    The stored data for a particular section.
+	 * @hooked filter make_section_classes
 	 *
-	 * @return string                     The modified list of classes.
+	 * @param string $classes         The space-separated list of classes for a particular section.
+	 * @param array  $section_data    The stored data for a particular section.
+	 *
+	 * @return string                 The modified list of classes.
 	 */
 	public function add_class( $classes, $section_data ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_classes' !== current_filter() ) {
-			return $classes;
-		}
-
 		if ( isset( $section_data['parallax-enable'] ) && 1 === $section_data['parallax-enable'] ) {
 			$classes .= ' parallax';
 		}
@@ -141,14 +136,11 @@ class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
 	 *
 	 * @since 1.6.1.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function frontend_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		if ( function_exists( 'ttfmake_is_builder_page' ) && ttfmake_is_builder_page() ) {
 			$has_parallax = false;
 			$sections = ttfmake_get_section_data( get_the_ID() );
@@ -180,13 +172,13 @@ class MAKEPLUS_Component_Parallax_Setup implements MAKEPLUS_Util_HookInterface {
 				);
 
 				/**
-				 * Filter to access the frontend JS configuration for the Parallax feature.
+				 * Filter: Modify the frontend JS configuration for the Parallax feature.
 				 *
 				 * See: https://github.com/markdalgleish/stellar.js/blob/master/README.md#configuring-everything
 				 *
 				 * @since 1.6.1
 				 *
-				 * @param array $config The array of configuration options.
+				 * @param array $config    The array of configuration options.
 				 */
 				$config = apply_filters( 'ttfmp_parallax_js_config', array(
 					'backgroundRatio' => 0.3,

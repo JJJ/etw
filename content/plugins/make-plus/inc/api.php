@@ -3,8 +3,16 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_API extends MAKEPLUS_Util_Modules implements MAKEPLUS_APIInterface, MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_API
+ *
+ * Class to manage and provide access to all of the modules and components that make up the Make Plus API.
+ *
+ * Access this class via the global MakePlus() function.
+ *
+ * @since 1.7.0.
+ */
+final class MAKEPLUS_API extends MAKEPLUS_Util_Modules implements MAKEPLUS_APIInterface, MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -63,7 +71,7 @@ class MAKEPLUS_API extends MAKEPLUS_Util_Modules implements MAKEPLUS_APIInterfac
 	}
 
 	/**
-	 * Magic method to handle some properties from deprecated TTFMP_App class.
+	 * Magic method to handle some properties from the deprecated TTFMP_App class.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -130,14 +138,11 @@ class MAKEPLUS_API extends MAKEPLUS_Util_Modules implements MAKEPLUS_APIInterfac
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return bool
 	 */
 	public function load_theme_api() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return false;
-		}
-
 		// Get Make API
 		if ( $this->mode()->has_make_api() ) {
 			return $this->add_module( 'theme', Make() );
@@ -238,6 +243,13 @@ class MAKEPLUS_API extends MAKEPLUS_Util_Modules implements MAKEPLUS_APIInterfac
 					true,
 				),
 			),
+			// Sticky Header
+			'stickyheader'           => array(
+				'class'      => 'MAKEPLUS_Component_StickyHeader_Setup',
+				'conditions' => array(
+					'active' === $this->mode()->get_mode(),
+				),
+			),
 			// Typekit
 			'typekit'                => array(
 				'class'      => 'MAKEPLUS_Component_Typekit_Setup',
@@ -276,14 +288,11 @@ class MAKEPLUS_API extends MAKEPLUS_Util_Modules implements MAKEPLUS_APIInterfac
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function load_components() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		$components = $this->get_component_list();
 
 		foreach ( $components as $component_name => $component_data ) {

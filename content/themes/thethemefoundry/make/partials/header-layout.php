@@ -15,7 +15,7 @@ $header_bar_menu = wp_nav_menu( array(
 ?>
 
 <header id="site-header" class="<?php echo esc_attr( ttfmake_get_site_header_class() ); ?>" role="banner">
-	<?php // Only show Sub Header if it has content
+	<?php // Only show Header Bar if it has content
 	if (
 		make_get_thememod_value( 'header-text' )
 		||
@@ -27,7 +27,6 @@ $header_bar_menu = wp_nav_menu( array(
 	) : ?>
 	<div class="header-bar<?php echo esc_attr( $subheader_class ); ?>">
 		<div class="container">
-			<a class="skip-link screen-reader-text" href="#site-content"><?php esc_html_e( 'Skip to content', 'make' ); ?></a>
 			<?php // Search form
 			if ( make_get_thememod_value( 'header-show-search' ) ) :
 				get_search_form();
@@ -67,7 +66,6 @@ $header_bar_menu = wp_nav_menu( array(
 
 			<nav id="site-navigation" class="site-navigation" role="navigation">
 				<span class="menu-toggle"><?php echo make_get_thememod_value( 'navigation-mobile-label' ); ?></span>
-				<a class="skip-link screen-reader-text" href="#site-content"><?php esc_html_e( 'Skip to content', 'make' ); ?></a>
 				<?php
 				wp_nav_menu( array(
 					'theme_location' => 'primary'

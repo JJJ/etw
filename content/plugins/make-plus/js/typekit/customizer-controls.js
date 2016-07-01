@@ -43,7 +43,7 @@
 				MakeControls.cache.ajax['makeplus-fontweight-load'] = MakeControls.cache.ajax['makeplus-fontweight-load'] || {};
 
 				// Test the contents of the kid ID field when the Typekit section is first opened.
-				api.section('makeplus_font-typekit', function(section) {
+				api.section('ttfmake_font-typekit', function(section) {
 					section.container.one('expanded', function() {
 						if ($value.val()) {
 							$value.trigger('makeplus:typekit:donetyping');

@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Component_Duplicator_Section
  *
- * @since 1.0.0.
+ * Enable duplication of individual Builder sections.
+ *
+ * @since 1.2.0.
+ * @since 1.7.0. Changed class name from TTFMP_Section_Duplicator.
  */
 class MAKEPLUS_Component_Duplicator_Section implements MAKEPLUS_Util_HookInterface {
 	/**
@@ -57,17 +60,15 @@ class MAKEPLUS_Component_Duplicator_Section implements MAKEPLUS_Util_HookInterfa
 	/**
 	 * Enqueue the JS and CSS for the admin.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $hook_suffix    The suffix for the screen.
+	 * @hooked action admin_enqueue_scripts
+	 *
+	 * @param string $hook_suffix    The suffix for the screen.
+	 *
 	 * @return void
 	 */
 	public function admin_enqueue_scripts( $hook_suffix ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Only load resources if they are needed on the current page
 		if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) || 'page' !== get_post_type() ) {
 			return;
@@ -116,17 +117,15 @@ class MAKEPLUS_Component_Duplicator_Section implements MAKEPLUS_Util_HookInterfa
 	/**
 	 * Add a link to duplicate the section.
 	 *
-	 * @since  1.2.0.
+	 * @since 1.2.0.
 	 *
-	 * @param  array    $links    The existing links.
-	 * @return array              The new links.
+	 * @hooked filter make_builder_section_links
+	 *
+	 * @param array $links    The existing links.
+	 *
+	 * @return array          The new links.
 	 */
 	public function builder_section_footer_links( $links ) {
-		// Only run this in the proper hook context.
-		if ( 'make_builder_section_links' !== current_filter() ) {
-			return $links;
-		}
-
 		// Add the duplicate link
 		$links[60] = array(
 			'class' => 'ttfmp-duplicate-section',
@@ -141,12 +140,14 @@ class MAKEPLUS_Component_Duplicator_Section implements MAKEPLUS_Util_HookInterfa
 	/**
 	 * AJAX callback function for generating a duplicated section.
 	 *
-	 * @since  1.2.0.
+	 * @since 1.2.0.
+	 *
+	 * @hooked action wp_ajax_ttf_duplicate_section
 	 *
 	 * @return void
 	 */
 	public function duplicate_section() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_ttf_duplicate_section' !== current_action() ) {
 			return;
 		}
@@ -284,10 +285,11 @@ class MAKEPLUS_Component_Duplicator_Section implements MAKEPLUS_Util_HookInterfa
 	 *
 	 * Used as a callback for array_walk_recursive().
 	 *
-	 * @since  1.2.0.
+	 * @since 1.2.0.
 	 *
-	 * @param  string    $item    Current array value item to process.
-	 * @param  string    $key     Current array key to process.
+	 * @param string $item    Current array value item to process.
+	 * @param string $key     Current array key to process.
+	 *                        
 	 * @return void
 	 */
 	private function recursive_stripslashes( &$item, $key ) {

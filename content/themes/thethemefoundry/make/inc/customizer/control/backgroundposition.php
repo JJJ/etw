@@ -9,6 +9,7 @@
  * Specialized radio control for choosing background image positioning.
  *
  * @since 1.5.0.
+ * @since 1.7.0. Converted to content_template().
  */
 class MAKE_Customizer_Control_BackgroundPosition extends WP_Customize_Control {
 	/**

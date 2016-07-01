@@ -3,7 +3,11 @@
  * @package Make
  */
 
-
+/**
+ * Interface MAKE_Font_Source_BaseInterface
+ *
+ * @since 1.7.0.
+ */
 interface MAKE_Font_Source_BaseInterface extends MAKE_Util_ModulesInterface {
 	public function get_id();
 

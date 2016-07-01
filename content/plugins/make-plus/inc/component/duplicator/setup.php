@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Component_Duplicator_Setup
  *
- * @since 1.7.0.
+ * Load modules to enable duplicator functionality in the WP Admin.
+ *
+ * @since 1.1.0.
+ * @since 1.7.0. Changed class name from TTFMP_Duplicator.
  */
 final class MAKEPLUS_Component_Duplicator_Setup extends MAKEPLUS_Util_Modules {
 	/**

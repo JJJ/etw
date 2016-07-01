@@ -3,10 +3,16 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_Typekit_Source extends MAKE_Font_Source_Base implements MAKEPLUS_Util_LoadInterface {
+/**
+ * Class MAKEPLUS_Component_Typekit_Source
+ *
+ * @since 1.7.0.
+ */
+final class MAKEPLUS_Component_Typekit_Source extends MAKE_Font_Source_Base implements MAKEPLUS_Util_LoadInterface {
 	/**
 	 * An associative array of required modules.
+	 *
+	 * These dependencies are from Make instead of Make Plus because the source gets loaded into Make's Font module.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -27,28 +33,23 @@ class MAKEPLUS_Component_Typekit_Source extends MAKE_Font_Source_Base implements
 	private $loaded = false;
 
 	/**
-	 * MAKE_Font_Source_Google constructor.
+	 * MAKEPLUS_Component_Typekit_Source constructor.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param MAKE_APIInterface $api
-	 * @param array             $modules
+	 * @param MAKE_APIInterface|null $api
+	 * @param array                  $modules
 	 */
-	public function __construct(
-		MAKE_APIInterface $api,
-		array $modules = array()
-	) {
-		// Load dependencies.
-		parent::__construct( $api, $modules );
-
-		// Set the ID.
-		$this->id = 'typekit';
-
-		// Set the label.
-		$this->label = __( 'Typekit Fonts', 'make-plus' );
-
-		// Set the priority.
-		$this->priority = 5;
+	public function __construct( MAKE_APIInterface $api = null, array $modules = array() ) {
+		// Parent constructor.
+		parent::__construct(
+			'typekit',
+			__( 'Typekit Fonts', 'make-plus' ),
+			array(), // Data is loaded separately when needed.
+			5,
+			$api,
+			$modules
+		);
 	}
 
 	/**
@@ -165,7 +166,7 @@ class MAKEPLUS_Component_Typekit_Source extends MAKE_Font_Source_Base implements
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param null $font
+	 * @param string|null $font
 	 *
 	 * @return array|mixed|void
 	 */

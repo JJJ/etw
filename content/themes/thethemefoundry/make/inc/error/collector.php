@@ -71,12 +71,25 @@ final class MAKE_Error_Collector extends MAKE_Util_Modules implements MAKE_Error
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param        $code
-	 * @param        $message
+	 * @param string $code
+	 * @param string $message
 	 * @param string $data
 	 */
 	public function add_error( $code, $message, $data = '' ) {
 		$this->errors()->add( $code, $message, $data );
+	}
+
+	/**
+	 * Check if a particular error code has been added.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string $code
+	 *
+	 * @return bool
+	 */
+	public function has_code( $code ) {
+		return in_array( $code, $this->get_codes() );
 	}
 
 	/**

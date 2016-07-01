@@ -6,6 +6,25 @@
 /**
  * Class MAKEPLUS_Util_Modules
  *
+ * An object for managing object dependencies.
+ *
+ * This is an abstract class, so it is unusable on its own. It must be extended by another class.
+ *
+ * This class provides the extending class with properties and methods for loading and storing other objects as
+ * dependencies/modules. The __construct method has two parameters that represent two different ways of injecting
+ * these modules:
+ *
+ * - $api is a specialized instance of this class that contains all of the modules that make up the plugin's API. If it
+ *   is provided as a parameter (instead of null), any items in the class's $dependencies array with the same name as
+ *   an API module can be loaded from the $api instance.
+ * - $modules is an associative array where the key is the module name and the value is either an object instance or
+ *   a class name. This can be used to provide modules that are not included in the $api instance. Only module names
+ *   that are also in the dependencies array will be considered. Modules in this array will be preferenced over modules
+ *   of the same name in the $api instance.
+ *
+ * This class uses the __call() magic method to allow access to each of its modules via a method of the same name. So
+ * for example, to access the 'error' module, you can use $this->error() instead of $this->get_module( 'error' ).
+ *
  * @since 1.7.0.
  */
 abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
@@ -38,10 +57,7 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 	 * @param MAKEPLUS_APIInterface|null $api
 	 * @param array                  $modules
 	 */
-	public function __construct(
-		MAKEPLUS_APIInterface $api = null,
-		array $modules = array()
-	) {
+	public function __construct( MAKEPLUS_APIInterface $api = null, array $modules = array() ) {
 		if ( ! empty( $this->dependencies ) ) {
 			$this->load_dependencies( $api, $modules );
 		}
@@ -52,26 +68,33 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $name
-	 * @param $arguments
+	 * @param string $name
+	 * @param array  $arguments
 	 *
-	 * @return bool|mixed
+	 * @return mixed|bool
 	 */
 	public function __call( $name, $arguments ) {
 		if ( $this->has_module( $name ) ) {
 			return $this->get_module( $name );
 		} else {
-			return trigger_error( sprintf( esc_html__( 'Call to undefined method %1$s::%2$s()', 'make' ), get_class( $this ), esc_html( $name ) ), E_USER_ERROR );
+			return trigger_error(
+				sprintf(
+					esc_html__( 'Call to undefined method %1$s::%2$s()', 'make' ),
+					get_class( $this ),
+					esc_html( $name )
+				),
+				E_USER_ERROR
+			);
 		}
 	}
 
 	/**
-	 * Add a module and run its hook routine.
+	 * Add a module and run its hook routine if it has one.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $module_name
-	 * @param  object    $module
+	 * @param string $module_name
+	 * @param object $module
 	 *
 	 * @return bool
 	 */
@@ -84,6 +107,7 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 					$this->modules[ $module_name ]->hook();
 				}
 			}
+
 			return true;
 		}
 		// Module already exists. Generate a warning.
@@ -102,8 +126,8 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 	}
 
 	/**
-	 * Add modules required by the dependencies array, either from the optional modules parameter or from the
-	 * api parameter.
+	 * Add modules required by the dependencies array, either from the optional $modules parameter or from the
+	 * $api parameter.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -164,6 +188,7 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 	 */
 	protected function create_instance( $class_name, $instance_args = array() ) {
 		$reflection = new ReflectionClass( $class_name );
+
 		if ( ! empty( $instance_args ) ) {
 			return $reflection->newInstanceArgs( $instance_args );
 		} else {
@@ -176,7 +201,7 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $module_name
+	 * @param string $module_name
 	 *
 	 * @return mixed
 	 */
@@ -188,6 +213,7 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 					$this->modules[ $module_name ]->load();
 				}
 			}
+
 			return $this->modules[ $module_name ];
 		}
 
@@ -204,7 +230,7 @@ abstract class MAKEPLUS_Util_Modules implements MAKEPLUS_Util_ModulesInterface {
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $module_name
+	 * @param string $module_name
 	 *
 	 * @return bool
 	 */

@@ -3,8 +3,15 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_Component_PerPage_Setup
+ *
+ * Enable layout settings on single posts and pages that override the global layout settings.
+ *
+ * @since 1.0.0.
+ * @since 1.7.0. Changed class name from TTFMP_PerPage.
+ */
+final class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -85,29 +92,27 @@ class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements 
 		return self::$hooked;
 	}
 
-
+	/**
+	 * Return expanded view definition arrays for the Post and Page views.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @return array
+	 */
 	private function get_enabled_views() {
 		// Check for deprecated filter.
 		if ( has_filter( 'ttfmp_perpage_allowed_keys' ) ) {
 			$this->compatibility()->deprecated_hook(
 				'ttfmp_perpage_allowed_keys',
-				'1.7.0'
-			);
-		}
-
-		// Check for deprecated filter.
-		if ( has_filter( 'ttfmp_perpage_keys' ) ) {
-			$this->compatibility()->deprecated_hook(
-				'ttfmp_perpage_keys',
-				'1.7.0'
-			);
-		}
-
-		// Check for deprecated filter.
-		if ( has_filter( 'ttfmp_perpage_view' ) ) {
-			$this->compatibility()->deprecated_hook(
-				'ttfmp_perpage_view',
-				'1.7.0'
+				'1.7.0',
+				sprintf(
+					wp_kses(
+						__( 'To add or modify theme views, use the %1$s function instead. See the <a href="%2$s" target="_blank">View API documentation</a>.', 'make-plus' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_view_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/view-api/'
+				)
 			);
 		}
 
@@ -160,18 +165,50 @@ class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements 
 		);
 	}
 
-
+	/**
+	 * Define the conditions for the admin view to be "Post".
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @return bool
+	 */
 	public function view_callback_admin_post() {
 		global $typenow;
 
+		$post_types = get_post_types(
+			array(
+				'public' => true,
+				'_builtin' => false
+			)
+		);
+		$post_types[] = 'post';
+
+		/**
+		 * Filter: Modify the array of post types that qualify as the "Post" view in the admin.
+		 *
+		 * This helps to determine whether the Layout Settings metabox should appear on the Edit screen
+		 * for a particular post type.
+		 *
+		 * @since 1.0.0.
+		 *
+		 * @param array $post_types
+		 */
+		$post_types = apply_filters( 'ttfmp_perpage_post_types', $post_types );
+
 		if ( isset( $typenow ) ) {
-			return 'post' === $typenow;
+			return in_array( $typenow, $post_types );
 		}
 
 		return false;
 	}
 
-
+	/**
+	 * Define the conditions for the admin view to be "Page".
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @return bool
+	 */
 	public function view_callback_admin_page() {
 		global $typenow;
 
@@ -182,13 +219,18 @@ class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements 
 		return false;
 	}
 
-
+	/**
+	 * Update the view definitions for PerPage-enabled views.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked action make_view_loaded
+	 *
+	 * @param MAKE_Layout_ViewInterface $view
+	 *
+	 * @return void
+	 */
 	public function update_views( MAKE_Layout_ViewInterface $view ) {
-		// Only run this in the proper hook context.
-		if ( 'make_view_loaded' !== current_action() ) {
-			return;
-		}
-
 		// View IDs to update
 		$enabled_views = $this->get_enabled_views();
 
@@ -203,16 +245,13 @@ class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements 
 	/**
 	 * Add the setting overrides for the current view.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action wp
 	 *
 	 * @return void
 	 */
 	public function add_mod_filters() {
-		// Only run this in the proper hook context.
-		if ( 'wp' !== current_action() ) {
-			return;
-		}
-
 		global $post;
 
 		$perpage_views = array_keys( $this->theme()->view()->get_views( 'is_perpage_view' ), true );
@@ -233,17 +272,15 @@ class MAKEPLUS_Component_PerPage_Setup extends MAKEPLUS_Util_Modules implements 
 	/**
 	 * Filter a theme mod to override its value.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  mixed    $value    The original value of the theme mod
-	 * @return mixed              The modified value of the theme mod
+	 * @hooked filter theme_mod_{$key}
+	 *
+	 * @param mixed $value    The original value of the theme mod
+	 *                        
+	 * @return mixed          The modified value of the theme mod
 	 */
 	public function filter_mod( $value ) {
-		// Only run this in the proper hook context.
-		if ( 0 !== strpos( current_filter(), 'theme_mod_' ) ) {
-			return $value;
-		}
-
 		global $post;
 
 		$perpage_views = array_keys( $this->theme()->view()->get_views( 'is_perpage_view' ), true );

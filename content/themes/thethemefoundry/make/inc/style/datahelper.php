@@ -6,6 +6,8 @@
 /**
  * Class MAKE_Style_DataHelper
  *
+ * Methods to help process the data loaded to generate style rules.
+ *
  * @since 1.7.0.
  */
 class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_DataHelperInterface {
@@ -28,10 +30,10 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 	 *
 	 * @since  1.3.0.
 	 *
-	 * @param  string    $element    The element to parse the options for.
-	 * @param  bool      $force      True to include properties that have default values.
+	 * @param string $element    The element to parse the options for.
+	 * @param bool   $force      True to include properties that have default values.
 	 *
-	 * @return array                 An array of non-default CSS declarations.
+	 * @return array             An array of CSS declarations.
 	 */
 	public function parse_font_properties( $element, $force = false ) {
 		// Font properties.
@@ -51,7 +53,10 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 			$this->compatibility()->deprecated_hook(
 				'make_css_font_properties',
 				'1.7.0',
-				esc_html__( 'To change the sanitize callback for a font setting, use the Make Settings API instead.', 'make' )
+				sprintf(
+					esc_html__( 'To change the sanitize callback for a font setting, use the %s function instead.', 'make' ),
+					'<code>make_update_thememod_setting_definition</code>'
+				)
 			);
 		}
 
@@ -66,7 +71,7 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 				if ( true === $force || ( ! $this->thememod()->is_default( $setting_id ) ) ) {
 					switch ( $property ) {
 						case 'font-family' :
-							$declarations[ $property ] = $this->font()->get_font_stack( $sanitized_value );
+							$declarations[ $property ] = $this->get_cached_font_stack( $sanitized_value );
 							break;
 						case 'font-size' :
 							$declarations[ $property . '-px' ]  = $sanitized_value . 'px';
@@ -92,16 +97,17 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 	 *
 	 * @since 1.5.0.
 	 *
-	 * @param  string    $element      The element to look up in the theme options.
-	 * @param  array     $selectors    The base selectors to use for the rule.
+	 * @param string $element      The element to look up in the theme options.
+	 * @param array  $selectors    The base selectors to use for the rule.
+	 * @param bool   $force        True to include properties that have default values.
 	 *
-	 * @return array                   A CSS rule definition array.
+	 * @return array               A CSS rule definition array.
 	 */
-	public function parse_link_underline( $element, $selectors ) {
+	public function parse_link_underline( $element, $selectors, $force = false ) {
 		$setting_id = 'link-underline-' . $element;
 		$sanitized_value = $this->thememod()->get_value( $setting_id, 'style' );
 
-		if ( ! $this->thememod()->is_default( $setting_id ) ) {
+		if ( $force || ! $this->thememod()->is_default( $setting_id ) ) {
 			// Declarations
 			$declarations = array( 'text-decoration' => 'underline' );
 			if ( 'never' === $sanitized_value ) {
@@ -119,12 +125,38 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 
 			// Return CSS rule array
 			return array(
-				'selectors' => $parsed_selectors,
+				'selectors'    => $parsed_selectors,
 				'declarations' => $declarations,
 			);
 		}
 
 		return array();
+	}
+
+	/**
+	 * Try to retrieve a cached font stack value before loading the font source.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string $font
+	 *
+	 * @return string
+	 */
+	public function get_cached_font_stack( $font ) {
+		// Check the cache first.
+		$cache = $this->thememod()->get_value( 'font-stack-cache' );
+		if ( isset( $cache[ $font ] ) ) {
+			return $cache[ $font ];
+		}
+
+		// No cached value. Get the stack.
+		$stack = $this->font()->get_font_stack( $font );
+
+		// Store stack in the cache.
+		$cache[ $font ] = $stack;
+		$this->thememod()->set_value( 'font-stack-cache', $cache );
+
+		return $stack;
 	}
 
 	/**
@@ -134,8 +166,9 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 	 *
 	 * @since 1.5.0.
 	 *
-	 * @param  $value
-	 * @return bool|string
+	 * @param string $value
+	 *
+	 * @return string
 	 */
 	public function hex_to_rgb( $value ) {
 		$hex = sanitize_hex_color_no_hash( $value );
@@ -149,7 +182,7 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 			$g = hexdec( substr( $hex, 1, 1 ) . substr( $hex, 1, 1 ) );
 			$b = hexdec( substr( $hex, 2, 1 ) . substr( $hex, 2, 1 ) );
 		} else {
-			return false;
+			return '';
 		}
 
 		return "$r, $g, $b";
@@ -161,9 +194,9 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 	 * @since 1.3.0.
 	 * @since 1.7.0. Added $key parameter
 	 *
-	 * @param string|null $key
+	 * @param string|null $key    The relative size to return, or the array of relative sizes.
 	 *
-	 * @return array    The percentage value relative to another specific size
+	 * @return array|int          The percentage value relative to another specific size
 	 */
 	public function get_relative_size( $key = null ) {
 		/**
@@ -174,7 +207,7 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 		 *
 		 * @since 1.0.0.
 		 *
-		 * @param array    $sizes    The array of relative sizes.
+		 * @param array $sizes    The array of relative sizes.
 		 */
 		$sizes = apply_filters( 'make_font_relative_size', array(
 			// Relative to navigation font size
@@ -211,10 +244,10 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @param  mixed    $value         The value to base the final value on.
-	 * @param  mixed    $percentage    The percentage of change.
+	 * @param mixed $value         The value to base the final value on.
+	 * @param mixed $percentage    The percentage of change.
 	 *
-	 * @return float                   The converted value.
+	 * @return float               The converted value.
 	 */
 	public function get_relative_font_size( $value, $percentage ) {
 		return round( (float) $value * ( $percentage / 100 ) );
@@ -225,9 +258,9 @@ class MAKE_Style_DataHelper extends MAKE_Util_Modules implements MAKE_Style_Data
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @param  mixed    $px      The value to convert.
+	 * @param mixed $px      The value to convert.
 	 *
-	 * @return float             The converted value.
+	 * @return float         The converted value.
 	 */
 	public function convert_px_to_rem( $px ) {
 		return (float) $px / 10;

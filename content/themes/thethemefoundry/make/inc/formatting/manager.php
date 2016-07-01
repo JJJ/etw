@@ -9,6 +9,7 @@
  * Adds TinyMCE plugins for formatting options and tools in the editor.
  *
  * @since 1.4.1.
+ * @since 1.7.0. Changed class name from TTFMAKE_Formatting
  */
 class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatting_ManagerInterface, MAKE_Util_HookInterface {
 	/**
@@ -105,8 +106,8 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param        $format_name
-	 * @param        $script_uri
+	 * @param string $format_name
+	 * @param string $script_uri
 	 * @param string $script_version
 	 *
 	 * @return bool
@@ -138,7 +139,7 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $format_name
+	 * @param string $format_name
 	 *
 	 * @return bool
 	 */
@@ -164,14 +165,11 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action admin_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function add_formats() {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		$formats_uri = $this->scripts()->get_js_directory_uri() . '/formatting/format-builder/models';
 
 		// Button
@@ -215,7 +213,7 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param MAKE_Formatting_Manager    $formatting     The Formatting object.
+		 * @param MAKE_Formatting_Manager $formatting     The Formatting object.
 		 */
 		do_action( 'make_add_formats', $this );
 	}
@@ -225,15 +223,13 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.4.1.
 	 *
-	 * @param  array    $plugins
+	 * @hooked filter mce_external_plugins
+	 *
+	 * @param array $plugins
+	 *
 	 * @return mixed
 	 */
 	public function register_plugins( $plugins ) {
-		// Only run this in the proper hook context.
-		if ( 'mce_external_plugins' !== current_filter() ) {
-			return $plugins;
-		}
-
 		// Format Builder
 		$plugins['ttfmake_format_builder'] = $this->scripts()->get_url( 'make-format-builder-plugin', 'script' );
 
@@ -257,15 +253,13 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.4.1.
 	 *
-	 * @param  array    $buttons
+	 * @hooked filter mce_buttons
+	 *
+	 * @param array $buttons
+	 *
 	 * @return array
 	 */
 	public function register_buttons_1( $buttons ) {
-		// Only run this in the proper hook context.
-		if ( 'mce_buttons' !== current_filter() ) {
-			return $buttons;
-		}
-
 		// Format Builder
 		$buttons[] = 'ttfmake_format_builder';
 
@@ -283,15 +277,13 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.4.1.
 	 *
-	 * @param  array    $buttons
+	 * @hooked filter mce_buttons_2
+	 *
+	 * @param array $buttons
+	 *
 	 * @return array
 	 */
 	public function register_buttons_2( $buttons ) {
-		// Only run this in the proper hook context.
-		if ( 'mce_buttons_2' !== current_filter() ) {
-			return $buttons;
-		}
-
 		// Add the Formats dropdown
 		array_unshift( $buttons, 'styleselect' );
 
@@ -301,18 +293,16 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	/**
 	 * Position the new hr button in the place that the old hr usually resides.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $mceInit      The configuration for the current editor.
-	 * @param  string    $editor_id    The ID for the current editor.
-	 * @return array                   The modified configuration array.
+	 * @hooked filter tiny_mce_before_init
+	 *
+	 * @param array  $mceInit      The configuration for the current editor.
+	 * @param string $editor_id    The ID for the current editor.
+	 *
+	 * @return array               The modified configuration array.
 	 */
 	public function reposition_hr( $mceInit, $editor_id ) {
-		// Only run this in the proper hook context.
-		if ( 'tiny_mce_before_init' !== current_filter() ) {
-			return $mceInit;
-		}
-
 		if ( ! empty( $mceInit['toolbar1'] ) ) {
 			if ( in_array( 'hr', explode( ',', $mceInit['toolbar1'] ) ) ) {
 				// Remove the current positioning of the new hr button
@@ -333,15 +323,13 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.4.1.
 	 *
-	 * @param  array    $translations
+	 * @hooked filter wp_mce_translation
+	 *
+	 * @param array $translations
+	 *
 	 * @return array
 	 */
 	public function add_translations( $translations ) {
-		// Only run this in the proper hook context.
-		if ( 'wp_mce_translation' !== current_filter() ) {
-			return $translations;
-		}
-
 		$formatting_translations = array(
 			// Format Builder
 			'Format Builder' => __( 'Format Builder', 'make' ),
@@ -411,17 +399,15 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	/**
 	 * Add items to the Formats dropdown.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $settings    TinyMCE settings array.
-	 * @return array                 Modified array.
+	 * @hooked filter tiny_mce_before_init
+	 *
+	 * @param array $settings    TinyMCE settings array.
+	 *
+	 * @return array             Modified array.
 	 */
 	public function formats_dropdown_items( $settings ) {
-		// Only run this in the proper hook context.
-		if ( 'tiny_mce_before_init' !== current_filter() ) {
-			return $settings;
-		}
-
 		$style_formats = array(
 			// Big (big)
 			array(
@@ -467,14 +453,12 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 * @hooked action admin_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function register_styles_scripts() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'wp_enqueue_scripts', 'admin_enqueue_scripts' ) ) ) {
-			return;
-		}
-
 		// Admin styles
 		wp_register_style(
 			'make-formatting',
@@ -563,14 +547,13 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.4.1.
 	 *
-	 * @param $hook_suffix
+	 * @hooked action admin_enqueue_scripts
+	 *
+	 * @param string $hook_suffix
+	 *
+	 * @return void
 	 */
 	public function enqueue_admin_scripts( $hook_suffix ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Only enqueue for content editing screens
 		if ( in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) ) {
 			/**
@@ -602,7 +585,7 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 				'MakeIconPicker',
 				array(
 					'sources' => array(
-						'fontawesome' => get_template_directory_uri() . '/inc/formatting/js/icon-picker/fontawesome.json'
+						'fontawesome' => $this->scripts()->get_js_directory_uri() . '/formatting/icon-picker/fontawesome.json'
 					)
 				)
 			);
@@ -644,14 +627,11 @@ class MAKE_Formatting_Manager extends MAKE_Util_Modules implements MAKE_Formatti
 	 *
 	 * @since 1.4.1.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_frontend_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Dynamic styles
 		wp_enqueue_script( 'make-dynamic-stylesheet' );
 	}

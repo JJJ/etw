@@ -6,9 +6,12 @@
 /**
  * Class MAKEPLUS_Component_Builder_Enhancement_SectionClasses
  *
- * @since 1.7.0.
+ * Add a Section Classes configuration setting to all Builder sections.
+ *
+ * @since 1.6.0.
+ * @since 1.7.0. Moved to a separate class.
  */
-class MAKEPLUS_Component_Builder_Enhancement_SectionClasses implements MAKEPLUS_Util_HookInterface {
+final class MAKEPLUS_Component_Builder_Enhancement_SectionClasses implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * Indicator of whether the hook routine has been run.
 	 *
@@ -60,16 +63,13 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionClasses implements MAKEPLUS_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $args    The section args.
+	 * @hooked filter make_add_section
 	 *
-	 * @return array             The modified section args.
+	 * @param array $args    The section args.
+	 *
+	 * @return array         The modified section args.
 	 */
 	public function modify_section( $args ) {
-		// Only run this in the proper hook context.
-		if ( 'make_add_section' !== current_filter() ) {
-			return $args;
-		}
-
 		$controls = $args['config'];
 
 		// Get the last priority of existing section controls
@@ -107,17 +107,14 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionClasses implements MAKEPLUS_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $clean_data       The section data that has already been sanitized.
-	 * @param  array    $original_data    The original unsanitized section data.
+	 * @hooked filter make_prepare_data_section
 	 *
-	 * @return array                      The amended array of sanitized section data.
+	 * @param array $clean_data       The section data that has already been sanitized.
+	 * @param array $original_data    The original unsanitized section data.
+	 *
+	 * @return array                  The amended array of sanitized section data.
 	 */
 	public function save_data( $clean_data, $original_data ) {
-		// Only run this in the proper hook context.
-		if ( 'make_prepare_data_section' !== current_filter() ) {
-			return $clean_data;
-		}
-
 		if ( isset( $original_data['section-classes'] ) ) {
 			$clean_data['section-classes'] = $this->sanitize_classes( $original_data['section-classes'] );
 		}
@@ -130,13 +127,14 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionClasses implements MAKEPLUS_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $original_classes    Space-separated list of classes.
+	 * @param string $original_classes    Space-separated list of classes.
 	 *
-	 * @return string                         Sanitized classes.
+	 * @return string                     Sanitized classes.
 	 */
 	private function sanitize_classes( $original_classes ) {
 		$classes = explode( ' ', $original_classes );
 		$clean_classes = array_map( 'sanitize_key', $classes );
+
 		return implode( ' ', $clean_classes );
 	}
 
@@ -145,10 +143,10 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionClasses implements MAKEPLUS_
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $classes         The space-separated list of classes for a particular section.
-	 * @param  array     $section_data    The stored data for a particular section.
+	 * @param string $classes         The space-separated list of classes for a particular section.
+	 * @param array  $section_data    The stored data for a particular section.
 	 *
-	 * @return string                     The modified list of classes.
+	 * @return string                 The modified list of classes.
 	 */
 	public function add_section_classes( $classes, $section_data ) {
 		if ( isset( $section_data['section-classes'] ) && ! empty( $section_data['section-classes'] ) ) {

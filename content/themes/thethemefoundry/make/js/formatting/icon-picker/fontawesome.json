@@ -16,6 +16,11 @@
       "unicode": "f042"
     },
     {
+      "name": "American Sign Language Interpreting",
+      "id": "fa-american-sign-language-interpreting",
+      "unicode": "f2a3"
+    },
+    {
       "name": "Anchor",
       "id": "fa-anchor",
       "unicode": "f13d"
@@ -51,6 +56,11 @@
       "unicode": "f07d"
     },
     {
+      "name": "Assistive Listening Systems",
+      "id": "fa-assistive-listening-systems",
+      "unicode": "f2a2"
+    },
+    {
       "name": "asterisk",
       "id": "fa-asterisk",
       "unicode": "f069"
@@ -59,6 +69,11 @@
       "name": "At",
       "id": "fa-at",
       "unicode": "f1fa"
+    },
+    {
+      "name": "Audio Description",
+      "id": "fa-audio-description",
+      "unicode": "f29e"
     },
     {
       "name": "Audio File Outlined",
@@ -161,6 +176,11 @@
       "unicode": "f1fd"
     },
     {
+      "name": "Blind",
+      "id": "fa-blind",
+      "unicode": "f29d"
+    },
+    {
       "name": "Bluetooth",
       "id": "fa-bluetooth",
       "unicode": "f293"
@@ -189,6 +209,11 @@
       "name": "Bookmark Outlined",
       "id": "fa-bookmark-o",
       "unicode": "f097"
+    },
+    {
+      "name": "Braille",
+      "id": "fa-braille",
+      "unicode": "f2a1"
     },
     {
       "name": "Briefcase",
@@ -456,6 +481,11 @@
       "unicode": "f25e"
     },
     {
+      "name": "Credit Card",
+      "id": "fa-credit-card-alt",
+      "unicode": "f283"
+    },
+    {
       "name": "credit-card",
       "id": "fa-credit-card",
       "unicode": "f09d"
@@ -489,6 +519,11 @@
       "name": "Database",
       "id": "fa-database",
       "unicode": "f1c0"
+    },
+    {
+      "name": "Deaf",
+      "id": "fa-deaf",
+      "unicode": "f2a4"
     },
     {
       "name": "Desktop",
@@ -886,6 +921,11 @@
       "unicode": "f023"
     },
     {
+      "name": "Low Vision",
+      "id": "fa-low-vision",
+      "unicode": "f2a8"
+    },
+    {
       "name": "magic",
       "id": "fa-magic",
       "unicode": "f0d0"
@@ -1141,6 +1181,11 @@
       "unicode": "f059"
     },
     {
+      "name": "Question Circle Outlined",
+      "id": "fa-question-circle-o",
+      "unicode": "f29c"
+    },
+    {
       "name": "quote-left",
       "id": "fa-quote-left",
       "unicode": "f10d"
@@ -1299,6 +1344,11 @@
       "name": "Sign In",
       "id": "fa-sign-in",
       "unicode": "f090"
+    },
+    {
+      "name": "Sign Language",
+      "id": "fa-sign-language",
+      "unicode": "f2a7"
     },
     {
       "name": "Sign Out",
@@ -1586,6 +1636,11 @@
       "unicode": "f0e9"
     },
     {
+      "name": "Universal Access",
+      "id": "fa-universal-access",
+      "unicode": "f29a"
+    },
+    {
       "name": "University",
       "id": "fa-university",
       "unicode": "f19c"
@@ -1631,6 +1686,11 @@
       "unicode": "f1c8"
     },
     {
+      "name": "Volume Control Phone",
+      "id": "fa-volume-control-phone",
+      "unicode": "f2a0"
+    },
+    {
       "name": "volume-down",
       "id": "fa-volume-down",
       "unicode": "f027"
@@ -1649,6 +1709,11 @@
       "name": "Wheelchair",
       "id": "fa-wheelchair",
       "unicode": "f193"
+    },
+    {
+      "name": "Wheelchair Alt",
+      "id": "fa-wheelchair-alt",
+      "unicode": "f29b"
     },
     {
       "name": "WiFi",
@@ -2587,13 +2652,13 @@
     },
     {
       "name": "Bluetooth",
-      "id": "fa-bluetooth-b",
-      "unicode": "f294"
+      "id": "fa-bluetooth",
+      "unicode": "f293"
     },
     {
       "name": "Bluetooth",
-      "id": "fa-bluetooth",
-      "unicode": "f293"
+      "id": "fa-bluetooth-b",
+      "unicode": "f294"
     },
     {
       "name": "BuySellAds",
@@ -2624,11 +2689,6 @@
       "name": "Contao",
       "id": "fa-contao",
       "unicode": "f26d"
-    },
-    {
-      "name": "Credit Card",
-      "id": "fa-credit-card-alt",
-      "unicode": "f283"
     },
     {
       "name": "CSS 3 Logo",
@@ -2684,6 +2744,11 @@
       "name": "Edge Browser",
       "id": "fa-edge",
       "unicode": "f282"
+    },
+    {
+      "name": "Envira Gallery",
+      "id": "fa-envira",
+      "unicode": "f299"
     },
     {
       "name": "ExpeditedSSL",
@@ -2784,6 +2849,21 @@
       "name": "GitHub Square",
       "id": "fa-github-square",
       "unicode": "f092"
+    },
+    {
+      "name": "GitLab",
+      "id": "fa-gitlab",
+      "unicode": "f296"
+    },
+    {
+      "name": "Glide",
+      "id": "fa-glide",
+      "unicode": "f2a5"
+    },
+    {
+      "name": "Glide G",
+      "id": "fa-glide-g",
+      "unicode": "f2a6"
     },
     {
       "name": "Google Logo",
@@ -3076,6 +3156,21 @@
       "unicode": "f1e7"
     },
     {
+      "name": "Snapchat",
+      "id": "fa-snapchat",
+      "unicode": "f2ab"
+    },
+    {
+      "name": "Snapchat Ghost",
+      "id": "fa-snapchat-ghost",
+      "unicode": "f2ac"
+    },
+    {
+      "name": "Snapchat Square",
+      "id": "fa-snapchat-square",
+      "unicode": "f2ad"
+    },
+    {
       "name": "SoundCloud",
       "id": "fa-soundcloud",
       "unicode": "f1be"
@@ -3171,6 +3266,16 @@
       "unicode": "f237"
     },
     {
+      "name": "Viadeo",
+      "id": "fa-viadeo",
+      "unicode": "f2a9"
+    },
+    {
+      "name": "Viadeo Square",
+      "id": "fa-viadeo-square",
+      "unicode": "f2aa"
+    },
+    {
       "name": "Vimeo",
       "id": "fa-vimeo",
       "unicode": "f27d"
@@ -3224,6 +3329,16 @@
       "name": "WordPress Logo",
       "id": "fa-wordpress",
       "unicode": "f19a"
+    },
+    {
+      "name": "WPBeginner",
+      "id": "fa-wpbeginner",
+      "unicode": "f297"
+    },
+    {
+      "name": "WPForms",
+      "id": "fa-wpforms",
+      "unicode": "f298"
     },
     {
       "name": "Xing",
@@ -3470,6 +3585,83 @@
       "name": "US Dollar",
       "id": "fa-usd",
       "unicode": "f155"
+    }
+  ],
+  "Accessibility Icons": [
+    {
+      "name": "American Sign Language Interpreting",
+      "id": "fa-american-sign-language-interpreting",
+      "unicode": "f2a3"
+    },
+    {
+      "name": "Assistive Listening Systems",
+      "id": "fa-assistive-listening-systems",
+      "unicode": "f2a2"
+    },
+    {
+      "name": "Audio Description",
+      "id": "fa-audio-description",
+      "unicode": "f29e"
+    },
+    {
+      "name": "Blind",
+      "id": "fa-blind",
+      "unicode": "f29d"
+    },
+    {
+      "name": "Braille",
+      "id": "fa-braille",
+      "unicode": "f2a1"
+    },
+    {
+      "name": "Closed Captions",
+      "id": "fa-cc",
+      "unicode": "f20a"
+    },
+    {
+      "name": "Deaf",
+      "id": "fa-deaf",
+      "unicode": "f2a4"
+    },
+    {
+      "name": "Low Vision",
+      "id": "fa-low-vision",
+      "unicode": "f2a8"
+    },
+    {
+      "name": "Question Circle Outlined",
+      "id": "fa-question-circle-o",
+      "unicode": "f29c"
+    },
+    {
+      "name": "Sign Language",
+      "id": "fa-sign-language",
+      "unicode": "f2a7"
+    },
+    {
+      "name": "TTY",
+      "id": "fa-tty",
+      "unicode": "f1e4"
+    },
+    {
+      "name": "Universal Access",
+      "id": "fa-universal-access",
+      "unicode": "f29a"
+    },
+    {
+      "name": "Volume Control Phone",
+      "id": "fa-volume-control-phone",
+      "unicode": "f2a0"
+    },
+    {
+      "name": "Wheelchair",
+      "id": "fa-wheelchair",
+      "unicode": "f193"
+    },
+    {
+      "name": "Wheelchair Alt",
+      "id": "fa-wheelchair-alt",
+      "unicode": "f29b"
     }
   ],
   "Gender Icons": [

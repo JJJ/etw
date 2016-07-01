@@ -3,8 +3,14 @@
  * @package Make
  */
 
-
-class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customizer_PreviewInterface, MAKE_Util_HookInterface {
+/**
+ * Class MAKE_Customizer_Preview
+ *
+ * Configure the Customizer's preview pane.
+ *
+ * @since 1.7.0.
+ */
+final class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customizer_PreviewInterface, MAKE_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -72,16 +78,13 @@ class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customiz
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function setting_mods( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// Change transport for some core settings
 		$wp_customize->get_setting( 'blogname' )->transport        = 'postMessage';
 		$wp_customize->get_setting( 'blogdescription' )->transport = 'postMessage';
@@ -92,14 +95,11 @@ class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customiz
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_preview_init
+	 *
 	 * @return void
 	 */
 	public function enqueue_preview_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'customize_preview_init' !== current_action() ) {
-			return;
-		}
-
 		wp_enqueue_script(
 			'make-customizer-preview',
 			$this->scripts()->get_js_directory_uri() . '/customizer/preview.js',
@@ -127,14 +127,12 @@ class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customiz
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_style_before_load
+	 * @hooked action wp_ajax_make-font-json
+	 *
 	 * @return void
 	 */
 	public function preview_thememods() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'make_style_before_load', 'wp_ajax_make-font-json' ) ) ) {
-			return;
-		}
-
 		if ( ! isset( $_POST['make-preview'] ) ) {
 			return;
 		}
@@ -142,7 +140,7 @@ class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customiz
 		$preview = (array) $_POST['make-preview'];
 
 		foreach ( $preview as $setting_id => $value ) {
-			add_filter( "theme_mod_{$setting_id}", array( $this, 'preview_thememod_value' ) );
+			add_filter( 'theme_mod_' . sanitize_key( $setting_id ), array( $this, 'preview_thememod_value' ) );
 		}
 	}
 
@@ -151,16 +149,13 @@ class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customiz
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter theme_mod_{$key}
+	 *
 	 * @param $value
 	 *
 	 * @return mixed
 	 */
 	public function preview_thememod_value( $value ) {
-		// Only run this in the proper hook context.
-		if ( 0 !== strpos( current_filter(), 'theme_mod_' ) ) {
-			return $value;
-		}
-
 		if ( ! isset( $_POST['make-preview'] ) ) {
 			return $value;
 		}
@@ -180,12 +175,14 @@ class MAKE_Customizer_Preview extends MAKE_Util_Modules implements MAKE_Customiz
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_ajax_make-font-json
+	 *
 	 * @return void
 	 */
 	public function get_font_json_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_make-font-json' !== current_action() ) {
-			wp_send_json_error();
+			return;
 		}
 
 		// Get the font values to preview.

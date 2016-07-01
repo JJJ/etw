@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Component_PostsList_Widget
  *
+ * Display a Posts List as a sidebar widget.
+ *
  * @since 1.2.0.
  * @since 1.7.0. Changed class name from TTFMP_Post_List_Widget
  */
@@ -18,12 +20,15 @@ class MAKEPLUS_Component_PostsList_Widget extends WP_Widget {
 	 * @return MAKEPLUS_Component_PostsList_Widget
 	 */
 	public function __construct() {
-		$widget_ops = array(
-			'classname' => 'ttfmp-widget-post-list',
-			'description' => esc_html__( 'List posts or pages based on specific criteria. (Make Plus)', 'make-plus' )
+		parent::__construct(
+			'ttfmp-post-list',
+			esc_html__( 'Posts List (Make Plus)', 'make-plus' ),
+			array(
+				'classname'                   => 'ttfmp-widget-post-list',
+				'description'                 => esc_html__( 'Display a list of posts or pages based on specific criteria.', 'make-plus' ),
+				'customize_selective_refresh' => true,
+			)
 		);
-
-		parent::__construct( 'ttfmp-post-list', esc_html__( 'Posts List', 'make-plus' ), $widget_ops );
 	}
 
 	/**
@@ -31,8 +36,9 @@ class MAKEPLUS_Component_PostsList_Widget extends WP_Widget {
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  array    $args        The configuration for this type of widget.
-	 * @param  array    $instance    The options for the widget instance.
+	 * @param array $args        The configuration for this type of widget.
+	 * @param array $instance    The options for the widget instance.
+	 *
 	 * @return void
 	 */
 	public function widget( $args, $instance ) {
@@ -71,15 +77,18 @@ class MAKEPLUS_Component_PostsList_Widget extends WP_Widget {
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  array    $new_instance    The current widget options.
-	 * @param  array    $old_instance    The previous widget options (unused).
-	 * @return array                     The sanitized current widget options.
+	 * @param array $new_instance    The current widget options.
+	 * @param array $old_instance    The previous widget options (unused).
+	 *
+	 * @return array                 The sanitized current widget options.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance = MakePlus()->get_component( 'postslist' )->save_section( $new_instance );
+
 		if ( isset( $instance['columns'] ) ) {
 			unset( $instance['columns'] );
 		}
+
 		return $instance;
 	}
 
@@ -88,7 +97,8 @@ class MAKEPLUS_Component_PostsList_Widget extends WP_Widget {
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  array    $instance    The current widget options.
+	 * @param array $instance    The current widget options.
+	 *                           
 	 * @return void
 	 */
 	public function form( $instance ) {

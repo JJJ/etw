@@ -65,8 +65,8 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 		}
 
 		// Add filters to adjust sanitize callback parameters.
-		add_filter( 'make_settings_thememod_sanitize_callback_parameters', array( $this, 'add_sanitize_choice_parameters' ), 10, 3 );
-		add_filter( 'make_settings_thememod_sanitize_callback_parameters', array( $this, 'wrap_array_values' ), 10, 3 );
+		add_filter( 'make_settings_thememod_sanitize_callback_parameters', array( $this, 'add_sanitize_choice_parameters' ), 10, 2 );
+		add_filter( 'make_settings_thememod_sanitize_callback_parameters', array( $this, 'wrap_array_values' ), 10, 2 );
 
 		// Handle cache settings
 		add_action( 'customize_save_after', array( $this, 'clear_thememod_cache' ) );
@@ -132,39 +132,13 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	}
 
 	/**
-	 * Extension of parent class's add_settings method to account for compatibility message.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param array      $settings
-	 * @param array      $default_props
-	 * @param bool|false $overwrite
-	 *
-	 * @return bool
-	 */
-	public function add_settings( $settings, $default_props = array(), $overwrite = false ) {
-		// Make sure we're not doing it wrong.
-		if ( "make_settings_{$this->type}_loaded" !== current_action() && did_action( "make_settings_{$this->type}_loaded" ) ) {
-			$this->compatibility()->doing_it_wrong(
-				__FUNCTION__,
-				__( 'This function should only be called during or before the <code>make_settings_thememod_loaded</code> action.', 'make' ),
-				'1.7.0'
-			);
-
-			return false;
-		}
-
-		return parent::add_settings( $settings, $default_props, $overwrite );
-	}
-
-	/**
 	 * Extension of the parent class's get_settings method to account for a deprecated filter.
 	 *
 	 * @since 1.7.0.
 	 *
 	 * @param string $property
 	 *
-	 * @return array|mixed|void
+	 * @return array
 	 */
 	public function get_settings( $property = 'all' ) {
 		if ( ! $this->is_loaded() ) {
@@ -179,9 +153,12 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 				'make_setting_defaults',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'To add or modify theme settings, use the %1$s method instead. See %2$s.', 'make' ),
-					'<code>add_settings</code>',
-					'<code>MAKE_Settings_ThemeMod</code>'
+					wp_kses(
+						__( 'To add or modify theme settings, use the %1$s function instead. See the <a href="%2$s" target="_blank">Theme Settings API documentation</a>.', 'make' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_thememod_setting_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/theme-settings-api/'
 				)
 			);
 
@@ -204,15 +181,16 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The name of the theme_mod to set.
-	 * @param  mixed     $value         The value to assign to the theme_mod.
+	 * @param  string $setting_id    The name of the theme_mod to set.
+	 * @param  mixed  $value         The value to assign to the theme_mod.
 	 *
-	 * @return bool                     True if value was successfully set.
+	 * @return bool                  True if value was successfully set.
 	 */
 	public function set_value( $setting_id, $value ) {
 		if ( $this->setting_exists( $setting_id ) ) {
 			// Sanitize the value before saving it.
 			$sanitized_value = $this->sanitize_value( $value, $setting_id, 'database' );
+
 			if ( $this->undefined !== $sanitized_value ) {
 				// This function doesn't return anything, so we assume success here.
 				set_theme_mod( $setting_id, $sanitized_value );
@@ -224,13 +202,13 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	}
 
 	/**
-	 * Remove a particular theme_mod setting.
+	 * Remove the value for a particular theme_mod setting.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The name of the theme_mod to remove.
+	 * @param  string $setting_id    The name of the theme_mod to remove.
 	 *
-	 * @return bool                     True if the theme_mod was successfully removed.
+	 * @return bool                  True if the theme_mod was successfully removed.
 	 */
 	public function unset_value( $setting_id ) {
 		if ( $this->setting_exists( $setting_id ) ) {
@@ -247,9 +225,9 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $setting_id    The name of the theme_mod to retrieve.
+	 * @param  string $setting_id    The name of the theme_mod to retrieve.
 	 *
-	 * @return mixed|null               The value of the theme_mod as it is in the database, or undefined if the theme_mod isn't set.
+	 * @return mixed|null            The value of the theme_mod as it is in the database, or undefined if the theme_mod isn't set.
 	 */
 	public function get_raw_value( $setting_id ) {
 		$value = $this->undefined;
@@ -268,7 +246,7 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	 *
 	 * @param string $setting_id
 	 *
-	 * @return mixed|null|void
+	 * @return mixed
 	 */
 	public function get_default( $setting_id ) {
 		$default_value = parent::get_default( $setting_id );
@@ -279,8 +257,12 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 				'make_get_default',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make' ),
-					'<code>make_settings_thememod_default_value</code>'
+					wp_kses(
+						__( 'To add or modify theme settings, use the %1$s function instead. See the <a href="%2$s" target="_blank">Theme Settings API documentation</a>.', 'make' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_thememod_setting_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/theme-settings-api/'
 				)
 			);
 
@@ -304,9 +286,9 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  mixed     $value         The value to sanitize.
-	 * @param  string    $setting_id    The ID of the setting to retrieve.
-	 * @param  string    $context       Optional. The context in which a setting needs to be sanitized.
+	 * @param  mixed  $value         The value to sanitize.
+	 * @param  string $setting_id    The ID of the setting to retrieve.
+	 * @param  string $context       Optional. The context in which a setting needs to be sanitized.
 	 *
 	 * @return mixed
 	 */
@@ -322,35 +304,24 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	/**
 	 * Get the choice set for a particular setting.
 	 *
-	 * This can either return the set (an array of choices) or simply the ID of the choice set.
+	 * This can either return the set (an array of choices) or simply the ID of the choice set (string).
 	 *
-	 * @param string    $setting_id
-	 * @param bool      $id_only
+	 * @param string $setting_id
+	 * @param bool   $id_only
 	 *
-	 * @return mixed|void
+	 * @return array|string|null
 	 */
 	public function get_choice_set( $setting_id, $id_only = false ) {
 		$choice_set_id = $this->undefined;
-		$choice_set = $this->undefined;
 
 		if ( $this->setting_exists( $setting_id, 'choice_set_id' ) ) {
 			$setting = $this->get_setting( $setting_id );
-			$choice_set_id = $setting['choice_set_id'];
+			$choice_set_id = sanitize_key( $setting['choice_set_id'] );
 		}
-
-		/**
-		 * Filter: Modify the choice set ID for a particular setting.
-		 *
-		 * @since 1.7.0.
-		 *
-		 * @param array     $choice_set_id    The choice set for the setting.
-		 * @param string    $setting_id       The id of the setting.
-		 */
-		$choice_set_id = apply_filters( "make_settings_{$this->type}_choice_set_id", $choice_set_id, $setting_id );
 
 		// Return just the ID.
 		if ( true === $id_only ) {
-			return sanitize_key( $choice_set_id );
+			return $choice_set_id;
 		}
 
 		// Get the choice set array.
@@ -362,19 +333,23 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 				'make_setting_choices',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'To add or modify theme setting choices, use the %1$s method instead. See %2$s', 'make' ),
-					'<code>add_choice_sets</code>',
-					'<code>MAKE_Choices_Manager</code>'
+					wp_kses(
+						__( 'To add or modify setting choices, use the %1$s function instead. See the <a href="%2$s" target="_blank">Choices API documentation</a>.', 'make' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_choice_set()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/choices-api/'
 				)
 			);
 
 			/**
-			 * Deprecated: Filter the setting choices.
+			 * Filter the setting choices.
 			 *
 			 * @since 1.2.3.
+			 * @deprecated 1.7.0.
 			 *
-			 * @param array     $choices    The choices for the setting.
-			 * @param string    $setting    The setting name.
+			 * @param array     $choices       The choices for the setting.
+			 * @param string    $setting_id    The setting name.
 			 */
 			$choice_set = apply_filters( 'make_setting_choices', $choice_set, $setting_id );
 		}
@@ -384,101 +359,18 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	}
 
 	/**
-	 * Sanitize the value of a theme mod that has a choice set.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param  mixed     $value      The value given to sanitize.
-	 * @param $setting_id
-	 *
-	 * @return mixed|void
-	 */
-	public function sanitize_choice( $value, $setting_id ) {
-		// Sanitize the value.
-		$sanitized_value = $this->choices()->sanitize_choice( $value, $this->get_choice_set( $setting_id, true ), $this->get_default( $setting_id ) );
-
-		// Check for deprecated filter.
-		if ( has_filter( 'make_sanitize_choice' ) ) {
-			$this->compatibility()->deprecated_hook(
-				'make_sanitize_choice',
-				'1.7.0',
-				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make' ),
-					'<code>make_settings_thememod_current_value</code>'
-				)
-			);
-
-			/**
-			 * Deprecated: Filter the sanitized value.
-			 *
-			 * @since 1.2.3.
-			 * @deprecated 1.7.0.
-			 *
-			 * @param mixed     $value      The sanitized value.
-			 * @param string    $setting    The key for the setting.
-			 */
-			$sanitized_value = apply_filters( 'make_sanitize_choice', $sanitized_value, $setting_id );
-		}
-
-		return $sanitized_value;
-	}
-
-	/**
-	 * Sanitize the value of a theme mod with a font family choice set.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param  string    $value
-	 * @param  string    $setting_id
-	 *
-	 * @return mixed|void
-	 */
-	public function sanitize_font_choice( $value, $setting_id ) {
-		// Sanitize the value.
-		$sanitized_value = $this->font()->sanitize_font_choice( $value, null, $this->get_default( $setting_id ) );
-
-		// Check for deprecated filter.
-		if ( has_filter( 'make_sanitize_font_choice' ) ) {
-			$this->compatibility()->deprecated_hook(
-				'make_sanitize_font_choice',
-				'1.7.0',
-				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make' ),
-					'<code>make_settings_thememod_current_value</code>'
-				)
-			);
-
-			/**
-			 * Deprecated: Filter the sanitized font choice.
-			 *
-			 * @since 1.2.3.
-			 * @deprecated 1.7.0.
-			 *
-			 * @param string    $value    The chosen font value.
-			 */
-			$sanitized_value = apply_filters( 'make_sanitize_font_choice', $sanitized_value );
-		}
-
-		return $sanitized_value;
-	}
-
-	/**
 	 * Add items to the array of parameters to feed into the sanitize callback.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  mixed     $value
-	 * @param  string    $callback
-	 * @param  string    $setting_id
+	 * @hooked filter make_settings_thememod_sanitize_callback_parameters
+	 *
+	 * @param  mixed  $value
+	 * @param  string $setting_id
 	 *
 	 * @return array
 	 */
-	public function add_sanitize_choice_parameters( $value, $callback, $setting_id ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_sanitize_callback_parameters' !== current_filter() ) {
-			return $value;
-		}
-
+	public function add_sanitize_choice_parameters( $value, $setting_id ) {
 		$choice_settings = array_merge(
 			array_keys( $this->get_settings( 'choice_set_id' ), true ),
 			array_keys( $this->get_settings( 'is_font' ), true )
@@ -498,18 +390,14 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $value
-	 * @param $callback
-	 * @param $setting_id
+	 * @hooked filter make_settings_thememod_sanitize_callback_parameters
+	 *
+	 * @param mixed  $value
+	 * @param string $setting_id
 	 *
 	 * @return array
 	 */
-	public function wrap_array_values( $value, $callback, $setting_id ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_sanitize_callback_parameters' !== current_filter() ) {
-			return $value;
-		}
-
+	public function wrap_array_values( $value, $setting_id ) {
 		if ( in_array( $setting_id, array_keys( $this->get_settings( 'is_array' ), true ) ) ) {
 			$value = array( $value );
 		}
@@ -518,154 +406,15 @@ final class MAKE_Settings_ThemeMod extends MAKE_Settings_Base implements MAKE_Se
 	}
 
 	/**
-	 * Sanitize the value of the font-subset setting.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param  string    $value
-	 *
-	 * @return string
-	 */
-	public function sanitize_google_font_subset( $value ) {
-		// Make sure the Google font source is available.
-		if ( ! $this->font()->has_source( 'google' ) ) {
-			return '';
-		}
-
-		$sanitized_value = $this->font()->get_source( 'google' )->sanitize_subset( $value, $this->get_default( 'font-subset' ) );
-
-		// Check for deprecated filter
-		if ( has_filter( 'make_sanitize_font_subset' ) ) {
-			$this->compatibility()->deprecated_hook(
-				'make_sanitize_font_subset',
-				'1.7.0',
-				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make' ),
-					'<code>make_settings_thememod_current_value</code>'
-				)
-			);
-
-			/**
-			 * Filter the sanitized subset choice.
-			 *
-			 * @since 1.2.3.
-			 * @deprecated 1.7.0.
-			 *
-			 * @param string    $value    The chosen subset value.
-			 */
-			$sanitized_value = apply_filters( 'make_sanitize_font_subset', $value );
-		}
-
-		return $sanitized_value;
-	}
-
-	/**
-	 * Sanitize the individual items in the social icons array.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param array $icon_data
-	 *
-	 * @return array
-	 */
-	public function sanitize_socialicons( array $icon_data ) {
-		$sanitized_icon_data = array();
-
-		// Options
-		$settings = array_keys( $this->get_settings( 'social_icon_option' ) );
-		foreach ( $settings as $setting_id ) {
-			$option_id = str_replace( 'social-icons-', '', $setting_id );
-			if ( isset( $icon_data[ $option_id ] ) ) {
-				$sanitized_icon_data[ $option_id ] = $this->sanitize_value( $icon_data[ $option_id ], $setting_id );
-			} else {
-				$sanitized_icon_data[ $option_id ] = $this->get_default( $setting_id );
-			}
-		}
-
-		// Items
-		if ( isset( $icon_data['items'] ) && is_array( $icon_data['items'] ) ) {
-			$raw_items = $icon_data['items'];
-		} else {
-			$raw_items = array();
-		}
-		$sanitized_icon_data['items'] = array();
-		foreach ( $raw_items as $key => $item ) {
-			$item = wp_parse_args( (array) $item, array( 'type' => '', 'content' => '' ) );
-			$sanitized_icon_data['items'][ $key ] = array();
-			$sanitized_icon_data['items'][ $key ]['type'] = $type = $this->sanitize_value( $item['type'], 'social-icons-item-type' );
-			$sanitized_icon_data['items'][ $key ]['content'] = $this->sanitize_value( $item['content'], 'social-icons-item-content-' . $type );
-		}
-
-		// Email item
-		if ( true === $sanitized_icon_data[ 'email-toggle' ] && ! in_array( 'email', wp_list_pluck( $sanitized_icon_data['items'], 'type' ) ) ) {
-			array_push(
-				$sanitized_icon_data['items'],
-				array(
-					'type'    => 'email',
-					'content' => $this->get_default( 'social-icons-item-content-email' ),
-				)
-			);
-		} else if ( true !== $sanitized_icon_data[ 'email-toggle' ] && $key = array_search( 'email', wp_list_pluck( $sanitized_icon_data['items'], 'type' ) ) ) {
-			unset( $sanitized_icon_data['items'][ $key ] );
-		}
-
-		// RSS item
-		if ( true === $sanitized_icon_data[ 'rss-toggle' ] && ! in_array( 'rss', wp_list_pluck( $sanitized_icon_data['items'], 'type' ) ) ) {
-			array_push(
-				$sanitized_icon_data['items'],
-				array(
-					'type'    => 'rss',
-					'content' => $this->get_default( 'social-icons-item-content-rss' ),
-				)
-			);
-		} else if ( true !== $sanitized_icon_data[ 'rss-toggle' ] && $key = array_search( 'rss', wp_list_pluck( $sanitized_icon_data['items'], 'type' ) ) ) {
-			unset( $sanitized_icon_data['items'][ $key ] );
-		}
-
-		return $sanitized_icon_data;
-	}
-
-	/**
-	 * Convert the social icons JSON string into an array and sanitize it for storage in the database.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param $json
-	 *
-	 * @return array
-	 */
-	public function sanitize_socialicons_from_customizer( $json ) {
-		$value = json_decode( $json, true );
-		return $this->sanitize_socialicons( $value );
-	}
-
-	/**
-	 * Sanitize the social icons array from the database for use in the Customizer.
-	 *
-	 * @since 1.7.0.
-	 *
-	 * @param array $icon_data
-	 *
-	 * @return bool|false|string
-	 */
-	public function sanitize_socialicons_to_customizer( array $icon_data ) {
-		$value = $this->sanitize_socialicons( $icon_data );
-		return wp_json_encode( $value );
-	}
-
-	/**
 	 * Clear values for settings that have the is_cache property.
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_save_after
+	 *
 	 * @return void
 	 */
 	public function clear_thememod_cache() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'customize_save_after' ) ) ) {
-			return;
-		}
-
 		$cache_settings = array_keys( $this->get_settings( 'is_cache' ), true );
 
 		foreach ( $cache_settings as $setting_id ) {

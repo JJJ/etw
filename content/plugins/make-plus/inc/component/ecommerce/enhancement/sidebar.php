@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Component_ECommerce_Enhancement_Sidebar
  *
+ * Enable a "Shop" sidebar that can be used as an alternative to one of the default sidebars in various views.
+ *
  * @since 1.7.0.
  */
 final class MAKEPLUS_Component_ECommerce_Enhancement_Sidebar extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
@@ -80,16 +82,13 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_Sidebar extends MAKEPLUS_Ut
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_get_sidebars
+	 *
 	 * @param array $sidebars
 	 *
 	 * @return array
 	 */
 	public function add_sidebar( array $sidebars ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_get_sidebars' !== current_filter() ) {
-			return $sidebars;
-		}
-
 		if ( ! isset( $sidebars[ $this->sidebar_id ] ) ) {
 			$sidebars[ $this->sidebar_id ] = array(
 				'name'        => esc_html__( 'Shop Sidebar', 'make-plus' ),
@@ -106,16 +105,13 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_Sidebar extends MAKEPLUS_Ut
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_settings_thememod_loaded
+	 *
 	 * @param MAKE_Settings_ThemeModInterface $settings
 	 *
 	 * @return bool
 	 */
 	public function update_settings( MAKE_Settings_ThemeModInterface $settings ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_loaded' !== current_action() ) {
-			return false;
-		}
-
 		if ( $settings->setting_exists( 'layout-shop-sidebar-right' ) && $settings->setting_exists( 'layout-product-sidebar-right' ) ) {
 			return $settings->add_settings(
 				array(
@@ -141,14 +137,11 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_Sidebar extends MAKEPLUS_Ut
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function convert_old_settings() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		// Bail if this conversion process has already been run.
 		if ( true === get_theme_mod( 'makeplus-ecommerce-sidebar-converted' ) ) {
 			return;

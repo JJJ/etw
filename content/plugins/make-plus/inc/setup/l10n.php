@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Setup_L10n
  *
+ * Methods for loading text domains.
+ *
  * @since 1.7.0.
  */
 final class MAKEPLUS_Setup_L10n implements MAKEPLUS_Setup_L10nInterface, MAKEPLUS_Util_HookInterface {
@@ -98,17 +100,16 @@ final class MAKEPLUS_Setup_L10n implements MAKEPLUS_Setup_L10nInterface, MAKEPLU
 	 *
 	 * @link https://github.com/justintadlock/hybrid-core/blob/7bc900fd5635c9fcdde3c3b240c4ec43a0704ccf/inc/functions-i18n.php#L218-L249
 	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked filter load_textdomain_mofile
+	 *
 	 * @param $mofile
 	 * @param $domain
 	 *
 	 * @return string
 	 */
 	public function mofile_path( $mofile, $domain ) {
-		// Only run this in the proper hook context.
-		if ( 'load_textdomain_mofile' !== current_filter() ) {
-			return $mofile;
-		}
-
 		if ( $this->domain === $domain ) {
 			$locale = get_locale();
 
@@ -131,14 +132,11 @@ final class MAKEPLUS_Setup_L10n implements MAKEPLUS_Setup_L10nInterface, MAKEPLU
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action plugins_loaded
+	 *
 	 * @return bool
 	 */
 	public function load_textdomain() {
-		// Only run this in the proper hook context.
-		if ( 'plugins_loaded' !== current_action() ) {
-			return false;
-		}
-
 		return load_plugin_textdomain( $this->domain, false, makeplus_get_plugin_directory( true ) . 'languages' );
 	}
 }

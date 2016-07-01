@@ -6,10 +6,12 @@
 /**
  * Class MAKEPLUS_Component_WooCommerce_Shortcode
  *
+ * Display a grid of WooCommerce products based on criteria specified in shortcode parameters.
+ *
  * @since 1.0.0.
  * @since 1.7.0. Changed class name from TTFMP_WooCommerce_Shortcode
  */
-class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
+class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_WooCommerce_ShortcodeInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -27,7 +29,7 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   int    $columns    The number of columns for the Product Grid shortcode
+	 * @var int $columns    The number of columns for the Product Grid shortcode
 	 */
 	private $columns = 0;
 
@@ -36,7 +38,7 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   array    $removed    The array of added actions/filters
+	 * @var array $removed    The array of added actions/filters
 	 */
 	private $added = array();
 
@@ -45,17 +47,17 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   array    $removed    The array of removed actions/filters
+	 * @var array $removed    The array of removed actions/filters
 	 */
 	private $removed = array();
 
 	/**
 	 * Add/remove callbacks from hooks and store their info so they can be reset later.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $add       Array of actions/filters to add.
-	 * @param  array    $remove    Array of actions/filters to remove.
+	 * @param array $add       Array of actions/filters to add.
+	 * @param array $remove    Array of actions/filters to remove.
 	 *
 	 * @return void
 	 */
@@ -105,10 +107,10 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	/**
 	 * Undo changes made by adjust_hooks().
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $added      Array of actions/filters to remove.
-	 * @param  array    $removed    Array of actions/filters to add back.
+	 * @param array $added      Array of actions/filters to remove.
+	 * @param array $removed    Array of actions/filters to add back.
 	 *
 	 * @return void
 	 */
@@ -139,10 +141,11 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	/**
 	 * Combine the given Product Grid shortcode attributes with the defaults.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $atts    The attributes from the Product Grid shortcode.
- 	 * @return array              The parsed attributes.
+	 * @param array $atts    The attributes from the Product Grid shortcode.
+	 *
+ 	 * @return array         The parsed attributes.
 	 */
 	private function parse_atts_product_grid( $atts ) {
 		// Define defaults
@@ -168,11 +171,11 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	/**
 	 * Use the Product Grid shortcode attributes to build an array of query arguments.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $atts    The attributes from the Product Grid shortcode.
+	 * @param array $atts    The attributes from the Product Grid shortcode.
 	 *
-	 * @return array             The array of query arguments.
+	 * @return array         The array of query arguments.
 	 */
 	private function query_args_product_grid( $atts ) {
 		// Get the ordering arguments
@@ -180,13 +183,14 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 
 		// Default arguments
 		$args = array(
-			'post_type' => 'product',
-			'post_status' => 'publish',
+			'post_type'           => 'product',
+			'post_status'         => 'publish',
 			'ignore_sticky_posts' => 1,
-			'orderby' => $ordering_args['orderby'],
-			'order' => $ordering_args['order'],
-			'posts_per_page' => (int) $atts['count'],
-			'meta_query' => $this->wc()->query->get_meta_query(),
+			'no_found_rows'       => true,
+			'orderby'             => $ordering_args['orderby'],
+			'order'               => $ordering_args['order'],
+			'posts_per_page'      => (int) $atts['count'],
+			'meta_query'          => $this->wc()->query->get_meta_query(),
 		);
 
 		// Extra default argument, depending on ordering args
@@ -262,12 +266,12 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	/**
 	 * Render the markup for the Product Grid shortcode.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  object    $query    The query results to build the markup with.
-	 * @param  array     $atts     The attributes from the Product Grid shortcode.
+	 * @param object $query    The query results to build the markup with.
+	 * @param array  $atts     The attributes from the Product Grid shortcode.
 	 *
-	 * @return string              The markup.
+	 * @return string          The markup.
 	 */
 	private function render_product_grid( $query, $atts ) {
 		// Buffer the output
@@ -358,34 +362,44 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 	/**
 	 * Filter to modify the number of columns in the Product Grid.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param int $columns
+	 * @hooked filter loop_shop_columns
 	 *
-	 * @return int    The new number of columns.
+	 * @return int            The new number of columns.
 	 */
-	public function loop_shop_columns( $columns ) {
-		// Only run this in the proper hook context.
-		if ( 'loop_shop_columns' !== current_filter() ) {
-			return $columns;
-		}
-
+	public function loop_shop_columns() {
 		return $this->columns;
 	}
 
-
+	/**
+	 * Wrapper function to allow for modification of Product Grid image size.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @return void
+	 */
 	public function product_grid_thumbnail() {
-		echo woocommerce_get_product_thumbnail( 'large' );
+		/**
+		 * Filter: Modify the image size used for product images in the Products section.
+		 *
+		 * @since 1.7.1.
+		 *
+		 * @param string $image_size    The name of the image size to use.
+		 */
+		$image_size = apply_filters( 'makeplus_woocommerce_product_grid_image_size', 'large' );
+
+		echo woocommerce_get_product_thumbnail( $image_size );
 	}
 
 	/**
 	 * Product Grid shortcode handler.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $shortcode_atts    The attributes from the Product Grid shortcode.
+	 * @param array $shortcode_atts    The attributes from the Product Grid shortcode.
 	 *
-	 * @return string                       The markup.
+	 * @return string                  The markup.
 	 */
 	public function shortcode_product_grid( $shortcode_atts ) {
 		// Parse attributes
@@ -396,6 +410,9 @@ class MAKEPLUS_Component_WooCommerce_Shortcode extends MAKEPLUS_Util_Modules {
 
 		// Query
 		$query = new WP_Query( $args );
+
+		// Cache product thumbnails
+		update_post_thumbnail_cache( $query );
 
 		// Render
 		$output = '';

@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Component_Duplicator_Page
  *
+ * Enable one-click duplication of Builder pages.
+ *
  * @since 1.1.0.
+ * @since 1.7.0. Changed class name from TTFMP_Page_Duplicator.
  */
 class MAKEPLUS_Component_Duplicator_Page extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
@@ -68,18 +71,16 @@ class MAKEPLUS_Component_Duplicator_Page extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Add link to initiate duplication of page.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  array      $actions    Array of page row actions.
-	 * @param  WP_Post    $post       The current post object.
-	 * @return array                  Modified page row actions.
+	 * @hooked filter page_row_actions
+	 *
+	 * @param array   $actions    Array of page row actions.
+	 * @param WP_Post $post       The current post object.
+	 *
+	 * @return array              Modified page row actions.
 	 */
 	public function page_row_actions( $actions, $post ) {
-		// Only run this in the proper hook context.
-		if ( 'page_row_actions' !== current_filter() ) {
-			return $actions;
-		}
-
 		if ( 'template-builder.php' === get_page_template_slug( $post ) ) {
 			$url = add_query_arg(
 				array(
@@ -97,16 +98,13 @@ class MAKEPLUS_Component_Duplicator_Page extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Detect request to create a page copy and route the request.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
+	 *
+	 * @hooked action admin_init
 	 *
 	 * @return void
 	 */
 	public function create_page_copy_router() {
-		// Only run this in the proper hook context.
-		if ( 'admin_init' !== current_action() ) {
-			return;
-		}
-
 		if ( ! isset( $_GET['ttfmp-duplicate-nonce'] ) || ! wp_verify_nonce( $_GET['ttfmp-duplicate-nonce'], 'duplicate' ) ) {
 			return;
 		}
@@ -171,11 +169,12 @@ class MAKEPLUS_Component_Duplicator_Page extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Create a new page.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
 	 *
-	 * @param  WP_Post    $page       The Post object for the page to be duplicated.
-	 * @param  int        $page_id    The ID for the page to be duplicated.
-	 * @return int                    The ID of the newly created page.
+	 * @param WP_Post $page       The Post object for the page to be duplicated.
+	 * @param int     $page_id    The ID for the page to be duplicated.
+	 *
+	 * @return int                The ID of the newly created page.
 	 */
 	private function create_page_copy( $page, $page_id ) {
 		// Generate the new title
@@ -211,16 +210,13 @@ class MAKEPLUS_Component_Duplicator_Page extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Display button for duplicating posts.
 	 *
-	 * @since  1.1.0.
+	 * @since 1.1.0.
+	 *
+	 * @hooked action post_submitbox_misc_actions
 	 *
 	 * @return void
 	 */
 	public function post_submitbox_misc_actions() {
-		// Only run this in the proper hook context.
-		if ( 'post_submitbox_misc_actions' !== current_action() ) {
-			return;
-		}
-
 		global $pagenow;
 
 		if ( ( 'post.php' !== $pagenow && 'post-new.php' !== $pagenow ) || 'page' !== get_post_type() ) {

@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Setup_Mode
  *
+ * Methods for determining which parts of the plugin can be activated.
+ *
  * @since 1.7.0.
  */
 class MAKEPLUS_Setup_Mode implements MAKEPLUS_Setup_ModeInterface {

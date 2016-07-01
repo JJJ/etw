@@ -6,6 +6,8 @@
 /**
  * Class MAKE_Setup_Widgets
  *
+ * Methods for setting up sidebars and widgets.
+ *
  * @since 1.7.0.
  */
 final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_WidgetsInterface, MAKE_Util_HookInterface {
@@ -44,8 +46,11 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 			return;
 		}
 
-		//
+		// Register sidebars
 		add_action( 'widgets_init', array( $this, 'register_sidebars' ) );
+
+		// Backcompat with old function
+		add_action( 'make_deprecated_function_run', array( $this, 'backcompat_widgets_init' ) );
 
 		// Hooking has occurred.
 		self::$hooked = true;
@@ -62,9 +67,17 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 		return self::$hooked;
 	}
 
-
-	public function get_widget_display_defaults( $sidebar_id ) {
-		$widget_defaults = array(
+	/**
+	 * Get the widget HTML markup parameters for a particular sidebar.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string $sidebar_id
+	 *
+	 * @return array
+	 */
+	public function get_widget_display_args( $sidebar_id ) {
+		$widget_args = array(
 			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 			'after_widget'  => '</aside>',
 			'before_title'  => '<h4 class="widget-title">',
@@ -72,24 +85,27 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 		);
 
 		/**
-		 * Filter: Modify the wrapper markup settings for the widgets in a sidebar.
+		 * Filter: Modify the wrapper markup parameters for the widgets in a particular sidebar.
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param array     $widget_defaults    The default widget markup for sidebars.
-		 * @param string    $sidebar_id         The ID of the sidebar that the widget markup will apply to.
+		 * @param array  $widget_args    The default widget markup for sidebars.
+		 * @param string $sidebar_id     The ID of the sidebar that the widget markup will apply to.
 		 */
-		return apply_filters( 'make_widget_display_defaults', $widget_defaults, $sidebar_id );
+		return apply_filters( 'make_widget_display_args', $widget_args, $sidebar_id );
 	}
 
-
+	/**
+	 * Register the theme's sidebars.
+	 *
+	 * @since 1.0.0.
+	 *
+	 * @hooked action widgets_init
+	 *
+	 * @return void
+	 */
 	public function register_sidebars() {
-		// Only run this in the proper hook context.
-		if ( 'widgets_init' !== current_action() ) {
-			return;
-		}
-
-		//
+		// Sidebar IDs and labels
 		$sidebars = array(
 			'sidebar-left'  => __( 'Left Sidebar', 'make' ),
 			'sidebar-right' => __( 'Right Sidebar', 'make' ),
@@ -99,19 +115,27 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 			'footer-4'      => __( 'Footer 4', 'make' ),
 		);
 
-		//
+		// Register each sidebar
 		foreach ( $sidebars as $sidebar_id => $sidebar_name ) {
-			$args = array(
-				'id' => $sidebar_id,
-				'name' => $sidebar_name,
-				'description' => esc_html( $this->get_sidebar_description( $sidebar_id ) ),
+			$sidebar_args = array(
+				'id'          => $sidebar_id,
+				'name'        => $sidebar_name,
+				'description' => ( is_admin() ) ? $this->get_sidebar_description( $sidebar_id ) : '', // The sidebar description isn't needed for the front end.
 			);
 
-			register_sidebar( $args + $this->get_widget_display_defaults( $sidebar_id ) );
+			register_sidebar( $sidebar_args + $this->get_widget_display_args( $sidebar_id ) );
 		}
 	}
 
-
+	/**
+	 * Generate a description for a sidebar based on where it is set to be displayed.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string $sidebar_id
+	 *
+	 * @return string
+	 */
 	private function get_sidebar_description( $sidebar_id ) {
 		$description = '';
 
@@ -146,7 +170,15 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 		return $description;
 	}
 
-
+	/**
+	 * Get an array of view names where a particular sidebar is enabled.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string $location    'right' or 'left'
+	 *
+	 * @return array
+	 */
 	private function get_enabled_view_labels( $location ) {
 		$enabled_views = array();
 
@@ -170,14 +202,22 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 		return $enabled_views;
 	}
 
-
+	/**
+	 * Determine if a particular sidebar is enabled in the current view.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string $location
+	 *
+	 * @return bool
+	 */
 	public function has_sidebar( $location ) {
 		// Get the view
 		$view = $this->view()->get_current_view();
 
 		// Get the relevant theme mod
 		$setting_id = 'layout-' . $view . '-sidebar-' . $location;
-		$has_sidebar = $this->thememod()->get_value( $setting_id );
+		$has_sidebar = (bool) $this->thememod()->get_value( $setting_id );
 
 		// Builder template doesn't support sidebars
 		if ( 'template-builder.php' === get_page_template_slug() ) {
@@ -194,5 +234,31 @@ final class MAKE_Setup_Widgets extends MAKE_Util_Modules implements MAKE_Setup_W
 		 * @param string    $view           The view name.
 		 */
 		return apply_filters( 'make_has_sidebar', $has_sidebar, $location, $view );
+	}
+
+	/**
+	 * Backcompat for the deprecated pluggable ttfmake_widgets_init() function.
+	 *
+	 * This will fire if the Compatibility module's deprecated_function method is run, which will happen
+	 * if ttfmake_widgets_init() has been plugged.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked action make_deprecated_function_run
+	 *
+	 * @param string $function
+	 *
+	 * @return void
+	 */
+	public function backcompat_widgets_init( $function ) {
+		// Don't bother if this is happening during widgets_init already.
+		if ( doing_action( 'widgets_init' ) || did_action( 'widgets_init' ) ) {
+			return;
+		}
+
+		if ( 'ttfmake_widgets_init' === $function && false === has_action( 'widgets_init', 'ttfmake_widgets_init' ) ) {
+			remove_action( 'widgets_init', array( $this, 'register_sidebars' ) );
+			add_action( 'widgets_init', 'ttfmake_widgets_init' );
+		}
 	}
 }

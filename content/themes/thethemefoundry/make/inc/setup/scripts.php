@@ -6,6 +6,8 @@
 /**
  * Class MAKE_Setup_Scripts
  *
+ * Methods for managing and enqueueing script and style assets.
+ *
  * @since 1.7.0.
  */
 final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_ScriptsInterface, MAKE_Util_HookInterface {
@@ -123,14 +125,14 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 * @hooked action admin_enqueue_scripts
+	 * @hooked action customize_controls_enqueue_scripts
+	 * @hooked action customize_preview_init
+	 *
 	 * @return void
 	 */
 	public function register_libs() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'wp_enqueue_scripts', 'admin_enqueue_scripts', 'customize_controls_enqueue_scripts', 'customize_preview_init', 'login_enqueue_scripts' ) ) ) {
-			return;
-		}
-
 		$this->register_style_libs();
 		$this->register_script_libs();
 	}
@@ -146,9 +148,9 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 		// Chosen
 		wp_register_style(
 			'chosen',
-			$this->get_css_directory_uri() . '/libs/chosen/chosen.css',
+			$this->get_css_directory_uri() . '/libs/chosen/chosen.min.css',
 			array(),
-			'1.5.0'
+			'1.5.1'
 		);
 
 		// Editor styles
@@ -165,7 +167,7 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 			'font-awesome',
 			$this->get_css_directory_uri() . '/libs/font-awesome/css/font-awesome.min.css',
 			array(),
-			'4.5.0'
+			'4.6.1'
 		);
 
 		// Google Fonts
@@ -200,7 +202,7 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 			'chosen',
 			$this->get_js_directory_uri() . '/libs/chosen/chosen.jquery.min.js',
 			array( 'jquery' ),
-			'1.4.2',
+			'1.5.1',
 			true
 		);
 
@@ -245,9 +247,9 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 		// FitVids
 		wp_register_script(
 			'fitvids',
-			$this->get_js_directory_uri() . '/libs/fitvids/jquery.fitvids.min.js',
+			$this->get_js_directory_uri() . '/libs/fitvids/jquery.fitvids.js',
 			array( 'jquery' ),
-			'1.1',
+			'1.1-d028a22',
 			true
 		);
 
@@ -263,23 +265,20 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_frontend_styles() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Parent stylesheet, if child theme is active
 		// @link http://justintadlock.com/archives/2014/11/03/loading-parent-styles-for-child-themes
 		if ( is_child_theme() && defined( 'TTFMAKE_CHILD_VERSION' ) && version_compare( TTFMAKE_CHILD_VERSION, '1.1.0', '>=' ) ) {
 			/**
-			 * Toggle for loading the parent stylesheet along with the child one.
+			 * Filter: Toggle whether the parent stylesheet loads along with the child one.
 			 *
 			 * @since 1.6.0.
 			 *
-			 * @param bool    $enqueue    True enqueues the parent stylesheet.
+			 * @param bool $enqueue    True enqueues the parent stylesheet.
 			 */
 			if ( true === apply_filters( 'make_enqueue_parent_stylesheet', true ) ) {
 				wp_enqueue_style(
@@ -321,14 +320,12 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action admin_enqueue_scripts
+	 * @hooked action customize_controls_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_admin_styles() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'admin_enqueue_scripts', 'customize_controls_enqueue_scripts' ) ) ) {
-			return;
-		}
-
 		if ( ! $this->plus()->is_plus() ) {
 			wp_enqueue_style(
 				'make-plus',
@@ -344,14 +341,11 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action admin_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function add_editor_styles() {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		$editor_styles = array();
 
 		foreach ( array(
@@ -372,14 +366,11 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_frontend_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Main script
 		wp_enqueue_script(
 			'make-frontend',
@@ -406,8 +397,7 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 			wp_enqueue_script( 'comment-reply' );
 		}
 	}
-
-
+	
 	/**
 	 * Get the URL of a theme file.
 	 *
@@ -417,9 +407,9 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	 *
 	 * @uses locate_template()
 	 *
-	 * @param  string|array    $file_names    File(s) to search for, in order.
+	 * @param string|array $file_names    File(s) to search for, in order.
 	 *
-	 * @return string                         The file URL if one is located.
+	 * @return string                     The file URL if one is located.
 	 */
 	public function get_located_file_url( $file_names ) {
 		$url = '';
@@ -433,7 +423,18 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 			}
 		}
 
-		return $url;
+		/**
+		 * Filter: Modify the URL the theme will use to attempt to access a particular file.
+		 *
+		 * This can be used to set the URL for a file if the get_located_file_url() method is not
+		 * determining the correct URL.
+		 *
+		 * @since 1.7.0.
+		 *
+		 * @param string       $url
+		 * @param string|array $file_names
+		 */
+		return apply_filters( 'make_located_file_url', $url, $file_names );
 	}
 
 	/**
@@ -629,7 +630,7 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 	}
 
 	/**
-	 * Return data used by the FitVids.js script.
+	 * Generate a string of jQuery selectors used by the FitVids.js script.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -641,7 +642,7 @@ final class MAKE_Setup_Scripts extends MAKE_Util_Modules implements MAKE_Setup_S
 		 *
 		 * @since 1.2.3.
 		 *
-		 * @param array    $selector_array    The selectors used by FitVids.
+		 * @param array $selector_array    The selectors used by FitVids.
 		 */
 		$selector_array = apply_filters( 'make_fitvids_custom_selectors', array(
 			"iframe[src*='www.viddler.com']",

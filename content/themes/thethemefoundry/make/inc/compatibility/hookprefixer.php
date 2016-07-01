@@ -69,14 +69,11 @@ final class MAKE_Compatibility_HookPrefixer extends MAKE_Util_Modules implements
 	 *
 	 * @since  1.2.3.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function add_filters() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		// All filters that need a name change
 		$filter_slugs = array(
 			'template_content_archive'     => 2,
@@ -146,6 +143,8 @@ final class MAKE_Compatibility_HookPrefixer extends MAKE_Util_Modules implements
 	 *
 	 * @since  1.2.3.
 	 *
+	 * @hooked filter (various)
+	 *
 	 * @return mixed    The result of the filter.
 	 */
 	public function mirror_filter() {
@@ -163,14 +162,11 @@ final class MAKE_Compatibility_HookPrefixer extends MAKE_Util_Modules implements
 	 *
 	 * @since  1.2.3.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function add_actions() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return;
-		}
-
 		// All actions that need a name change
 		$action_slugs = array(
 			'section_text_before_columns_select' => 1,
@@ -205,6 +201,8 @@ final class MAKE_Compatibility_HookPrefixer extends MAKE_Util_Modules implements
 	 * Prepends "ttf" to an action name and calls that new action variant.
 	 *
 	 * @since  1.2.3.
+	 *
+	 * @hooked filter (various)
 	 *
 	 * @return mixed    The result of the action.
 	 */

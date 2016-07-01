@@ -4,9 +4,9 @@
  */
 
 /**
- * Class to collect and print CSS based on user input.
+ * Class MAKE_Style_CSS
  *
- * This class provides a mechanism to gather all of the CSS needed to implement theme options. It allows for handling
+ * This class provides a mechanism to gather all of the CSS needed to implement theme settings. It allows for handling
  * of conflicting rules and sorts out what the final CSS should be. The primary function is `add()`. It allows the
  * caller to add a new rule to be generated in the CSS.
  *
@@ -18,7 +18,7 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   array    Holds the data to be printed out.
+	 * @var array    Holds the data to be printed out.
 	 */
 	private $data = array();
 
@@ -27,7 +27,7 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   string    Line ending character used to better style the CSS.
+	 * @var string    Line ending character used to better style the CSS.
 	 */
 	private $line_ending = '';
 
@@ -36,16 +36,16 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   string    Tab character used to better style the CSS.
+	 * @var string    Tab character used to better style the CSS.
 	 */
 	private $tab = '';
 
 	/**
 	 * Optional space character for debug mode.
 	 *
-	 * @since 1.0.0.
+	 * @since 1.7.0.
 	 *
-	 * @var   string    Space character used to better style the CSS.
+	 * @var string    Space character used to better style the CSS.
 	 */
 	private $space = '';
 
@@ -70,12 +70,12 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * Accepts data to eventually be turned into CSS. Usage:
 	 *
-	 * ttfmake_get_css()->add( array(
+	 * $this->add( array(
 	 *     'selectors'    => array( '.site-header-main' ),
 	 *     'declarations' => array(
-	 *         'background-color' => $header_background_color
+	 *         'background-color' => '#00ff00',
 	 *     ),
-	 *     'media' => 'print',
+	 *     'media' => 'screen and (min-width: 800px)',
 	 * ) );
 	 *
 	 * Selectors represent the CSS selectors; declarations are the CSS properties and values with keys being properties
@@ -87,24 +87,26 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @param  array    $data    The selectors and properties to add to the CSS.
+	 * @param array $data    The selectors and properties to add to the CSS.
+	 *
 	 * @return void
 	 */
-	public function add( $data ) {
-		if ( ! isset( $data['selectors'] ) || ! isset( $data['declarations'] ) ) {
-			return;
-		}
-
+	public function add( array $data ) {
 		$entry = array();
 
 		/**
-		 * Filter CSS as it is registered.
+		 * Filter: Modify CSS rules as they are registered.
 		 *
 		 * @since 1.2.3
 		 *
-		 * @param array    $data    The selectors and properties to add to the CSS.
+		 * @param array $data    The selectors and properties to add to the CSS.
 		 */
-		$data  = apply_filters( 'make_css_add', $data );
+		$data = apply_filters( 'make_css_add', $data );
+
+		// Bail if the required properties aren't present
+		if ( ! isset( $data['selectors'] ) || ! isset( $data['declarations'] ) ) {
+			return;
+		}
 
 		// Sanitize selectors
 		$entry['selectors'] = array_map( 'trim', (array) $data['selectors'] );
@@ -174,9 +176,9 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 
 		// Make sure the 'all' array is first
 		if ( isset( $this->data['all'] ) && count( $this->data ) > 1 ) {
-			$all = array ( 'all' => $this->data['all'] );
+			$all = array( 'all' => $this->data['all'] );
 			unset( $this->data['all'] );
-			$this->data = array_merge( $all, $this->data);
+			$this->data = array_merge( $all, $this->data );
 		}
 
 		$output = '';
@@ -209,9 +211,10 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @param  array     $selectors    Selectors to combine into single selector.
-	 * @param  string    $tab          Tab character.
-	 * @return string                  Results of the selector combination.
+	 * @param array  $selectors    Selectors to combine into single selector.
+	 * @param string $tab          Tab character.
+	 *
+	 * @return string              Results of the selector combination.
 	 */
 	private function parse_selectors( $selectors, $tab = '' ) {
 		/**
@@ -220,6 +223,7 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 		 */
 		$n      = $this->line_ending;
 		$output = $tab . implode( ",{$n}{$tab}", $selectors );
+
 		return $output;
 	}
 
@@ -228,9 +232,10 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @param  array     $declarations    Declarations for a selector.
-	 * @param  string    $tab             Tab character.
-	 * @return string                     The combines declarations.
+	 * @param array  $declarations    Declarations for a selector.
+	 * @param string $tab             Tab character.
+	 *
+	 * @return string                 The combines declarations.
 	 */
 	private function parse_declarations( $declarations, $tab = '' ) {
 		$n = $this->line_ending;
@@ -253,27 +258,27 @@ class MAKE_Style_CSS implements MAKE_Style_CSSInterface {
 			$parsed_value  = "{$t}{$property}:{$s}{$value};$n";
 
 			/**
-			 * Filter the final CSS declaration after being parsed.
+			 * Filter: Modify the final CSS declaration after being parsed.
 			 *
 			 * @since 1.2.3.
 			 *
-			 * @param string    $parsed_value    The full CSS declaration.
-			 * @param string    $property        The property being parsed.
-			 * @param string    $value           The value for the property.
-			 * @param string    $t               The tab character.
-			 * @param string    $n               The newline character.
+			 * @param string $parsed_value    The full CSS declaration.
+			 * @param string $property        The property being parsed.
+			 * @param string $value           The value for the property.
+			 * @param string $t               The tab character.
+			 * @param string $n               The newline character.
 			 */
 			$output .= apply_filters( 'make_parse_declaration', $parsed_value, $property, $value, $t, $n );
 		}
 
 		/**
-		 * Filter the full list of parsed declarations.
+		 * Filter: Modify the full list of parsed declarations.
 		 *
 		 * @since 1.2.3.
 		 *
-		 * @param string    $output          The full CSS output.
-		 * @param array     $declarations    The list of CSS declarations.
-		 * @param string    $tab             The tab character.
+		 * @param string $output          The full CSS output.
+		 * @param array  $declarations    The list of CSS declarations.
+		 * @param string $tab             The tab character.
 		 */
 		return apply_filters( 'make_css_parse_declarations', $output, $declarations, $tab );
 	}

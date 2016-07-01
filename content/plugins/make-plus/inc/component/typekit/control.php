@@ -3,7 +3,13 @@
  * @package Make Plus
  */
 
-
+/**
+ * Class MAKEPLUS_Component_Typekit_Control
+ *
+ * Defines a Typekit control for the Customizer.
+ *
+ * @since 1.7.0.
+ */
 class MAKEPLUS_Component_Typekit_Control extends WP_Customize_Control {
 	/**
 	 * The control type.
@@ -60,7 +66,7 @@ class MAKEPLUS_Component_Typekit_Control extends WP_Customize_Control {
 					<?php esc_html_e( 'Refresh Kit', 'make-plus' ); ?>
 				</button>
 				<a class="makeplus-typekit-help" href="https://thethemefoundry.com/docs/make-docs/customizer/typography/" target="_blank">
-					<?php esc_html_e( 'Get help', 'make-plus' ); ?>
+					<?php esc_html_e( 'Need help?', 'make-plus' ); ?>
 				</a>
 			</div>
 		</div>

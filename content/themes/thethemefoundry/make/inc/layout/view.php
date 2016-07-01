@@ -6,6 +6,8 @@
 /**
  * Class MAKE_Layout_View
  *
+ * Define and manage distinct views for the theme. Used to determine which set of layout settings to apply.
+ *
  * @since 1.7.0.
  */
 final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_ViewInterface, MAKE_Util_LoadInterface {
@@ -22,6 +24,10 @@ final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_Vi
 	);
 
 	/**
+	 * View bucket.
+	 *
+	 * @since 1.7.0.
+	 *
 	 * @var array
 	 */
 	private $views = array();
@@ -31,9 +37,9 @@ final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_Vi
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
-	private $default_view = 'post';
+	private $default_view = null;
 
 	/**
 	 * Indicator of whether the load routine has been run.
@@ -94,7 +100,7 @@ final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_Vi
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param MAKE_Layout_View    $view    The view object that has just finished loading.
+		 * @param MAKE_Layout_View $view    The view object that has just finished loading.
 		 */
 		do_action( 'make_view_loaded', $this );
 	}
@@ -133,17 +139,6 @@ final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_Vi
 	 * @return bool
 	 */
 	public function add_view( $view_id, array $args = array(), $overwrite = false ) {
-		// Make sure we're not doing it wrong.
-		if ( 'make_view_loaded' !== current_action() && did_action( 'make_view_loaded' ) ) {
-			$this->compatibility()->doing_it_wrong(
-				__FUNCTION__,
-				__( 'This function should only be called during or before the <code>make_view_loaded</code> action.', 'make' ),
-				'1.7.0'
-			);
-
-			return false;
-		}
-
 		$view_id = sanitize_key( $view_id );
 		$new_view_args = array();
 		$return = false;
@@ -243,7 +238,7 @@ final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_Vi
 	}
 
 	/**
-	 * Get an view definition array for a particular view.
+	 * Get a view definition array for a particular view.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -398,9 +393,12 @@ final class MAKE_Layout_View extends MAKE_Util_Modules implements MAKE_Layout_Vi
 				'make_get_view',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'To add or modify theme views, use the %1$s method instead. See %2$s.', 'make' ),
-					'<code>add_view</code>',
-					'<code>MAKE_Layout_View</code>'
+					wp_kses(
+						__( 'To add or modify theme views, use the %1$s function instead. See the <a href="%2$s" target="_blank">View API documentation</a>.', 'make' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_view_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/view-api/'
 				)
 			);
 

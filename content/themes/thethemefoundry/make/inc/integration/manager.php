@@ -6,61 +6,66 @@
 /**
  * Class MAKE_Integration_Manager
  *
+ * Manage modules that provide additional functionality when certain 3rd party plugins are active.
+ *
  * @since 1.7.0.
  */
 final class MAKE_Integration_Manager extends MAKE_Util_Modules implements MAKE_Integration_ManagerInterface {
 	/**
-	 * Inject dependencies.
+	 * MAKE_Integration_Manager constructor.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param MAKE_APIInterface $api
-	 * @param array             $modules
+	 * @param MAKE_APIInterface|null $api
+	 * @param array                  $modules
 	 */
-	public function __construct(
-		MAKE_APIInterface $api,
-		array $modules = array()
-	) {
+	public function __construct( MAKE_APIInterface $api = null, array $modules = array() ) {
 		parent::__construct( $api, $modules );
 
 		// Jetpack
-		if ( $this->is_plugin_active( 'jetpack/jetpack.php' ) ) {
+		if ( $this->is_plugin_active( 'jetpack/jetpack.php' ) || defined( 'JETPACK__VERSION' ) ) {
 			$this->add_integration( 'jetpack', new MAKE_Integration_Jetpack( $api ) );
 		}
 
 		// WooCommerce
-		if ( $this->is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+		if ( $this->is_plugin_active( 'woocommerce/woocommerce.php' ) || defined( 'WC_VERSION' ) ) {
 			$this->add_integration( 'woocommerce', new MAKE_Integration_WooCommerce( $api ) );
+		}
+		
+		// WP Retina 2x
+		if ( $this->is_plugin_active( 'wp-retina-2x/wp-retina-2x.php' ) || function_exists( 'wr2x_init' ) ) {
+			$this->add_integration( 'wpretina2x', new MAKE_Integration_WPRetina2x( $api ) );
 		}
 
 		// Yoast SEO
-		if ( $this->is_plugin_active( 'wordpress-seo/wp-seo.php' ) ) {
+		if ( $this->is_plugin_active( 'wordpress-seo/wp-seo.php' ) || defined( 'WPSEO_VERSION' ) ) {
 			$this->add_integration( 'yoastseo', new MAKE_Integration_YoastSEO( $api ) );
 		}
 	}
 
 	/**
-	 * Public version of the function to add a module.
+	 * Wrapper function to add an integration module.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  string    $module_name
-	 * @param  object    $module
+	 * @param  string $integration_name
+	 * @param  object $integration
 	 *
 	 * @return bool
 	 */
-	public function add_integration( $module_name, $module ) {
+	public function add_integration( $integration_name, $integration ) {
 		/**
-		 * Filter: Switch to turn off an integration.
+		 * Filter: Prevent an integration from being added.
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param bool    $add_integration    True to allow the integration to be added.
+		 * @param bool $add_integration    True to allow the integration to be added.
 		 */
-		$add_integration = apply_filters( 'make_add_integration_' . $module_name, true );
+		$add_integration = apply_filters( 'make_add_integration_' . $integration_name, true );
 
 		if ( true === $add_integration ) {
-			return parent::add_module( $module_name, $module );
+			$module_name = 'integration_' . $integration_name;
+			return parent::add_module( $module_name, $integration );
 		}
 
 		return false;
@@ -71,11 +76,12 @@ final class MAKE_Integration_Manager extends MAKE_Util_Modules implements MAKE_I
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $module_name
+	 * @param string $integration_name
 	 *
 	 * @return mixed
 	 */
-	public function get_integration( $module_name ) {
+	public function get_integration( $integration_name ) {
+		$module_name = 'integration_' . $integration_name;
 		return parent::get_module( $module_name );
 	}
 
@@ -84,11 +90,12 @@ final class MAKE_Integration_Manager extends MAKE_Util_Modules implements MAKE_I
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $module_name
+	 * @param string $integration_name
 	 *
 	 * @return bool
 	 */
-	public function has_integration( $module_name ) {
+	public function has_integration( $integration_name ) {
+		$module_name = 'integration_' . $integration_name;
 		return parent::has_module( $module_name );
 	}
 

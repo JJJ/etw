@@ -35,7 +35,7 @@ $author_option = make_get_thememod_value( $author_key );
 	</div>
 	<?php if ( is_singular() && $author_bio = get_the_author_meta( 'description' ) ) : ?>
 	<div class="entry-author-bio">
-		<?php echo wpautop( Make()->thememod()->sanitize_text( $author_bio ) ); ?>
+		<?php echo wpautop( Make()->sanitize()->sanitize_text( $author_bio ) ); ?>
 	</div>
 	<?php endif; ?>
 </div>

@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Component_Builder_Enhancements
  *
- * @since 1.7.0.
+ * Container class for loading various Builder enhancements.
+ *
+ * @since 1.5.1.
+ * @since 1.7.0. Renamed from TTFMP_Builder_Tweaks
  */
 final class MAKEPLUS_Component_Builder_Enhancements extends MAKEPLUS_Util_Modules {
 	/**
@@ -33,13 +36,15 @@ final class MAKEPLUS_Component_Builder_Enhancements extends MAKEPLUS_Util_Module
 
 		global $pagenow;
 
+		$ajax = defined( 'DOING_AJAX' ) && DOING_AJAX;
+
 		// Section ID
-		if ( ! is_admin() || in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) {
+		if ( ! is_admin() || in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) || $ajax ) {
 			$this->add_module( 'section_id', new MAKEPLUS_Component_Builder_Enhancement_SectionID );
 		}
 
 		// Section Classes
-		if ( ! is_admin() || in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) {
+		if ( ! is_admin() || in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) || $ajax ) {
 			$this->add_module( 'section_classes', new MAKEPLUS_Component_Builder_Enhancement_SectionClasses );
 		}
 

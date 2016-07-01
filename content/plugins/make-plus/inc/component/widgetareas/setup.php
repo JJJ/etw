@@ -6,10 +6,12 @@
 /**
  * Class MAKEPLUS_Component_WidgetAreas_Setup
  *
+ * Enable columns in the Columns section of the Builder to be converted into widget areas.
+ *
  * @since 1.0.0.
  * @since 1.7.0. Changed class name from TTFMP_Widget_Area, merged in TTFMP_Sidebar_Management
  */
-class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+final class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -18,7 +20,7 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	 * @var array
 	 */
 	protected $dependencies = array(
-		'mode'     => 'MAKEPLUS_Setup_ModeInterface',
+		'mode' => 'MAKEPLUS_Setup_ModeInterface',
 	);
 
 	/**
@@ -29,6 +31,24 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	 * @var bool
 	 */
 	private static $hooked = false;
+
+	/**
+	 * MAKEPLUS_Component_WidgetAreas_Setup constructor.
+	 *
+	 * @since 1.7.4.
+	 *
+	 * @param MAKEPLUS_APIInterface|null $api
+	 * @param array                      $modules
+	 */
+	public function __construct( MAKEPLUS_APIInterface $api = null, array $modules = array() ) {
+		// Load dependencies.
+		parent::__construct( $api, $modules );
+
+		// Add the Make API if it's available
+		if ( $this->mode()->has_make_api() ) {
+			$this->add_module( 'theme', Make() );
+		}
+	}
 
 	/**
 	 * Hook into WordPress.
@@ -51,6 +71,10 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 		else {
 			// Add the JS/CSS
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueue' ), 20 );
+
+			// Add dynamic styles
+			add_action( 'make_style_loaded', array( $this, 'add_style' ), 50 );
 
 			// Add inputs before the text section
 			add_action( 'make_section_text_before_column', array( $this, 'section_text_before_column' ), 10, 2 );
@@ -115,17 +139,15 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add JS/CSS on page edit screen.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $hook_suffix    The current page slug.
+	 * @hooked action admin_enqueue_scripts
+	 *
+	 * @param string $hook_suffix    The current page slug.
+	 *
 	 * @return void
 	 */
 	public function admin_enqueue( $hook_suffix ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Have to be careful with this test because this function was introduced in Make 1.2.0.
 		$post_type_supports_builder = ( function_exists( 'ttfmake_post_type_supports_builder' ) ) ? ttfmake_post_type_supports_builder( get_post_type() ) : false;
 
@@ -161,23 +183,116 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	}
 
 	/**
+	 * Enqueue styles and scripts for Columns widget areas.
+	 *
+	 * @since 1.7.4.
+	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
+	 * @return void
+	 */
+	public function frontend_enqueue() {
+		$load = false;
+
+		// Check for a Builder section
+		if ( function_exists( 'ttfmake_is_builder_page' ) && ttfmake_is_builder_page() ) {
+			$sections = ttfmake_get_section_data( get_the_ID() );
+			if ( ! empty( $sections ) ) {
+				// Parse the sections included on the page.
+				$section_types = wp_list_pluck( $sections, 'section-type' );
+				$matched_sections = array_keys( $section_types, 'text' );
+
+				// Only enqueue if there is at least one Columns section.
+				if ( ! empty( $matched_sections ) ) {
+					$load = true;
+				}
+			}
+		}
+
+		// Check for passive mode
+		if ( 'active' !== $this->mode()->get_mode() ) {
+			$load = true;
+		}
+
+		// Enqueue the stylesheet
+		if ( true === $load ) {
+			wp_enqueue_style(
+				'makeplus-widgetareas-frontend',
+				makeplus_get_plugin_directory_uri() . 'css/widgetareas/frontend.css',
+				array(),
+				MAKEPLUS_VERSION,
+				'all'
+			);
+
+			// If current theme is a child theme of Make, load the Posts List stylesheet
+			// before the child theme stylesheet so styles can be customized.
+			if ( $this->has_module( 'theme' ) && is_child_theme() ) {
+				$this->theme()->scripts()->add_dependency( 'make-main', 'makeplus-widgetareas-frontend', 'style' );
+			}
+		}
+	}
+
+	/**
+	 *
+	 *
+	 * @since 1.7.4.
+	 *
+	 * @hooked action make_style_loaded
+	 *
+	 * @param MAKE_Style_ManagerInterface $style
+	 */
+	public function add_style( MAKE_Style_ManagerInterface $style ) {
+		$is_style_preview = isset( $_POST['make-preview'] );
+
+		// Widget body
+		$element = 'body';
+		$selectors = array( '.builder-text-content .widget' );
+		$declarations = $style->helper()->parse_font_properties( $element, $is_style_preview );
+		if ( ! empty( $declarations ) ) {
+			$style->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
+		}
+		$link_rule = $style->helper()->parse_link_underline( $element, array( 'a' ), $is_style_preview );
+		if ( ! empty( $link_rule ) ) {
+			$style->css()->add( $link_rule );
+		}
+		// Links
+		if ( $is_style_preview || ! $style->thememod()->is_default( 'font-weight-body-link' ) ) {
+			$style->css()->add( array(
+				'selectors'    => array( '.builder-text-content .widget a' ),
+				'declarations' => array(
+					'font-weight' => $style->thememod()->get_value( 'font-weight-body-link', 'style' ),
+				)
+			) );
+		}
+
+		// Widget title
+		$element = 'h4';
+		$selectors = array( '.builder-text-content .widget-title' );
+		$declarations = $style->helper()->parse_font_properties( $element, $is_style_preview );
+		if ( ! empty( $declarations ) ) {
+			$style->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
+		}
+		$link_rule = $style->helper()->parse_link_underline( $element, array( '.builder-text-content .widget-title a' ), $is_style_preview );
+		if ( ! empty( $link_rule ) ) {
+			$style->css()->add( $link_rule );
+		}
+	}
+
+	/**
 	 * Add button to turn column into widget area.
 	 *
 	 * Backcompat for versions of Make < 1.4
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $data             The section's data.
-	 * @param  string    $column_number    The column number.
+	 * @hooked action make_section_text_before_column
+	 *
+	 * @param array  $data             The section's data.
+	 * @param string $column_number    The column number.
 	 *
 	 * @return void
 	 */
 	public function section_text_before_column( $data, $column_number ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_text_before_column' !== current_action() ) {
-			return;
-		}
-
 		global $ttfmake_is_js_template;
 
 		$section_name  = ttfmake_get_section_name( $data, $ttfmake_is_js_template );
@@ -203,18 +318,15 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add the convert to widget area button to the builder.
 	 *
-	 * @since  1.4.0.
+	 * @since 1.4.0.
 	 *
-	 * @param  array    $column_buttons          The list of buttons for the column.
+	 * @hooked filter make_column_buttons
 	 *
-	 * @return array                             The modified list of buttons.
+	 * @param array $column_buttons    The list of buttons for the column.
+	 *
+	 * @return array                   The modified list of buttons.
 	 */
 	public function make_column_buttons( $column_buttons ) {
-		// Only run this in the proper hook context.
-		if ( 'make_column_buttons' !== current_filter() ) {
-			return $column_buttons;
-		}
-
 		if ( true === $this->can_edit_widgets() ) {
 			$column_buttons[300] = array(
 				'label' => __( 'Convert text column to widget area', 'make-plus' ),
@@ -230,19 +342,16 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add content below text columns.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $data             The section data.
-	 * @param  string    $column_number    The column number.
+	 * @hooked action make_section_text_after_column
+	 *
+	 * @param array  $data             The section data.
+	 * @param string $column_number    The column number.
 	 *
 	 * @return void
 	 */
 	public function section_text_after_column( $data, $column_number ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_text_after_column' !== current_action() ) {
-			return;
-		}
-
 		global $ttfmake_is_js_template;
 
 		$section_name  = ttfmake_get_section_name( $data, $ttfmake_is_js_template );
@@ -365,11 +474,14 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Get the template for displaying a widget form.
 	 *
-	 * @since  1.4.1
+	 * @since 1.4.1
 	 *
-	 * @param  string    $form       The HTML for the widget form.
-	 * @param  string    $id_base    The base ID for the widget.
-	 * @return string                The overlay template for the widget form.
+	 * @param string $form       The HTML for the widget form.
+	 * @param string $id_base    The base ID for the widget.
+	 * @param string $id
+	 * @param string $title
+	 *
+	 * @return string            The overlay template for the widget form.
 	 */
 	private function overlay_template( $form, $id_base, $id, $title ) {
 		ob_start();
@@ -401,10 +513,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Get the data needed to display the list of widgets.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $sidebar_id    The ID of the sidebar.
-	 * @return array                    Array of widgets in the sidebar.
+	 * @param string $sidebar_id    The ID of the sidebar.
+	 *
+	 * @return array                Array of widgets in the sidebar.
 	 */
 	private function get_widget_data_for_display( $sidebar_id ) {
 		$widgets = $this->get_widgets_in_sidebar_instance( $sidebar_id );
@@ -435,10 +548,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Get information about all widgets in a sidebar.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $sidebar_id    Unique ID for the sidebar.
-	 * @return array                    Collection of widget IDs.
+	 * @param string $sidebar_id    Unique ID for the sidebar.
+	 *
+	 * @return array                Collection of widget IDs.
 	 */
 	private function get_widgets_in_sidebar_instance( $sidebar_id ) {
 		global $wp_registered_widgets;
@@ -464,9 +578,12 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Get the custom title for an individual widget instance.
 	 *
-	 * @param  int       $number         The widget number for a multi number widget.
-	 * @param  string    $option_name    The option that the widget data is saved under.
-	 * @return string                    The title of the widget.
+	 * @since 1.0.0.
+	 *
+	 * @param int    $number         The widget number for a multi number widget.
+	 * @param string $option_name    The option that the widget data is saved under.
+	 *
+	 * @return string                The title of the widget.
 	 */
 	private function get_widget_title( $number, $option_name ) {
 		$widget_instance_data = get_option( $option_name );
@@ -476,20 +593,17 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Append the widget area value to the data.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $clean_data       The cleaned up data.
-	 * @param  array     $original_data    The $_POST data for the section.
-	 * @param  string    $section_type     The ID for the section.
+	 * @hooked filter make_prepare_data_section
 	 *
-	 * @return array                       The additional data.
+	 * @param array  $clean_data       The cleaned up data.
+	 * @param array  $original_data    The $_POST data for the section.
+	 * @param string $section_type     The ID for the section.
+	 *
+	 * @return array                   The additional data.
 	 */
 	public function prepare_data_section( $clean_data, $original_data, $section_type ) {
-		// Only run this in the proper hook context.
-		if ( 'make_prepare_data_section' !== current_filter() ) {
-			return $clean_data;
-		}
-
 		if ( 'text' === $section_type ) {
 			if ( isset( $original_data['columns'] ) && is_array( $original_data['columns'] ) ) {
 				foreach ( $original_data['columns'] as $id => $item ) {
@@ -531,18 +645,15 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	 * Note that this only resets the content saved to the "post_content" field in the database. It does not touch the
 	 * meta data in an effort to ensure that the old values that may be reverted to are kept intact.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $sections    The array of section data for the page.
+	 * @hooked filter make_insert_post_data_sections
 	 *
-	 * @return array                 The modified section data.
+	 * @param array $sections    The array of section data for the page.
+	 *
+	 * @return array             The modified section data.
 	 */
 	public function insert_post_data_sections( $sections ) {
-		// Only run this in the proper hook context.
-		if ( 'make_insert_post_data_sections' !== current_filter() ) {
-			return $sections;
-		}
-
 		foreach ( $sections as $section_id => $section ) {
 			if ( isset( $section['section-type'] ) && 'text' === $section['section-type'] ) {
 				if ( isset( $section['columns'] ) ) {
@@ -594,19 +705,16 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Save the individual widget data
 	 *
-	 * @since  1.4.1.
+	 * @since 1.4.1.
 	 *
-	 * @param  int        $post_id    The ID of the saved post.
-	 * @param  WP_Post    $post       The post being saved.
+	 * @hooked action save_post
+	 *
+	 * @param int     $post_id    The ID of the saved post.
+	 * @param WP_Post $post       The post being saved.
 	 *
 	 * @return void
 	 */
 	public function save_widget_data( $post_id, $post ) {
-		// Only run this in the proper hook context.
-		if ( 'save_post' !== current_action() ) {
-			return;
-		}
-
 		global $wp_registered_widgets;
 
 		if ( ! isset( $_POST[ 'ttfmake-builder-nonce' ] ) || ! wp_verify_nonce( $_POST[ 'ttfmake-builder-nonce' ], 'save' ) ) {
@@ -710,10 +818,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Print the content for the widget area.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $attrs    The list of attributes for the widget.
-	 * @return string              The generated content for the shortcode.
+	 * @param array $attrs    The list of attributes for the widget.
+	 *
+	 * @return string         The generated content for the shortcode.
 	 */
 	public function widget_area( $attrs ) {
 		$id = 'ttfmp-' . esc_attr( $attrs['page_id'] ) . '-' . esc_attr( $attrs['section_id'] ) . '-' . esc_attr( $attrs['column_id'] );
@@ -729,16 +838,13 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * For each stored sidebar, register a WordPress sidebar.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action widgets_init
 	 *
 	 * @return void
 	 */
 	public function widgets_init() {
-		// Only run this in the proper hook context.
-		if ( 'widgets_init' !== current_action() ) {
-			return;
-		}
-
 		$sidebars = $this->get_registered_sidebars();
 
 		if ( is_array( $sidebars ) ) {
@@ -767,10 +873,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Generate a title for the sidebar.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id    The sidebar ID.
-	 * @return string           The generated description.
+	 * @param string $id    The sidebar ID.
+	 *
+	 * @return string       The generated description.
 	 */
 	private function get_sidebar_title( $id ) {
 		// Attempt to get the label from the array of registered sidebars
@@ -789,10 +896,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Generate a description for the sidebar.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id    The sidebar ID.
-	 * @return string           The generated description.
+	 * @param string $id    The sidebar ID.
+	 *
+	 * @return string       The generated description.
 	 */
 	private function get_sidebar_description( $id ) {
 		// Attempt to get the label from the array of registered sidebars
@@ -815,12 +923,13 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Adds a sidebar via the component pieces.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  int       $page_id       The ID of the page.
-	 * @param  string    $section_id    The section ID. Value is numeric, but will be greater than the max int value.
-	 * @param  int       $column_id     The column number.
-	 * @param  string    $label         The label for the sidebar.
+	 * @param int    $page_id       The ID of the page.
+	 * @param string $section_id    The section ID. Value is numeric, but will be greater than the max int value.
+	 * @param int    $column_id     The column number.
+	 * @param string $label         The label for the sidebar.
+	 *
 	 * @return void
 	 */
 	private function register_sidebar( $page_id, $section_id, $column_id, $label ) {
@@ -831,11 +940,12 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Removes a sidebar via the component pieces.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  int       $page_id       The ID of the page.
-	 * @param  string    $section_id    The section ID. Value is numeric, but will be greater than the max int value.
-	 * @param  int       $column_id     The column number.
+	 * @param int    $page_id       The ID of the page.
+	 * @param string $section_id    The section ID. Value is numeric, but will be greater than the max int value.
+	 * @param int    $column_id     The column number.
+	 *
 	 * @return void
 	 */
 	private function deregister_sidebar( $page_id, $section_id, $column_id ) {
@@ -846,7 +956,7 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Get all of the sidebars that are registered for the builder.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
 	 * @return array    The list of sidebars registered for the builder.
 	 */
@@ -865,9 +975,10 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Get a single sidebar from the list of registered sidebars.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id    The sidebar ID.
+	 * @param string    $id    The sidebar ID.
+	 *
 	 * @return array            The sidebar.
 	 */
 	private function get_registered_sidebar( $id ) {
@@ -884,10 +995,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add another sidebar to the array of sidebars.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id       The ID of the sidebar to add.
-	 * @param  string    $label    The label for the sidebar.
+	 * @param string $id       The ID of the sidebar to add.
+	 * @param string $label    The label for the sidebar.
+	 *
 	 * @return void
 	 */
 	private function add_sidebar_to_array( $id, $label ) {
@@ -906,9 +1018,10 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Remove a single sidebar by ID from the array of sidebars.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id    The ID of the sidebar to remove.
+	 * @param string $id    The ID of the sidebar to remove.
+	 *
 	 * @return void
 	 */
 	private function remove_sidebar_from_array( $id ) {
@@ -923,9 +1036,10 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Save an array of sidebars to the theme mod.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $sidebars    Array of sidebars to save.
+	 * @param array $sidebars    Array of sidebars to save.
+	 *
 	 * @return void
 	 */
 	private function save_sidebars( $sidebars ) {
@@ -935,10 +1049,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Break a sidebar ID into component pieces.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id    The sidebar ID (e.g., 4928-1251344524124-1)
-	 * @return array            An array containing the page ID, section ID and column number.
+	 * @param string $id    The sidebar ID (e.g., 4928-1251344524124-1)
+	 *
+	 * @return array        An array containing the page ID, section ID and column number.
 	 */
 	private function parse_sidebar_id( $id ) {
 		$pieces = explode( '-', $id );
@@ -961,10 +1076,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Sanitizes a string to only return numbers.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $id    The section ID.
-	 * @return string           The sanitized ID.
+	 * @param string $id    The section ID.
+	 *
+	 * @return string       The sanitized ID.
 	 */
 	private function clean_section_id( $id ) {
 		return preg_replace( '/[^0-9]/', '', $id );
@@ -973,20 +1089,18 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * When a widget area post meta value is deleted, delete the corresponding sidebar.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array     $meta_ids       An array of deleted metadata entry IDs.
-	 * @param  int       $object_id      Object ID.
-	 * @param  string    $meta_key       Meta key.
-	 * @param  mixed     $_meta_value    Meta value.
+	 * @hooked action deleted_post_meta
+	 *
+	 * @param array  $meta_ids       An array of deleted metadata entry IDs.
+	 * @param int    $object_id      Object ID.
+	 * @param string $meta_key       Meta key.
+	 * @param mixed  $_meta_value    Meta value.
+	 *
 	 * @return void
 	 */
 	public function deleted_post_meta( $meta_ids, $object_id, $meta_key, $_meta_value ) {
-		// Only run this in the proper hook context.
-		if ( 'deleted_post_meta' !== current_action() ) {
-			return;
-		}
-
 		if ( $this->meta_key_is_widget_area( $meta_key ) ) {
 			// Get the page ID, the section ID, and the column number, which will allow for deleting the sidebar
 			$pieces     = explode( ':', $meta_key );
@@ -1004,20 +1118,18 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * When a text column is updated, potentially remove a sidebar.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  int       $meta_id        ID of updated metadata entry.
-	 * @param  int       $object_id      Object ID.
-	 * @param  string    $meta_key       Meta key.
-	 * @param  mixed     $_meta_value    Meta value.
+	 * @hooked action updated_post_meta
+	 *
+	 * @param int    $meta_id        ID of updated metadata entry.
+	 * @param int    $object_id      Object ID.
+	 * @param string $meta_key       Meta key.
+	 * @param mixed  $_meta_value    Meta value.
+	 *
 	 * @return void
 	 */
 	public function updated_post_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
-		// Only run this in the proper hook context.
-		if ( 'updated_post_meta' !== current_action() ) {
-			return;
-		}
-
 		if ( $this->meta_key_is_widget_area( $meta_key ) ) {
 			if ( 0 === (int) $_meta_value ) {
 				// Get the page ID, the section ID, and the column number, which will allow for deleting the sidebar
@@ -1037,17 +1149,15 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Removes sidebars used in a page when the page is deleted.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  int    $post_id    The post ID of the post being deleted.
+	 * @hooked action after_delete_post
+	 *
+	 * @param int $post_id    The post ID of the post being deleted.
+	 *
 	 * @return void
 	 */
 	public function after_delete_post( $post_id ) {
-		// Only run this in the proper hook context.
-		if ( 'after_delete_post' !== current_action() ) {
-			return;
-		}
-
 		$sidebars = $this->get_registered_sidebars();
 
 		// Iterate through sidebars, removing any with a page ID matching the deleted page's ID
@@ -1064,10 +1174,11 @@ class MAKEPLUS_Component_WidgetAreas_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Determine if a meta key represents a widget area post meta value.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $key    The key to test.
-	 * @return bool              True if the key is a widget area value. False if it is not.
+	 * @param string $key    The key to test.
+	 *
+	 * @return bool          True if the key is a widget area value. False if it is not.
 	 */
 	private function meta_key_is_widget_area( $key ) {
 		$return = false;

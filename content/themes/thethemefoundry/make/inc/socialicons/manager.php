@@ -6,6 +6,8 @@
 /**
  * Class MAKE_SocialIcons_Manager
  *
+ * Manage and display icons for various social profile services.
+ *
  * @since 1.7.0.
  */
 class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialIcons_ManagerInterface, MAKE_Util_HookInterface, MAKE_Util_LoadInterface {
@@ -40,7 +42,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 */
 	private $required_properties = array(
 		'title',
-		'class'
+		'class',
 	);
 
 	/**
@@ -123,7 +125,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param MAKE_SocialIcons_Manager    $socialicons     The settings object that has just finished loading.
+		 * @param MAKE_SocialIcons_Manager $socialicons     The settings object that has just finished loading.
 		 */
 		do_action( "make_socialicons_loaded", $this );
 	}
@@ -144,24 +146,12 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param      $icons
-	 * @param bool $overwrite
+	 * @param array $icons
+	 * @param bool  $overwrite
 	 *
 	 * @return bool
 	 */
-	public function add_icons( $icons, $overwrite = false ) {
-		// Make sure we're not doing it wrong.
-		if ( "make_socialicons_loaded" !== current_action() && did_action( "make_socialicons_loaded" ) ) {
-			$this->compatibility()->doing_it_wrong(
-				__FUNCTION__,
-				__( 'This function should only be called during or before the <code>make_socialicons_loaded</code> action.', 'make' ),
-				'1.7.0'
-			);
-
-			return false;
-		}
-
-		$icons = (array) $icons;
+	public function add_icons( array $icons, $overwrite = false ) {
 		$existing_icons = $this->icons;
 		$new_icons = array();
 		$return = true;
@@ -201,9 +191,9 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  array    $properties    The array of properties to check.
+	 * @param array $properties    The array of properties to check.
 	 *
-	 * @return bool                    True if all required properties are present.
+	 * @return bool                True if all required properties are present.
 	 */
 	private function has_required_properties( $properties ) {
 		$properties = (array) $properties;
@@ -222,13 +212,13 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	}
 
 	/**
-	 * Remove icon definitions from the collection.
+	 * Remove one or more icon definitions from the collection.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $icons
+	 * @param array|string $icons    The array of icons to remove, or 'all'.
 	 *
-	 * @return bool
+	 * @return bool                  True if all icon definitions were successfully removed, false if there was an error.
 	 */
 	public function remove_icons( $icons ) {
 		if ( 'all' === $icons ) {
@@ -271,9 +261,12 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 				'make_supported_social_icons',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'To add or modify the available social icons, use the %1$s method instead. See %2$s.', 'make' ),
-					'<code>add_icons</code>',
-					'<code>MAKE_SocialIcons_Manager</code>'
+					wp_kses(
+						__( 'To add or modify social icons, use the %1$s function instead. See the <a href="%2$s" target="_blank">Social Icons API documentation</a>.', 'make' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_socialicon_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/social-icons-api/'
 				)
 			);
 
@@ -309,7 +302,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @return mixed|void
+	 * @return array
 	 */
 	private function get_email_props() {
 		/**
@@ -317,7 +310,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param array    $icon    The icon definition.
+		 * @param array $icon    The icon definition.
 		 */
 		return apply_filters( 'make_socialicons_email', array(
 			'title' => esc_html__( 'Email', 'make' ),
@@ -330,7 +323,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @return mixed|void
+	 * @return array
 	 */
 	private function get_rss_props() {
 		/**
@@ -338,7 +331,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param array    $icon    The icon definition.
+		 * @param array $icon    The icon definition.
 		 */
 		return apply_filters( 'make_socialicons_rss', array(
 			'title' => esc_html__( 'RSS', 'make' ),
@@ -351,7 +344,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @return mixed|void
+	 * @return array
 	 */
 	private function get_default_props() {
 		/**
@@ -359,7 +352,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param array    $icon    The icon definition.
+		 * @param array $icon    The icon definition.
 		 */
 		return apply_filters( 'make_socialicons_default', array(
 			'title' => esc_html__( 'Link', 'make' ),
@@ -387,7 +380,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @param array $item
 	 *
-	 * @return array|mixed|void
+	 * @return array
 	 */
 	public function find_match( $item ) {
 		$item = $this->sanitize_item( $item );
@@ -442,7 +435,10 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 			'social-custom-rss',
 		);
 
-		$icon_data = array();
+		// The RSS icon is visible by default
+		$icon_data = array(
+			'rss-toggle' => true,
+		);
 
 		// Populate from Customizer settings first
 		foreach ( $old_settings as $setting_id ) {
@@ -503,7 +499,12 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 
 			if ( $menu && ! is_wp_error( $menu ) ) {
 				// Add an error message
-				$this->error()->add_error( 'make_deprecated_social_menu', __( 'Make no longer uses a custom menu to output social icons. Instead, use the interface in the Customizer under <em>General &rarr; Social Icons</em>.', 'make' ) );
+				if ( ! $this->error()->has_code( 'make_deprecated_social_menu' ) ) {
+					$this->error()->add_error(
+						'make_deprecated_social_menu',
+						wp_kses( __( 'Make no longer uses a custom menu to output social icons. Instead, use the interface in the Customizer under <em>General &rarr; Social Icons</em>.', 'make' ), array( 'em' => true ) )
+					);
+				}
 				
 				$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'update_post_term_cache' => false ) );
 
@@ -551,7 +552,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 			if ( false === array_search( 'email', wp_list_pluck( $icon_data['items'], 'type' ) ) ) {
 				$icon_data['items'][] = array(
 					'type'    => 'email',
-					'content' => $this->thememod()->get_default( 'social-icons-item-email' ),
+					'content' => $this->thememod()->get_default( 'social-icons-item-content-email' ),
 				);
 			}
 		}
@@ -563,7 +564,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 			if ( false === array_search( 'rss', wp_list_pluck( $icon_data['items'], 'type' ) ) ) {
 				$icon_data['items'][] = array(
 					'type'    => 'rss',
-					'content' => $this->thememod()->get_default( 'social-icons-item-rss' ),
+					'content' => $this->thememod()->get_default( 'social-icons-item-content-rss' ),
 				);
 			}
 		}
@@ -572,20 +573,17 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	}
 
 	/**
-	 * If the 'social-icons' setting doesn't exist yet, fall back on deprecated social profile settings.
+	 * If the 'social-icons' setting doesn't exist yet, try to fall back on deprecated social profile settings.
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param  array $value
+	 * @hooked filter theme_mod_social-icons
+	 *
+	 * @param array $value
 	 *
 	 * @return array
 	 */
 	public function filter_theme_mod( $value ) {
-		// Only run this in the proper hook context.
-		if ( 'theme_mod_social-icons' !== current_filter() ) {
-			return $value;
-		}
-
 		$all_mods = get_theme_mods();
 
 		if ( ! isset( $all_mods['social-icons'] ) ) {
@@ -603,10 +601,16 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @param bool $raw
+	 *
 	 * @return array
 	 */
-	public function get_icon_data() {
-		return $this->thememod()->get_value( 'social-icons' );
+	private function get_icon_data( $raw = false ) {
+		if ( $raw ) {
+			return $this->thememod()->get_raw_value( 'social-icons' );
+		} else {
+			return $this->thememod()->get_value( 'social-icons' );
+		}
 	}
 
 	/**
@@ -617,7 +621,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 * @return bool
 	 */
 	public function has_icon_data() {
-		$icon_data = $this->get_icon_data();
+		$icon_data = $this->get_icon_data( true );
 		return ( isset( $icon_data['items'] ) && ! empty( $icon_data['items'] ) );
 	}
 
@@ -637,8 +641,8 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string|null    $override     This value will be returned if it is not null.
-		 * @param array          $icon_data    The array of icon data to use for rendering.
+		 * @param string|null $override     This value will be returned if it is not null.
+		 * @param array       $icon_data    The array of icon data to use for rendering.
 		 */
 		$override = apply_filters( 'make_socialicons_render_override', null, $icon_data );
 		if ( is_string( $override ) ) {
@@ -651,9 +655,12 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 				'make_social_links',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'To add or modify the available social icons, use the %1$s method instead. See %2$s.', 'make' ),
-					'<code>add_icons</code>',
-					'<code>MAKE_SocialIcons_Manager</code>'
+					wp_kses(
+						__( 'To add or modify social icons, use the %1$s function instead. See the <a href="%2$s" target="_blank">Social Icons API documentation</a>.', 'make' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_socialicon_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/social-icons-api/'
 				)
 			);
 		}
@@ -688,7 +695,7 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 				?>
 				<li class="make-social-icon">
 					<a href="<?php echo esc_attr( $content ); ?>"<?php if ( true === $icon_data['new-window'] ) : ?> target="_blank"<?php endif; ?>>
-						<i class="<?php echo esc_attr( $class ); ?>"></i>
+						<i class="<?php echo esc_attr( $class ); ?>" aria-hidden="true"></i>
 						<span class="screen-reader-text"><?php echo esc_attr( $title ); ?></span>
 					</a>
 				</li>
@@ -712,24 +719,23 @@ class MAKE_SocialIcons_Manager extends MAKE_Util_Modules implements MAKE_SocialI
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter make_settings_thememod_sanitize_callback_parameters
+	 *
 	 * @param mixed        $value
-	 * @param array|string $callback
 	 * @param string       $setting_id
+	 * @param array|string $callback
 	 *
 	 * @return array
 	 */
-	public function not_always_an_array( $value, $callback, $setting_id ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_sanitize_callback_parameters' !== current_filter() ) {
-			return $value;
-		}
-
+	public function not_always_an_array( $value, $setting_id, $callback ) {
 		if (
 			'social-icons' === $setting_id
 			&&
+			is_array( $value )
+			&&
 			is_array( $callback )
 			&&
-		    $callback[0] instanceof MAKE_Settings_ThemeModInterface
+		    $callback[0] instanceof MAKE_Settings_SanitizeInterface
 			&&
 		    $callback[1] === 'sanitize_socialicons_from_customizer'
 		) {

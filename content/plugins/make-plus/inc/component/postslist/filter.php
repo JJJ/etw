@@ -9,9 +9,9 @@
  * Methods for handling a dynamic list of filtering options. May include taxonomy terms and pages.
  *
  * @since 1.6.2.
- * @since 1.7.0. Changed class name from TTFMP_Posts_List_Filter
+ * @since 1.7.0. Changed class name from TTFMP_Posts_List_Filter.
  */
-class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_PostsList_FilterInterface {
+final class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_PostsList_FilterInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -28,9 +28,9 @@ class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param  string    $post_type    The post type ID.
+	 * @param string $post_type    The post type ID.
 	 *
-	 * @return array                   The array of choices.
+	 * @return array               The array of choices.
 	 */
 	private function get_choice_list( $post_type ) {
 		// No choices if post type doesn't exist / isn't public
@@ -111,7 +111,7 @@ class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implemen
 				'ttfmp_post_list_filter_choices',
 				'1.7.0',
 				sprintf(
-					__( 'Use %s instead.', 'make-plus' ),
+					__( 'Use the %s hook instead.', 'make-plus' ),
 					'<code>makeplus_postslist_filter_choices</code>'
 				)
 			);
@@ -144,11 +144,11 @@ class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param  string    $value       The term ID.
-	 * @param  int       $key         Unused.
-	 * @param  string    $taxonomy    The taxonomy ID.
+	 * @param string $value       The term ID.
+	 * @param int    $key         Unused.
+	 * @param string $taxonomy    The taxonomy ID.
 	 *
-	 * @return string                 The modified term ID.
+	 * @return string             The modified term ID.
 	 */
 	private function slug_prefix( &$value, $key, $taxonomy ) {
 		$value = $taxonomy . ':' . $value;
@@ -159,10 +159,10 @@ class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param  string         $post_type        The post type ID.
-	 * @param  string|null    $current_value    The current value of the select box.
+	 * @param string      $post_type        The post type ID.
+	 * @param string|null $current_value    The current value of the select box.
 	 *
-	 * @return string                           HTML options.
+	 * @return string                       HTML options.
 	 */
 	public function render_choice_list( $post_type, $current_value = null ) {
 		$html = '';
@@ -188,10 +188,10 @@ class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param  string    $value        The value of the chosen option.
-	 * @param  string    $post_type    The post type ID.
+	 * @param string $value        The value of the chosen option.
+	 * @param string $post_type    The post type ID.
 	 *
-	 * @return string                  Sanitized value.
+	 * @return string              Sanitized value.
 	 */
 	public function sanitize_filter_choice( $value, $post_type ) {
 		$choice_list = $this->get_choice_list( $post_type );
@@ -212,9 +212,9 @@ class MAKEPLUS_Component_PostsList_Filter extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param  string    $value    A filter choice.
+	 * @param string $value    A filter choice.
 	 *
-	 * @return string              A possibly upgraded filter choice.
+	 * @return string          A possibly upgraded filter choice.
 	 */
 	public function upgrade_filter_choice( $value ) {
 		if ( 0 === strpos( $value, 'cat_' ) ) {

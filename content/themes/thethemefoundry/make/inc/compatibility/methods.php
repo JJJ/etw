@@ -6,9 +6,11 @@
 /**
  * Class MAKE_Compatibility_Methods
  *
+ * Methods to support compatibility issues.
+ *
  * @since 1.7.0.
  */
-class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compatibility_MethodsInterface, MAKE_Util_HookInterface {
+final class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compatibility_MethodsInterface, MAKE_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -17,7 +19,8 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	 * @var array
 	 */
 	protected $dependencies = array(
-		'error' => 'MAKE_Error_CollectorInterface',
+		'error'              => 'MAKE_Error_CollectorInterface',
+		'settings_migration' => 'MAKE_Compatibility_SettingsMigrationInterface',
 	);
 
 	/**
@@ -62,7 +65,7 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	 *
 	 * @var array
 	 */
-	protected $mode = array();
+	private $mode = array();
 
 	/**
 	 * Indicator of whether the hook routine has been run.
@@ -78,10 +81,19 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param MAKE_APIInterface $api
-	 * @param array             $modules
+	 * @param MAKE_APIInterface|null $api
+	 * @param array                  $modules
 	 */
 	public function __construct( MAKE_APIInterface $api = null, array $modules = array() ) {
+		if ( is_child_theme() && is_admin() ) {
+			// Module defaults.
+			$modules = wp_parse_args( $modules, array(
+				'settings_migration' => 'MAKE_Compatibility_SettingsMigration',
+			) );
+		} else {
+			unset( $this->dependencies['settings_migration'] );
+		}
+
 		// Load dependencies.
 		parent::__construct( $api, $modules );
 
@@ -128,24 +140,30 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	/**
 	 * Set the mode for compatibility.
 	 *
+	 * The compatibility mode determines which compatibility files and modules are loaded.
+	 *
 	 * @since 1.7.0.
 	 *
-	 * @return string    $mode    The mode that was set.
+	 * @return string $mode    The mode that was set.
 	 */
-	protected function set_mode() {
+	private function set_mode() {
 		$default_mode = 'full';
 
 		/**
 		 * Filter: Set the mode for compatibility.
 		 *
-		 * - 'full' will load all the files to enable back compatibility with deprecated code.
+		 * - 'full' will load all the files to enable back compatibility with deprecated code. (Default)
 		 * - 'current' will not load any deprecated code. Use with caution! Could result in a fatal PHP error.
 		 * - A minor release value, such as '1.5', will load files necessary for back compatibility with version 1.5.x.
-		 *   (Note that there are no separate modes for releases prior to 1.5.)
+		 *   Note that there are no separate modes for releases prior to 1.5.
+		 *
+		 * Example: If a site was originally customized with a child theme and Make 1.6.x, setting the mode to 1.6
+		 * will load files necessary to enable compatibility with changes made in 1.7.x, but will skip files for 1.5
+		 * and 1.6.
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param string    $mode    The compatibility mode to run the theme in.
+		 * @param string $mode    The compatibility mode to run the theme in.
 		 */
 		$mode = apply_filters( 'make_compatibility_mode', $default_mode );
 
@@ -163,14 +181,11 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_api_loaded
+	 *
 	 * @return void
 	 */
 	public function require_deprecated_files() {
-		// Only run this in the proper hook context.
-		if ( 'make_api_loaded' !== current_action() ) {
-			return;
-		}
-
 		if ( isset( $this->mode['deprecated'] ) && is_array( $this->mode['deprecated'] ) ) {
 			foreach ( $this->mode['deprecated'] as $version ) {
 				$file = dirname( __FILE__ ) . '/deprecated/deprecated-' . $version . '.php';
@@ -203,22 +218,19 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	}
 
 	/**
-	 * Add notice if user attempts to install Make Plus as a theme.
+	 * Add a notice if the user attempts to install Make Plus as a theme.
 	 *
 	 * @since  1.1.2.
 	 *
-	 * @param  string         $source           File source location.
-	 * @param  string         $remote_source    Remove file source location.
-	 * @param  WP_Upgrader    $upgrader         WP_Upgrader instance.
+	 * @hooked filter upgrader_source_selection
 	 *
-	 * @return WP_Error                         Error or source on success.
+	 * @param  string      $source           File source location.
+	 * @param  string      $remote_source    Remote file source location.
+	 * @param  WP_Upgrader $upgrader         WP_Upgrader instance.
+	 *
+	 * @return string|WP_Error               Error or source on success.
 	 */
-	public function check_package( $source, $remote_source, $upgrader ) {
-		// Only run this in the proper hook context.
-		if ( 'upgrader_source_selection' !== current_filter() ) {
-			return $source;
-		}
-
+	public function check_package( $source, $remote_source, WP_Upgrader $upgrader ) {
 		global $wp_filesystem;
 
 		if ( ! isset( $_GET['action'] ) || 'upload-theme' !== $_GET['action'] ) {
@@ -252,9 +264,9 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	 *
 	 * @param string      $function    The function that was called.
 	 * @param string      $version     The version of Make that deprecated the function.
-	 * @param string|null $replacement The function that should have been called.
-	 * @param string|null $message     Explanatory text if there is no direct replacement available.
-	 * @param bool        $backtrace   True to include a backtrace in the error message.
+	 * @param string|null $replacement Optional. The function that should have been called.
+	 * @param string|null $message     Optional. Full error message in place of a replacement function.
+	 * @param bool        $backtrace   Optional. True to include a backtrace in the error message.
 	 *
 	 * @return void
 	 */
@@ -350,8 +362,8 @@ class MAKE_Compatibility_Methods extends MAKE_Util_Modules implements MAKE_Compa
 	 *
 	 * @param string $function  The function that was called.
 	 * @param string $message   A message explaining what has been done incorrectly.
-	 * @param string $version   The version of WordPress where the message was added.
-	 * @param bool   $backtrace True to include a backtrace in the error message.
+	 * @param string $version   Optional. The version of WordPress where the message was added.
+	 * @param bool   $backtrace Optional. True to include a backtrace in the error message.
 	 *
 	 * @return void
 	 */

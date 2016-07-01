@@ -315,7 +315,7 @@ class TTFMP_Panels_Frontend_Section {
 				<?php echo $this->settings->sanitize_value( $item['item-title'], 'item-title' ); ?>
 			</div>
 			<div id="ttfmp-panels-item-content-<?php echo esc_attr( $item['id'] ); ?>" class="ttfmp-panels-item-content">
-				<?php echo $this->settings->sanitize_value( $item['item-content'], 'item-content' ); ?>
+				<?php ttfmake_get_builder_save()->the_builder_content( $this->settings->sanitize_value( $item['item-content'], 'item-content' ) ); ?>
 			</div>
 	<?php endforeach;
 	}
@@ -340,7 +340,7 @@ class TTFMP_Panels_Frontend_Section {
 		</ul>
 		<?php foreach ( $items as $item ) : ?>
 		<div id="ttfmp-panels-item-content-<?php echo esc_attr( $item['id'] ); ?>" class="ttfmp-panels-item-content">
-			<?php echo $this->settings->sanitize_value( $item['item-content'], 'item-content' ); ?>
+			<?php ttfmake_get_builder_save()->the_builder_content( $this->settings->sanitize_value( $item['item-content'], 'item-content' ) ); ?>
 		</div>
 		<?php endforeach; ?>
 	<?php

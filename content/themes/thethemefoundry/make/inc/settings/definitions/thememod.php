@@ -154,7 +154,7 @@ $this->add_settings(
 		'footer-background-color-opacity'           => array( 'default' => (float) 1 ),
 	),
 	array(
-		'sanitize' => array( $this, 'sanitize_float' ),
+		'sanitize' => array( Make()->sanitize(), 'sanitize_float' ),
 		'is_style' => true,
 	)
 );
@@ -180,7 +180,7 @@ $this->add_settings(
 	), array() ),
 	array(
 		'default'  => '',
-		'sanitize' => array( $this, 'sanitize_text' ),
+		'sanitize' => array( Make()->sanitize(), 'sanitize_text' ),
 	)
 );
 
@@ -227,7 +227,7 @@ $this->add_settings(
 		'footer-background-color'           => array( 'default' => '#eaecee' ),
 	),
 	array(
-		'sanitize' => array( $this, 'maybe_hash_hex_color' ),
+		'sanitize' => 'maybe_hash_hex_color',
 		'is_style' => true,
 	)
 );
@@ -244,7 +244,6 @@ $this->add_settings(
 		'default'                  => '',
 		'sanitize'                 => 'esc_url',
 		'sanitize_from_customizer' => 'esc_url_raw',
-		'sanitize_to_customizer'   => 'esc_url',
 		'sanitize_database'        => 'esc_url_raw',
 		'sanitize_style'           => 'esc_url_raw',
 		'is_style'                 => true,
@@ -263,7 +262,6 @@ $this->add_settings(
 		'default'                  => '',
 		'sanitize'                 => 'esc_url',
 		'sanitize_from_customizer' => 'esc_url_raw',
-		'sanitize_to_customizer'   => 'esc_url',
 		'sanitize_database'        => 'esc_url_raw',
 		'is_style'                 => true,
 	)
@@ -280,8 +278,9 @@ $this->add_settings(
 	), array() ),
 	array(
 		'default'       => 'center',
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'alignment-horizontal-3',
+		'is_style'      => true,
 	)
 );
 
@@ -294,7 +293,7 @@ $this->add_settings(
 		'footer-background-position' => array( 'default' => 'center' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'alignment-full-9',
 		'is_style'      => true,
 	)
@@ -310,7 +309,7 @@ $this->add_settings(
 	), array() ),
 	array(
 		'default'       => 'scroll',
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'background-attachment',
 		'is_style'      => true,
 	)
@@ -325,7 +324,7 @@ $this->add_settings(
 		'footer-background-repeat' => array( 'default' => 'no-repeat' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'background-repeat',
 		'is_style'      => true,
 	)
@@ -340,7 +339,7 @@ $this->add_settings(
 		'footer-background-size' => array( 'default' => 'cover' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'background-size',
 		'is_style'      => true,
 	)
@@ -357,7 +356,7 @@ $this->add_settings(
 	), array() ),
 	array(
 		'default'       => 'none',
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'comment-count',
 	)
 );
@@ -372,7 +371,7 @@ $this->add_settings(
 		'layout-page-featured-images'    => array( 'default' => 'none' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'featured-images',
 	)
 );
@@ -401,8 +400,8 @@ $this->add_settings(
 	),
 	array(
 		'sanitize'                 => 'sanitize_text_field',
-		'sanitize_from_customizer' => array( $this, 'sanitize_font_choice' ),
-		'sanitize_to_customizer'   => array( $this, 'sanitize_font_choice' ),
+		'sanitize_from_customizer' => array( Make()->sanitize(), 'sanitize_font_choice' ),
+		'sanitize_to_customizer'   => array( Make()->sanitize(), 'sanitize_font_choice' ),
 		'is_style'                 => true,
 		'is_font'                  => true,
 		// The choice set for font family is too big, so is handled separately.
@@ -433,7 +432,7 @@ $this->add_settings(
 	), array() ),
 	array(
 		'default'       => 'normal',
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'font-style',
 		'is_style'      => true,
 	)
@@ -464,7 +463,7 @@ $this->add_settings(
 		'font-weight-footer-widget'       => array( 'default' => 'normal' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'font-weight',
 		'is_style'      => true,
 	)
@@ -493,7 +492,7 @@ $this->add_settings(
 	), array() ),
 	array(
 		'default'       => 'never',
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'link-underline',
 		'is_style'      => true,
 	)
@@ -509,7 +508,7 @@ $this->add_settings(
 		'layout-page-post-author'    => array( 'default' => 'none' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'post-author',
 	)
 );
@@ -524,7 +523,7 @@ $this->add_settings(
 		'layout-page-post-date'    => array( 'default' => 'none' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'post-date',
 	)
 );
@@ -549,7 +548,7 @@ $this->add_settings(
 		'layout-page-comment-count-location'    => array( 'default' => 'before-content' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'post-item-location',
 	)
 );
@@ -577,7 +576,7 @@ $this->add_settings(
 		'text-transform-footer-widget'       => array( 'default' => 'none' ),
 	),
 	array(
-		'sanitize'      => array( $this, 'sanitize_choice' ),
+		'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
 		'choice_set_id' => 'text-transform',
 		'is_style'      => true,
 	)
@@ -612,7 +611,19 @@ $this->add_settings(
 		),
 	),
 	array(
-		'sanitize' => array( $this, 'sanitize_choice' ),
+		'sanitize' => array( Make()->sanitize(), 'sanitize_choice' ),
+	)
+);
+
+// Misc
+$this->add_settings(
+	array(
+		'font-stack-cache' => array(
+			'default'  => array(),
+			'sanitize' => array( Make()->sanitize(), 'sanitize_font_stack_cache' ),
+			'is_cache' => true,
+			'is_array' => true,
+		),
 	)
 );
 
@@ -623,8 +634,8 @@ if ( $this->font()->has_source( 'google' ) ) {
 			'font-subset'     => array(
 				'default'                  => 'latin',
 				'sanitize'                 => 'sanitize_key',
-				'sanitize_from_customizer' => array( $this, 'sanitize_google_font_subset' ),
-				'sanitize_to_customizer'   => array( $this, 'sanitize_google_font_subset' ),
+				'sanitize_from_customizer' => array( Make()->sanitize(), 'sanitize_google_font_subset' ),
+				'sanitize_to_customizer'   => array( Make()->sanitize(), 'sanitize_google_font_subset' ),
 			),
 			'google-font-url' => array(
 				'default'           => '',
@@ -639,39 +650,43 @@ if ( $this->font()->has_source( 'google' ) ) {
 // Social Icons
 $this->add_settings(
 	array(
-		'social-icons-email-toggle' => array(
+		'social-icons-email-toggle'       => array(
 			'default'            => false,
 			'sanitize'           => 'wp_validate_boolean',
 			'social_icon_option' => true,
 		),
-		'social-icons-rss-toggle' => array(
+		'social-icons-rss-toggle'         => array(
 			'default'            => true,
 			'sanitize'           => 'wp_validate_boolean',
 			'social_icon_option' => true,
 		),
-		'social-icons-new-window' => array(
+		'social-icons-new-window'         => array(
 			'default'            => false,
 			'sanitize'           => 'wp_validate_boolean',
 			'social_icon_option' => true,
 		),
-		'social-icons-item-type'  => array(
-			'default'            => 'link',
-			'sanitize'           => array( $this, 'sanitize_choice' ),
-			'choice_set_id'      => 'social-icon-type',
+		'social-icons-item-type'          => array(
+			'default'       => 'link',
+			'sanitize'      => array( Make()->sanitize(), 'sanitize_choice' ),
+			'choice_set_id' => 'social-icon-type',
 		),
 		'social-icons-item-content-email' => array(
-			'default'            => '',
-			'sanitize'           => 'sanitize_email',
+			'default'  => '',
+			'sanitize' => 'sanitize_email',
 		),
 		'social-icons-item-content-rss'   => array(
-			'default'            => '',
-			'sanitize'           => 'esc_url',
+			'default'                  => '',
+			'sanitize'                 => 'esc_url',
+			'sanitize_from_customizer' => 'esc_url_raw',
+			'sanitize_database'        => 'esc_url_raw',
 		),
 		'social-icons-item-content-link'  => array(
-			'default'            => '',
-			'sanitize'           => 'esc_url',
+			'default'                  => '',
+			'sanitize'                 => 'esc_url',
+			'sanitize_from_customizer' => 'esc_url_raw',
+			'sanitize_database'        => 'esc_url_raw',
 		),
-		'social-icons' => array(
+		'social-icons'                    => array(
 			'default'                  => array(
 				'items'        => array(
 					array(
@@ -683,10 +698,10 @@ $this->add_settings(
 				'rss-toggle'   => true,
 				'new-window'   => false,
 			),
-			'sanitize'                 => array( $this, 'sanitize_socialicons' ),
-			'sanitize_from_customizer' => array( $this, 'sanitize_socialicons_from_customizer' ),
-			'sanitize_to_customizer'   => array( $this, 'sanitize_socialicons_to_customizer' ),
+			'sanitize'                 => array( Make()->sanitize(), 'sanitize_socialicons' ),
+			'sanitize_from_customizer' => array( Make()->sanitize(), 'sanitize_socialicons_from_customizer' ),
+			'sanitize_to_customizer'   => array( Make()->sanitize(), 'sanitize_socialicons_to_customizer' ),
 			'is_array'                 => true,
-		)
+		),
 	)
 );

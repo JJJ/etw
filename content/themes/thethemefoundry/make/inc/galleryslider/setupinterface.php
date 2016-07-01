@@ -4,7 +4,7 @@
  */
 
 /**
- * Interface MAKE_GallerySlider_MethodsInterface
+ * Interface MAKE_GallerySlider_SetupInterface
  *
  * @since 1.7.0.
  */

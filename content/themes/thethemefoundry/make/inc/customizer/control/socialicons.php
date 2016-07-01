@@ -53,6 +53,21 @@ class MAKE_Customizer_Control_SocialIcons extends WP_Customize_Control {
 	}
 
 	/**
+	 * Override the parent class's method.
+	 *
+	 * Without this, the parent class method will be called when the Customizer loads and generate a standard input
+     * element for this control which it then tries to populate the value attribute with the setting's value, which
+     * is an array. This throws a PHP notice, which breaks the Customizer if xdebug is turned on.
+	 *
+	 * Since this control is rendered entirely with JavaScript, this method is not technically necessary anyway.
+     *
+     * @since 1.7.0.
+	 *
+	 * @return void
+	 */
+	protected function render_content() {}
+
+	/**
 	 * Define the JS template for the control.
 	 *
 	 * @since 1.7.0.

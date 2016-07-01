@@ -6,9 +6,11 @@
 /**
  * Class MAKEPLUS_Component_Typekit_API
  *
+ * Client to load kit data from the Typekit API.
+ *
  * @since 1.7.0.
  */
-class MAKEPLUS_Component_Typekit_API {
+class MAKEPLUS_Component_Typekit_API implements MAKEPLUS_Component_Typekit_APIInterface {
 	/**
 	 * The ID to send to the API.
 	 *
@@ -63,7 +65,7 @@ class MAKEPLUS_Component_Typekit_API {
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param array|WP_Error $response
+	 * @param WP_HTTP_Requests_Response|array|WP_Error $response
 	 *
 	 * @return bool
 	 */
@@ -101,11 +103,11 @@ class MAKEPLUS_Component_Typekit_API {
 	/**
 	 * Extract the font family data from a Typekit API response.
 	 *
-	 * @param array $response
+	 * @param WP_HTTP_Requests_Response|array $response
 	 *
 	 * @return array
 	 */
-	private function parse_response_families( array $response ) {
+	private function parse_response_families( $response ) {
 		$body = json_decode( wp_remote_retrieve_body( $response ) );
 
 		if ( is_object( $body ) && isset( $body->kit ) && isset( $body->kit->families ) && is_array( $body->kit->families ) ) {
@@ -113,6 +115,7 @@ class MAKEPLUS_Component_Typekit_API {
 		}
 
 		$this->error = __( 'No font families were returned.', 'make-plus' );
+
 		return array();
 	}
 

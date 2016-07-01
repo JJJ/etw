@@ -9,9 +9,9 @@
  * Define settings for the Panels Builder section.
  *
  * @since 1.6.0.
- * @since 1.7.0. Changed class name from TTFMP_Panels_Settings
+ * @since 1.7.0. Changed class name from TTFMP_Panels_Settings.
  */
-class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_SettingsInterface {
+final class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_SettingsInterface {
 	/**
 	 * Defines the settings for Panels.
 	 *
@@ -93,8 +93,8 @@ class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_Se
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  $value
-	 * @param  $setting_id
+	 * @param mixed  $value
+	 * @param string $setting_id
 	 *
 	 * @return mixed|null
 	 */
@@ -104,11 +104,7 @@ class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_Se
 
 		if ( isset( $callbacks[ $setting_id ] ) ) {
 			$callback = $callbacks[ $setting_id ];
-			if (
-				( is_string( $callback ) && function_exists( $callback ) && is_callable( $callback ) )
-				||
-				( is_array( $callback ) && method_exists( $callback[0], $callback[1] ) && is_callable( $callback ) )
-			) {
+			if ( $callback && is_callable( $callback ) ) {
 				$sanitized_value = call_user_func_array( $callback, (array) $value );
 			}
 		}
@@ -121,9 +117,9 @@ class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_Se
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $str    The comma separated list of IDs.
+	 * @param string $str    The comma separated list of IDs.
 	 *
-	 * @return array             The array of sanitized IDs.
+	 * @return array         The array of sanitized IDs.
 	 */
 	private function sanitize_order( $str ) {
 		return array_map( array( 'TTFMAKE_Builder_Save', 'clean_section_id' ), explode( ',', $str ) );
@@ -134,9 +130,9 @@ class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_Se
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $title    The title string.
+	 * @param string $title    The title string.
 	 *
-	 * @return string              The sanitized title string.
+	 * @return string          The sanitized title string.
 	 */
 	private function sanitize_title( $title ) {
 		return apply_filters( 'title_save_pre', $title );
@@ -147,9 +143,9 @@ class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_Se
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string|array    $image    The variable containing the image ID.
+	 * @param string|array $image    The variable containing the image ID.
 	 *
-	 * @return int|string                The sanitized image ID.
+	 * @return int|string            The sanitized image ID.
 	 */
 	private function sanitize_image_id( $image ) {
 		$image_id = 0;
@@ -168,9 +164,9 @@ class MAKEPLUS_Component_Panels_Settings implements MAKEPLUS_Component_Panels_Se
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $content    The chunk of content.
+	 * @param string $content    The chunk of content.
 	 *
-	 * @return string                The sanitized chunk of content.
+	 * @return string            The sanitized chunk of content.
 	 */
 	private function sanitize_content( $content ) {
 		$post_id = ( get_post() ) ? get_the_ID() : 0;

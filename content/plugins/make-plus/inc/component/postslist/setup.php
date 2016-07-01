@@ -3,8 +3,15 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_Component_PostsList_Setup
+ *
+ * Enable a configurable list of posts that can be displayed in the Builder or as a widget.
+ *
+ * @since 1.2.0.
+ * @since 1.7.0. Changed class name from TTFMP_Post_List.
+ */
+final class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -159,13 +166,15 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Register the section.
 	 *
-	 * @since  1.2.0.
+	 * @since 1.2.0.
+	 *
+	 * @hooked action after_setup_theme
 	 *
 	 * @return void
 	 */
 	public function add_section() {
-		// Only run this in the proper hook context.
-		if ( ! is_admin() || 'after_setup_theme' !== current_action() ) {
+		// Bail if we're not in the admin
+		if ( ! is_admin() ) {
 			return;
 		}
 
@@ -220,10 +229,11 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Save the data for the Posts List section.
 	 *
-	 * @since  1.2.0.
+	 * @since 1.7.0.
 	 *
-	 * @param  array    $data    The data from the $_POST array for the section.
-	 * @return array             The cleaned data.
+	 * @param array $data    The data from the $_POST array for the section.
+	 *
+	 * @return array         The cleaned data.
 	 */
 	public function save_section( $data ) {
 		// Checkbox fields will not be set if they are unchecked.
@@ -323,15 +333,20 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Save the data for the Posts List section.
 	 *
-	 * @since  1.2.0.
+	 * @since 1.2.0.
 	 * @deprecated 1.7.0.
 	 *
-	 * @param  array    $data    The data from the $_POST array for the section.
-	 * @return array             The cleaned data.
+	 * @param array $data    The data from the $_POST array for the section.
+	 *
+	 * @return array         The cleaned data.
 	 */
 	public function save_post_list( $data ) {
 		// Deprecated function message
-		$this->compatibility()->deprecated_function( __METHOD__, '1.7.0', 'save_section' );
+		$this->compatibility()->deprecated_function(
+			__METHOD__,
+			'1.7.0',
+			'save_section'
+		);
 
 		return $this->save_section( $data );
 	}
@@ -339,17 +354,15 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Add new section defaults.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.2.0.
 	 *
-	 * @param  array $defaults The default section defaults.
-	 * @return array                 The augmented section defaults.
+	 * @hooked filter make_section_defaults
+	 *
+	 * @param array $defaults    The default section defaults.
+	 *
+	 * @return array             The augmented section defaults.
 	 */
 	public function section_defaults( $defaults ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_defaults' !== current_filter() ) {
-			return $defaults;
-		}
-
 		$new_defaults = array(
 			'post-list-title' => '',
 			'post-list-background-image' => 0,
@@ -381,19 +394,17 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Add new section choices.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.2.0.
 	 *
-	 * @param  array $choices The existing choices.
-	 * @param  string    $key             The key for the section setting.
-	 * @param  string    $section_type    The section type.
-	 * @return array                      The choices for the particular section_type / key combo.
+	 * @hooked filter make_section_choices
+	 *
+	 * @param array  $choices         The existing choices.
+	 * @param string $key             The key for the section setting.
+	 * @param string $section_type    The section type.
+	 *
+	 * @return array                  The choices for the particular section_type / key combo.
 	 */
 	public function section_choices( $choices, $key, $section_type ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_choices' !== current_filter() ) {
-			return $choices;
-		}
-
 		if ( count( $choices ) > 1 || ! in_array( $section_type, array( 'post-list' ) ) ) {
 			return $choices;
 		}
@@ -467,18 +478,16 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	/**
 	 * Enqueue the JS and CSS for the admin.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.2.0.
 	 *
-	 * @param  string    $hook_suffix    The suffix for the screen.
+	 * @hooked action admin_enqueue_scripts
+	 * @hooked action customize_controls_enqueue_scripts
+	 *
+	 * @param string $hook_suffix    The suffix for the screen.
 	 *
 	 * @return void
 	 */
 	public function admin_enqueue( $hook_suffix = '' ) {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'admin_enqueue_scripts', 'customize_controls_enqueue_scripts' ) ) ) {
-			return;
-		}
-
 		// Have to be careful with this test because this function was introduced in Make 1.2.0.
 		$post_type_supports_builder = ( function_exists( 'ttfmake_post_type_supports_builder' ) ) ? ttfmake_post_type_supports_builder( get_post_type() ) : false;
 
@@ -539,14 +548,11 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.2.0.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function frontend_enqueue() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		$load = false;
 
 		// Check for a Builder section
@@ -565,7 +571,7 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 		}
 
 		// Check for a widget
-		if ( is_active_widget( false, false, 'ttfmp-post-list', true ) ) {
+		if ( is_active_widget( false, false, 'ttfmp-post-list', true ) || is_customize_preview() ) {
 			$load = true;
 		}
 
@@ -597,28 +603,29 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  array        $options    The options for determining the query args.
+	 * @param array $options    The options for determining the query args.
 	 *
-	 * @return WP_Query                 The query object.
+	 * @return WP_Query         The query object.
 	 */
 	public function build_query( array $options ) {
 		$defaults = array(
-			'type' => 'post',
-			'sortby' => 'date-desc',
-			'keyword' => '',
-			'count' => 6,
-			'offset' => 0,
+			'type'     => 'post',
+			'sortby'   => 'date-desc',
+			'keyword'  => '',
+			'count'    => 6,
+			'offset'   => 0,
 			'taxonomy' => 'all',
 		);
 		$d = wp_parse_args( $options, $defaults );
 
 		// Initial args
 		$args = array(
-			'post_status' => 'publish',
+			'post_status'         => 'publish',
 			'ignore_sticky_posts' => true,
-			'post_type' => $d['type'],
-			'posts_per_page' => $d['count'],
-			'offset' => $d['offset'],
+			'no_found_rows'       => true,
+			'post_type'           => $d['type'],
+			'posts_per_page'      => $d['count'],
+			'offset'              => $d['offset'],
 		);
 
 		// Sortby
@@ -693,9 +700,10 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  WP_Query $query      The WP_Query object.
-	 * @param  array    $display    The display options.
-	 * @return string               The post list markup.
+	 * @param WP_Query $query      The WP_Query object.
+	 * @param array    $display    The display options.
+	 *
+	 * @return string              The post list markup.
 	 */
 	public function render( WP_Query $query, array $display = array() ) {
 		global $ttfmp_data;
@@ -727,6 +735,11 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 		$classes .= ' thumbnail-' . $ttfmp_data['thumbnail'];
 		if ( $ttfmp_data['show-excerpt'] ) {
 			$classes .= ' has-excerpt';
+		}
+
+		// Cache thumbnails
+		if ( 'none' !== $ttfmp_data['thumbnail'] ) {
+			update_post_thumbnail_cache( $query );
 		}
 
 		// Template path
@@ -846,8 +859,9 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.2.0.
 	 *
-	 * @param  array      $atts    The shortcode parameters.
-	 * @return string              The shortcode output.
+	 * @param array $atts    The shortcode parameters.
+	 *
+	 * @return string        The shortcode output.
 	 */
 	public function handle_shortcode( $atts ) {
 		$converted_atts = array();
@@ -869,16 +883,13 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 * @since 1.2.0.
 	 * @since 1.7.0. Added the $style parameter.
 	 *
+	 * @hooked action make_style_loaded
+	 *
 	 * @param MAKE_Style_ManagerInterface $style
 	 *
 	 * @return void
 	 */
 	public function color( MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_style_loaded' !== current_action() ) {
-			return;
-		}
-
 		// Output the rules
 		if ( ! $style->thememod()->is_default( 'color-primary' ) ) {
 			$style->css()->add( array(
@@ -921,9 +932,9 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param  int    $length    The maximum length in words of the excerpt.
+	 * @param int $length    The maximum length in words of the excerpt.
 	 *
-	 * @return string            The excerpt.
+	 * @return string        The excerpt.
 	 */
 	public function get_excerpt( $length = 55 ) {
 		$post = get_post();
@@ -966,7 +977,7 @@ class MAKEPLUS_Component_PostsList_Setup extends MAKEPLUS_Util_Modules implement
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @return void.
+	 * @return void
 	 */
 	public function ajax_update_filter_list() {
 		$post_type = ( isset( $_POST['p'] ) ) ? sanitize_key( $_POST['p'] ) : null;

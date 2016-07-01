@@ -3,8 +3,15 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_Component_WooCommerce_Setup
+ *
+ * Integrate the WooCommerce plugin into Make's theme settings and Builder.
+ *
+ * @since 1.0.0.
+ * @since 1.7.0. Changed class name from TTFMP_WooCommerce.
+ */
+final class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -183,16 +190,13 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Enqueue styles and scripts
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action wp_enqueue_scripts
 	 *
 	 * @return void
 	 */
 	public function enqueue_frontend() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		if ( function_exists( 'ttfmake_is_builder_page' ) && ttfmake_is_builder_page() ) {
 			$sections = ttfmake_get_section_data( get_the_ID() );
 			if ( ! empty( $sections ) ) {
@@ -266,16 +270,13 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_view_is_shop
+	 *
 	 * @param bool $is_shop
 	 *
 	 * @return bool
 	 */
 	public function is_shop( $is_shop ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_view_is_shop' !== current_filter() ) {
-			return $is_shop;
-		}
-
 		if (
 			is_shop()
 			||
@@ -294,16 +295,13 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_view_is_product
+	 *
 	 * @param bool $is_product
 	 *
 	 * @return bool
 	 */
 	public function is_product( $is_product ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_view_is_product' !== current_filter() ) {
-			return $is_product;
-		}
-
 		$post = get_post();
 		$parent_post_type = get_post_type( $post->post_parent );
 
@@ -323,16 +321,13 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter makeplus_admin_view_is_product
+	 *
 	 * @param bool $is_product
 	 *
 	 * @return bool
 	 */
 	public function admin_is_product( $is_product ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_admin_view_is_product' !== current_filter() ) {
-			return $is_product;
-		}
-
 		global $typenow;
 
 		if ( isset( $typenow ) && 'product' === $typenow ) {
@@ -343,18 +338,15 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	}
 
 	/**
-	 * Add support for various features in the shared Shop Settings module.
+	 * Add support for various features in the Ecommerce component.
 	 *
 	 * @since 1.2.0.
+	 *
+	 * @hooked action makeplus_components_loaded
 	 *
 	 * @return void
 	 */
 	public function add_ecommerce_support() {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_components_loaded' !== current_action() ) {
-			return;
-		}
-
 		// Layout: Shop
 		add_theme_support( 'makeplus-ecommerce-layoutshop' );
 
@@ -375,16 +367,13 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.2.0.
 	 *
+	 * @hooked filter makeplus_ecommerce_layoutshop_description
+	 *
 	 * @param string $text
 	 *
 	 * @return string
 	 */
 	public function layoutshop_description( $text ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_ecommerce_layoutshop_description' !== current_filter() ) {
-			return $text;
-		}
-
 		$description = esc_html__( 'For WooCommerce, this view consists of product archives and related category and tag archives.', 'make-plus' );
 
 		if ( '' !== $text ) {
@@ -399,16 +388,13 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.2.0.
 	 *
+	 * @hooked filter makeplus_ecommerce_layoutproduct_description
+	 *
 	 * @param string $text
 	 *
 	 * @return string
 	 */
 	public function layoutproduct_description( $text ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_ecommerce_layoutproduct_description' !== current_filter() ) {
-			return $text;
-		}
-
 		$description = esc_html__( 'For WooCommerce, this view consists of single products.', 'make-plus' );
 
 		if ( '' !== $text ) {
@@ -423,16 +409,15 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	 *
 	 * @since 1.5.0.
 	 *
+	 * @hooked action makeplus_notice_loaded
+	 *
 	 * @param MAKEPLUS_Admin_NoticeInterface $notice
+	 *
+	 * @return bool
 	 */
 	public function admin_notice( MAKEPLUS_Admin_NoticeInterface $notice ) {
-		// Only run this in the proper hook context.
-		if ( 'makeplus_notice_loaded' !== current_action() ) {
-			return;
-		}
-
 		if ( version_compare( $this->wc_version, '2.3', '>=' ) && false === $this->colors_plugin ) {
-			$notice->register_admin_notice(
+			return $notice->register_admin_notice(
 				'woocommerce-23-no-color-plugin',
 				sprintf(
 					__( 'Make\'s color scheme no longer applies to WooCommerce shop elements. Please install the <a href="%s">WooCommerce Colors</a> plugin to customize your shop\'s colors.', 'make-plus' ),
@@ -446,23 +431,22 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 				)
 			);
 		}
+
+		return false;
 	}
 
 	/**
 	 * Enqueue the JS and CSS for the admin.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $hook_suffix    The suffix for the screen.
+	 * @hooked action admin_enqueue_scripts
+	 *
+	 * @param string $hook_suffix    The suffix for the screen.
 	 *
 	 * @return void
 	 */
 	public function admin_enqueue( $hook_suffix ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Have to be careful with this test because this function was introduced in Make 1.2.0.
 		$post_type_supports_builder = ( function_exists( 'ttfmake_post_type_supports_builder' ) ) ? ttfmake_post_type_supports_builder( get_post_type() ) : false;
 
@@ -485,18 +469,15 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add new section defaults.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array $defaults The default section defaults.
+	 * @hooked filter make_section_defaults
 	 *
-	 * @return array                 The augmented section defaults.
+	 * @param array $defaults    The default section defaults.
+	 *
+	 * @return array             The augmented section defaults.
 	 */
 	public function section_defaults( $defaults ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_defaults' !== current_filter() ) {
-			return $defaults;
-		}
-
 		$new_defaults = array(
 			'woocommerce-product-grid-title' => '',
 			'woocommerce-product-grid-background-image' => 0,
@@ -520,20 +501,17 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add new section choices.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array $choices The existing choices.
-	 * @param  string    $key             The key for the section setting.
-	 * @param  string    $section_type    The section type.
+	 * @hooked filter make_section_choices
 	 *
-	 * @return array                      The choices for the particular section_type / key combo.
+	 * @param array  $choices         The existing choices.
+	 * @param string $key             The key for the section setting.
+	 * @param string $section_type    The section type.
+	 *
+	 * @return array                  The choices for the particular section_type / key combo.
 	 */
 	public function section_choices( $choices, $key, $section_type ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_choices' !== current_filter() ) {
-			return $choices;
-		}
-
 		if ( count( $choices ) > 1 || ! in_array( $section_type, array( 'woocommerce-product-grid' ) ) ) {
 			return $choices;
 		}
@@ -611,10 +589,11 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add a category prefix to a value.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $value    The original value.
-	 * @return string              The modified value.
+	 * @param string $value    The original value.
+	 *
+	 * @return string          The modified value.
 	 */
 	private function prefix_cat( $value ) {
 		return 'cat_' . $value;
@@ -623,10 +602,11 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Add a tag prefix to a value.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string    $value    The original value.
-	 * @return string              The modified value.
+	 * @param string $value    The original value.
+	 *
+	 * @return string          The modified value.
 	 */
 	private function prefix_tag( $value ) {
 		return 'tag_' . $value;
@@ -635,13 +615,15 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Register the Product Grid section.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
+	 *
+	 * @hooked action after_setup_theme
 	 *
 	 * @return void
 	 */
 	public function register_product_grid_section() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
+		// Bail if we aren't in the admin
+		if ( ! is_admin() ) {
 			return;
 		}
 
@@ -696,10 +678,11 @@ class MAKEPLUS_Component_WooCommerce_Setup extends MAKEPLUS_Util_Modules impleme
 	/**
 	 * Save the data for the Product Grid section.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  array    $data    The data from the $_POST array for the section.
-	 * @return array             The cleaned data.
+	 * @param array $data    The data from the $_POST array for the section.
+	 *                       
+	 * @return array         The cleaned data.
 	 */
 	public function save_product_grid( $data ) {
 		// Checkbox fields will not be set if they are unchecked.

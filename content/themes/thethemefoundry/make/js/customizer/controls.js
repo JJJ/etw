@@ -12,6 +12,15 @@
 	var api = wp.customize,
 		Make;
 
+	/**
+	 * MakeControls
+	 *
+	 * Starts with the following data properties added via script localization:
+	 * - ajaxurl
+	 * - fontsettings
+	 * - l10n
+	 */
+
 	// Setup
 	Make = $.extend(MakeControls, {
 		cache: {
@@ -24,6 +33,7 @@
 		sendRequest: function(data, callback) {
 			var self = this;
 
+			// Allow additional data to be added to Ajax requests
 			if ('undefined' !== typeof data.action && 'object' === typeof self.cache.ajax[data.action]) {
 				data = $.extend(data, self.cache.ajax[data.action]);
 			}
@@ -67,7 +77,7 @@
 
 			self.fontSettings = self.fontSettings || {};
 			$.each(self.fontSettings, function(i, settingId) {
-				api.control('make_' + settingId, function(control) {
+				api.control('ttfmake_' + settingId, function(control) {
 					var $element = control.container.find('select');
 					$element.data('settingId', settingId);
 					self.fontElements = self.fontElements.add($element);
@@ -551,135 +561,178 @@
 	});
 
 	/**
+	 * Initialize the section for displaying Make errors
+	 *
+	 * @since 1.7.0.
+	 */
+	api.sectionConstructor.make_error = api.Section.extend({
+		/**
+		 * Kick things off when the template is embedded.
+		 *
+		 * @since 1.7.0.
+		 */
+		ready: function() {
+			var section    = this,
+				$container = section.container,
+				$content   = $('#make-error-detail-container');
+
+			if ($content.length > 0) {
+				$container.html( $content.html() );
+
+				$container.on('click', '#make-show-errors', function(evt) {
+					evt.preventDefault();
+					$container.find('#make-error-detail-wrapper').addClass('make-error-detail-wrapper--active');
+				});
+
+				$container.on('click', '#make-error-detail-close', function(evt) {
+					evt.preventDefault();
+					$container.find('#make-error-detail-wrapper').removeClass('make-error-detail-wrapper--active');
+				});
+			}
+		},
+
+		/**
+		 * Override Section.isContextuallyActive method.
+		 *
+		 * @since 1.7.0.
+		 *
+		 * @returns {Boolean}
+		 */
+		isContextuallyActive: function() {
+			return $('#make-error-detail-container').length > 0;
+		}
+	});
+
+	/**
 	 * Visibility toggling for some controls
 	 */
 	$.each({
 		'general-layout': {
-			controls: [ 'make_background-info' ],
+			controls: [ 'ttfmake_background-info' ],
 			callback: function( to ) { return 'full-width' === to; }
 		},
 		'main-background-color-transparent': {
-			controls: [ 'make_main-background-color' ],
+			controls: [ 'ttfmake_main-background-color' ],
 			callback: function( to ) { return ! to; }
 		},
 		'header-background-transparent': {
-			controls: [ 'make_header-background-color' ],
+			controls: [ 'ttfmake_header-background-color' ],
 			callback: function( to ) { return ! to; }
 		},
 		'header-bar-background-transparent': {
-			controls: [ 'make_header-bar-background-color' ],
+			controls: [ 'ttfmake_header-bar-background-color' ],
 			callback: function( to ) { return ! to; }
 		},
 		'footer-background-transparent': {
-			controls: [ 'make_footer-background-color' ],
+			controls: [ 'ttfmake_footer-background-color' ],
 			callback: function( to ) { return ! to; }
 		},
 		'background_image': {
-			controls: [ 'make_background_position_x', 'make_background_attachment', 'make_background_size' ],
+			controls: [ 'ttfmake_background_position_x', 'ttfmake_background_attachment', 'ttfmake_background_size' ],
 			callback: function( to ) { return !! to; }
 		},
 		'header-background-image': {
-			controls: [ 'make_header-background-repeat', 'make_header-background-position', 'make_header-background-attachment', 'make_header-background-size' ],
+			controls: [ 'ttfmake_header-background-repeat', 'ttfmake_header-background-position', 'ttfmake_header-background-attachment', 'ttfmake_header-background-size' ],
 			callback: function( to ) { return !! to; }
 		},
 		'main-background-image': {
-			controls: [ 'make_main-background-repeat', 'make_main-background-position', 'make_main-background-attachment', 'make_main-background-size' ],
+			controls: [ 'ttfmake_main-background-repeat', 'ttfmake_main-background-position', 'ttfmake_main-background-attachment', 'ttfmake_main-background-size' ],
 			callback: function( to ) { return !! to; }
 		},
 		'footer-background-image': {
-			controls: [ 'make_footer-background-repeat', 'make_footer-background-position', 'make_footer-background-attachment', 'make_footer-background-size' ],
+			controls: [ 'ttfmake_footer-background-repeat', 'ttfmake_footer-background-position', 'ttfmake_footer-background-attachment', 'ttfmake_footer-background-size' ],
 			callback: function( to ) { return !! to; }
 		},
 		'header-layout': {
-			controls: [ 'make_header-branding-position' ],
+			controls: [ 'ttfmake_header-branding-position' ],
 			callback: function( to ) { return ( '1' == to || '3' == to ); }
 		},
 		'header-show-social': {
-			controls: [ 'make_font-size-header-bar-icon' ],
+			controls: [ 'ttfmake_font-size-header-bar-icon' ],
 			callback: function( to ) { return !! to; }
 		},
 		'footer-show-social': {
-			controls: [ 'make_font-size-footer-icon' ],
+			controls: [ 'ttfmake_font-size-footer-icon' ],
 			callback: function( to ) { return !! to; }
 		},
 		'layout-blog-featured-images': {
-			controls: [ 'make_layout-blog-featured-images-alignment' ],
+			controls: [ 'ttfmake_layout-blog-featured-images-alignment' ],
 			callback: function( to ) { return ( 'post-header' === to ); }
 		},
 		'layout-archive-featured-images': {
-			controls: [ 'make_layout-archive-featured-images-alignment' ],
+			controls: [ 'ttfmake_layout-archive-featured-images-alignment' ],
 			callback: function( to ) { return ( 'post-header' === to ); }
 		},
 		'layout-search-featured-images': {
-			controls: [ 'make_layout-search-featured-images-alignment' ],
+			controls: [ 'ttfmake_layout-search-featured-images-alignment' ],
 			callback: function( to ) { return ( 'post-header' === to ); }
 		},
 		'layout-post-featured-images': {
-			controls: [ 'make_layout-post-featured-images-alignment' ],
+			controls: [ 'ttfmake_layout-post-featured-images-alignment' ],
 			callback: function( to ) { return ( 'post-header' === to ); }
 		},
 		'layout-page-featured-images': {
-			controls: [ 'make_layout-page-featured-images-alignment' ],
+			controls: [ 'ttfmake_layout-page-featured-images-alignment' ],
 			callback: function( to ) { return ( 'post-header' === to ); }
 		},
 		'layout-blog-post-date': {
-			controls: [ 'make_layout-blog-post-date-location' ],
+			controls: [ 'ttfmake_layout-blog-post-date-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-archive-post-date': {
-			controls: [ 'make_layout-archive-post-date-location' ],
+			controls: [ 'ttfmake_layout-archive-post-date-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-search-post-date': {
-			controls: [ 'make_layout-search-post-date-location' ],
+			controls: [ 'ttfmake_layout-search-post-date-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-post-post-date': {
-			controls: [ 'make_layout-post-post-date-location' ],
+			controls: [ 'ttfmake_layout-post-post-date-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-page-post-date': {
-			controls: [ 'make_layout-page-post-date-location' ],
+			controls: [ 'ttfmake_layout-page-post-date-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-blog-post-author': {
-			controls: [ 'make_layout-blog-post-author-location' ],
+			controls: [ 'ttfmake_layout-blog-post-author-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-archive-post-author': {
-			controls: [ 'make_layout-archive-post-author-location' ],
+			controls: [ 'ttfmake_layout-archive-post-author-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-search-post-author': {
-			controls: [ 'make_layout-search-post-author-location' ],
+			controls: [ 'ttfmake_layout-search-post-author-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-post-post-author': {
-			controls: [ 'make_layout-post-post-author-location' ],
+			controls: [ 'ttfmake_layout-post-post-author-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-page-post-author': {
-			controls: [ 'make_layout-page-post-author-location' ],
+			controls: [ 'ttfmake_layout-page-post-author-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-blog-comment-count': {
-			controls: [ 'make_layout-blog-comment-count-location' ],
+			controls: [ 'ttfmake_layout-blog-comment-count-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-archive-comment-count': {
-			controls: [ 'make_layout-archive-comment-count-location' ],
+			controls: [ 'ttfmake_layout-archive-comment-count-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-search-comment-count': {
-			controls: [ 'make_layout-search-comment-count-location' ],
+			controls: [ 'ttfmake_layout-search-comment-count-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-post-comment-count': {
-			controls: [ 'make_layout-post-comment-count-location' ],
+			controls: [ 'ttfmake_layout-post-comment-count-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		},
 		'layout-page-comment-count': {
-			controls: [ 'make_layout-page-comment-count-location' ],
+			controls: [ 'ttfmake_layout-page-comment-count-location' ],
 			callback: function( to ) { return ( 'none' !== to ); }
 		}
 	}, function( settingId, o ) {

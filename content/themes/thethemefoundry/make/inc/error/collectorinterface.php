@@ -11,6 +11,8 @@
 interface MAKE_Error_CollectorInterface {
 	public function add_error( $code, $message, $data = '' );
 
+	public function has_code( $code );
+
 	public function has_errors();
 
 	public function get_codes();

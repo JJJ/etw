@@ -6,7 +6,10 @@
 /**
  * Class MAKPLUS_Component_FontWeight_Setup
  *
- * @since 1.7.0.
+ * Enable granular font weight choices for fonts in the Customizer.
+ *
+ * @since 1.6.5.
+ * @since 1.7.0. Changed class name from TTFMP_Font_Weight.
  */
 final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
@@ -115,17 +118,14 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_choices_loaded
+	 *
 	 * @param MAKE_Choices_ManagerInterface $choices
 	 *
-	 * @return void
+	 * @return bool
 	 */
 	public function update_choices( MAKE_Choices_ManagerInterface $choices ) {
-		// Only run this in the proper hook context.
-		if ( 'make_choices_loaded' !== current_action() ) {
-			return;
-		}
-
-		$choices->add_choice_sets( array(
+		return $choices->add_choice_sets( array(
 			'font-weight-expanded' => $this->get_choice_set(),
 		) );
 	}
@@ -135,16 +135,13 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_settings_thememod_loaded
+	 *
 	 * @param MAKE_Settings_ThemeModInterface $thememod
 	 *
 	 * @return void
 	 */
 	public function update_thememod_settings( MAKE_Settings_ThemeModInterface $thememod ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_loaded' !== current_action() ) {
-			return;
-		}
-
 		$setting_ids = array_keys( $thememod->get_settings( 'is_style' ) );
 		$compatible_settings = array_filter( $setting_ids, array( $this, 'filter_fontweight' ) );
 
@@ -163,16 +160,13 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked filter make_customizer_sections
+	 *
 	 * @param array $sections
 	 *
 	 * @return array
 	 */
 	public function update_control_definitions( array $sections ) {
-		// Only run this in the proper hook context.
-		if ( 'make_customizer_sections' !== current_filter() ) {
-			return $sections;
-		}
-
 		foreach ( $sections as $section_id => $data ) {
 			if ( isset( $data['controls'] ) && is_array( $data['controls'] ) ) {
 				// Get section's font weight keys
@@ -481,14 +475,11 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.6.5.
 	 *
+	 * @hooked action customize_controls_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function enqueue_customizer_controls_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'customize_controls_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Controls script
 		wp_enqueue_script(
 			'makeplus-fontweight-customizer-controls',
@@ -511,14 +502,11 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_preview_init
+	 *
 	 * @return void
 	 */
 	public function enqueue_customizer_preview_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'customize_preview_init' !== current_action() ) {
-			return;
-		}
-
 		// Preview script
 		wp_enqueue_script(
 			'makeplus-fontweight-customizer-preview',
@@ -564,10 +552,12 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.6.5.
 	 *
+	 * @hooked action wp_ajax_makeplus-fontweight-load
+	 *
 	 * @return void
 	 */
 	public function get_font_weight_choices_ajax() {
-		// Only run this in the proper hook context.
+		// Only run this during an Ajax request.
 		if ( 'wp_ajax_makeplus-fontweight-load' !== current_action() ) {
 			return;
 		}
@@ -605,17 +595,14 @@ final class MAKEPLUS_Component_FontWeight_Setup extends MAKEPLUS_Util_Modules im
 	 *
 	 * @since 1.6.5.
 	 *
-	 * @param array $chosen_variants
+	 * @hooked filter make_font_google_variants
+	 *
+	 * @param array  $chosen_variants
 	 * @param string $family
 	 *
 	 * @return array
 	 */
 	public function google_font_variants( $chosen_variants, $family ) {
-		// Only run this in the proper hook context.
-		if ( 'make_font_google_variants' !== current_filter() ) {
-			return $chosen_variants;
-		}
-
 		static $family_settings = null;
 
 		// Initialize static variable

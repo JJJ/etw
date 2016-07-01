@@ -29,11 +29,31 @@ if ( version_compare( $wp_version, MAKEPLUS_MIN_WP_VERSION, '<' ) ) {
 	);
 }
 
+// Notice of missing Updater API key
+if ( ! $key = get_option( 'ttf-api-key', '' ) ) {
+	$this->register_admin_notice(
+		'makeplus-updater-not-authorized',
+		sprintf(
+			__( '<a href="%s">Authorize Make Plus</a> for this site to get one-click updates.', 'make-plus' ),
+			menu_page_url( 'updater_auth_page', false )
+		),
+		array(
+			'cap'     => 'update_plugins',
+			'dismiss' => true,
+			'screen'  => array( 'dashboard', 'plugins', 'update-core.php' ),
+			'type'    => 'warning',
+		)
+	);
+}
+
 // Notice of Make Plus being activated without Make
 if ( ! $this->mode()->is_make_active_theme() ) {
 	$this->register_admin_notice(
 		'makeplus-theme-inactive',
-		__( 'The Make Plus plugin was designed to work with the Make theme. To enjoy full use of the plugin, please install and activate Make.', 'make-plus' ),
+		sprintf(
+			__( 'Make Plus was designed to work with the Make theme. Get started now by <a href="%s">installing and activating Make</a>.', 'make-plus' ),
+			esc_url( admin_url( 'theme-install.php?search=make%20theme%20foundry' ) )
+		),
 		array(
 			'cap'     => 'switch_themes',
 			'dismiss' => true,
@@ -52,24 +72,6 @@ if ( $this->mode()->is_make_active_theme() && ! $this->mode()->has_make_api() ) 
 			'cap'     => 'switch_themes',
 			'dismiss' => true,
 			'screen'  => array( 'dashboard', 'themes', 'plugins' ),
-			'type'    => 'warning',
-		)
-	);
-}
-
-// Notice of upcoming drop of support for 4.2
-if ( version_compare( $wp_version, '4.2', '<=' ) ) {
-	$this->register_admin_notice(
-		'makeplus-wp-lte-42',
-		sprintf(
-			__( 'Make Plus will soon be dropping support for WordPress version 4.2. Your current version is %1$s. Please <a href="%2$s">update WordPress</a> to ensure full compatibility.', 'make-plus' ),
-			esc_html( $wp_version ),
-			admin_url( 'update-core.php' )
-		),
-		array(
-			'cap'     => 'update_core',
-			'dismiss' => true,
-			'screen'  => array( 'dashboard', 'plugins', 'update-core.php' ),
 			'type'    => 'warning',
 		)
 	);

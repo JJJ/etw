@@ -274,7 +274,7 @@ li.customize-control.customize-control-make_range .ui-slider-handle:hover {
 .make-socialicons-buttons {
 	text-align: right;
 }
-#add-icon_make_social-icons:before {
+#add-icon_ttfmake_social-icons:before {
 	content: "\f132";
 	display: inline-block;
 	position: relative;
@@ -287,7 +287,7 @@ li.customize-control.customize-control-make_range .ui-slider-handle:hover {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-#list-icons_make_social-icons {
+#list-icons_ttfmake_social-icons {
 	line-height: 26px;
 	margin-right: 10px;
 }
@@ -387,6 +387,195 @@ li.customize-control.customize-control-make_range .ui-slider-handle:hover {
 	line-height: 36px;
 	padding: 0 0 0 16px;
 	color: #444;
+}
+
+/* Make Errors section */
+#customize-theme-controls .control-section-make_error .accordion-section-title {
+	position: relative;
+	left: 0;
+	cursor: default;
+	margin: 15px 0;
+	padding-right: 100px;
+	color: #ffb900;
+}
+#customize-theme-controls .control-section-make_error .accordion-section-title:after {
+	content: "";
+}
+#customize-theme-controls .control-section-make_error:hover > .accordion-section-title {
+	color: #ffb900;
+	background: #ffffff;
+}
+#customize-theme-controls .control-section-make_error .accordion-section-title .button {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	margin-top: -14px;
+	font-weight: 400;
+}
+#make-error-detail-wrapper {
+	display: none;
+	-webkit-box-pack: center;-webkit-justify-content: center;-ms-flex-pack: center;justify-content: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 9999;
+	background-color: rgba(0, 0, 0, .8);
+	-webkit-font-smoothing: subpixel-antialiased; /*fix font-weight bug with transparent backgrounds*/
+}
+#make-error-detail-wrapper.make-error-detail-wrapper--active {
+	display: -webkit-box;display: -webkit-flex;display: -ms-flexbox;display: flex;
+}
+#make-error-detail-close {
+	border: 0;
+	top: 0;
+	right: 0;
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
+	text-align: center;
+	cursor: pointer;
+}
+#make-error-detail-wrapper .make-error-detail__close {
+	display: block;
+	float: right;
+	margin: 0;
+	font: 17px/17px "Open Sans",sans-serif;
+	background: #fff;
+	z-index: 1000;
+}
+#make-error-detail-wrapper .make-error-detail__close .ab-icon {
+	font: 400 20px/1 dashicons;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+#make-error-detail-wrapper .make-error-detail__close .ab-icon:before {
+	content: "\f158";
+	color: #666 !important;
+}
+#make-error-detail-wrapper .make-error-detail__close:hover .ab-icon:before {
+	color: #00a0d2 !important;
+}
+#make-error-detail-wrapper .make-error-detail {
+	-webkit-align-self: center;-ms-flex-item-align: center;align-self: center;
+	z-index: 999;
+	width: 100%;
+	max-width: 1200px;
+	max-height: 90%;
+	margin: 24px;
+	background: #ffffff;
+	box-sizing: border-box;
+	overflow-x: auto;
+	overflow-y: scroll;
+	color: black;
+	position: relative;
+}
+#make-error-detail-wrapper .make-error-detail-head {
+	background: #fcfcfc;
+	border-bottom: 1px solid #dfdfdf;
+	padding: 0;
+	min-height: 36px;
+	position: fixed;
+	z-index: 1;
+	width: 100%;
+	max-width: 1200px;
+}
+#make-error-detail-wrapper .make-error-detail-body {
+	background: #ffffff;
+	margin-top: 36px;
+	padding: 16px;
+}
+#make-error-detail-wrapper .make-error-detail-body a {
+	color: #0073aa;
+	text-decoration: underline;
+}
+#make-error-detail-wrapper .make-error-detail-body a:hover {
+	color: #00a0d2;
+}
+#make-error-detail-wrapper .callout-warning {
+	padding: 10px 20px;
+	color: #444;
+	border-left: 4px solid #ffb900;
+	background-color: #fff8e5;
+}
+#make-error-detail-wrapper .callout-warning p,
+#make-error-detail-wrapper .callout-warning a {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 13px !important;
+	font-weight: 600 !important;
+}
+#make-error-detail-wrapper .callout-warning p strong {
+	display: block;;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 18px;
+	padding: 9px 0;
+}
+#make-error-detail-wrapper .make-error-detail h2 {
+	float: left;
+	font: bold 18px/36px "Open Sans",sans-serif;
+	color: #444;
+	margin: 0;
+	padding: 0 36px 0 16px
+}
+#make-error-detail-wrapper .make-error-detail h3 {
+	font: bold 20px/32px "Open Sans",sans-serif;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+#make-error-detail-wrapper .make-error-detail p {
+	margin-bottom: 0.5em;
+}
+#make-error-detail-wrapper .make-error-detail p + p,
+#make-error-detail-wrapper .make-error-detail p + ol {
+	margin-bottom: 1em;
+}
+#make-error-detail-wrapper .make-error-detail p,
+#make-error-detail-wrapper .make-error-detail ol,
+#make-error-detail-wrapper .make-error-detail li,
+#make-error-detail-wrapper .make-error-detail a,
+#make-error-detail-wrapper .make-error-detail em,
+#make-error-detail-wrapper .make-error-detail strong {
+	font: 16px/20px "Open Sans",sans-serif;
+}
+#make-error-detail-wrapper .make-error-detail a {
+	display: inline;
+	padding: 0;
+}
+#make-error-detail-wrapper .make-error-detail em {
+	font-style: italic;
+}
+#make-error-detail-wrapper .make-error-detail strong {
+	font-weight: bold;
+}
+#make-error-detail-wrapper .make-error-detail pre,
+#make-error-detail-wrapper .make-error-detail code {
+	font: 16px/20px monospace;
+	padding: 2px 6px;
+}
+#make-error-detail-wrapper .make-error-detail ol {
+	list-style: decimal outside;
+	clear: both;
+	margin-left: 0;
+	padding: 0 16px;
+}
+#make-error-detail-wrapper .make-error-detail li {
+	display: list-item;
+	float: none;
+	list-style-type: decimal;
+}
+#make-error-detail-container {
+	display: none;
+}
+@media screen and (max-width: 1400px) {
+	#make-error-detail-wrapper.make-error-detail-wrapper--active {
+		-webkit-flex-direction: column;flex-direction: column;
+	}
+	#make-error-detail-wrapper .make-error-detail {
+		margin: 0 24px;
+	}
 }
 
 /* jQuery UI theme tweaks */

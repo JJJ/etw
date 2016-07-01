@@ -4,14 +4,14 @@
  * Author:      The Theme Foundry
  * Author URI:  https://thethemefoundry.com
  * Description: Build a website that means business. With Make’s powerful drag and drop page builder and hundreds of Customizer options, you can effortlessly brand your site without touching a line of code. Add full-width banners, columns, and galleries to showcase your best work. The intuitive builder delivers clean, lean code — not shortcodes — so you can trust your content remains portable. Make lets you control page layout options, including sidebar display, on all your posts and pages. Choose from hundreds of Google Fonts and upload custom backgrounds everywhere. Built on a fully responsive grid, Make renders as beautifully on tablets and phone screens as it does on desktop. Make scales with your business and is fully compatible with popular plugins like WooCommerce, Gravity Forms, Contact Form 7, Jetpack, and others. For documentation on the page builder and getting started with Make, see: https://thethemefoundry.com/make-help/
- * Version:     1.7.0-beta1
+ * Version:     1.7.5
  * License:     GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: make
  * Domain Path: /languages/
- * Tags:        black, blue, green, gray, orange, red, white, yellow, dark, light, one-column, two-columns, three-columns, four-columns, left-sidebar, right-sidebar, fixed-layout, fluid-layout, responsive-layout, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, full-width-template, sticky-post, theme-options, threaded-comments, translation-ready, photoblogging
+ * Tags:        one-column, two-columns, three-columns, four-columns, left-sidebar, right-sidebar, grid-layout, buddypress, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, full-width-template, sticky-post, theme-options, threaded-comments, translation-ready, footer-widgets, blog, e-commerce, education, entertainment, food-and-drink, holiday, news, photography, portfolio
  *
- * Make WordPress Theme, Copyright 2014 The Theme Foundry
+ * Make WordPress Theme, Copyright 2014-2016 The Theme Foundry
  * Make is distributed under the terms of the GNU GPL
  */
 
@@ -696,13 +696,13 @@ a {
 
 /* Core */
 a.custom-logo-link {
-	display: block;
+	display: inline-block;
+	max-width: 100%;
 	margin-bottom: 11px;
 	margin-bottom: 1.1rem;
 }
 
 img.custom-logo {
-	width: 100%;
 	max-width: 100%;
 	height: auto;
 }
@@ -1513,17 +1513,6 @@ div.custom-logo a {
 	text-decoration: none;
 }
 
-.site-footer .site-info .theme-by,
-.site-footer .site-info a .theme-by {
-	padding: 0 4px;
-	padding: 0 0.4rem;
-	font-weight: normal;
-	font-style: italic;
-	letter-spacing: 1px;
-	letter-spacing: 0.1rem;
-	text-transform: lowercase;
-}
-
 .footer-widget-container {
 	float: left;
 	width: 100%;
@@ -2190,6 +2179,31 @@ img {
 	position: absolute !important;
 	width: 1px;
 	height: 1px;
+}
+
+.screen-reader-text:focus {
+	display: block;
+	clip: auto !important;
+	z-index: 100000;
+	top: 5px;
+	left: 5px;
+	width: auto;
+	height: auto;
+	padding: 15px 23px 14px;
+	border-radius: 3px;
+	color: #21759b;
+	background-color: #f1f1f1;
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	font-size: 14px;
+	font-size: 0.875rem;
+	font-weight: bold;
+	line-height: normal;
+	text-decoration: none;
+	/* Above WP toolbar. */
+}
+
+#site-content[tabindex="-1"]:focus {
+	outline: 0;
 }
 
 img.wp-smiley {

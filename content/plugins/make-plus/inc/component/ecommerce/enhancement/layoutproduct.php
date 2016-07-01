@@ -6,6 +6,8 @@
 /**
  * Class MAKEPLUS_Component_ECommerce_Enhancement_LayoutProduct
  *
+ * Adds a new "Product" view and related layout settings. Used by the EDD and WooCommerce components.
+ *
  * @since 1.7.0.
  */
 final class MAKEPLUS_Component_ECommerce_Enhancement_LayoutProduct extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
@@ -71,16 +73,13 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_LayoutProduct extends MAKEP
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_view_loaded
+	 *
 	 * @param MAKE_Layout_ViewInterface $view
 	 *
 	 * @return bool
 	 */
 	public function add_view( MAKE_Layout_ViewInterface $view ) {
-		// Only run this in the proper hook context.
-		if ( 'make_view_loaded' !== current_action() ) {
-			return false;
-		}
-
 		return $view->add_view( 'product', array(
 			'label'                     => __( 'Product', 'make-plus' ),
 			'priority'                  => 50,
@@ -157,18 +156,17 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_LayoutProduct extends MAKEP
 	/**
 	 * Register new settings.
 	 *
+	 * Copy the layout setting definitions for the "Post" view.
+	 *
 	 * @since 1.7.0.
+	 *
+	 * @hooked action make_settings_thememod_loaded
 	 *
 	 * @param MAKE_Settings_ThemeModInterface $settings
 	 *
 	 * @return bool
 	 */
 	public function add_settings( MAKE_Settings_ThemeModInterface $settings ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_loaded' !== current_action() ) {
-			return false;
-		}
-
 		$existing_settings = $settings->get_settings();
 		$new_setting_ids = $this->get_setting_ids();
 		$new_settings = array();
@@ -216,21 +214,18 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_LayoutProduct extends MAKEP
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
 	 *
 	 * @return void
 	 */
 	public function add_controls( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		$setting_ids = $this->get_setting_ids();
 
 		// Layout > Shop section
-		$panel_id = 'make_layout';
-		$section_id = 'make_layout-product';
+		$panel_id = 'ttfmake_layout';
+		$section_id = 'ttfmake_layout-product';
 		$section_args = array(
 			'title'           => __( 'Products', 'make-plus' ),
 			'description'     => '',
@@ -294,8 +289,8 @@ final class MAKEPLUS_Component_ECommerce_Enhancement_LayoutProduct extends MAKEP
 			) );
 
 			// Control
-			$control_id = 'make_' . $setting_id;
-			$control_copy = $wp_customize->get_control( 'make_' . str_replace( 'product', 'post', $setting_id ) ); // Get an existing control to copy properties from
+			$control_id = 'ttfmake_' . $setting_id;
+			$control_copy = $wp_customize->get_control( 'ttfmake_' . str_replace( 'product', 'post', $setting_id ) ); // Get an existing control to copy properties from
 			if ( $control_copy instanceof WP_Customize_Control ) {
 				$wp_customize->add_control( $control_id, array(
 					'settings' => $setting_id,

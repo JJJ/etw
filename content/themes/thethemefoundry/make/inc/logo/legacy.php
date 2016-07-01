@@ -8,6 +8,8 @@
  *
  * A class that adds custom logo functionality.
  *
+ * This functionality becomes obsolete with the Custom Logo option introduced in WordPress 4.5.
+ *
  * @since 1.0.0.
  * @since 1.7.0. Renamed from TTFMAKE_Logo
  */
@@ -222,7 +224,7 @@ class MAKE_Logo_Legacy extends MAKE_Util_Modules implements MAKE_Logo_LegacyInte
 				$path          = trailingslashit( $wp_upload_dir['basedir'] ) . get_post_meta( $attachment_id, '_wp_attached_file', true );
 
 				// Sometimes, WordPress just doesn't have the metadata available. If not, get the image size
-				if ( file_exists( $path ) ) {
+				if ( is_file( $path ) && is_readable( $path ) ) {
 					$getimagesize = getimagesize( $path );
 
 					if ( false !== $getimagesize && isset( $getimagesize[0] ) && isset( $getimagesize[1] ) ) {
@@ -346,7 +348,7 @@ class MAKE_Logo_Legacy extends MAKE_Util_Modules implements MAKE_Logo_LegacyInte
 				'ttfmake_custom_logo_information',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make-plus' ),
+					esc_html__( 'Use the %s hook instead.', 'make' ),
 					'<code>make_logo_information</code>'
 				)
 			);
@@ -390,13 +392,15 @@ class MAKE_Logo_Legacy extends MAKE_Util_Modules implements MAKE_Logo_LegacyInte
 	 * @since 1.0.0.
 	 * @since 1.7.0. Added $style parameter
 	 *
+	 * @hooked action make_style_loaded
+	 *
 	 * @param MAKE_Style_ManagerInterface $style
 	 *
 	 * @return void
 	 */
 	public function print_logo_css( MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_style_loaded' !== current_action() ) {
+		// Is this necessary?
+		if ( ! $this->has_logo() ) {
 			return;
 		}
 
@@ -409,7 +413,7 @@ class MAKE_Logo_Legacy extends MAKE_Util_Modules implements MAKE_Logo_LegacyInte
 				'ttfmake_custom_logo_max_width',
 				'1.7.0',
 				sprintf(
-					esc_html__( 'Use the %s hook instead.', 'make-plus' ),
+					esc_html__( 'Use the %s hook instead.', 'make' ),
 					'<code>make_logo_max_width</code>'
 				)
 			);
@@ -523,6 +527,7 @@ class MAKE_Logo_Legacy extends MAKE_Util_Modules implements MAKE_Logo_LegacyInte
 	 * @param  int      $height            The image's height.
 	 * @param  int      $width_boundary    The maximum width for the image.
 	 * @param  bool     $retina            Whether or not to divide the dimensions by 2.
+	 *                                     
 	 * @return array                       Resulting height/width dimensions.
 	 */
 	private function adjust_dimensions( $width, $height, $width_boundary, $retina = false ) {
@@ -555,14 +560,11 @@ class MAKE_Logo_Legacy extends MAKE_Util_Modules implements MAKE_Logo_LegacyInte
 	 * @since 1.0.0.
 	 * @since 1.7.0. Changed from global function to method.
 	 *
+	 * @hooked action customize_save_after
+	 *
 	 * @return void
 	 */
 	public function refresh_logo_cache() {
-		// Only run this in the proper hook context.
-		if ( 'customize_save_after' !== current_action() ) {
-			return;
-		}
-
 		$this->get_logo_information( true );
 	}
 }

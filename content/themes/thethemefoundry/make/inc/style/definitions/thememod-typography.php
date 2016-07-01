@@ -8,21 +8,23 @@ if ( ! isset( $this ) || ! $this instanceof MAKE_Style_ManagerInterface ) {
 	return;
 }
 
+$is_style_preview = isset( $_POST['make-preview'] );
+
 /**
  * Body
  */
 $element = 'body';
 $selectors = array( 'body', '.font-body' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
 // Links
-if ( ! $this->thememod()->is_default( 'font-weight-body-link' ) ) {
+if ( $is_style_preview || ! $this->thememod()->is_default( 'font-weight-body-link' ) ) {
 	$this->css()->add( array(
 		'selectors'    => array( 'a' ),
 		'declarations' => array(
@@ -51,7 +53,7 @@ if ( isset( $declarations['font-size-px'] ) ) {
 // Buttons
 $element = 'button';
 $selectors = array( 'button', '.ttfmake-button', 'input[type="button"]', 'input[type="reset"]', 'input[type="submit"]', '.site-main .gform_wrapper .gform_footer input.button' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
@@ -61,11 +63,11 @@ if ( ! empty( $declarations ) ) {
  */
 $element = 'h1';
 $selectors = array( 'h1:not(.site-title)', 'h1:not(.site-title) a', '.font-header' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'h1:not(.site-title) a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'h1:not(.site-title) a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -75,11 +77,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'h2';
 $selectors = array( 'h2', 'h2 a' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'h2 a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'h2 a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -100,11 +102,11 @@ if ( isset( $declarations['font-size-px'] ) ) {
  */
 $element = 'h3';
 $selectors = array( 'h3', 'h3 a', '.builder-text-content .widget-title' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'h3 a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'h3 a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -114,11 +116,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'h4';
 $selectors = array( 'h4', 'h4 a' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'h4 a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'h4 a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -128,11 +130,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'h5';
 $selectors = array( 'h5', 'h5 a' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'h5 a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'h5 a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -142,11 +144,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'h6';
 $selectors = array( 'h6', 'h6 a' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( 'h6 a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( 'h6 a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -156,11 +158,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'site-title';
 $selectors = array( '.site-title', '.site-title a', '.font-site-title' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-title a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-title a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -170,11 +172,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'site-tagline';
 $selectors = array( '.site-description', '.site-description a', '.font-site-tagline' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-description a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-description a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -185,12 +187,12 @@ if ( ! empty( $link_rule ) ) {
 $menu_items_customized = false;
 $element = 'nav';
 $selectors = array( '.site-navigation .menu li a', '.font-nav' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 	$menu_items_customized = true;
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-navigation .menu li a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-navigation .menu li a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -216,7 +218,8 @@ if ( isset( $declarations['font-size-px'] ) ) {
 $submenu_items_customized = false;
 $element = 'subnav';
 $selectors = array( '.site-navigation .menu .sub-menu li a', '.site-navigation .menu .children li a' );
-$declarations = $this->helper()->parse_font_properties( $element, $menu_items_customized );
+$force = $is_style_preview || $menu_items_customized;
+$declarations = $this->helper()->parse_font_properties( $element, $force );
 $simplify_mobile = $this->thememod()->get_value( 'font-' . $element . '-mobile', 'style' );
 $media = 'all';
 if ( true === $simplify_mobile ) {
@@ -226,7 +229,7 @@ if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, 'media' => $media ) );
 	$submenu_items_customized = true;
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-navigation .menu .sub-menu li a', '.site-navigation .menu .children li a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.site-navigation .menu .sub-menu li a', '.site-navigation .menu .children li a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$link_rule['media'] = $media;
 	$this->css()->add( $link_rule );
@@ -249,7 +252,7 @@ if ( isset( $declarations['font-size-px'] ) ) {
 /**
  * Current Item
  */
-if ( ! $this->thememod()->is_default( 'font-weight-nav-current-item' ) || true === $menu_items_customized || true === $submenu_items_customized ) {
+if ( $is_style_preview || ! $this->thememod()->is_default( 'font-weight-nav-current-item' ) || true === $menu_items_customized || true === $submenu_items_customized ) {
 	$this->css()->add( array(
 		'selectors' => array(
 			'.site-navigation .menu li.current_page_item > a',
@@ -282,17 +285,17 @@ if ( ! $this->thememod()->is_default( 'font-weight-nav-current-item' ) || true =
  */
 $element = 'header-bar-text';
 $selectors = array( '.header-bar', '.header-text', '.header-bar .search-form input', '.header-bar .menu a' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.header-bar a', '.header-text a', '.header-bar .menu a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.header-bar a', '.header-text a', '.header-bar .menu a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
 // Header Bar Icons
 $header_icon_size = $this->thememod()->get_value( 'font-size-header-bar-icon', 'style' );
-if ( ! $this->thememod()->is_default( 'font-size-header-bar-icon' ) ) {
+if ( $is_style_preview || ! $this->thememod()->is_default( 'font-size-header-bar-icon' ) ) {
 	$this->css()->add( array(
 		'selectors' => array( '.header-social-links li a' ),
 		'declarations' => array(
@@ -315,11 +318,11 @@ if ( ! $this->thememod()->is_default( 'font-size-header-bar-icon' ) ) {
  */
 $element = 'widget-title';
 $selectors = array( '.sidebar .widget-title', '.sidebar .widgettitle', '.sidebar .widget-title a', '.sidebar .widgettitle a', '.font-widget-title' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.sidebar .widget-title a', '.sidebar .widgettitle a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.sidebar .widget-title a', '.sidebar .widgettitle a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -329,12 +332,12 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'widget';
 $selectors = array( '.sidebar .widget', '.font-widget' );
-$force = ( ! $this->thememod()->is_default( 'font-family-body' ) );
+$force = ( $is_style_preview || ! $this->thememod()->is_default( 'font-family-body' ) );
 $declarations = $this->helper()->parse_font_properties( $element, $force );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.sidebar .widget a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.sidebar .widget a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -344,11 +347,11 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'footer-widget-title';
 $selectors = array( '.footer-widget-container .widget-title', '.footer-widget-container .widgettitle', '.footer-widget-container .widget-title a', '.footer-widget-container .widgettitle a' );
-$declarations = $this->helper()->parse_font_properties( $element );
+$declarations = $this->helper()->parse_font_properties( $element, $is_style_preview );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.footer-widget-container .widget-title a', '.footer-widget-container .widgettitle a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.footer-widget-container .widget-title a', '.footer-widget-container .widgettitle a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -358,12 +361,12 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'footer-widget';
 $selectors = array( '.footer-widget-container .widget' );
-$force = ( ! $this->thememod()->is_default( 'font-family-body' ) );
+$force = ( $is_style_preview || ! $this->thememod()->is_default( 'font-family-body' ) );
 $declarations = $this->helper()->parse_font_properties( $element, $force );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.footer-widget-container .widget a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.footer-widget-container .widget a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
@@ -373,18 +376,18 @@ if ( ! empty( $link_rule ) ) {
  */
 $element = 'footer-text';
 $selectors = array( '.footer-text' );
-$force = ( ! $this->thememod()->is_default( 'font-family-body' ) );
+$force = ( $is_style_preview || ! $this->thememod()->is_default( 'font-family-body' ) );
 $declarations = $this->helper()->parse_font_properties( $element, $force );
 if ( ! empty( $declarations ) ) {
 	$this->css()->add( array( 'selectors' => $selectors, 'declarations' => $declarations, ) );
 }
-$link_rule = $this->helper()->parse_link_underline( $element, array( '.footer-text a' ) );
+$link_rule = $this->helper()->parse_link_underline( $element, array( '.footer-text a' ), $is_style_preview );
 if ( ! empty( $link_rule ) ) {
 	$this->css()->add( $link_rule );
 }
 // Footer Icons
 $footer_icon_size = $this->thememod()->get_value( 'font-size-footer-icon', 'style' );
-if ( ! $this->thememod()->is_default( 'font-size-footer-icon' ) ) {
+if ( $is_style_preview || ! $this->thememod()->is_default( 'font-size-footer-icon' ) ) {
 	$this->css()->add( array(
 		'selectors' => array( '.footer-social-links' ),
 		'declarations' => array(

@@ -6,9 +6,26 @@
 /**
  * Class MAKE_Font_Source_Base
  *
+ * An object for managing fonts from a particular source.
+ *
+ * An extending class should define the following properties:
+ * - $id          A string used to identify the source
+ * - $label       A string for the source's name, which will appear in font selection dropdowns.
+ * - $priority    An integer to indicate the source's order in a list. Higher = lower on the list.
+ *
+ * An extending class must also define the data for each font. Font data should include at least a label
+ * and a stack. Example:
+ *
+ * $this->data = array(
+ *     'serif' => array(
+ *         'label' => __( 'Serif', 'make' ),
+ *         'stack' => 'Georgia,Times,"Times New Roman",serif'
+ *     ),
+ * )
+ *
  * @since 1.7.0.
  */
-abstract class MAKE_Font_Source_Base extends MAKE_Util_Modules implements MAKE_Font_Source_BaseInterface {
+class MAKE_Font_Source_Base extends MAKE_Util_Modules implements MAKE_Font_Source_BaseInterface {
 	/**
 	 * The source ID.
 	 *
@@ -44,6 +61,29 @@ abstract class MAKE_Font_Source_Base extends MAKE_Util_Modules implements MAKE_F
 	 * @var array
 	 */
 	protected $data = array();
+
+	/**
+	 * MAKE_Font_Source_Base constructor.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @param string                 $id
+	 * @param string                 $label
+	 * @param array                  $data
+	 * @param int                    $priority
+	 * @param MAKE_APIInterface|null $api
+	 * @param array                  $modules
+	 */
+	public function __construct( $id, $label, $data = array(), $priority = 10, MAKE_APIInterface $api = null, array $modules = array() ) {
+		// Set properties
+		$this->id = $id;
+		$this->label = $label;
+		$this->data = (array) $data;
+		$this->priority = absint( $priority );
+
+		// Load dependencies
+		parent::__construct( $api, $modules );
+	}
 
 	/**
 	 * Getter for the $id property.
@@ -104,7 +144,7 @@ abstract class MAKE_Font_Source_Base extends MAKE_Util_Modules implements MAKE_F
 		 *
 		 * @since 1.7.0.
 		 *
-		 * @param array    $font_data
+		 * @param array $font_data
 		 */
 		return apply_filters( "make_font_data_{$this->id}", $this->data );
 	}
@@ -160,7 +200,7 @@ abstract class MAKE_Font_Source_Base extends MAKE_Util_Modules implements MAKE_F
 
 		if ( isset( $data['stack'] ) ) {
 			$stack = $data['stack'];
-		} else {
+		} else if ( is_string( $default_stack ) ) {
 			$stack = $default_stack;
 		}
 

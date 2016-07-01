@@ -3,8 +3,15 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_WhiteLabel_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_Component_WhiteLabel_Setup
+ *
+ * Add a theme setting to hide the credit line in the site footer.
+ *
+ * @since 1.5.0.
+ * @since 1.7.0. Changed class name from TTFMP_Customizer_White_Label.
+ */
+final class MAKEPLUS_Component_WhiteLabel_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -75,15 +82,14 @@ class MAKEPLUS_Component_WhiteLabel_Setup extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param MAKE_Settings_ThemeMod $settings
+	 * @hooked action make_settings_thememod_loaded
+	 *
+	 * @param MAKE_Settings_ThemeMod $thememod
+	 *
+	 * @return bool
 	 */
-	public function add_setting( MAKE_Settings_ThemeMod $settings ) {
-		// Only run this in the proper hook context.
-		if ( 'make_settings_thememod_loaded' !== current_action() ) {
-			return;
-		}
-
-		$settings->add_settings( array(
+	public function add_setting( MAKE_Settings_ThemeMod $thememod ) {
+		return $thememod->add_settings( array(
 			$this->setting_id => array(
 				'default'  => false,
 				'sanitize' => 'wp_validate_boolean'
@@ -96,17 +102,16 @@ class MAKEPLUS_Component_WhiteLabel_Setup extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
+	 *
+	 * @return void
 	 */
 	public function add_control( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// White Label section
-		$panel_id = 'make_general';
-		$section_id = 'make_whitelabel';
+		$panel_id = 'ttfmake_general';
+		$section_id = 'ttfmake_whitelabel';
 		$section_args = array(
 			'title' => __( 'White Label', 'make-plus' ),
 		);
@@ -128,7 +133,7 @@ class MAKEPLUS_Component_WhiteLabel_Setup extends MAKEPLUS_Util_Modules implemen
 		) );
 
 		// Control
-		$control_id = 'make_' . $setting_id;
+		$control_id = 'ttfmake_' . $setting_id;
 		$wp_customize->add_control( $control_id, array(
 			'settings' => $setting_id,
 			'section'  => $section_id,
@@ -142,16 +147,11 @@ class MAKEPLUS_Component_WhiteLabel_Setup extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param bool $bool
+	 * @hooked filter make_show_footer_credit
 	 *
 	 * @return bool
 	 */
-	public function show_credit( $bool ) {
-		// Only run this in the proper hook context.
-		if ( 'make_show_footer_credit' !== current_filter() ) {
-			return $bool;
-		}
-
+	public function show_credit() {
 		return ! $this->theme()->thememod()->get_value( $this->setting_id );
 	}
 }

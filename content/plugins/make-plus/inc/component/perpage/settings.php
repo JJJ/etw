@@ -6,8 +6,10 @@
 /**
  * Class MAKEPLUS_Component_PerPage_Settings
  *
+ * Manage the layout settings for individual posts and pages.
+ *
  * @since 1.0.0.
- * @since 1.7.0. Changed class name from TTFMP_PerPage_Options
+ * @since 1.7.0. Changed class name from TTFMP_PerPage_Options.
  */
 class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implements MAKEPLUS_Component_PerPage_SettingsInterface {
 	/**
@@ -18,7 +20,8 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	 * @var array
 	 */
 	protected $dependencies = array(
-		'theme' => 'MAKE_APIInterface',
+		'compatibility' => 'MAKEPLUS_Compatibility_MethodsInterface',
+		'theme'         => 'MAKE_APIInterface',
 	);
 
 	/**
@@ -42,6 +45,49 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	}
 
 	/**
+	 * Wrapper method to get the view in either a standard or admin context.
+	 *
+	 * Also accommodates a deprecated filter hook.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @return string
+	 */
+	public function get_view() {
+		$context = ( is_admin() ) ? 'admin' : '';
+		$view_id = $this->theme()->view()->get_current_view( $context );
+
+		// Check for deprecated filter.
+		if ( 'admin' === $context && has_filter( 'ttfmp_perpage_view' ) ) {
+			$this->compatibility()->deprecated_hook(
+				'ttfmp_perpage_view',
+				'1.7.0',
+				sprintf(
+					wp_kses(
+						__( 'To add or modify theme views, use the %1$s function instead. See the <a href="%2$s" target="_blank">View API documentation</a>.', 'make-plus' ),
+						array( 'a' => array( 'href' => true, 'target' => true ) )
+					),
+					'<code>make_update_view_definition()</code>',
+					'https://thethemefoundry.com/docs/make-docs/code/apis/view-api/'
+				)
+			);
+
+			/**
+			 * Filter: Modify the view ID.
+			 *
+			 * @since 1.0.0.
+			 * @deprecated 1.7.0.
+			 *
+			 * @param string  $view_id
+			 * @param WP_Post $post
+			 */
+			$view_id = apply_filters( 'ttfmp_perpage_view', $view_id, get_post() );
+		}
+
+		return $view_id;
+	}
+
+	/**
 	 * Get the Per Page setting IDs for a particular view.
 	 *
 	 * @since 1.7.0.
@@ -60,6 +106,33 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 					$setting_ids[] = $setting_id;
 				}
 			}
+
+			// Check for deprecated filter.
+			if ( has_filter( 'ttfmp_perpage_keys' ) ) {
+				$this->compatibility()->deprecated_hook(
+					'ttfmp_perpage_keys',
+					'1.7.0',
+					sprintf(
+						wp_kses(
+							__( 'To add or modify theme views, use the %1$s function instead. See the <a href="%2$s" target="_blank">View API documentation</a>.', 'make-plus' ),
+							array( 'a' => array( 'href' => true, 'target' => true ) )
+						),
+						'<code>make_update_view_definition()</code>',
+						'https://thethemefoundry.com/docs/make-docs/code/apis/view-api/'
+					)
+				);
+
+				/**
+				 * Filter to change the theme option keys that are allowed to be modified for the specified view.
+				 *
+				 * @since 1.0.0.
+				 * @deprecated 1.7.0.
+				 *
+				 * @param array     $keys    The allowed keys for the specified view.
+				 * @param string    $view    The specified view. Added in 1.5.1.
+				 */
+				$setting_ids = apply_filters( 'ttfmp_perpage_keys', $setting_ids, $view );
+			}
 		}
 
 		return $setting_ids;
@@ -68,11 +141,11 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	/**
 	 * Get the global layout settings for the given post type.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  string $view_id    The view.
+	 * @param string $view_id    The view.
 	 *
-	 * @return array              The layout settings.
+	 * @return array             The layout settings.
 	 */
 	public function get_global_settings( $view_id ) {
 		$setting_ids = $this->get_view_setting_ids( $view_id );
@@ -90,7 +163,7 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	/**
 	 * Get the "settings" post meta and fill in gaps with default values.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
 	 * @param WP_Post|null $post              The current post.
 	 * @param bool         $merge_defaults    Whether to merge default values into returned array.
@@ -102,8 +175,7 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 			$post = get_post();
 		}
 
-		$context = ( is_admin() ) ? 'admin' : '';
-		$view_id = $this->theme()->view()->get_current_view( $context );
+		$view_id = $this->get_view();
 		$post_settings = array();
 
 		if ( ! is_null( $post ) && $view_id ) {
@@ -137,19 +209,18 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	/**
 	 * Get the "overrides" post meta and fill in gaps with default values.
 	 *
-	 * @since  1.0.0.
+	 * @since 1.0.0.
 	 *
-	 * @param  WP_Post|null $post    The current post.
+	 * @param WP_Post|null $post    The current post.
 	 *
-	 * @return array              The overrides.
+	 * @return array                The overrides.
 	 */
 	public function get_post_overrides( WP_Post $post = null ) {
 		if ( is_null( $post ) ) {
 			$post = get_post();
 		}
-
-		$context = ( is_admin() ) ? 'admin' : '';
-		$view_id = $this->theme()->view()->get_current_view( $context );
+		
+		$view_id = $this->get_view();
 		$setting_ids = $this->get_view_setting_ids( $view_id );
 		$defaults = array();
 		$post_overrides = array();
@@ -215,9 +286,9 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.5.1.
 	 *
-	 * @param  array $array    A Per Page post meta array for a particular post.
+	 * @param array $array    A Per Page post meta array for a particular post.
 	 *
-	 * @return bool            True if old keys are present in the array.
+	 * @return bool           True if old keys are present in the array.
 	 */
 	private function has_old_keys( $array ) {
 		if ( ! is_array( $array ) ) {
@@ -235,10 +306,10 @@ class MAKEPLUS_Component_PerPage_Settings extends MAKEPLUS_Util_Modules implemen
 	 *
 	 * @since 1.5.1.
 	 *
-	 * @param  array  $array    A Per Page post meta array for a particular post.
-	 * @param  string $view     The view associated with that post.
+	 * @param array  $array    A Per Page post meta array for a particular post.
+	 * @param string $view     The view associated with that post.
 	 *
-	 * @return array            The converted array.
+	 * @return array           The converted array.
 	 */
 	private function convert_old_keys( array $array, $view ) {
 		$all_old_keys = $this->get_old_keys();

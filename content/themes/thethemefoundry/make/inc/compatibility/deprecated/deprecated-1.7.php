@@ -9,6 +9,13 @@ if ( ! isset( $this ) || ! $this instanceof MAKE_Compatibility_MethodsInterface 
 }
 
 /**
+ * The suffix to use for scripts.
+ *
+ * @deprecated 1.7.0.
+ */
+define( 'TTFMAKE_SUFFIX', '' );
+
+/**
  * Load files.
  *
  * @since 1.6.1.
@@ -488,8 +495,8 @@ function ttfmake_embed_container( $html, $url, $attr ) {
  * @return float                     The sanitized value.
  */
 function ttfmake_sanitize_float( $value ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->thememod()->sanitize_float()' );
-	return Make()->thememod()->sanitize_float( $value );
+	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->sanitize()->sanitize_float()' );
+	return Make()->sanitize()->sanitize_float( $value );
 }
 
 if ( ! function_exists( 'ttfmake_sanitize_text' ) ) :
@@ -503,11 +510,11 @@ if ( ! function_exists( 'ttfmake_sanitize_text' ) ) :
  * @return string               The sanitized string.
  */
 function ttfmake_sanitize_text( $string ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->thememod()->sanitize_text()' );
-	return Make()->thememod()->sanitize_text( $string );
+	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->sanitize()->sanitize_text()' );
+	return Make()->sanitize()->sanitize_text( $string );
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_text', '1.7.0', 'Make()->thememod()->sanitize_text()' );
+	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_text', '1.7.0', 'Make()->sanitize()->sanitize_text()' );
 endif;
 
 if ( ! function_exists( 'ttfmake_get_view' ) ) :
@@ -526,7 +533,19 @@ function ttfmake_get_view() {
 	return make_get_current_view();
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_get_view', '1.7.0', 'make_get_current_view' );
+	Make()->compatibility()->deprecated_function(
+		'ttfmake_get_view',
+		'1.7.0',
+		null,
+		sprintf(
+			wp_kses(
+				__( 'To add or modify theme views, use the %1$s function instead. See the <a href="%2$s" target="_blank">View API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'<code>make_update_view_definition()</code>',
+			'https://thethemefoundry.com/docs/make-docs/code/apis/view-api/'
+		)
+	);
 endif;
 
 if ( ! function_exists( 'ttfmake_has_sidebar' ) ) :
@@ -598,8 +617,11 @@ function ttfmake_get_social_links() {
 		'1.7.0',
 		null,
 		sprintf(
-			esc_html__( 'See %s.', 'make' ),
-			'<code>MAKE_SocialIcons_Manager</code>'
+			wp_kses(
+				__( 'See the <a href="%s" target="_blank">Social Icons API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'https://thethemefoundry.com/docs/make-docs/code/apis/social-icons-api/'
 		)
 	);
 }
@@ -609,8 +631,12 @@ else :
 		'1.7.0',
 		null,
 		sprintf(
-			esc_html__( 'See %s.', 'make' ),
-			'<code>MAKE_SocialIcons_Manager</code>'
+			wp_kses(
+				__( 'To add or modify social icons, use the %1$s function instead. See the <a href="%2$s" target="_blank">Social Icons API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'<code>make_update_socialicon_definition()</code>',
+			'https://thethemefoundry.com/docs/make-docs/code/apis/social-icons-api/'
 		)
 	);
 endif;
@@ -632,8 +658,11 @@ function ttfmake_pre_wp_nav_menu_social( $output, $args ) {
 		'1.7.0',
 		null,
 		sprintf(
-			esc_html__( 'See %s.', 'make' ),
-			'<code>MAKE_SocialIcons_Manager</code>'
+			wp_kses(
+				__( 'See the <a href="%s" target="_blank">Social Icons API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'https://thethemefoundry.com/docs/make-docs/code/apis/social-icons-api/'
 		)
 	);
 
@@ -645,8 +674,12 @@ else :
 		'1.7.0',
 		null,
 		sprintf(
-			esc_html__( 'See %s.', 'make' ),
-			'<code>MAKE_SocialIcons_Manager</code>'
+			wp_kses(
+				__( 'To add or modify social icons, use the %1$s function instead. See the <a href="%2$s" target="_blank">Social Icons API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'<code>make_update_socialicon_definition()</code>',
+			'https://thethemefoundry.com/docs/make-docs/code/apis/social-icons-api/'
 		)
 	);
 endif;
@@ -1056,7 +1089,12 @@ if ( ! function_exists( 'ttfmake_get_default' ) ) :
  * @return mixed                Default value if found; false if not found.
  */
 function ttfmake_get_default( $option ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'make_get_thememod_default' );
+	Make()->compatibility()->deprecated_function(
+		__FUNCTION__,
+		'1.7.0',
+		'make_get_thememod_default'
+	);
+
 	return make_get_thememod_default( $option );
 }
 else :
@@ -1074,11 +1112,23 @@ if ( ! function_exists( 'ttfmake_get_choices' ) ) :
  * @return array                        The options for the setting.
  */
 function ttfmake_get_choices( $setting ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->thememod()->get_choice_set' );
+	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->thememod()->get_choice_set()' );
 	return Make()->thememod()->get_choice_set( $setting );
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_get_choices', '1.7.0', 'Make()->thememod()->get_choice_set' );
+	Make()->compatibility()->deprecated_function(
+		'ttfmake_get_choices',
+		'1.7.0',
+		null,
+		sprintf(
+			wp_kses(
+				__( 'To add or modify setting choices, use the %1$s function instead. See the <a href="%2$s" target="_blank">Choices API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'<code>make_update_choice_set()</code>',
+			'https://thethemefoundry.com/docs/make-docs/code/apis/choices-api/'
+		)
+	);
 endif;
 
 if ( ! function_exists( 'ttfmake_sanitize_choice' ) ) :
@@ -1093,11 +1143,11 @@ if ( ! function_exists( 'ttfmake_sanitize_choice' ) ) :
  * @return mixed                The sanitized value.
  */
 function ttfmake_sanitize_choice( $value, $setting ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->thememod()->sanitize_choice' );
-	return Make()->thememod()->sanitize_choice( $value, $setting );
+	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->sanitize()->sanitize_choice' );
+	return Make()->sanitize()->sanitize_choice( $value, $setting );
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_choice', '1.7.0', 'Make()->thememod()->sanitize_choice' );
+	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_choice', '1.7.0', 'Make()->sanitize()->sanitize_choice' );
 endif;
 
 if ( ! function_exists( 'ttfmake_edit_page_script' ) ) :
@@ -1167,6 +1217,8 @@ function ttfmake_jetpack_infinite_scroll_footer_callback() {
 			'<code>MAKE_Integration_Jetpack</code>'
 		)
 	);
+
+	Make()->integration()->get_integration( 'jetpack' )->infinite_scroll_footer_callback();
 }
 else :
 	Make()->compatibility()->deprecated_function(
@@ -1233,6 +1285,8 @@ function ttfmake_jetpack_infinite_scroll_render() {
 			'<code>MAKE_Integration_Jetpack</code>'
 		)
 	);
+
+	Make()->integration()->get_integration( 'jetpack' )->infinite_scroll_render();
 }
 else :
 	Make()->compatibility()->deprecated_function(
@@ -1384,11 +1438,36 @@ if ( ! function_exists( 'ttfmake_get_css' ) ) :
  * @return TTFMAKE_CSS    The one TTFMAKE_CSS object.
  */
 function ttfmake_get_css() {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->style()->css()' );
+	Make()->compatibility()->deprecated_function(
+		__FUNCTION__,
+		'1.7.0',
+		null,
+		sprintf(
+			wp_kses(
+				__( 'To add a style rule, use the %1$s function. See the <a href="%2$s" target="_blank">Style API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'<code>make_add_style_rule()</code>',
+			'https://thethemefoundry.com/docs/make-docs/code/apis/style-api/'
+		)
+	);
+
 	return Make()->style()->css();
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_get_css', '1.7.0', 'Make()->style()->css()' );
+	Make()->compatibility()->deprecated_function(
+		'ttfmake_get_css',
+		'1.7.0',
+		null,
+		sprintf(
+			wp_kses(
+				__( 'To add a style rule, use the %1$s function. See the <a href="%2$s" target="_blank">Style API documentation</a>.', 'make' ),
+				array( 'a' => array( 'href' => true, 'target' => true ) )
+			),
+			'<code>make_add_style_rule()</code>',
+			'https://thethemefoundry.com/docs/make-docs/code/apis/style-api/'
+		)
+	);
 endif;
 
 /**
@@ -2146,11 +2225,11 @@ if ( ! function_exists( 'ttfmake_sanitize_font_choice' ) ) :
  * @return string              The sanitized font choice.
  */
 function ttfmake_sanitize_font_choice( $value ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0' );
+	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->sanitize()->sanitize_font_choice()' );
 	return $value;
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_font_choice', '1.7.0' );
+	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_font_choice', '1.7.0', 'Make()->sanitize()->sanitize_font_choice()' );
 endif;
 
 if ( ! function_exists( 'ttfmake_sanitize_font_subset' ) ) :
@@ -2164,11 +2243,11 @@ if ( ! function_exists( 'ttfmake_sanitize_font_subset' ) ) :
  * @return array               The sanitized value.
  */
 function ttfmake_sanitize_font_subset( $value ) {
-	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->thememod()->sanitize_google_font_subset()' );
-	return Make()->thememod()->sanitize_google_font_subset( $value );
+	Make()->compatibility()->deprecated_function( __FUNCTION__, '1.7.0', 'Make()->sanitize()->sanitize_google_font_subset()' );
+	return Make()->sanitize()->sanitize_google_font_subset( $value );
 }
 else :
-	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_font_subset', '1.7.0', 'Make()->thememod()->sanitize_google_font_subset()' );
+	Make()->compatibility()->deprecated_function( 'ttfmake_sanitize_font_subset', '1.7.0', 'Make()->sanitize()->sanitize_google_font_subset()' );
 endif;
 
 if ( ! function_exists( 'ttfmake_get_all_fonts' ) ) :

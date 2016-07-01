@@ -8,19 +8,19 @@
  * Plugin URI:  https://thethemefoundry.com/make/
  * Description: A powerful paid companion plugin for the Make WordPress theme.
  * Author:      The Theme Foundry
- * Version:     1.7.0-beta1
+ * Version:     1.7.4
  * Author URI:  https://thethemefoundry.com
  */
 
 /**
  * The current version of the plugin.
  */
-define( 'MAKEPLUS_VERSION', '1.7.0-beta1' );
+define( 'MAKEPLUS_VERSION', '1.7.4' );
 
 /**
  * The minimum version of WordPress required for the plugin.
  */
-define( 'MAKEPLUS_MIN_WP_VERSION', '4.2' );
+define( 'MAKEPLUS_MIN_WP_VERSION', '4.4' );
 
 /**
  * Get the path to the Make Plus directory. Includes trailing slash.
@@ -50,21 +50,19 @@ function makeplus_get_plugin_directory_uri() {
 	return plugin_dir_url( __FILE__ );
 }
 
-// Activation
-require_once makeplus_get_plugin_directory() . 'activation.php';
-
 // Autoloader
 require_once makeplus_get_plugin_directory() . 'autoload.php';
 
 /**
+ * Kick things off.
  *
+ * @since 1.7.0.
+ *
+ * @hooked action plugins_loaded
+ *
+ * @return void
  */
 function makeplus_initialize_plugin() {
-	// Only run this in the proper hook context.
-	if ( 'plugins_loaded' !== current_action() ) {
-		return;
-	}
-
 	global $MakePlus;
 	$MakePlus = new MAKEPLUS_API;
 	$MakePlus->hook();
@@ -93,17 +91,13 @@ add_action( 'plugins_loaded', 'makeplus_initialize_plugin' );
 /**
  * Register values for the updater.
  *
- * @since  1.3.0.
+ * @since 1.3.0.
  *
- * @param  array    $values    The present updater values.
- * @return array               Modified updater values.
+ * @hooked filter ttf_updater_config
+ *
+ * @return array           Modified updater values.
  */
-function makeplus_updater_config( $values ) {
-	// Only run this in the proper hook context.
-	if ( 'ttf_updater_config' !== current_filter() ) {
-		return $values;
-	}
-
+function makeplus_updater_config() {
 	return array(
 		'slug'            => 'make-plus',
 		'type'            => 'plugin',

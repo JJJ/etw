@@ -6,7 +6,10 @@
 /**
  * Class MAKEPLUS_Component_Builder_Enhancement_SectionSpace
  *
- * @since 1.7.0.
+ * Add a configuration setting to all Builder sections to remove the extra spacing below the section.
+ *
+ * @since 1.5.1.
+ * @since 1.7.0. Moved to a separate class.
  */
 class MAKEPLUS_Component_Builder_Enhancement_SectionSpace implements MAKEPLUS_Util_HookInterface {
 	/**
@@ -60,16 +63,13 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionSpace implements MAKEPLUS_Ut
 	 *
 	 * @since 1.5.1.
 	 *
-	 * @param  array    $args    The section args.
+	 * @hooked filter make_add_section
 	 *
-	 * @return array             The modified section args.
+	 * @param array $args    The section args.
+	 *
+	 * @return array         The modified section args.
 	 */
 	public function modify_section( $args ) {
-		// Only run this in the proper hook context.
-		if ( 'make_add_section' !== current_filter() ) {
-			return $args;
-		}
-
 		$controls = $args['config'];
 
 		// Get the last priority of existing section controls
@@ -106,17 +106,14 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionSpace implements MAKEPLUS_Ut
 	 *
 	 * @since 1.5.1.
 	 *
-	 * @param  array    $clean_data       The section data that has already been sanitized.
-	 * @param  array    $original_data    The original unsanitized section data.
+	 * @hooked filter make_prepare_data_section
 	 *
-	 * @return array                      The amended array of sanitized section data.
+	 * @param array $clean_data       The section data that has already been sanitized.
+	 * @param array $original_data    The original unsanitized section data.
+	 *
+	 * @return array                  The amended array of sanitized section data.
 	 */
 	public function save_data( $clean_data, $original_data ) {
-		// Only run this in the proper hook context.
-		if ( 'make_prepare_data_section' !== current_filter() ) {
-			return $clean_data;
-		}
-
 		if ( isset( $original_data['remove-space-below'] ) ) {
 			$clean_data['remove-space-below'] = wp_validate_boolean( $original_data['remove-space-below'] );
 		}
@@ -166,9 +163,8 @@ class MAKEPLUS_Component_Builder_Enhancement_SectionSpace implements MAKEPLUS_Ut
 		if ( isset( $data['remove-space-below'] ) && 1 === absint( $data['remove-space-below'] ) ) {
 			$prefix = 'builder-section-';
 			$id = sanitize_key( $data['id'] );
-			/**
-			 * This filter is documented in Make, inc/builder/core/save.php
-			 */
+			
+			/** This filter is documented in Make, inc/builder/core/save.php */
 			$section_id = apply_filters( 'make_section_html_id', $prefix . $id, $data );
 
 			$style->css()->add( array(

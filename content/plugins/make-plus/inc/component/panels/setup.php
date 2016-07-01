@@ -3,8 +3,13 @@
  * @package Make Plus
  */
 
-
-class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
+/**
+ * Class MAKEPLUS_Component_Panels_Setup
+ *
+ * @since 1.6.0.
+ * @since 1.7.0. Changed class name from TTFMP_Panels.
+ */
+final class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements MAKEPLUS_Util_HookInterface {
 	/**
 	 * An associative array of required modules.
 	 *
@@ -102,11 +107,13 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return void
 	 */
 	public function add_section() {
-		// Only run this in the proper hook context.
-		if ( ! is_admin() || 'after_setup_theme' !== current_action() ) {
+		// Bail if we aren't in the admin
+		if ( ! is_admin() ) {
 			return;
 		}
 
@@ -181,21 +188,19 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $defaults    The existing array of section defaults.
+	 * @hooked filter make_section_defaults
 	 *
-	 * @return array                 The modified array of section defaults.
+	 * @param array $defaults    The existing array of section defaults.
+	 *
+	 * @return array             The modified array of section defaults.
 	 */
 	public function section_defaults( $defaults ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_defaults' !== current_filter() ) {
-			return $defaults;
-		}
-
 		$setting_defaults = $this->panels_settings()->get_settings( 'default' );
 		$new_defaults = array();
 		foreach ( $setting_defaults as $setting_key => $default ) {
 			$new_defaults[ 'panels-' . $setting_key ] = $default;
 		}
+		
 		return array_merge( $defaults, $new_defaults );
 	}
 
@@ -204,18 +209,15 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param array     $choices         The array to hold the choices.
-	 * @param string    $key             The setting key.
-	 * @param string    $section_type    The type of section.
+	 * @hooked filter make_section_choices
 	 *
-	 * @return array                     The modified array containing the choices.
+	 * @param array  $choices         The array to hold the choices.
+	 * @param string $key             The setting key.
+	 * @param string $section_type    The type of section.
+	 *
+	 * @return array                  The modified array containing the choices.
 	 */
 	public function section_choices( $choices, $key, $section_type ) {
-		// Only run this in the proper hook context.
-		if ( 'make_section_choices' !== current_filter() ) {
-			return $choices;
-		}
-
 		if ( count( $choices ) > 1 || ! in_array( $section_type, array( 'panels' ) ) ) {
 			return $choices;
 		}
@@ -251,9 +253,9 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $data    The array of section data to process.
+	 * @param array $data    The array of section data to process.
 	 *
-	 * @return array             The processed array of data.
+	 * @return array         The processed array of data.
 	 */
 	public function save_section( $data ) {
 		// Section type, state, and ID are handled by the Builder's core save function
@@ -302,13 +304,15 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 			foreach ( $panels_items as $id => $item ) {
 				if ( is_array( $item ) ) {
 					foreach ( $item as $setting_key => $value ) {
-						$sanitized_value = $this->panels_settings()->sanitize_value( $value, $setting_key );
+						if ( isset( $defaults[ $setting_key ] ) ) {
+							$sanitized_value = $this->panels_settings()->sanitize_value( $value, $setting_key );
 
-						if ( null === $sanitized_value ) {
-							$sanitized_value = $defaults[ $setting_key ];
+							if ( null === $sanitized_value ) {
+								$sanitized_value = $defaults[ $setting_key ];
+							}
+
+							$clean_data_items[ $id ][ $setting_key ] = $sanitized_value;
 						}
-
-						$clean_data_items[ $id ][ $setting_key ] = $sanitized_value;
 					}
 				}
 			}
@@ -316,11 +320,15 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 
 		// Sanitize main section data
 		foreach ( $parsed_data as $setting_key => $value ) {
-			$sanitized_value = $this->panels_settings()->sanitize_value( $value, $setting_key );
-			if ( null === $sanitized_value ) {
-				$sanitized_value = $defaults[ $setting_key ];
+			if ( isset( $defaults[ $setting_key ] ) ) {
+				$sanitized_value = $this->panels_settings()->sanitize_value( $value, $setting_key );
+
+				if ( null === $sanitized_value ) {
+					$sanitized_value = $defaults[ $setting_key ];
+				}
+
+				$clean_data[ $setting_key ] = $sanitized_value;
 			}
-			$clean_data[ $setting_key ] = $sanitized_value;
 		}
 
 		// Add the sanitized panel items back in
@@ -334,16 +342,13 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  string    $hook_suffix    The current admin page.
+	 * @hooked action admin_enqueue_scripts
+	 *
+	 * @param string $hook_suffix    The current admin page.
 	 *
 	 * @return void
 	 */
 	public function admin_scripts( $hook_suffix ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		// Only load resources if they are needed on the current page
 		if ( ! in_array( $hook_suffix, array( 'post.php', 'post-new.php' ) ) || ! ttfmake_post_type_supports_builder( get_post_type() ) ) {
 			return;
@@ -382,16 +387,13 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
-	 * @param  array    $deps    Existing array of dependencies.
+	 * @hooked filter make_builder_js_dependencies
 	 *
-	 * @return array             Modified array of dependencies.
+	 * @param array $deps    Existing array of dependencies.
+	 *
+	 * @return array         Modified array of dependencies.
 	 */
 	public function admin_add_js_dependencies( $deps ) {
-		// Only run this in the proper hook context.
-		if ( 'make_builder_js_dependencies' !== current_filter() ) {
-			return $deps;
-		}
-
 		if ( ! is_array( $deps ) ) {
 			$deps = array();
 		}
@@ -407,15 +409,13 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action admin_footer
+	 *
 	 * @return void
 	 */
 	public function print_templates() {
-		// Only run this in the proper hook context.
-		if ( 'admin_footer' !== current_action() ) {
-			return;
-		}
-
 		global $hook_suffix, $typenow, $ttfmake_is_js_template;
+
 		$ttfmake_is_js_template = true;
 
 		// Only show when adding/editing pages
@@ -446,20 +446,19 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action wp_enqueue_scripts
+	 *
 	 * @return void
 	 */
 	public function frontend_scripts() {
-		// Only run this in the proper hook context.
-		if ( 'wp_enqueue_scripts' !== current_action() ) {
-			return;
-		}
-
 		if ( function_exists( 'ttfmake_is_builder_page' ) && ttfmake_is_builder_page() ) {
 			$sections = ttfmake_get_section_data( get_the_ID() );
+			
 			// Bail if there are no sections
 			if ( empty( $sections ) ) {
 				return;
 			}
+			
 			// Parse the sections included on the page.
 			$section_types = wp_list_pluck( $sections, 'section-type' );
 			$matched_sections = array_keys( $section_types, 'panels' );
@@ -525,6 +524,8 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 *
 	 * @since 1.6.0.
 	 *
+	 * @hooked action make_builder_panels_css
+	 *
 	 * @param                             $data
 	 * @param                             $id
 	 * @param MAKE_Style_ManagerInterface $style
@@ -532,11 +533,6 @@ class MAKEPLUS_Component_Panels_Setup extends MAKEPLUS_Util_Modules implements M
 	 * @return void
 	 */
 	public function add_css( $data, $id, MAKE_Style_ManagerInterface $style ) {
-		// Only run this in the proper hook context.
-		if ( 'make_builder_panels_css' !== current_action() ) {
-			return;
-		}
-
 		// Secondary color
 		if ( ! $style->thememod()->is_default( 'color-secondary' ) ) {
 			$color_secondary = $style->thememod()->get_value( 'color-secondary' );

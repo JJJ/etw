@@ -9,6 +9,7 @@
  * Methods for loading text domains.
  *
  * @since 1.6.2.
+ * @since 1.7.0. Renamed from TTFMAKE_L10n
  */
 final class MAKE_Setup_L10n implements MAKE_Setup_L10nInterface, MAKE_Util_HookInterface {
 	/**
@@ -115,9 +116,9 @@ final class MAKE_Setup_L10n implements MAKE_Setup_L10nInterface, MAKE_Util_HookI
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param string    $theme_slug    The slug identifier for a theme.
+	 * @param string $theme_slug    The slug identifier for a theme.
 	 *
-	 * @return string                  The theme's text domain.
+	 * @return string               The theme's text domain.
 	 */
 	private function get_text_domain( $theme_slug ) {
 		$theme  = wp_get_theme( $theme_slug );
@@ -130,9 +131,9 @@ final class MAKE_Setup_L10n implements MAKE_Setup_L10nInterface, MAKE_Util_HookI
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param string    $theme_slug    The slug identifier for a theme.
+	 * @param string $theme_slug    The slug identifier for a theme.
 	 *
-	 * @return string                  The theme's root directory.
+	 * @return string               The theme's root directory.
 	 */
 	private function get_theme_dir( $theme_slug ) {
 		$theme = wp_get_theme( $theme_slug );
@@ -152,17 +153,14 @@ final class MAKE_Setup_L10n implements MAKE_Setup_L10nInterface, MAKE_Util_HookI
 	 *
 	 * @since 1.6.2.
 	 *
-	 * @param $mofile
-	 * @param $domain
+	 * @hooked filter load_textdomain_mofile
+	 *
+	 * @param string $mofile
+	 * @param string $domain
 	 *
 	 * @return string
 	 */
 	public function mofile_path( $mofile, $domain ) {
-		// Only run this in the proper hook context.
-		if ( 'load_textdomain_mofile' !== current_filter() ) {
-			return $mofile;
-		}
-
 		if ( in_array( $domain, array( $this->domain, $this->child_domain ) ) ) {
 			$locale = get_locale();
 
@@ -185,14 +183,11 @@ final class MAKE_Setup_L10n implements MAKE_Setup_L10nInterface, MAKE_Util_HookI
 	 *
 	 * @since 1.6.2.
 	 *
+	 * @hooked action after_setup_theme
+	 *
 	 * @return bool    True if all relevant text domains successfully loaded a .mo file. Otherwise false.
 	 */
 	public function load_textdomains() {
-		// Only run this in the proper hook context.
-		if ( 'after_setup_theme' !== current_action() ) {
-			return false;
-		}
-
 		// Array to collect results of load commands.
 		$success = array();
 

@@ -68,7 +68,13 @@ $t_wrap = apply_filters( 'ttfmp_post_list_post_title_element', $t_wrap, $ttfmp_d
 			<?php endif; ?>
 		<?php else : ?>
 		<div class="ttfmp-post-list-item-image aspect-<?php echo esc_attr( $aspect ); ?>"<?php echo $image_style; ?>>
-			<a href="<?php the_permalink(); ?>"></a>
+			<a href="<?php the_permalink(); ?>">
+				<?php if ( get_post_thumbnail_id() ) : ?>
+					<span class="screen-reader-text">
+						<?php echo strip_tags( get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true ) ); ?>
+					</span>
+				<?php endif; ?>
+			</a>
 		</div>
 		<?php endif; ?>
 	</figure>

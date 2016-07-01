@@ -46,12 +46,16 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 		// Add a button to the Admin Bar
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar' ), 500 );
 
-		// Render the error markup in the page footer.
+		// Render the error markup for the Admin Bar in the page footer.
 		if ( is_admin() ) {
-			add_action( 'admin_footer', array( $this, 'render_errors' ), 99 );
+			add_action( 'admin_footer', array( $this, 'render_adminbar_errors' ), 99 );
 		} else {
-			add_action( 'wp_footer', array( $this, 'render_errors' ), 99 );
+			add_action( 'wp_footer', array( $this, 'render_adminbar_errors' ), 99 );
 		}
+
+		// Add a section to the Customizer and print the data
+		add_action( 'customize_register', array( $this, 'add_section' ) );
+		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_customizer_errors' ), 99 );
 
 		// Hooking has occurred.
 		self::$hooked = true;
@@ -73,14 +77,11 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action admin_bar_menu
+	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function admin_bar( WP_Admin_Bar $wp_admin_bar ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_bar_menu' !== current_action() ) {
-			return;
-		}
-
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'make-errors',
 			'title'  => '',
@@ -95,7 +96,7 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 	}
 
 	/**
-	 * Render the CSS for the Make Errors button in the Admin Bar.
+	 * Render the CSS for the Make Errors button in the Admin Bar and the overlay.
 	 *
 	 * @since 1.7.0.
 	 *
@@ -108,9 +109,15 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 				background: #fcfcfc;
 				border-bottom: 1px solid #dfdfdf;
 				padding: 0;
-				min-height: 36px
+				min-height: 36px;
+				position: fixed;
+				z-index: 1;
+				width: 100%;
+				max-width: 1200px;
 			}
 			#wpadminbar .make-error-detail-body {
+				background: #ffffff;
+				margin-top: 36px;
 				padding: 16px;
 			}
 			#wpadminbar .make-error-detail-body a {
@@ -122,7 +129,7 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 			}
 			#wpadminbar #wp-admin-bar-make-errors {
 				display: list-item;
-				background-color: red;
+				background-color: #ffb900;
 			}
 			#wpadminbar #wp-admin-bar-make-errors > .ab-item .ab-icon:before {
 				content: "\f534";
@@ -185,6 +192,7 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 				overflow-x: auto;
 				overflow-y: scroll;
 				color: black;
+				position: relative;
 			}
 			#wpadminbar .callout-warning {
 				padding: 10px 20px;
@@ -300,6 +308,42 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 	}
 
 	/**
+	 * Render the error messages within a container, include help text.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked action admin_footer
+	 * @hooked action wp_footer
+	 *
+	 * @return void
+	 */
+	public function render_adminbar_errors() {
+		// Bail if this is in the Customizer preview pane.
+		if ( is_customize_preview() ) {
+			return;
+		}
+
+		// Bail if there aren't any errors.
+		if ( ! $this->error()->has_errors() ) {
+			$this->render_adminbar_css_no_errors();
+			return;
+		}
+
+		// CSS
+		$this->render_adminbar_css();
+
+		// HTML
+		?>
+		<div id="make-error-detail-container">
+			<?php $this->render_errors(); ?>
+		</div>
+	<?php
+
+		// JavaScript
+		$this->render_adminbar_js();
+	}
+
+	/**
 	 * Render the JavaScript for handling the Make Errors button in the Admin Bar.
 	 *
 	 * @since 1.7.0.
@@ -337,6 +381,59 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 	}
 
 	/**
+	 * Add a section to the Customizer to display a notice about Make errors.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked action customize_register
+	 *
+	 * @param WP_Customize_Manager $wp_customize
+	 *
+	 * @return void
+	 */
+	public function add_section( WP_Customize_Manager $wp_customize ) {
+		// Create a section instance
+		$section = new MAKE_Error_Section(
+			$wp_customize,
+			'make_error',
+			array(
+				'priority' => 9999,
+			)
+		);
+
+		$wp_customize->add_section( $section );
+	}
+
+	/**
+	 * Output a Customizer JS template for the Make Errors section.
+	 *
+	 * @since 1.7.0.
+	 *
+	 * @hooked action customize_controls_print_footer_scripts
+	 *
+	 * @return void
+	 */
+	public function render_customizer_errors() {
+		// Bail if there aren't any errors.
+		if ( ! $this->error()->has_errors() ) {
+			return;
+		}
+		?>
+		<div id="make-error-detail-container">
+			<h3 class="accordion-section-title">
+				<?php echo $this->get_errors_title(); ?>
+				<button id="make-show-errors" type="button" class="button" tabindex="0">
+					<?php esc_html_e( 'Show notices', 'make' ); ?>
+				</button>
+			</h3>
+			<div id="make-error-detail-wrapper">
+				<?php $this->render_errors(); ?>
+			</div>
+		</div>
+	<?php
+	}
+
+	/**
 	 * Return a string showing the number of "Make errors".
 	 *
 	 * @since 1.7.0.
@@ -347,7 +444,7 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 		// Get the error message count.
 		$error_count = count( $this->error()->get_messages() );
 		return sprintf(
-			_n( '%s Make Error', '%s Make Errors', $error_count, 'make' ),
+			esc_html( _n( '%s Make Notice', '%s Make Notices', $error_count, 'make' ) ),
 			number_format_i18n( $error_count )
 		);
 	}
@@ -365,6 +462,7 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 			wp_kses_allowed_html(),
 			array(
 				'a'   => array(
+					'href' => true,
 					'target' => true,
 				),
 				'ol'  => true,
@@ -384,79 +482,61 @@ final class MAKE_Error_Display extends MAKE_Util_Modules implements MAKE_Error_D
 	 *
 	 * @return void
 	 */
-	public function render_errors() {
-		// Only run this in the proper hook context.
-		if ( ! in_array( current_action(), array( 'admin_footer', 'wp_footer' ) ) ) {
-			return;
-		}
-
-		// Bail if there aren't any errors.
-		if ( ! $this->error()->has_errors() ) {
-			$this->render_adminbar_css_no_errors();
-			return;
-		}
-
-		// CSS
-		$this->render_adminbar_css();
+	private function render_errors() {
 		?>
-		<div id="make-error-detail-container">
-			<div class="make-error-detail">
-				<div class="make-error-detail-head">
-					<h2><?php echo esc_html( $this->get_errors_title() ); ?></h2>
-					<button id="make-error-detail-close" class="make-error-detail__close" href="#">
-						<span class="ab-icon"></span>
-						<span class="screen-reader-text"><?php esc_html_e( 'Close', 'make' ); ?></span>
-					</button>
+		<div class="make-error-detail">
+			<div class="make-error-detail-head">
+				<h2><?php echo esc_html( $this->get_errors_title() ); ?></h2>
+				<button id="make-error-detail-close" class="make-error-detail__close" href="#">
+					<span class="ab-icon"></span>
+					<span class="screen-reader-text"><?php esc_html_e( 'Close', 'make' ); ?></span>
+				</button>
+			</div>
+			<div class="make-error-detail-body">
+				<div class="callout-warning">
+					<p><strong><?php esc_html_e( 'What is a Make notice?', 'make' ); ?></strong></p>
+					<p>
+						<?php echo $this->sanitize_message( __( '
+							Make notices occur when Make\'s functionality is used incorrectly. Often these notices are
+							triggered by code errors in a child theme or plugin that extends the theme. The notice
+							messages help you to identify the cause of the errors so they can be fixed.
+						', 'make' ) ); ?>
+					</p>
+					<p><strong><?php esc_html_e( 'Is it important to fix these notices?', 'make' ); ?></strong></p>
+					<p>
+						<?php echo $this->sanitize_message( __( '
+							Absolutely! These notices may indicate that some part of your site is not working correctly.
+							We don\'t want that.
+						', 'make' ) ); ?>
+					</p>
+					<p><strong><?php esc_html_e( 'How do I fix a Make notice?', 'make' ); ?></strong></p>
+					<p>
+						<?php echo $this->sanitize_message( sprintf( __( '
+							Check to see if your child theme or plugin has an update available, as a new version may
+							include changes that fix the errors. If it is caused by custom code, you will need to modify
+							the code to fix the errors. Check out our article about <a href="%s" target="_blank">dealing
+							with Make Notices</a> to learn more.
+						', 'make' ), 'https://thethemefoundry.com/docs/make-docs/guides/make-notices/' ) ); ?>
+					</p>
+					<p><strong><?php esc_html_e( 'How can I hide this notification?', 'make' ); ?></strong></p>
+					<p>
+						<?php echo $this->sanitize_message( sprintf( __( '
+							This notification is only visible to users who are logged in and have the capability to
+							install themes. To hide it completely, add this code to your functions.php file: %s
+						', 'make' ), '
+							<code>add_filter( \'make_show_errors\', \'__return_false\' );</code>
+						' ) ); ?>
+					</p>
 				</div>
-				<div class="make-error-detail-body">
-					<div class="callout-warning">
-						<p><strong><?php esc_html_e( 'What is a Make error?', 'make' ); ?></strong></p>
-						<p>
-							<?php echo $this->sanitize_message( __( '
-								Make errors occur when Make\'s functionality is used incorrectly. Often these errors are
-								caused by code in a child theme or plugin that extends the theme. The messages below help
-								you to identify the cause of the errors so they can be fixed.
-							', 'make' ) ); ?>
-						</p>
-						<p><strong><?php esc_html_e( 'Is it important to fix these errors?', 'make' ); ?></strong></p>
-						<p>
-							<?php echo $this->sanitize_message( __( '
-								Absolutely! These errors may indicate that some part of your site is not working correctly.
-								We don\'t want that.
-							', 'make' ) ); ?>
-						</p>
-						<p><strong><?php esc_html_e( 'How do I fix a Make error?', 'make' ); ?></strong></p>
-						<p>
-							<?php echo $this->sanitize_message( __( '
-								Check to see if your child theme or plugin has an update available, as a new version may
-								include changes that fix the errors. If it is caused by custom code, you will need to modify
-								the code to fix the errors. Check our article about
-								<a href="https://thethemefoundry.com/make-help/" target="_blank">dealing with Make Errors</a>
-								to learn more.
-							', 'make' ) ); ?>
-						</p>
-						<p><strong><?php esc_html_e( 'How can I hide this notification in the Admin Bar?', 'make' ); ?></strong></p>
-						<p>
-							<?php echo $this->sanitize_message( sprintf( __( '
-								This notification is only visible to users who are logged in and have the capability to
-								install themes. To hide it completely, add this code to your functions.php file: %s
-							', 'make' ), '
-								<code>add_filter( \'make_show_errors\', \'__return_false\' );</code>
-							' ) ); ?>
-						</p>
-					</div>
-					<?php foreach ( $this->error()->get_codes() as $code ) : ?>
-						<h3><?php printf( esc_html__( 'Error code: %s', 'make' ), esc_html( $code ) ); ?></h3>
-						<?php foreach ( $this->error()->get_messages( $code ) as $message ) : ?>
-							<?php echo wpautop( $this->sanitize_message( $message ) ); ?>
-						<?php endforeach; ?>
-						<hr />
+				<?php foreach ( $this->error()->get_codes() as $code ) : ?>
+					<h3><?php printf( esc_html__( 'Error code: %s', 'make' ), esc_html( $code ) ); ?></h3>
+					<?php foreach ( $this->error()->get_messages( $code ) as $message ) : ?>
+						<?php echo wpautop( $this->sanitize_message( $message ) ); ?>
 					<?php endforeach; ?>
-				</div>
+					<hr />
+				<?php endforeach; ?>
 			</div>
 		</div>
 	<?php
-		// JavaScript
-		$this->render_adminbar_js();
 	}
 }

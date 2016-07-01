@@ -20,7 +20,7 @@
 			// Set up each column section when the page loads
 			$stage
 				// Make sure newly added sections get set up
-				.on('sortcreate', '.ttfmake-text-columns-stage', function() { console.log('sortcreate');
+				.on('sortcreate', '.ttfmake-text-columns-stage', function() {
 					var $section = $(this).parents('.ttfmake-section');
 					self.sectionSetup($section);
 				})

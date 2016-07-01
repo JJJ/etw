@@ -3,6 +3,11 @@
  * @package Make
  */
 
+/**
+ * Class MAKE_Plus_Methods
+ *
+ * @since 1.7.0.
+ */
 final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_HookInterface {
 	/**
 	 * Whether Make Plus is installed and active.
@@ -117,7 +122,7 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 		 *
 		 * @since 1.2.3.
 		 *
-		 * @param bool    $is_plus    True if Make Plus is active.
+		 * @param bool $is_plus    True if Make Plus is active.
 		 */
 		$this->plus = apply_filters( 'make_is_plus', $is_plus );
 
@@ -136,11 +141,11 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	}
 
 	/**
-	 * Generate a link to the Make info page.
+	 * Generate a link to the Make Plus info page.
 	 *
-	 * @since  1.0.6.
+	 * @since 1.0.6.
 	 *
-	 * @return string                   The link.
+	 * @return string
 	 */
 	public function get_plus_link() {
 		return 'https://thethemefoundry.com/make-buy/';
@@ -151,7 +156,7 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @return null
+	 * @return string|null
 	 */
 	public function get_plus_version() {
 		$version = null;
@@ -172,14 +177,13 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_notice_loaded
+	 *
 	 * @param MAKE_Admin_NoticeInterface $notice
+	 *
+	 * @return void
 	 */
 	public function admin_notices( MAKE_Admin_NoticeInterface $notice ) {
-		// Only run this in the proper hook context.
-		if ( 'make_notice_loaded' !== current_action() ) {
-			return;
-		}
-
 		// Notice to help with potential update issues with Make Plus
 		if ( true === $this->is_plus() && version_compare( $this->get_plus_version(), '1.4.7', '<=' ) ) {
 			$notice->register_admin_notice(
@@ -188,6 +192,19 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 					__( 'A new version of Make Plus is available. If you encounter problems updating through <a href="%1$s">the WordPress interface</a>, please <a href="%2$s" target="_blank">follow these steps</a> to update manually.', 'make' ),
 					admin_url( 'update-core.php' ),
 					'https://thethemefoundry.com/tutorials/updating-your-existing-theme/'
+				),
+				array(
+					'cap'     => 'update_plugins',
+					'dismiss' => true,
+					'screen'  => array( 'dashboard', 'update-core.php', 'plugins.php' ),
+					'type'    => 'warning',
+				)
+			);
+		} else if ( true === $this->is_plus() && version_compare( $this->get_plus_version(), '1.7.0', '<' ) ) {
+			$notice->register_admin_notice(
+				'make-plus-lt-170',
+				sprintf(
+					__( 'The current version of the Make theme is only fully compatible with version 1.7.0 or higher of the Make Plus plugin. Please update Make Plus to the latest version.', 'make' )
 				),
 				array(
 					'cap'     => 'update_plugins',
@@ -206,16 +223,13 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.7.0.
 	 *
-	 * @param $classes
+	 * @hooked filter admin_body_class
+	 *
+	 * @param string $classes
 	 *
 	 * @return string
 	 */
 	public function admin_body_classes( $classes ) {
-		// Only run this in the proper hook context.
-		if ( 'admin_body_class' !== current_filter() ) {
-			return $classes;
-		}
-
 		if ( $this->is_plus() ) {
 			$classes .= ' make-plus-enabled';
 		} else {
@@ -230,24 +244,21 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_controls_print_footer_scripts
+	 *
 	 * @return void
 	 */
 	public function customizer_add_header_info() {
-		// Only run this in the proper hook context.
-		if ( 'customize_controls_print_footer_scripts' !== current_action() ) {
-			return;
-		}
-
 		?>
 		<script type="application/javascript">
 			(function($) {
 				$(document).ready(function() {
-					var upgrade = $('<a class="ttfmake-customize-plus"></a>')
+					var plus = $('<a class="ttfmake-customize-plus"></a>')
 						.attr('href', '<?php echo esc_js( $this->get_plus_link() ); ?>')
 						.attr('target', '_blank')
 						.text('<?php esc_html_e( 'Upgrade to Make Plus', 'make' ); ?>')
 					;
-					$('.preview-notice').append(upgrade);
+					$('#accordion-section-themes .accordion-section-title .change-theme').before(plus);
 					// Remove accordion click event
 					$('.ttfmake-customize-plus').on('click', function(e) {
 						e.stopPropagation();
@@ -259,57 +270,50 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	}
 
 	/**
-	 * Display information about Style Kits, Typekit, and White Label in the Customizer.
+	 * Display information about Typekit and White Label in the Customizer.
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action customize_register
+	 *
 	 * @param WP_Customize_Manager $wp_customize
+	 *
+	 * @return void
 	 */
 	public function customizer_add_section_info( WP_Customize_Manager $wp_customize ) {
-		// Only run this in the proper hook context.
-		if ( 'customize_register' !== current_action() ) {
-			return;
-		}
-
 		// Add section for Typekit
-		$wp_customize->add_section( 'make_font-typekit', array(
-			'panel'       => 'make_typography',
+		$wp_customize->add_section( 'ttfmake_font-typekit', array(
+			'panel'       => 'ttfmake_typography',
 			'title'       => __( 'Typekit', 'make' ),
 			'description' => __( 'Looking to add premium fonts from Typekit to your website?', 'make' ),
-			'priority'    => $wp_customize->get_section( 'make_font-google' )->priority + 2
+			'priority'    => $wp_customize->get_section( 'ttfmake_font-google' )->priority + 2
 		) );
 
 		// Add control for Typekit
-		$wp_customize->add_control( new MAKE_Customizer_Control_Html( $wp_customize, 'make_font-typekit-update-text', array(
-			'section'     => 'make_font-typekit',
+		$wp_customize->add_control( new MAKE_Customizer_Control_Html( $wp_customize, 'ttfmake_font-typekit-update-text', array(
+			'section'     => 'ttfmake_font-typekit',
 			'description'  => sprintf(
 				'<a href="%1$s" target="_blank">%2$s</a>',
 				esc_url( $this->get_plus_link() ),
-				sprintf(
-					__( 'Upgrade to %1$s', 'make' ),
-					'Make Plus'
-				)
+				esc_html__( 'Upgrade to Make Plus.', 'make' )
 			),
 		) ) );
 
 		// Add section for White Label
-		$wp_customize->add_section( 'make_white-label', array(
-			'panel'       => 'make_general',
+		$wp_customize->add_section( 'ttfmake_white-label', array(
+			'panel'       => 'ttfmake_general',
 			'title'       => __( 'White Label', 'make' ),
 			'description' => __( 'Want to remove the theme byline from your website&#8217;s footer?', 'make' ),
-			'priority'    => $wp_customize->get_section( 'make_social' )->priority + 2
+			'priority'    => $wp_customize->get_section( 'ttfmake_social' )->priority + 2
 		) );
 
 		// Add control for White Label
-		$wp_customize->add_control( new MAKE_Customizer_Control_Html( $wp_customize, 'make_footer-white-label-text', array(
-			'section'     => 'make_white-label',
+		$wp_customize->add_control( new MAKE_Customizer_Control_Html( $wp_customize, 'ttfmake_footer-white-label-text', array(
+			'section'     => 'ttfmake_white-label',
 			'description'  => sprintf(
 				'<a href="%1$s" target="_blank">%2$s</a>',
 				esc_url( $this->get_plus_link() ),
-				sprintf(
-					__( 'Upgrade to %1$s', 'make' ),
-					'Make Plus'
-				)
+				esc_html__( 'Upgrade to Make Plus.', 'make' )
 			),
 		) ) );
 	}
@@ -319,15 +323,13 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since  1.1.0.
 	 *
+	 * @hooked action post_submitbox_misc_actions
+	 *
 	 * @return void
 	 */
 	public function duplicate_add_info() {
-		// Only run this in the proper hook context.
-		if ( 'post_submitbox_misc_actions' !== current_action() ) {
-			return;
-		}
-
 		global $typenow;
+
 		if ( 'page' === $typenow ) : ?>
 			<div class="misc-pub-section ttfmake-duplicator">
 				<p style="font-style:italic;margin:0 0 7px 3px;">
@@ -350,16 +352,13 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	/**
 	 * Add a metabox to each qualified post type edit screen.
 	 *
-	 * @since  1.0.6.
+	 * @since 1.0.6.
+	 *
+	 * @hooked action add_meta_boxes
 	 *
 	 * @return void
 	 */
 	public function perpage_add_info() {
-		// Only run this in the proper hook context.
-		if ( 'add_meta_boxes' !== current_action() ) {
-			return;
-		}
-
 		// Post types
 		$post_types = get_post_types(
 			array(
@@ -370,13 +369,13 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 		$post_types[] = 'post';
 		$post_types[] = 'page';
 
-		// Add the metabox for each type
-		foreach ( $post_types as $type ) {
+		// Add the metabox if compatible with the current post type
+		if ( in_array( get_post_type(), $post_types ) ) {
 			add_meta_box(
 				'ttfmake-plus-metabox',
 				esc_html__( 'Layout Settings', 'make' ),
 				array( $this, 'perpage_render_metabox' ),
-				$type,
+				get_post_type(),
 				'side',
 				'default'
 			);
@@ -388,7 +387,8 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.0.6.
 	 *
-	 * @param  WP_Post    $post    The current post object.
+	 * @param WP_Post $post    The current post object.
+	 *
 	 * @return void
 	 */
 	public function perpage_render_metabox( WP_Post $post ) {
@@ -403,10 +403,7 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 			sprintf(
 				'<a href="%1$s" target="_blank">%2$s</a>',
 				esc_url( $this->get_plus_link() ),
-				sprintf(
-					esc_html__( 'Upgrade to %s.', 'make' ),
-					'Make Plus'
-				)
+				esc_html__( 'Upgrade to Make Plus.', 'make' )
 			)
 		);
 		echo '</p>';
@@ -417,14 +414,11 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_after_builder_menu
+	 *
 	 * @return void
 	 */
 	public function sections_add_info() {
-		// Only run this in the proper hook context.
-		if ( 'make_after_builder_menu' !== current_action() ) {
-			return;
-		}
-
 		?>
 		<li id="ttfmake-menu-list-item-link-plus" class="ttfmake-menu-list-item">
 			<div>
@@ -451,28 +445,22 @@ final class MAKE_Plus_Methods implements MAKE_Plus_MethodsInterface, MAKE_Util_H
 	 *
 	 * @since 1.7.0.
 	 *
+	 * @hooked action make_section_text_before_columns_select
+	 *
 	 * @return void
 	 */
 	public function widgetarea_add_info() {
-		// Only run this in the proper hook context.
-		if ( 'make_section_text_before_columns_select' !== current_action() ) {
-			return;
-		}
-
 		?>
 		<div class="ttfmake-plus-info">
 			<p>
 				<em>
 					<?php
 					printf(
-						esc_html__( '%s and convert any column into an area for widgets.', 'make' ),
+						esc_html__( 'Convert any column into an area for widgets. %s', 'make' ),
 						sprintf(
 							'<a href="%1$s" target="_blank">%2$s</a>',
 							esc_url( $this->get_plus_link() ),
-							sprintf(
-								esc_html__( 'Upgrade to %s', 'make' ),
-								'Make Plus'
-							)
+							esc_html__( 'Upgrade to Make Plus.', 'make' )
 						)
 					);
 					?>

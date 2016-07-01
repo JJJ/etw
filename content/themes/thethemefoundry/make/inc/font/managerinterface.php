@@ -15,8 +15,6 @@ interface MAKE_Font_ManagerInterface extends MAKE_Util_ModulesInterface {
 
 	public function has_source( $source_id );
 
-	public function remove_source( $source_id );
-
 	public function get_font_source( $font, $return = 'object' );
 
 	public function get_font_data( $font, $source_id = null );

@@ -3,8 +3,14 @@
  * @package Make
  */
 
-
-final class MAKE_Customizer_DataHelper extends MAKE_Util_Modules {
+/**
+ * Class MAKE_Customizer_DataHelper
+ *
+ * Methods to help process Customizer definition data.
+ *
+ * @since 1.7.0.
+ */
+final class MAKE_Customizer_DataHelper extends MAKE_Util_Modules implements MAKE_Customizer_DataHelperInterface {
 	/**
 	 * An associative array of required modules.
 	 *
