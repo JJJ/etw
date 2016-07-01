@@ -26,10 +26,10 @@ function flox_get_default_network_options() {
 	$network_wide_plugins['wp-comment-humility/wp-comment-humility.php'] = $timestamp;
 	$network_wide_plugins['wp-media-categories/wp-media-categories.php'] = $timestamp;
 	$network_wide_plugins['wp-multi-network/wpmn-loader.php']            = $timestamp;
-	$network_wide_plugins['wp-pretty-filters/wp-pretty-filter.php']      = $timestamp;
+	$network_wide_plugins['wp-pretty-filters/wp-pretty-filters.php']     = $timestamp;
 	$network_wide_plugins['wp-term-order/wp-term-order.php']             = $timestamp;
 	$network_wide_plugins['wp-term-colors/wp-term-colors.php']           = $timestamp;
-	$network_wide_plugins['wp-reset-filters/wp-reset-filter.php']        = $timestamp;
+	$network_wide_plugins['wp-reset-filters/wp-reset-filters.php']       = $timestamp;
 	$network_wide_plugins['wp-session-manager/wp-session-manager.php']   = $timestamp;
 	$network_wide_plugins['wp-spider-cache/wp-spider-cache.php']         = $timestamp;
 	$network_wide_plugins['wp-user-activity/wp-user-activity.php']       = $timestamp;
