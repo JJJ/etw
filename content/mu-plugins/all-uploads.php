@@ -37,10 +37,10 @@ function flox_nfs_uploads( $attr = array() ) {
 	// Multisite is stupid
 	return array(
 		'path'    => '/srv/www/easttroyweb/public/content/uploads' . $multisite_dir . $attr['subdir'],
-		'url'     => 'https://' . $site_url . $multisite_dir . $attr['subdir'],
+		'url'     => $site_url . '/content/uploads' . $multisite_dir . $attr['subdir'],
 		'subdir'  => $attr['subdir'],
 		'basedir' => '/srv/www/easttroyweb/public/content/uploads' . $multisite_dir,
-		'baseurl' => 'https://' . $site_url . $multisite_dir,
+		'baseurl' => $site_url . '/content/uploads' . $multisite_dir,
 		'error'   => false
 	);
 }
