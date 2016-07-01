@@ -21,6 +21,7 @@ function network_exists( $network_id ) {
 	return wp_get_network( $network_id );
 }
 
+if ( ! function_exists( 'get_networks' ) ) :
 /**
  * Get all networks
  *
@@ -33,6 +34,7 @@ function get_networks() {
 
 	return $wpdb->get_results( "SELECT * FROM {$wpdb->site}" );
 }
+endif;
 
 /**
  *
