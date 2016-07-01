@@ -33,6 +33,9 @@ function flox_get_default_network_options() {
 	$network_wide_plugins['wp-session-manager/wp-session-manager.php']   = $timestamp;
 	$network_wide_plugins['wp-spider-cache/wp-spider-cache.php']         = $timestamp;
 	$network_wide_plugins['wp-user-activity/wp-user-activity.php']       = $timestamp;
+	$network_wide_plugins['wp-user-avatars/wp-user-avatars.php']         = $timestamp;
+	$network_wide_plugins['wp-user-groups/wp-user-groups.php']           = $timestamp;
+	$network_wide_plugins['wp-user-profiles/wp-user-profiles.php']       = $timestamp;
 
 	return array(
 
