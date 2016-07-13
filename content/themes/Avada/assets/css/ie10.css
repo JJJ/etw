@@ -1,0 +1,5 @@
+.search input{padding-left:5px;}
+#header .tagline{margin-top:3px !important;}
+
+.fusion-body .fusion-header-shadow:after { z-index: 99 !important; }
+.fusion-body.side-header #side-header.header-shadow:after { z-index: 0 !important; }

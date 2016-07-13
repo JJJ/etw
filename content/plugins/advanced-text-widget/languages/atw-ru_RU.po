@@ -1,0 +1,215 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Advanced Text Widget PRO\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-02 18:58-0700\n"
+"PO-Revision-Date: 2011-11-02 18:58-0700\n"
+"Last-Translator: Max Chirkov <max.chirkov@gmail.com>\n"
+"Language-Team:  <max.chirkov@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro\n"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:27
+msgid "Advanced text widget with PHP code support."
+msgstr "Расширенный текст виджет с поддержкой PHP кода."
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:33
+msgid "Advanced Text"
+msgstr "Расширенный текст виджет"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:42
+msgid "Title above the widget"
+msgstr "Название над виджетом"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:42
+msgid "Title:"
+msgstr "Название:"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:43
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:44
+msgid "PHP Code (MUST be enclosed in &lt;?php and ?&gt; tags!):"
+msgstr "PHP Код (должен быть заключен в &lt;?php и ?&gt; тэги!):"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:139
+msgid "Widget Visibility:"
+msgstr "Условия отображения виджета:"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:140
+msgid "Show only on specified page(s)/post(s)/category. Default is All"
+msgstr "Отображать только на указанных страницах/постах/категориях и т.д. По умолчанию \"везде\"."
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:142
+msgid "Show"
+msgstr "Отображать"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:143
+msgid "Do NOT show"
+msgstr "Не Отображать"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:144
+msgid "on"
+msgstr "на"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:160
+msgid "Optional limitation to specific page, post or category. Use ID, slug or title."
+msgstr ""
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:160
+msgid "Slug/Title/ID:"
+msgstr "Слаг/Название/ID:"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:164
+msgid "<p>In <strong>Post In Category</strong> add one or more cat. IDs (not Slug or Title) comma separated!</p>"
+msgstr ""
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:167
+msgid "Do not output widget title in the front-end."
+msgstr "Не выводить название виджета на экран."
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/advancedtext.php:168
+msgid "Suppress Title Output"
+msgstr "Не выводить название виджета на экран"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:68
+msgid "Advanced Text Widget Options"
+msgstr "Расширенный Текст Виджет: Опции"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:111
+msgid "Add New Condition"
+msgstr "Добавить Условие"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:116
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:136
+#, php-format
+msgid "Name %d"
+msgstr "Название Условия %d"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:122
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:143
+#, php-format
+msgid "Code %d"
+msgstr "Код Условия %d"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:185
+msgid "Widget Visibility Conditions"
+msgstr "Условия Отображения Виджета"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:194
+#, php-format
+msgid "Check out <a href=\"%s\" target=\"_blank\"><strong>Advanced Text Widget PRO!</strong></a> - it's inexpensive and comes with great features."
+msgstr "Посмотрите <a href=\"%s\" target=\"_blank\"><strong>Расширенный Текст Виджет ПРО!</strong></a> - не дорогой, но богатый опциами плагин."
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/options/options.php:196
+msgid "Get Advanced Text Widget PRO!"
+msgstr "Расширенный Текст Виджет ПРО: Опции"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:6
+msgid "ATW PRO Plugin"
+msgstr "РТВ Про"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:7
+msgid "Advanced Text Widget PRO: Options"
+msgstr "Расширенный Текст Виджет Про: Опции"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:32
+msgid "Apply visibility conditions only to Advanced Text Widget"
+msgstr "Применить условия отображения только к Расширенному Текст Виджету"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:37
+msgid "Export Settings"
+msgstr "Экспорт Настроек"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:40
+msgid "Export"
+msgstr "Экспорт"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:43
+msgid "Import Settings"
+msgstr "Импорт Настроек"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:46
+msgid "Import"
+msgstr "Импорт"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/pro/functions.php:57
+msgid "Misc. Settings"
+msgstr "Дополнительные  Настройки"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:210
+msgid "Settings"
+msgstr "Настройки"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:676
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:702
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:715
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:739
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:743
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:758
+msgid "Save Options"
+msgstr "Сохранить"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:830
+msgid "Help us spread the word :)"
+msgstr "Поделитесь с другими :)"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:834
+msgid "Link to it or blog about the plugin, so other users can find out about it."
+msgstr "Упомяните в своем блоге чтобы и другие могли воспользоваться."
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:835
+#, php-format
+msgid "Give it a good rating on <a href=\"%s\">WordPress.org</a>"
+msgstr "Поставьте плагину оценку на <a href=\"%s\">WordPress.org</a>"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:837
+msgid "Like this plugin?"
+msgstr "Вам Нравится Плагин?"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:844
+msgid "Help us make it better:"
+msgstr "Помогите нам улучшить плагин:"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:846
+msgid "Ask for help"
+msgstr "Форум Помощи"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:847
+msgid "Report a bug"
+msgstr "Ошибки"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:848
+msgid "Suggest improvements or new features"
+msgstr "Предлагайте идеи по усовершенстованию"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:851
+msgid "Need support?"
+msgstr "Нуждаетесь в Поддержке?"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:856
+msgid "Official Plugin Page"
+msgstr "Официальная Страничка"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:857
+#, php-format
+msgid "Designed by <a href=\"%s\"> Max Chirkov</a>"
+msgstr "Разработчик <a href=\"%s\"> Макс Чирков</a>"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:858
+#, php-format
+msgid "Sponsored by %s"
+msgstr "Спонсор %s"
+
+#: /home/max/www/sh/wp-content/plugins/advanced-text-widget-pro/lib/wp_plugin_admin.php:860
+msgid "Credits"
+msgstr "Разработчики"
+
+#~ msgid "ATW Plugin"
+#~ msgstr "РТВ Плагин"

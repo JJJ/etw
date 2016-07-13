@@ -1,0 +1,2713 @@
+/* =================================================================================================
+AVADA DYNAMIC STYLES FOR THEME OPTIONS
+
+IMPORTANT: DON'T EDIT THIS FILE, PLEASE USE CHILD THEME TO ADD CUSTOM CSS
+----------------------------------------------------------------------------------------------------
+Table of Contents
+----------------------------------------------------------------------------------------------------
+	01 Woocommerce - Default Styling
+	02 RTL
+	03 dynamic_css.php
+	04 Headings
+	05 Header Styles
+	06 Main Menu Styles
+	07 Secondary Menu Styles
+	08 Common Menu Styles
+	09 Megamenu Styles
+	10 Sticky Header Styles
+	11 Mobile Menu Styles
+	13 Media
+	14 iPad Portrait
+	15 Shortcodes
+	16 Social Links
+	17 Woocommerce - Dynamic Styling
+================================================================================================= */
+
+// Theme Variables
+@import "../variables.less";
+
+
+& when (@is-woocommerce = 1) {
+	/* Woocommerce - Default Styling
+	================================================================================================= */
+	@import "wpless_woocommerce.less";
+}
+
+& when (@is-rtl = 1) {
+	/* RTL
+	================================================================================================= */
+	@import "wpless_rtl.less";
+}
+
+/* dynamic_css.php
+================================================================================================= */
+
+& when (@disable-smooth-scrolling = 0) {
+	@media only screen and ( min-width: 800px  ) {
+		body {
+			padding-right: 9px;
+		}
+
+		#slidingbar-area {
+			right: 9px;
+		}
+	}
+}
+
+html, body, html body.custom-background, .woocommerce-tabs > .tabs .active a { background-color: @content-bg-color; }
+
+& when (@page-layout = Wide) {
+	html, body, html body.custom-background, .woocommerce-tabs > .tabs .active a { background-color: @content-bg-color; }
+}
+
+& when (@page-layout = Boxed) {
+	html, body, html body.custom-background, .woocommerce-tabs > .tabs .active a { background-color: @bg-color; }
+}
+
+& when not (ispercentage(@site-width)) {
+	.fusion-secondary-header, .sticky-header .sticky-shadow, .tfs-slider .slide-content, .header-v4 #small-nav, .header-v5 #small-nav, .fusion-footer-copyright-area, .fusion-footer-widget-area, #slidingbar, .fusion-page-title-bar{ padding-left: 30px; padding-right: 30px; }		
+	#main { padding-left: 30px; padding-right: 30px; }
+	.width-100 .fullwidth-box, .width-100 .fusion-section-separator {
+		padding-left: 30px;
+		padding-right: 30px;
+	}
+	.width-100 .fullwidth-box, .width-100 .fusion-section-separator {
+		margin-left: -30px;
+		margin-right: -30px;
+	}
+
+	& when (@responsive = 1) {
+		@media only screen and (max-width: 800px ) {
+			.fusion-mobile-menu-design-modern .fusion-secondary-header { padding-left: 0 !important; padding-right: 0 !important; }
+			#side-header{width:auto;}
+		}
+	}
+
+	@media only screen and (max-width: @site-width) {
+		.width-100#main { padding-left: 30px !important; padding-right: 30px !important; }
+		.width-100 .fullwidth-box, .width-100 .fusion-section-separator {
+			padding-left: 30px !important;
+			padding-right: 30px !important;
+		}
+		.width-100 .fullwidth-box, .width-100 .fusion-section-separator {
+			margin-left: -30px !important;
+			margin-right: -30px !important;
+		}
+	}
+}
+
+.fusion-mobile-menu-design-modern .fusion-mobile-nav-holder li a { padding-left: 30px; padding-right: 30px; }
+
+
+.fusion-mobile-menu-design-modern {
+	.fusion-mobile-nav-holder {
+		.fusion-mobile-nav-item {
+			.fusion-open-submenu { padding-right: 35px; }
+			a { padding-left: 30px; padding-right: 30px; }
+			li a { padding-left: 42px; }
+			li li a { padding-left: 55px; }
+			li li li a { padding-left: 68px; }
+			li li li li a { padding-left: 81px; }
+		}
+	}
+
+	.rtl & {
+		.fusion-mobile-nav-holder {
+			.fusion-mobile-nav-item {
+				.fusion-open-submenu { padding-left: 30px; padding-right: 15px; }
+				a { padding-left: 30px; padding-right: 30px; }
+				li a { padding-left: 0; padding-right: 42px; }
+				li li a { padding-left: 0; padding-right: 55px;	}
+				li li li a { padding-left: 0; padding-right: 68px; }
+				li li li li a { padding-left: 0; padding-left: 81px; }
+			}
+		}
+	}
+}
+
+& when (@responsive = 1) {
+	@media only screen and (min-width: ( 850px + @side-header-width ) ) and (max-width: ( 930px + @side-header-width ) ) {
+		.grid-layout-6 .fusion-post-grid,
+		.fusion-portfolio-six .fusion-portfolio-post {
+			width: 20% !important;
+		}
+
+		.grid-layout-5 .fusion-post-grid,
+		.fusion-portfolio-five .fusion-portfolio-post {
+			width: 25% !important;
+		}
+	}
+
+	@media only screen and (min-width: 800px ) and (max-width: ( 850px + @side-header-width ) ) {
+		.grid-layout-6 .fusion-post-grid,
+		.fusion-portfolio-six .fusion-portfolio-post {
+			width: 25% !important;
+		}
+
+		.grid-layout-5 .fusion-post-grid,
+		.fusion-portfolio-five .fusion-portfolio-post {
+			width: 33.3333333333% !important;
+		}
+
+		.grid-layout-4 .fusion-post-grid,
+		.fusion-portfolio-four .fusion-portfolio-post {
+			width: 33.3333333333% !important;
+		}
+	}
+
+	@media only screen and (min-width: 700px ) and (max-width: 800px ) {
+		.fusion-blog-layout-grid-6 .fusion-post-grid,
+		.fusion-portfolio-six .fusion-portfolio-post {
+			width: 33.3333333333% !important;
+		}
+
+		.fusion-blog-layout-grid-5 .fusion-post-grid,
+		.fusion-blog-layout-grid-4 .fusion-post-grid,
+		.fusion-blog-layout-grid-3 .fusion-post-grid,
+		.fusion-portfolio-five .fusion-portfolio-post,
+		.fusion-portfolio-four .fusion-portfolio-post,
+		.fusion-portfolio-three .fusion-portfolio-post,
+		.fusion-portfolio-masonry .fusion-portfolio-post {
+			width: 50% !important;
+		}
+	}
+
+	@media only screen and (min-width: 640px ) and ( max-width: 700px ) {
+		.fusion-blog-layout-grid-6 .fusion-post-grid,
+		.fusion-blog-layout-grid-5 .fusion-post-grid,
+		.fusion-blog-layout-grid-4 .fusion-post-grid,
+		.fusion-blog-layout-grid-3 .fusion-post-grid,
+		.fusion-portfolio-six .fusion-portfolio-post,
+		.fusion-portfolio-five .fusion-portfolio-post,
+		.fusion-portfolio-four .fusion-portfolio-post,
+		.fusion-portfolio-three .fusion-portfolio-post,
+		.fusion-portfolio-masonry .fusion-portfolio-post {
+			width: 50% !important;
+		}
+	}
+
+	@media only screen and (max-width: 640px ) {
+		.fusion-blog-layout-grid .fusion-post-grid,
+		.fusion-portfolio-post {
+			width: 100% !important;
+		}			
+	}
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1366px) and (orientation: portrait) {
+		.fusion-blog-layout-grid-6 .fusion-post-grid,
+		.fusion-portfolio-six .fusion-portfolio-post {
+			width: 33.3333333333% !important;
+		}
+
+		.fusion-blog-layout-grid-5 .fusion-post-grid,
+		.fusion-blog-layout-grid-4 .fusion-post-grid,
+		.fusion-blog-layout-grid-3 .fusion-post-grid,
+		.fusion-portfolio-five .fusion-portfolio-post,
+		.fusion-portfolio-four .fusion-portfolio-post,
+		.fusion-portfolio-three .fusion-portfolio-post,
+		.fusion-portfolio-masonry .fusion-portfolio-post {
+			width: 50% !important;
+		}
+
+		& when ( @footer-parallax-and-bg-image = 1 ) {
+			.fusion-body #wrapper{ background-color: transparent; }
+		}
+	}
+	
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape){
+		& when ( @footer-parallax-and-bg-image = 1 ) {
+			.fusion-body #wrapper{ background-color: transparent; }
+		}	
+	}
+}
+
+a:hover, .tooltip-shortcode {
+	color: @primary-color;
+}
+.fusion-footer-widget-area ul li a:hover,
+.fusion-footer-widget-area .fusion-tabs-widget .tab-holder .news-list li .post-holder a:hover,
+.fusion-footer-widget-area .fusion-accordian .panel-title a:hover,
+#slidingbar-area ul li a:hover,
+#slidingbar-area .fusion-accordian .panel-title a:hover,
+.fusion-filters .fusion-filter.fusion-active a,
+.project-content .project-info .project-info-box a:hover,
+#main .post h2 a:hover,
+#main .about-author .title a:hover,
+span.dropcap,.fusion-footer-widget-area a:hover,#slidingbar-area a:hover,.fusion-copyright-notice a:hover,
+.sidebar .widget_categories li a:hover,
+.sidebar .widget li a:hover,
+.fusion-date-and-formats .fusion-format-box i,
+h5.toggle:hover a,
+.tooltip-shortcode,.content-box-percentage,
+.fusion-popover,
+.woocommerce .address .edit:hover:after,
+.my_account_orders .order-actions a:hover:after,
+.more a:hover:after,.fusion-read-more:hover:after,.pagination-prev:hover:before,.pagination-next:hover:after,.bbp-topic-pagination .prev:hover:before,.bbp-topic-pagination .next:hover:after,
+.single-navigation a[rel=prev]:hover:before,.single-navigation a[rel=next]:hover:after,
+.sidebar .widget_nav_menu li a:hover:before,.sidebar .widget_categories li a:hover:before,
+.sidebar .widget .recentcomments:hover:before,.sidebar .widget_recent_entries li a:hover:before,
+.sidebar .widget_archive li a:hover:before,.sidebar .widget_pages li a:hover:before,
+.sidebar .widget_links li a:hover:before,.side-nav .arrow:hover:after,.woocommerce-tabs .tabs a:hover .arrow:after,
+#wrapper .jtwt .jtwt_tweet a:hover,
+.star-rating:before,.star-rating span:before,.price ins .amount, .avada-order-details .shop_table.order_details tfoot tr:last-child .amount,
+.price > .amount,.woocommerce-pagination .prev:hover,.woocommerce-pagination .next:hover,.woocommerce-pagination .prev:hover:before,.woocommerce-pagination .next:hover:after,
+.woocommerce-tabs .tabs li.active a,.woocommerce-tabs .tabs li.active a .arrow:after,
+#wrapper .cart-checkout a:hover,#wrapper .cart-checkout a:hover:before,
+.widget_shopping_cart_content .total .amount,.widget_layered_nav li a:hover:before,
+.widget_product_categories li a:hover:before,.woocommerce-side-nav li.active a,.woocommerce-side-nav li.active a:after,.my_account_orders .order-number a,.shop_table .product-subtotal .amount,
+.cart_totals .order-total .amount,.checkout .shop_table tfoot .order-total .amount,#final-order-details .mini-order-details tr:last-child .amount,.rtl .more a:hover:before,.rtl .fusion-read-more:hover:before,#wrapper .sidebar .current_page_item > a,#wrapper .sidebar .current-menu-item > a,#wrapper .sidebar .current_page_item > a:before,#wrapper .sidebar .current-menu-item > a:before,#wrapper .fusion-footer-widget-area .current_page_item > a,#wrapper .fusion-footer-widget-area .current-menu-item > a,#wrapper .fusion-footer-widget-area .current_page_item > a:before,#wrapper .fusion-footer-widget-area .current-menu-item > a:before,#wrapper #slidingbar-area .current_page_item > a,#wrapper #slidingbar-area .current-menu-item > a,#wrapper #slidingbar-area .current_page_item > a:before,#wrapper #slidingbar-area .current-menu-item > a:before,.side-nav ul > li.current_page_item > a,.side-nav li.current_page_ancestor > a,
+.gform_wrapper span.ginput_total,.gform_wrapper span.ginput_product_price,.ginput_shipping_price,
+.bbp-topics-front ul.super-sticky a:hover, .bbp-topics ul.super-sticky a:hover, .bbp-topics ul.sticky a:hover, .bbp-forum-content ul.sticky a:hover, .fusion-accordian .panel-title a:hover{
+	color: @primary-color;
+}
+.fusion-content-boxes .heading-link:hover h2 {
+	color: @primary-color !important;
+}
+.fusion-content-boxes .heading-link:hover .icon i.circle-yes, .fusion-accordian .panel-title a:hover .fa-fusion-box {
+	background-color: @primary-color !important;
+	border-color: @primary-color !important;
+}
+
+.sidebar .fusion-image-wrapper .fusion-rollover .fusion-rollover-content a:hover { color: #333333; }
+.star-rating:before,.star-rating span:before {
+	color: @primary-color;
+}
+.tagcloud a:hover,#slidingbar-area .tagcloud a:hover,.fusion-footer-widget-area .tagcloud a:hover{ color: #FFFFFF; text-shadow: none; -moz-text-shadow: none; -webkit-text-shadow: none; }
+
+.reading-box,
+.fusion-filters .fusion-filter.fusion-active a,
+#wrapper .fusion-tabs-widget .tab-holder .tabs li.active a,
+#wrapper .post-content blockquote,
+.progress-bar-content,
+.pagination .current,
+.bbp-topic-pagination .current,
+.pagination a.inactive:hover,
+.woocommerce-pagination .page-numbers.current,
+.woocommerce-pagination .page-numbers:hover,
+#nav ul li > a:hover,#sticky-nav ul li > a:hover,.woocommerce-pagination .current,
+.tagcloud a:hover,
+#bbpress-forums div.bbp-topic-tags a:hover,
+#wrapper .fusion-tabs.classic .nav-tabs > li.active .tab-link:hover, #wrapper .fusion-tabs.classic .nav-tabs > li.active .tab-link:focus, #wrapper .fusion-tabs.classic .nav-tabs > li.active .tab-link,#wrapper .fusion-tabs.vertical-tabs.classic .nav-tabs > li.active .tab-link {
+	border-color: @primary-color;
+}
+#wrapper .side-nav li.current_page_item a{
+	border-right-color: @primary-color;
+	border-left-color: @primary-color;
+}
+.fusion-accordian .panel-title .active .fa-fusion-box,
+ul.circle-yes li:before,
+.circle-yes ul li:before,
+.progress-bar-content,
+.pagination .current,
+.bbp-topic-pagination .current,
+.fusion-date-and-formats .fusion-date-box,.table-2 table thead,
+.onsale,.woocommerce-pagination .current,
+.woocommerce .social-share li a:hover i,
+.price_slider_wrapper .ui-slider .ui-slider-range,
+.tagcloud a:hover,.cart-loading,
+#toTop:hover,
+#bbpress-forums div.bbp-topic-tags a:hover,
+#wrapper .search-table .search-button input[type="submit"]:hover,
+ul.arrow li:before,
+p.demo_store,
+.avada-myaccount-data .digital-downloads li:before, .avada-thank-you .order_details li:before,
+.sidebar .widget_layered_nav li.chosen, .sidebar .widget_layered_nav_filters li.chosen {
+	background-color: @primary-color;
+}
+.woocommerce .social-share li a:hover i {
+	border-color: @primary-color;
+}
+.bbp-topics-front ul.super-sticky, .bbp-topics ul.super-sticky, .bbp-topics ul.sticky, .bbp-forum-content ul.sticky	{
+	background-color: #ffffe8;
+	opacity: 1;
+}
+
+@slidingbar-rgba: @slidingbar-bg-color;
+
+#slidingbar {
+	background-color: @slidingbar-bg-color;
+	background-color: @slidingbar-rgba;
+}
+.sb-toggle-wrapper {
+	border-top-color: @slidingbar-bg-color;
+	border-top-color: @slidingbar-rgba;
+}
+#wrapper #slidingbar-area .fusion-tabs-widget .tab-holder .tabs li {
+	border-color: @slidingbar-bg-color;
+	border-color: @slidingbar-rgba;
+}
+
+& when (@slidingbar-top-border = 1) {
+	.fusion-header-wrapper { margin-top: 3px; }
+	.admin-bar p.demo_store { padding-top: 13px; }
+	#slidingbar-area {
+		border-bottom: 3px solid @slidingbar-bg-color;
+		border-bottom: 3px solid @slidingbar-rgba;
+	}
+}
+
+& when (@page-layout = Boxed) and not (@header-position = Top)  {
+	.side-header-right #slidingbar-area, .side-header-left #slidingbar-area { top: auto; }	
+}
+
+#main,#wrapper,
+.fusion-separator .icon-wrapper, html, body, .bbp-arrow, .woocommerce-tabs > .tabs .active a { background-color: @content-bg-color; }
+
+.fusion-footer-widget-area{
+	background-color: @footer-bg-color;
+}
+#wrapper .fusion-footer-widget-area .fusion-tabs-widget .tab-holder .tabs li {
+	border-color: @footer-bg-color;
+}
+
+.fusion-footer-widget-area{
+	border-color: @footer-border-color;
+}
+
+.fusion-footer-copyright-area{
+	background-color: @copyright-bg-color;
+}
+
+.fusion-footer-copyright-area{
+	border-color: @copyright-border-color;
+}
+
+.sep-boxed-pricing .panel-heading{
+	background-color: @pricing-box-color;
+	border-color: @pricing-box-color;
+}
+.fusion-pricing-table .panel-body .price .integer-part, .fusion-pricing-table .panel-body .price .decimal-part,
+.full-boxed-pricing.fusion-pricing-table .standout .panel-heading h3{
+	color: @pricing-box-color;
+}
+
+@image-rollover-top-rgba: @image-rollover-gradient-top-color;
+@image-rollover-bottom-rgba: @image-rollover-gradient-bottom-color;
+
+.fusion-image-wrapper .fusion-rollover{
+	background-image: linear-gradient(top, @image-rollover-top-rgba 0%, @image-rollover-bottom-rgba 100%);
+	background-image: -o-linear-gradient(top, @image-rollover-top-rgba 0%, @image-rollover-bottom-rgba 100%);
+	background-image: -moz-linear-gradient(top, @image-rollover-top-rgba 0%, @image-rollover-bottom-rgba 100%);
+	background-image: -webkit-linear-gradient(top, @image-rollover-top-rgba 0%, @image-rollover-bottom-rgba 100%);
+	background-image: -ms-linear-gradient(top, @image-rollover-top-rgba 0%, @image-rollover-bottom-rgba 100%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		color-stop(0, @image-rollover-top-rgba),
+		color-stop(1, @image-rollover-bottom-rgba)
+	);
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{image-rollover-gradient-top-color}', endColorstr='@{image-rollover-gradient-bottom-color}'), progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+}
+.no-cssgradients .fusion-image-wrapper .fusion-rollover{
+	background: @image-rollover-gradient-top-color;
+}
+.fusion-image-wrapper:hover .fusion-rollover {
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{image-rollover-gradient-top-color}', endColorstr='@{image-rollover-gradient-bottom-color}'), progid: DXImageTransform.Microsoft.Alpha(Opacity=100)";
+}
+
+.fusion-portfolio-one .fusion-button,
+#main .comment-submit,
+#reviews input#submit,
+.comment-form input[type="submit"],
+.wpcf7-form input[type="submit"],.wpcf7-submit,
+.bbp-submit-wrapper .button,
+.button-default,
+.fusion-button-default,
+.button.default,
+.price_slider_amount button,
+.gform_wrapper .gform_button,
+.woocommerce .single_add_to_cart_button,
+.woocommerce button.button,
+.woocommerce .shipping-calculator-form .button,
+.woocommerce .checkout #place_order,
+.woocommerce .checkout_coupon .button,
+.woocommerce .login .button,
+.woocommerce .register .button,
+.woocommerce .avada-order-details .order-again .button,
+.woocommerce .avada-order-details .order-again .button,
+.woocommerce .lost_reset_password input[type=submit],
+#bbp_user_edit_submit,
+.ticket-selector-submit-btn[type=submit],
+.gform_page_footer input[type=button]{
+	background: @button-gradient-top-color;
+	color: @button-accent-color;
+	
+	background-image: -webkit-gradient( linear, left bottom, left top, from( @button-gradient-bottom-color ), to( @button-gradient-top-color ) );
+	background-image: -webkit-linear-gradient( bottom,@button-gradient-bottom-color, @button-gradient-top-color );
+	background-image:	-moz-linear-gradient( bottom, @button-gradient-bottom-color, @button-gradient-top-color );
+	background-image:	  -o-linear-gradient( bottom, @button-gradient-bottom-color, @button-gradient-top-color );
+	background-image: linear-gradient( to top, @button-gradient-bottom-color, @button-gradient-top-color );	
+
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{button-gradient-top-color}', endColorstr='@{button-gradient-bottom-color}')";
+	
+	-webkit-transition: all .2s;
+	-moz-transition: all .2s;
+	-ms-transition: all .2s;	
+	-o-transition: all .2s;
+	transition: all .2s;	
+}
+.no-cssgradients .fusion-portfolio-one .fusion-button,
+.no-cssgradients #main .comment-submit,
+.no-cssgradients #reviews input#submit,
+.no-cssgradients .comment-form input[type="submit"],
+.no-cssgradients .wpcf7-form input[type="submit"],
+.no-cssgradients .wpcf7-submit,
+.no-cssgradients .bbp-submit-wrapper .button,
+.no-cssgradients .button-default,
+.no-cssgradients .fusion-button-default,
+.no-cssgradients .button.default,
+.no-cssgradients .price_slider_amount button,
+.no-cssgradients .gform_wrapper .gform_button,
+.no-cssgradients .woocommerce .single_add_to_cart_button,
+.no-cssgradients .woocommerce button.button,
+.no-cssgradients .woocommerce .shipping-calculator-form .button,
+.no-cssgradients .woocommerce .checkout #place_order,
+.no-cssgradients .woocommerce .checkout_coupon .button,
+.no-cssgradients .woocommerce .login .button,
+.no-cssgradients .woocommerce .register .button,
+.no-cssgradients .woocommerce .avada-order-details .order-again .button
+.no-cssgradients .woocommerce .lost_reset_password input[type=submit],
+.no-cssgradients #bbp_user_edit_submit,
+.no-cssgradients .ticket-selector-submit-btn[type=submit],
+.no-cssgradients .gform_page_footer input[type=button]{
+	background: @button-gradient-top-color;
+}
+.fusion-portfolio-one .fusion-button:hover,
+#main .comment-submit:hover,
+#reviews input#submit:hover,
+.comment-form input[type="submit"]:hover,
+.wpcf7-form input[type="submit"]:hover,.wpcf7-submit:hover,
+.bbp-submit-wrapper .button:hover,
+.button-default:hover,
+.fusion-button-default:hover,
+.button.default:hover,
+.price_slider_amount button:hover,
+.gform_wrapper .gform_button:hover,
+.woocommerce .single_add_to_cart_button:hover,
+.woocommerce .shipping-calculator-form .button:hover,
+.woocommerce .checkout #place_order:hover,
+.woocommerce .checkout_coupon .button:hover,
+.woocommerce .login .button:hover,
+.woocommerce .register .button:hover,
+.woocommerce .avada-order-details .order-again .button:hover,
+.woocommerce .lost_reset_password input[type=submit]:hover,
+#bbp_user_edit_submit:hover,
+.ticket-selector-submit-btn[type=submit]:hover,
+.gform_page_footer input[type=button]:hover{
+	background: @button-gradient-top-hover-color;
+	color: @button-accent-hover-color;
+		
+	background-image: -webkit-gradient( linear, left bottom, left top, from( @button-gradient-bottom-hover-color ), to( @button-gradient-top-hover-color ) );
+	background-image: -webkit-linear-gradient( bottom, @button-gradient-bottom-hover-color, @button-gradient-top-hover-color );
+	background-image:	-moz-linear-gradient( bottom, @button-gradient-bottom-hover-color, @button-gradient-top-hover-color );
+	background-image:	  -o-linear-gradient( bottom, @button-gradient-bottom-hover-color, @button-gradient-top-hover-color );
+	background-image: linear-gradient( to top, @button-gradient-bottom-hover-color, @button-gradient-top-hover-color );
+
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{button-gradient-top-hover-color}', endColorstr='@{button-gradient-bottom-hover-color}')";
+}
+.no-cssgradients .fusion-portfolio-one .fusion-button:hover,
+.no-cssgradients #main .comment-submit:hover,
+.no-cssgradients #reviews input#submit:hover,
+.no-cssgradients .comment-form input[type="submit"]:hover,
+.no-cssgradients .wpcf7-form input[type="submit"]:hover,
+.no-cssgradients .wpcf7-submit:hover,
+.no-cssgradients .bbp-submit-wrapper .button:hover,
+.no-cssgradients .button-default:hover,
+.no-cssgradients .fusion-button-default:hover,
+.no-cssgradinets .button.default:hover,
+.no-cssgradients .price_slider_amount button:hover,
+.no-cssgradients .gform_wrapper .gform_button:hover,
+.no-cssgradients .woocommerce .single_add_to_cart_button:hover
+.no-cssgradients .woocommerce .shipping-calculator-form .button:hover,
+.no-cssgradients .woocommerce .checkout #place_order:hover,
+.no-cssgradients .woocommerce .checkout_coupon .button:hover,
+.no-cssgradients .woocommerce .login .button:hover,
+.no-cssgradients .woocommerce .register .button:hover,
+.no-cssgradients .woocommerce .avada-order-details .order-again .button:hover,
+.no-cssgradients .woocommerce .lost_reset_password input[type=submit]:hover,
+.no-cssgradients #bbp_user_edit_submit:hover,
+.no-cssgradients .ticket-selector-submit-btn[type=submit]:hover,
+.no-cssgradients .gform_page_footer input[type=button]:hover{
+	background: @button-gradient-top-hover-color;
+}
+
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-link, .fusion-image-wrapper .fusion-rollover .fusion-rollover-gallery { background-color: @image-rollover-text-color; }
+.fusion-rollover .fusion-rollover-content .fusion-rollover-title, 
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-title a, 
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-categories, 
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-categories a,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content a
+{ color: @image-rollover-text-color; }
+
+.fusion-page-title-bar{border-color: @page-title-bar-border-color;}
+
+& when (@page-title-bar-border-color = transparent) {
+	.fusion-page-title-bar{ border: none; }
+}
+
+& when not (@footer-sticky-height = 0) {
+	@media only screen and (min-width: 640px) {
+		html, 
+		body,
+		#boxed-wrapper,
+		#wrapper {
+			height: 100%;
+		}
+		.above-footer-wrapper {
+			min-height: 100%;
+			margin-bottom: @footer-sticky-height * (-1px);
+
+			&:after {
+				content: "";
+				display: block;
+				height: @footer-sticky-height;
+			}
+		}
+
+		.fusion-footer {
+			height: @footer-sticky-height;
+		}
+	}
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+		html, 
+		body,
+		#boxed-wrapper,
+		#wrapper {
+			height: auto;
+		}
+		
+		.above-footer-wrapper {
+			min-height: none;
+			margin-bottom: 0;
+		}
+		
+		.above-footer-wrapper:after {
+			height: auto;
+		}
+		
+		.fusion-footer {
+			height: auto;
+		}		
+	}
+	
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
+		html, 
+		body,
+		#boxed-wrapper,
+		#wrapper {
+			height: auto;
+		}
+		
+		.above-footer-wrapper {
+			min-height: none;
+			margin-bottom: 0;
+		}
+		
+		.above-footer-wrapper:after {
+			height: auto;
+		}
+		
+		.fusion-footer {
+			height: auto;
+		}			
+	}	
+}
+
+.fusion-footer-widget-area{
+	& when not (@footer-bg-image = '') {
+		background-image: url(@footer-bg-image);
+		background-repeat: @footer-bg-repeat;
+		background-position: @footer-bg-position;
+
+		& when (@footer-bg-full = 1) {
+			background-attachment:scroll;
+			background-position:center center;
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;
+		}
+	}
+
+	& when (@footer-parallax = 1) {
+		background-attachment: fixed;
+		background-position:top center;
+	}
+
+	padding-top: @footer-top-padding * 1px;
+	padding-bottom: @footer-bottom-padding * 1px;
+}
+.fusion-footer-widget-area > .fusion-row, .fusion-footer-copyright-area > .fusion-row {
+	padding-left: @footer-left-padding * 1px;
+	padding-right: @footer-right-padding * 1px;
+}
+
+& when (@footer-width-100 = 1) {
+	.layout-wide-mode .fusion-footer-widget-area > .fusion-row, .layout-wide-mode .fusion-footer-copyright-area > .fusion-row {
+		max-width: 100% !important;
+	}
+}
+
+.fusion-footer-copyright-area{
+	padding-top: @copyright-top-padding * 1px;
+	padding-bottom: @copyright-bottom-padding * 1px;
+}
+
+
+.fontawesome-icon.circle-yes{
+	background-color: @icon-circle-color;
+}
+
+.fontawesome-icon.circle-yes{
+	border-color: @icon-border-color;
+}
+
+.fontawesome-icon,
+.fontawesome-icon.circle-yes,
+.avada-myaccount-data .digital-downloads li:before,
+.avada-myaccount-data .digital-downloads li:after,
+.avada-thank-you .order_details li:before,
+.avada-thank-you .order_details li:after,
+.post-content .error-menu li:before,
+.post-content .error-menu li:after{
+	color: @icon-color;
+}
+
+.fusion-title .title-sep,.product .product-border{
+	border-color: @title-border-color;
+}
+
+.review blockquote q,.post-content blockquote,.checkout .payment_methods .payment_box{
+	background-color: @testimonial-bg-color;
+}
+.fusion-testimonials .author:after{
+	border-top-color: @testimonial-bg-color;
+}
+
+.review blockquote q,.post-content blockquote{
+	color: @testimonial-text-color;
+}
+
+
+& when (@custom-font = 1) {
+	@font-face {
+		font-family: 'MuseoSlab500Regular';
+		src: url(@custom-font-eot);
+		src:
+			url('@{custom-font-eot}?#iefix') format('eot'),
+			url(@custom-font-woff) format('woff'),
+			url(@custom-font-ttf) format('truetype'),
+			url('@{custom-font-svg}#MuseoSlab500Regular') format('svg');
+		font-weight: 400;
+		font-style: normal;
+	}
+}
+
+body, #nav ul li ul li a, #sticky-nav ul li ul li a,
+.more,
+.avada-container h3,
+.meta .fusion-date,
+.review blockquote q,
+.review blockquote div strong,
+.project-content .project-info h4,
+.post-content blockquote,
+.fusion-load-more-button,
+.ei-title h3,
+.comment-form input[type="submit"],
+.wpcf7-form input[type="submit"],
+.gform_wrapper .gform_button,
+.woocommerce-success-message .button,
+.woocommerce .single_add_to_cart_button,
+.woocommerce button.button,
+.woocommerce .shipping-calculator-form .button,
+.woocommerce .checkout #place_order,
+.woocommerce .checkout_coupon .button,
+.woocommerce .login .button,
+.woocommerce .register .button,
+.fusion-page-title-bar h3,
+.fusion-blog-shortcode .fusion-timeline-date,
+#reviews #comments > h2,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-title,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-categories,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content a,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .price,
+#wrapper #nav ul li ul li > a, #wrapper #sticky-nav ul li ul li > a,
+#bbp_user_edit_submit,
+.ticket-selector-submit-btn[type=submit],
+.gform_page_footer input[type=button]{
+	font-family: @font;
+	font-weight: @font-weight-body;
+}
+
+.avada-container h3,
+.review blockquote div strong,
+.fusion-footer-widget-area h3,
+#slidingbar-area  h3,
+.project-content .project-info h4,
+.fusion-load-more-button,
+.woocommerce .single_add_to_cart_button,
+.woocommerce button.button,
+.woocommerce .shipping-calculator-form .button,
+.woocommerce .checkout #place_order,
+.woocommerce .checkout_coupon .button,
+.woocommerce .login .button,
+.woocommerce .register .button,
+.woocommerce .avada-order-details .order-again .button,
+.comment-form input[type="submit"],
+.wpcf7-form input[type="submit"],
+.gform_wrapper .gform_button,
+#bbp_user_edit_submit,
+.ticket-selector-submit-btn[type=submit],
+.gform_page_footer input[type=button]{
+	font-weight: bold;
+}
+.meta .fusion-date,
+.review blockquote q,
+.post-content blockquote{
+	font-style: italic;
+}
+
+.side-nav li a{
+	font-family: @nav-font;
+	font-weight: @font-weight-menu;
+}
+
+& when not (@headings-font = false) {
+	#main .reading-box h2,
+	#main h2,
+	.fusion-page-title-bar h1,
+	.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-title,
+	.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-title a,
+	#main .post h2,
+	.sidebar .widget h3,
+	#wrapper .fusion-tabs-widget .tab-holder .tabs li a,
+	.share-box h4,
+	.project-content h3,
+	.fusion-author .fusion-author-title,
+	.fusion-pricing-table .title-row,
+	.fusion-pricing-table .pricing-row,
+	.fusion-person .person-desc .person-author .person-author-wrapper,
+	.fusion-accordian .panel-title,
+	.fusion-accordian .panel-heading a,
+	.fusion-tabs .nav-tabs  li .fusion-tab-heading,
+	.fusion-carousel-title,
+	.post-content h1, .post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6,
+	.ei-title h2,
+	table th,.project-content .project-info h4,
+	.woocommerce-success-message .msg,.product-title, .cart-empty,
+	.main-flex .slide-content h2, .main-flex .slide-content h3,
+	.fusion-modal .modal-title, .popover .popover-title,
+	.fusion-flip-box .flip-box-heading-back,
+	.fusion-header-tagline{
+		font-family: @headings-font;
+	}
+}
+
+#main .reading-box h2,
+#main h2,
+.fusion-page-title-bar h1,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-title,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-title a,
+#main .post h2,
+.sidebar .widget h3,
+#wrapper .fusion-tabs-widget .tab-holder .tabs li a,
+.share-box h4,
+.project-content h3,
+.fusion-author .fusion-author-title,
+.fusion-pricing-table .title-row,
+.fusion-pricing-table .pricing-row,
+.fusion-person .person-desc .person-author .person-author-wrapper,
+.fusion-accordian .panel-title,
+.fusion-accordian .panel-heading a,
+.fusion-tabs .nav-tabs  li .fusion-tab-heading,
+.fusion-carousel-title,
+.post-content h1, .post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6,
+.ei-title h2,
+table th,
+.woocommerce-success-message .msg,.product-title, .cart-empty,
+.main-flex .slide-content h2, .main-flex .slide-content h3,
+.fusion-modal .modal-title, .popover .popover-title,
+.fusion-flip-box .flip-box-heading-back,
+.fusion-header-tagline{
+	font-weight: @font-weight-headings;
+}
+
+.fusion-footer-widget-area h3,#slidingbar-area h3{
+	font-family: @footer-headings-font;
+	font-weight: @font-weight-footer-headings;
+}
+
+body,.sidebar .slide-excerpt h2, .fusion-footer-widget-area .slide-excerpt h2,#slidingbar-area .slide-excerpt h2,
+.jtwt .jtwt_tweet, .sidebar .jtwt .jtwt_tweet {
+	font-size: @body-font-size * 1px;
+	line-height: round((@body-font-size * 1.5) * 1px);
+}
+.project-content .project-info h4,.gform_wrapper label,.gform_wrapper .gfield_description,
+.fusion-footer-widget-area ul, #slidingbar-area ul, .fusion-tabs-widget .tab-holder .news-list li .post-holder a,
+.fusion-tabs-widget .tab-holder .news-list li .post-holder .meta{
+	font-size: @body-font-size * 1px;
+	line-height: round((@body-font-size * 1.5) * 1px);
+}
+.fusion-blog-layout-timeline .fusion-timeline-date { font-size: @body-font-size * 1px; }
+.counter-box-content, .fusion-alert,.fusion-progressbar .sr-only, .post-content blockquote, .review blockquote q{ font-size: @body-font-size * 1px; }
+
+body,.sidebar .slide-excerpt h2, .fusion-footer-widget-area .slide-excerpt h2,#slidingbar-area .slide-excerpt h2,.post-content blockquote, .review blockquote q{
+	line-height: @body-line-height * 1px;
+}
+.project-content .project-info h4,.fusion-accordian .panel-body, #side-header .fusion-contact-info, #side-header .header-social .top-menu {
+	line-height: @body-line-height * 1px;
+}
+
+.fusion-page-title-bar .fusion-breadcrumbs,.fusion-page-title-bar .fusion-breadcrumbs li,.fusion-page-title-bar .fusion-breadcrumbs li a{font-size: @breadcrumbs-font-size * 1px;}
+
+.side-nav li a{font-size: @side-nav-font-size * 1px;}
+
+.sidebar .widget h3{font-size: @sidebar-widget-title-font-size * 1px;}
+
+#slidingbar-area h3{font-size: @slidingbar-font-size * 1px; line-height: @slidingbar-font-size * 1px;}
+
+.fusion-footer-widget-area h3{font-size: @footer-widget-title-font-size * 1px; line-height: @footer-widget-title-font-size * 1px;}
+
+.fusion-copyright-notice{font-size: @copyright-font-size * 1px;}
+
+#main .fusion-row, .fusion-footer-widget-area .fusion-row,#slidingbar-area .fusion-row, .fusion-footer-copyright-area .fusion-row, .fusion-page-title-row, .tfs-slider .slide-content-container .slide-content { max-width: @site-width; }
+
+& when not (@responsive = 1) {
+	& when (@header-position = Top) {
+		html,body { overflow-x: hidden; }
+	}
+	& when not (@header-position = Top) {
+		.ua-mobile #wrapper { width: auto !important; }
+	}
+
+
+	@media screen and (max-width: 800px ) {
+		.fullwidth-box { background-attachment: scroll !important; }
+		.no-mobile-totop .to-top-container {display: none;}
+		.no-mobile-slidingbar #slidingbar-area{display:none;}
+	}
+	
+	@media screen and (max-width: 782px ) {
+		body.admin-bar #wrapper #slidingbar-area, .admin-bar p.demo_store {
+			top: 46px;
+		}
+		body.body_blank.admin-bar {
+			top: 45px;
+		}
+		html #wpadminbar {
+			z-index: 99999 !important;
+			position: fixed !important;
+		}
+	}
+		
+	@media only screen and (min-device-width: 320px) and (max-device-width: 640px){
+		.fullwidth-box { background-attachment: scroll !important; }
+		.no-mobile-totop .to-top-container {display: none;}
+		.no-mobile-slidingbar #slidingbar-area{display:none;}	
+	}
+
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait){
+		.fullwidth-box { background-attachment: scroll !important; }
+	}
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape){
+		.fullwidth-box { background-attachment: scroll !important; }
+	}
+}
+
+.post-content h1{
+	font-size: @h1-font-size * 1px;
+	line-height: @h1-line-height * 1px;
+}
+
+#wrapper .post-content h2,#wrapper .fusion-title h2,#wrapper #main .post-content .fusion-title h2,#wrapper .title h2,#wrapper #main .post-content .title h2,#wrapper  #main .post h2, #wrapper  #main .post h2, #wrapper .woocommerce .checkout h3, #main .fusion-portfolio h2, h2.entry-title {
+	font-size: @h2-font-size * 1px;
+	line-height: round((@h2-font-size * 1.5) * 1px);
+}
+
+#wrapper .post-content h2,#wrapper .fusion-title h2,#wrapper #main .post-content .fusion-title h2,#wrapper .title h2,#wrapper #main .post-content .title h2,#wrapper #main .post h2, #wrapper  .woocommerce .checkout h3, .cart-empty, #main .fusion-portfolio h2, h2.entry-title{
+	line-height: @h2-line-height * 1px;
+}
+
+.post-content h3,.project-content h3,.product-title{
+	font-size:  @h3-font-size * 1px;
+	line-height: round((@h3-font-size * 1.5) * 1px);
+}
+p.demo_store,.fusion-modal .modal-title { font-size: @h3-font-size * 1px; }
+
+.post-content h3,.project-content h3,.product-title{
+	line-height:  @h3-line-height * 1px;
+}
+
+
+.post-content h4, .fusion-portfolio-post .fusion-portfolio-content h4, 
+.fusion-rollover .fusion-rollover-content .fusion-rollover-title,
+.fusion-person .person-author-wrapper .person-name, .fusion-person .person-author-wrapper .person-title, .fusion-carousel-title
+{
+	font-size: @h4-font-size * 1px;
+	line-height: round((@h4-font-size * 1.5) * 1px);
+}
+#wrapper .fusion-tabs-widget .tab-holder .tabs li a,.person-author-wrapper, #reviews #comments > h2,
+.popover .popover-title,.fusion-flip-box .flip-box-heading-back{
+	font-size: @h4-font-size * 1px;
+}
+.fusion-accordian .panel-title,.fusion-sharing-box h4,
+.fusion-tabs .nav-tabs > li .fusion-tab-heading
+{font-size: @h4-font-size * 1px;}
+
+.post-content h4, #reviews #comments > h2, .fusion-portfolio-post .fusion-portfolio-content h4, 
+.fusion-sharing-box h4, .fusion-rollover-content .fusion-rollover-title,
+.fusion-person .person-author-wrapper .person-name, .fusion-person .person-author-wrapper .person-title, .fusion-carousel-title {
+	line-height: @h4-line-height * 1px;
+}
+
+.post-content h5{
+	font-size: @h5-font-size * 1px;
+	line-height: @h5-line-height * 1px;
+}
+
+.post-content h6{
+	font-size: @h6-font-size * 1px;
+	line-height: @h6-line-height * 1px;
+}
+
+.ei-title h2{
+	font-size: @elasticslider-title-font-size * 1px;
+	line-height: round((@elasticslider-title-font-size * 1.5) * 1px);
+}
+
+.ei-title h3{
+	font-size: @elasticslider-caption-font-size * 1px;
+	line-height: round((@elasticslider-caption-font-size * 1.5) * 1px);
+}
+
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-categories,
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-rollover-categories a,
+.fusion-recent-posts .columns .column .meta,
+.fusion-carousel-meta,
+.fusion-single-line-meta
+{
+	font-size: @meta-font-size * 1px;
+	line-height: round((@meta-font-size * 1.5) * 1px);
+}
+.post .fusion-meta-info, .fusion-recent-posts .columns .column .meta, .post .single-line-meta, .fusion-carousel-meta { font-size: @meta-font-size * 1px; }
+
+.fusion-image-wrapper .fusion-rollover .fusion-rollover-content .fusion-product-buttons a, .product-buttons a {
+	font-size: @woo-icon-font-size * 1px;
+	line-height: round((@woo-icon-font-size * 1.5) * 1px);
+}
+
+.pagination, .page-links, .woocommerce-pagination, .pagination .pagination-next, .woocommerce-pagination .next, .pagination .pagination-prev, .woocommerce-pagination .prev { font-size: @pagination-font-size * 1px; }
+
+body,.post .post-content,.post-content blockquote,#wrapper .fusion-tabs-widget .tab-holder .news-list li .post-holder .meta,.sidebar .jtwt,#wrapper .meta,.review blockquote div,.search input,.project-content .project-info h4,.title-row,.fusion-rollover .price .amount,
+.quantity .qty,.quantity .minus,.quantity .plus,.fusion-blog-timeline-layout .fusion-timeline-date, #reviews #comments > h2,
+.sidebar .widget_nav_menu li, .sidebar .widget_categories li, .sidebar .widget_product_categories li, .sidebar .widget_meta li, .sidebar .widget .recentcomments, .sidebar .widget_recent_entries li, .sidebar .widget_archive li, .sidebar .widget_pages li, .sidebar .widget_links li, .sidebar .widget_layered_nav li, .sidebar .widget_product_categories li
+{color: @body-text-color;}
+
+.post-content h1,.title h1,.woocommerce-success-message .msg, .woocommerce-message, .fusion-post-content h1{
+	color: @h1-color;
+}
+
+#main .post h2,.post-content h2,.fusion-title h2,.title h2,.woocommerce-tabs h2,.search-page-search-form h2, .cart-empty, .woocommerce h2, .woocommerce .checkout h3, .fusion-post-content h2{
+	color: @h2-color;
+}
+
+.post-content h3,.sidebar .widget h3,.project-content h3,.fusion-title h3,.title h3,.person-author-wrapper span,.product-title, .fusion-post-content h3{
+	color: @h3-color;
+}
+
+.post-content h4,.project-content .project-info h4,.share-box h4,.fusion-title h4,.title h4,#wrapper .fusion-tabs-widget .tab-holder .tabs li a, .fusion-accordian .panel-title a, .fusion-carousel-title,
+.fusion-tabs .nav-tabs > li .fusion-tab-heading, .fusion-post-content h4 {
+	color: @h4-color;
+}
+
+.post-content h5,.fusion-title h5,.title h5, .fusion-post-content h5{
+	color: @h5-color
+}
+
+.post-content h6,.fusion-title h6,.title h6, .fusion-post-content h6{
+	color: @h6-color;
+}
+
+.fusion-page-title-bar h1, .fusion-page-title-bar h3{
+	color: @page-title-bar-color;
+}
+
+.sep-boxed-pricing .panel-heading h3{
+	color: @pricing-table-sep-heading-color;
+}
+
+.full-boxed-pricing.fusion-pricing-table .panel-heading h3{
+	color: @pricing-table-full-heading-color;
+}
+
+body a,
+body a:before,
+body a:after,
+.single-navigation a[rel="prev"]:before,
+.single-navigation a[rel="next"]:after
+{color: @link-color;}
+.project-content .project-info .project-info-box a,.sidebar .widget li a, .sidebar .widget .recentcomments, .sidebar .widget_categories li, #main .post h2 a, .about-author .title a,
+.shop_attributes tr th,.fusion-rollover a,.fusion-woo-featured-products-slider .price .amount,z.my_account_orders thead tr th,.shop_table thead tr th,.cart_totals table th,.checkout .shop_table tfoot th,.checkout .payment_methods label,#final-order-details .mini-order-details th,#main .product .product_title,.shop_table.order_details tr th,
+.widget_layered_nav li.chosen a, .widget_layered_nav li.chosen a:before,.widget_layered_nav_filters li.chosen a,.widget_layered_nav_filters li.chosen a:before,.fusion-load-more-button
+{color: @link-color}
+
+body #toTop:before {color:#fff;}
+
+.fusion-page-title-bar .fusion-breadcrumbs,.fusion-page-title-bar .fusion-breadcrumbs,.fusion-page-title-bar .fusion-breadcrumbs a{color: @breadcrumbs-text-color;}
+
+#slidingbar-area h3{color: @slidingbar-headings-color;}
+
+#slidingbar-area,#slidingbar-area .fusion-column,#slidingbar-area .jtwt,#slidingbar-area .jtwt .jtwt_tweet{color: @slidingbar-text-color;}
+
+#slidingbar-area a, #slidingbar-area .jtwt .jtwt_tweet a, #wrapper #slidingbar-area .fusion-tabs-widget .tab-holder .tabs li a, #slidingbar-area .fusion-accordian .panel-title a{color:@slidingbar-link-color;}
+
+.sidebar .widget h3, .sidebar .widget .heading h3{color: @sidebar-heading-color;}
+
+.fusion-footer-widget-area h3, .fusion-footer-widget-column .product-title{color: @footer-headings-color;}
+
+.fusion-footer-widget-area,.fusion-footer-widget-area article.col,.fusion-footer-widget-area .jtwt,.fusion-footer-widget-area .jtwt .jtwt_tweet,.fusion-copyright-notice{color: @footer-text-color;}
+
+.fusion-footer-widget-area a,.fusion-footer-widget-area .jtwt .jtwt_tweet a,#wrapper .fusion-footer-widget-area .fusion-tabs-widget .tab-holder .tabs li a,.fusion-footer-widget-area .fusion-tabs-widget .tab-holder .news-list li .post-holder a,.fusion-copyright-notice a,
+.fusion-footer-widget-area .fusion-accordian .panel-title a{color: @footer-link-color;}
+
+.ei-title h2{color: @elasticslider-title-color;}
+.ei-title h3{color: @elasticslider-caption-color;}
+
+.sep-single,.sep-double,.sep-dashed,.sep-dotted,.search-page-search-form{border-color: @sep-color;}
+.ls-avada, .avada-skin-rev,.es-carousel-wrapper.fusion-carousel-small .es-carousel ul li img,.fusion-accordian .fusion-panel,.progress-bar,
+#small-nav,.fusion-filters,.single-navigation,.project-content .project-info .project-info-box,
+.post .fusion-meta-info,.fusion-blog-layout-grid .post .post-wrapper,.fusion-blog-layout-grid .post .fusion-content-sep, 
+.fusion-portfolio .fusion-portfolio-boxed .fusion-portfolio-post-wrapper, .fusion-portfolio .fusion-portfolio-boxed .fusion-content-sep, .fusion-portfolio-one .fusion-portfolio-boxed .fusion-portfolio-post-wrapper,
+.fusion-blog-layout-grid .post .flexslider,.fusion-layout-timeline .post,.fusion-layout-timeline .post .fusion-content-sep,
+.fusion-layout-timeline .post .flexslider,.fusion-timeline-date,.fusion-timeline-arrow,
+.fusion-counters-box .fusion-counter-box .counter-box-border, tr td,
+.table, .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td,
+.table-1 table,.table-1 table th,.table-1 tr td,.tkt-slctr-tbl-wrap-dv table,.tkt-slctr-tbl-wrap-dv tr td
+.table-2 table thead,.table-2 tr td,
+.sidebar .widget li a,.sidebar .widget .recentcomments,.sidebar .widget_categories li,
+#wrapper .fusion-tabs-widget .tab-holder,.commentlist .the-comment,
+.side-nav,#wrapper .side-nav li a,.rtl .side-nav,h5.toggle.active + .toggle-content,
+#wrapper .side-nav li.current_page_item li a,.tabs-vertical .tabset,
+.tabs-vertical .tabs-container .tab_content,
+.fusion-tabs.vertical-tabs.clean .nav-tabs li .tab-link,
+.pagination a.inactive, .page-links a,.woocommerce-pagination .page-numbers,.bbp-topic-pagination .page-numbers,.rtl .woocommerce .social-share li,.fusion-author .fusion-author-social,
+.side-nav li a,.sidebar .product_list_widget li,.sidebar .widget_layered_nav li,.price_slider_wrapper,.tagcloud a,
+.sidebar .widget_nav_menu li, .sidebar .widget_categories li, .sidebar .widget_product_categories li, .sidebar .widget_meta li, .sidebar .widget .recentcomments, .sidebar .widget_recent_entries li, .sidebar .widget_archive li, .sidebar .widget_pages li, .sidebar .widget_links li,.widget_layered_nav li,.widget_product_categories li,
+#customer_login_box,.avada_myaccount_user,#wrapper .myaccount_user_container span,
+.woo-tabs-horizontal .woocommerce-tabs > .tabs .active, .woo-tabs-horizontal .woocommerce-tabs > .tabs,
+.woocommerce-side-nav li a,.woocommerce-content-box,.woocommerce-content-box h2,.my_account_orders tr,.woocommerce .address h4,.shop_table tr,.cart_totals .total,.chzn-container-single .chzn-single,.chzn-container-single .chzn-single div,.chzn-drop,.checkout .shop_table tfoot,.input-radio,p.order-info,.panel.entry-content,
+.woocommerce-tabs .tabs li a,.woocommerce .social-share,.woocommerce .social-share li,.quantity,.quantity .minus, .quantity .qty,.shop_attributes tr,.woocommerce-success-message,#reviews li .comment-text,
+.cart-totals-buttons,.cart_totals, .shipping_calculator, .coupon, .woocommerce .cross-sells, #customer_login .col-1, #customer_login .col-2, .woocommerce-message, .woocommerce .checkout #customer_details .col-1, .woocommerce .checkout #customer_details .col-2,
+.cart_totals h2, .shipping_calculator h2, .coupon h2, .woocommerce .checkout h3, #customer_login h2, .woocommerce .cross-sells h2, .order-total, .woocommerce .addresses .title, #main .cart-empty, #main .return-to-shop, .side-nav-left .side-nav,
+.avada-order-details .shop_table.order_details tfoot
+{border-color: @sep-color;}
+#final-order-details .mini-order-details tr:last-child
+{border-color: @sep-color;}
+
+.price_slider_wrapper .ui-widget-content
+{background-color: @sep-color;}
+.gform_wrapper .gsection{border-bottom:1px dotted @sep-color;}
+
+.fusion-load-more-button { background-color: @load-more-posts-button-bg-color; }
+.fusion-load-more-button:hover { background-color: @load-more-posts-button-bg-color-hover; }
+
+
+.quantity .minus,.quantity .plus{background-color: @woo-qty-bg-color;}
+.quantity .minus:hover,.quantity .plus:hover{background-color: @woo-qty-bg-hover-color;}
+
+
+.sb-toggle-wrapper .sb-toggle:after{ color: @slidingbar-toggle-icon-color; }
+
+#slidingbar-area .widget_categories li a, #slidingbar-area li.recentcomments, #slidingbar-area ul li a, #slidingbar-area .product_list_widget li, #slidingbar-area .widget_recent_entries ul li {border-bottom-color: @slidingbar-divider-color;}
+#slidingbar-area .tagcloud a, 
+#wrapper #slidingbar-area .fusion-tabs-widget .tab-holder, 
+#wrapper #slidingbar-area .fusion-tabs-widget .tab-holder .news-list li,
+#slidingbar-area .fusion-accordian .fusion-panel
+{border-color: @slidingbar-divider-color;}
+
+.fusion-footer-widget-area .widget_categories li a, .fusion-footer-widget-area li.recentcomments, .fusion-footer-widget-area ul li a, .fusion-footer-widget-area .product_list_widget li, .fusion-footer-widget-area .tagcloud a,
+#wrapper .fusion-footer-widget-area .fusion-tabs-widget .tab-holder, 
+#wrapper .fusion-footer-widget-area .fusion-tabs-widget .tab-holder .news-list li, 
+.fusion-footer-widget-area .widget_recent_entries li,
+.fusion-footer-widget-area .fusion-accordian .fusion-panel
+{border-color: @footer-divider-color;}
+
+.input-text, input[type="text"], textarea,
+input.s,#comment-input input,#comment-textarea textarea,.comment-form-comment textarea, .post-password-form .password,
+.wpcf7-form .wpcf7-text,.wpcf7-form .wpcf7-quiz,.wpcf7-form .wpcf7-number,.wpcf7-form textarea,.wpcf7-form .wpcf7-select,.wpcf7-captchar,.wpcf7-form .wpcf7-date,
+.gform_wrapper .gfield input[type=text],.gform_wrapper .gfield input[type=email],.gform_wrapper .gfield textarea,.gform_wrapper .gfield select,
+#bbpress-forums .bbp-search-form #bbp_search,.bbp-reply-form input#bbp_topic_tags,.bbp-topic-form input#bbp_topic_title, .bbp-topic-form input#bbp_topic_tags, .bbp-topic-form select#bbp_stick_topic_select, .bbp-topic-form select#bbp_topic_status_select,#bbpress-forums div.bbp-the-content-wrapper textarea.bbp-the-content,.bbp-login-form input,
+.main-nav-search-form input,.search-page-search-form input,.chzn-container-single .chzn-single,.chzn-container .chzn-drop,
+.avada-select-parent select,.avada-select-parent .select-arrow, #wrapper .select-arrow,
+.avada-select .select2-container .select2-choice, .avada-select .select2-container .select2-choice2,
+select,
+#lang_sel_click a.lang_sel_sel,
+#lang_sel_click ul ul a, #lang_sel_click ul ul a:visited,
+#lang_sel_click a, #lang_sel_click a:visited,#wrapper .search-table .search-field input{
+background-color: @form-bg-color;}
+
+.input-text, input[type="text"], textarea,
+input.s,input.s .placeholder,#comment-input input,#comment-textarea textarea,#comment-input .placeholder,#comment-textarea .placeholder,.comment-form-comment textarea, .post-password-form .password,
+.wpcf7-form .wpcf7-text,.wpcf7-form .wpcf7-quiz,.wpcf7-form .wpcf7-number,.wpcf7-form textarea,.wpcf7-form .wpcf7-select,.wpcf7-select-parent .select-arrow,.wpcf7-captchar,.wpcf7-form .wpcf7-date,
+.gform_wrapper .gfield input[type=text],.gform_wrapper .gfield input[type=email],.gform_wrapper .gfield textarea,.gform_wrapper .gfield select,
+.avada-select .select2-container .select2-choice, .avada-select .select2-container .select2-choice2,
+select,
+#bbpress-forums .bbp-search-form #bbp_search,.bbp-reply-form input#bbp_topic_tags,.bbp-topic-form input#bbp_topic_title, .bbp-topic-form input#bbp_topic_tags, .bbp-topic-form select#bbp_stick_topic_select, .bbp-topic-form select#bbp_topic_status_select,#bbpress-forums div.bbp-the-content-wrapper textarea.bbp-the-content,.bbp-login-form input,
+.main-nav-search-form input,.search-page-search-form input,.chzn-container-single .chzn-single,.chzn-container .chzn-drop,.avada-select-parent select, #wrapper .search-table .search-field input
+{color: @form-text-color;}
+input#s::-webkit-input-placeholder,#comment-input input::-webkit-input-placeholder,.post-password-form .password::-webkit-input-placeholder,#comment-textarea textarea::-webkit-input-placeholder,.comment-form-comment textarea::-webkit-input-placeholder,.input-text::-webkit-input-placeholder{color: @form-text-color;}
+input#s:-moz-placeholder,#comment-input input:-moz-placeholder,.post-password-form .password::-moz-input-placeholder,#comment-textarea textarea:-moz-placeholder,.comment-form-comment textarea:-moz-placeholder,.input-text:-moz-placeholder,
+input#s:-ms-input-placeholder,#comment-input input:-ms-input-placeholder,.post-password-form .password::-ms-input-placeholder,#comment-textarea textarea:-moz-placeholder,.comment-form-comment textarea:-ms-input-placeholder,.input-text:-ms-input-placeholder
+{color: @form-text-color;}
+
+.input-text, input[type="text"], textarea,
+input.s,#comment-input input,#comment-textarea textarea,.comment-form-comment textarea, .post-password-form .password,
+.wpcf7-form .wpcf7-text,.wpcf7-form .wpcf7-quiz,.wpcf7-form .wpcf7-number,.wpcf7-form textarea,.wpcf7-form .wpcf7-select,.wpcf7-select-parent .select-arrow,.wpcf7-captchar,.wpcf7-form .wpcf7-date,
+.gform_wrapper .gfield input[type=text],.gform_wrapper .gfield input[type=email],.gform_wrapper .gfield textarea,.gform_wrapper .gfield_select[multiple=multiple],.gform_wrapper .gfield select,.gravity-select-parent .select-arrow,.select-arrow,
+#bbpress-forums .quicktags-toolbar,#bbpress-forums .bbp-search-form #bbp_search,.bbp-reply-form input#bbp_topic_tags,.bbp-topic-form input#bbp_topic_title, .bbp-topic-form input#bbp_topic_tags, .bbp-topic-form select#bbp_stick_topic_select, .bbp-topic-form select#bbp_topic_status_select,#bbpress-forums div.bbp-the-content-wrapper textarea.bbp-the-content,#wp-bbp_topic_content-editor-container,#wp-bbp_reply_content-editor-container,.bbp-login-form input,
+#bbpress-forums .wp-editor-container, #wp-bbp_topic_content-editor-container, #wp-bbp_reply_content-editor-container,
+.main-nav-search-form input,.search-page-search-form input,.chzn-container-single .chzn-single,.chzn-container .chzn-drop,
+.avada-select-parent select,.avada-select-parent .select-arrow,
+select,
+#lang_sel_click a.lang_sel_sel,
+#lang_sel_click ul ul a, #lang_sel_click ul ul a:visited,
+#lang_sel_click a, #lang_sel_click a:visited,
+#wrapper .search-table .search-field input,
+.avada-select .select2-container .select2-choice, .woocommerce-checkout .select2-drop-active, 
+.avada-select .select2-container .select2-choice .select2-arrow, .avada-select .select2-container .select2-choice2 .select2-arrow
+{border-color: @form-border-color;}
+
+.select-arrow, .select2-arrow {color: @form-border-color;}
+
+& when (@disable-avada-dropdown-styles = 1) {
+	select {background-color: @form-bg-color; color: @form-text-color; border: 1px solid @form-border-color; font-size: 13px; height: 35px; text-indent: 5px; width: 100%;}
+	select::-webkit-input-placeholder{color:@form-text-color;}
+	select:-moz-placeholder{color:@form-text-color;}
+}
+
+.fusion-page-title-bar h1 {
+	font-size: @page-title-bar-title-font-size * 1px;
+	line-height: normal;
+}
+
+.fusion-page-title-bar h3 {
+	font-size: @page-title-bar-subheader-font-size * 1px;
+	line-height: (@page-title-bar-subheader-font-size + 12) * 1px
+}
+
+& when (ispercentage(@content-width)) {	
+	#content{
+		width: unit( unit( @content-width ) - 6, ~'%');
+	}	
+}
+
+& when (ispixel(@content-width)) {
+	#content{
+		width: unit( unit( @content-width ) - 100, ~'px');
+	}
+}
+
+#main .sidebar{
+	width: @sidebar-width;
+	background-color: @sidebar-bg-color;
+	padding: @sidebar-padding;
+}
+
+
+
+& when (ispercentage(@content-width-2)) {	
+	.double-sidebars #content{
+		width: unit( unit( @content-width-2 ) - 6, ~'%');
+		margin-left: unit( unit( @sidebar-2-1-width ) + 6 / 2, ~'%');		
+	}	
+	
+	.double-sidebars #main #sidebar{
+		width: @sidebar-2-1-width;
+		margin-left: -( unit( unit( @content-width-2 ) + unit( @sidebar-2-1-width ) - 6 / 2, ~'%'));
+	}
+	
+	.double-sidebars #main #sidebar-2{
+		width: @sidebar-2-2-width;
+		margin-left: unit(6 / 2, ~'%');
+	}	
+}
+
+& when (ispixel(@content-width-2)) {
+	.double-sidebars #content{
+		width: unit( unit( @content-width-2 ) - 100, ~'px');
+		margin-left: unit( unit( @sidebar-2-1-width ) + 100 / 2, ~'px');		
+	}
+	
+	.double-sidebars #main #sidebar{
+		width: @sidebar-2-1-width;
+		margin-left: -( unit( unit( @content-width-2 ) + unit( @sidebar-2-1-width ) - 100 / 2, ~'px'));
+	}
+	
+	.double-sidebars #main #sidebar-2{
+		width: @sidebar-2-2-width;
+		margin-left: unit(100 / 2, ~'px');
+	}
+}
+
+.fusion-accordian .panel-title a .fa-fusion-box{background-color: @accordion-inactive-color;}
+
+.progress-bar-content{background-color: @counter-filled-color;border-color: @counter-filled-color;}
+.content-box-percentage{color: @counter-filled-color;}
+
+.progress-bar{background-color: @counter-unfilled-color;border-color: @counter-unfilled-color;}
+
+#wrapper .fusion-date-and-formats .fusion-format-box{background-color: @dates-box-bg-color;}
+
+.fusion-carousel .fusion-carousel-nav {
+	.fusion-nav-prev,
+	.fusion-nav-next{
+		background-color: @carousel-nav-bg-color;
+		
+		&:hover {
+			background-color: @carousel-nav-hover-bg-color;
+		}
+	}
+}
+
+.fusion-flexslider {
+	.flex-direction-nav {
+		.flex-prev,
+		.flex-next {
+			background-color: @carousel-nav-bg-color;
+
+			&:hover {
+				background-color: @carousel-nav-hover-bg-color;
+			}	
+		}
+	}
+}
+
+.content-boxes .col{background-color: @content-box-bg-color;}
+
+#wrapper .sidebar .fusion-tabs-widget .tabs-container{background-color: @tabs-bg-color;}
+body .sidebar .fusion-tabs-widget .tab-hold .tabs li{border-right:1px solid @tabs-bg-color;}
+body.rtl #wrapper .sidebar .fusion-tabs-widget .tab-hold .tabset li{border-left-color: @tabs-bg-color;}
+body .sidebar .fusion-tabs-widget .tab-holder .tabs li a, .sidebar .fusion-tabs-widget .tab-holder .tabs li a{background: @tabs-inactive-color;border-bottom:0;color: @body-text-color;}
+body .sidebar .fusion-tabs-widget .tab-hold .tabs li a:hover{background:@tabs-bg-color;border-bottom:0;}
+body .sidebar .fusion-tabs-widget .tab-hold .tabs li.active a, body .sidebar .fusion-tabs-widget .tab-holder .tabs li.active a{background:@tabs-bg-color;border-bottom:0;}
+body .sidebar .fusion-tabs-widget .tab-hold .tabs li.active a, body .sidebar .fusion-tabs-widget .tab-holder .tabs li.active a{border-top-color:@primary-color;}
+
+#wrapper .sidebar .fusion-tabs-widget .tab-holder,.sidebar .fusion-tabs-widget .tab-holder .news-list li{border-color: @tabs-border-color;}
+
+.fusion-sharing-box{background-color: @social-bg-color;}
+
+.fusion-blog-layout-grid .post .fusion-post-wrapper,.fusion-blog-layout-timeline .post, .fusion-portfolio.fusion-portfolio-boxed .fusion-portfolio-content-wrapper, .products li.product{background-color: @timeline-bg-color;}
+
+.fusion-blog-layout-grid .post .flexslider,.fusion-blog-layout-grid .post .fusion-post-wrapper,.fusion-blog-layout-grid .post .fusion-content-sep,.products li,.product-details-container,.product-buttons,.product-buttons-container, .product .product-buttons,.fusion-blog-layout-timeline .fusion-timeline-line, .fusion-blog-timeline-layout .post,.fusion-blog-timeline-layout .post .fusion-content-sep,
+.fusion-blog-timeline-layout .post .flexslider,.fusion-blog-layout-timeline .post,.fusion-blog-layout-timeline .post .fusion-content-sep,
+.fusion-portfolio.fusion-portfolio-boxed .fusion-portfolio-content-wrapper, .fusion-portfolio.fusion-portfolio-boxed .fusion-content-sep,
+.fusion-blog-layout-timeline .post .flexslider,.fusion-blog-layout-timeline .fusion-timeline-date
+{border-color: @timeline-color;}
+
+.fusion-blog-layout-timeline  .fusion-timeline-circle,.fusion-blog-layout-timeline .fusion-timeline-date,.fusion-blog-timeline-layout .fusion-timeline-circle,.fusion-blog-timeline-layout .fusion-timeline-date{background-color: @timeline-color;}
+.fusion-timeline-icon,.fusion-timeline-arrow:before,.fusion-blog-timeline-layout .fusion-timeline-icon,.fusion-blog-timeline-layout .fusion-timeline-arrow:before{color: @timeline-color;}
+
+#bbpress-forums li.bbp-header,
+#bbpress-forums div.bbp-reply-header,#bbpress-forums #bbp-single-user-details #bbp-user-navigation li.current a,div.bbp-template-notice, div.indicator-hint{ background: @bbp-forum-header-bg-color; }
+#bbpress-forums .bbp-replies div.even { background: transparent; }
+
+#bbpress-forums ul.bbp-lead-topic, #bbpress-forums ul.bbp-topics, #bbpress-forums ul.bbp-forums, #bbpress-forums ul.bbp-replies, #bbpress-forums ul.bbp-search-results,
+#bbpress-forums li.bbp-body ul.forum, #bbpress-forums li.bbp-body ul.topic,
+#bbpress-forums div.bbp-reply-content,#bbpress-forums div.bbp-reply-header,
+#bbpress-forums div.bbp-reply-author .bbp-reply-post-date,
+#bbpress-forums div.bbp-topic-tags a,#bbpress-forums #bbp-single-user-details,div.bbp-template-notice, div.indicator-hint,
+.bbp-arrow{ border-color: @bbp-forum-border-color; }
+
+& when (@scheme-type = Dark) {
+	.fusion-rollover .price .amount{color:#333333;}
+	.meta li{border-color: @body-text-color;}
+	.error_page .oops {color: #2F2F30;}
+	.bbp-arrow, #bbpress-forums .quicktags-toolbar { background-color:@content-bg-color; }
+	#toTop { background-color: #111111; }
+	.chzn-container-single .chzn-single { background-image: none; box-shadow: none; }
+
+	.catalog-ordering a, .order-dropdown > li:after,.order-dropdown ul li a {color: @form-text-color;}
+
+	.order-dropdown li,.order-dropdown .current-li,.order-dropdown > li:after,.order-dropdown ul li a,.catalog-ordering .order li a, .order-dropdown li, .order-dropdown .current-li,.order-dropdown ul,.order-dropdown ul li a,.catalog-ordering .order li a {background-color: @form-bg-color;}
+
+	.order-dropdown li:hover, .order-dropdown .current-li:hover, .order-dropdown ul li a:hover, .catalog-ordering .order li a:hover { background-color: #29292A; }
+	.bbp-topics-front ul.super-sticky, .bbp-topics ul.super-sticky, .bbp-topics ul.sticky, .bbp-forum-content ul.sticky {
+		background-color: #3E3E3E;
+	}
+	.bbp-topics-front ul.super-sticky a, .bbp-topics ul.super-sticky a, .bbp-topics ul.sticky a, .bbp-forum-content ul.sticky a {
+		color: #FFFFFF;
+	}
+
+	.pagination-prev:before, .woocommerce-pagination .prev:before, .pagination-next:after, .woocommerce-pagination .next:after{
+		color:#747474;
+	}
+
+	.table-1 table, .tkt-slctr-tbl-wrap-dv table{
+		background-color: #313132;
+		-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(62, 62, 62, 0.5);
+		-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(62, 62, 62, 0.5);
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(62, 62, 62, 0.5);	
+	}
+	.table-1 table th, .tkt-slctr-tbl-wrap-dv table th,
+	.table-1 tbody tr:nth-child(2n), .tkt-slctr-tbl-wrap-dv tbody tr:nth-child(2n) {
+		background-color: #212122;
+		
+	}
+}
+
+& when (@blog-grid-spacing-check = 1) {
+	#posts-container.fusion-blog-layout-grid {
+		margin: -(unit(@blog-grid-column-spacing / 2, px)) -(unit(@blog-grid-column-spacing / 2, px)) 0 -(unit(@blog-grid-column-spacing / 2, px));
+	}
+	#posts-container.fusion-blog-layout-grid .fusion-post-grid {
+		padding: unit(@blog-grid-column-spacing / 2, px);
+	}
+}
+
+.quicktags-toolbar input {
+	background: linear-gradient(to top, @content-bg-color, @form-bg-color ) #3E3E3E;
+	background: -o-linear-gradient(to top, @content-bg-color, @form-bg-color ) #3E3E3E;
+	background: -moz-linear-gradient(to top, @content-bg-color, @form-bg-color ) #3E3E3E;
+	background: -webkit-linear-gradient(to top, @content-bg-color, @form-bg-color ) #3E3E3E;
+	background: -ms-linear-gradient(to top, @content-bg-color, @form-bg-color ) #3E3E3E;
+	background: linear-gradient(to top, @content-bg-color, @form-bg-color ) #3E3E3E;
+
+	background-image: -webkit-gradient(
+		linear,
+		left top,
+		left bottom,
+		color-stop(0, @form-bg-color),
+		color-stop(1, @content-bg-color)
+	);
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{form-bg-color}', endColorstr='@{content-bg-color}'), progid: DXImageTransform.Microsoft.Alpha(Opacity=0)";
+
+	border: 1px solid @form-border-color;
+	color: @form-text-color;
+}
+
+.quicktags-toolbar input:hover {
+	background: @form-bg-color;
+}
+
+& when (@breadcrumbs-mobile = 0) {
+	@media only screen and (max-width: ( 940px + @side-header-width ) ) {	
+		.fusion-body .fusion-page-title-bar .fusion-breadcrumbs{display:none;}
+	}
+	@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait){
+		.fusion-body .fusion-page-title-bar .fusion-breadcrumbs{display:none;}
+	}
+}
+
+& when (@image-rollover = 0) {
+	.fusion-rollover{display:none;}
+}
+
+& when (@image-rollover-direction = right) {
+	.fusion-image-wrapper .fusion-rollover {
+		-webkit-transform: translateX(100%);
+		-moz-transform: translateX(100%);
+		-o-transform: translateX(100%);
+		-ms-transform: translateX(100%);
+		transform: translateX(100%);
+	}
+}
+
+& when (@image-rollover-direction = bottom) {
+	.fusion-image-wrapper .fusion-rollover {
+		-webkit-transform: translateY(100%);
+		-moz-transform: translateY(100%);
+		-o-transform: translateY(100%);
+		-ms-transform: translateY(100%);
+		transform: translateY(100%);
+	}
+	.fusion-image-wrapper:hover .fusion-rollover {
+		-webkit-transform: translateY(0%);
+		-moz-transform: translateY(0%);
+		-o-transform: translateY(0%);
+		-ms-transform: translateY(0%);
+		transform: translateY(0%);
+	}
+}
+
+& when (@image-rollover-direction = top) {
+	.fusion-image-wrapper .fusion-rollover {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		transform: translateY(-100%);
+	}
+	.fusion-image-wrapper:hover .fusion-rollover {
+		-webkit-transform: translateY(0%);
+		-moz-transform: translateY(0%);
+		-o-transform: translateY(0%);
+		-ms-transform: translateY(0%);
+		transform: translateY(0%);
+	}
+}
+
+& when (@image-rollover-direction = center_horiz) {
+	.fusion-image-wrapper .fusion-rollover {
+		-webkit-transform: scaleX(0);
+		-moz-transform: scaleX(0);
+		-o-transform: scaleX(0);
+		-ms-transform: scaleX(0);
+		transform: scaleX(0);
+	}
+	.fusion-image-wrapper:hover .fusion-rollover {
+		-webkit-transform: scaleX(1);
+		-moz-transform: scaleX(1);
+		-o-transform: scaleX(1);
+		-ms-transform: scaleX(1);
+		transform: scaleX(1);
+	}
+}
+
+& when (@image-rollover-direction = center_vertical) {
+	.fusion-image-wrapper .fusion-rollover {
+		-webkit-transform: scaleY(0);
+		-moz-transform: scaleY(0);
+		-o-transform: scaleY(0);
+		-ms-transform: scaleY(0);
+		transform: scaleY(0);
+	}
+	.fusion-image-wrapper:hover .fusion-rollover {
+		-webkit-transform: scaleY(1);
+		-moz-transform: scaleY(1);
+		-o-transform: scaleY(1);
+		-ms-transform: scaleY(1);
+		transform: scaleY(1);
+	}
+}
+
+.ei-slider { width: @elasticslider-width; height: @elasticslider-height; }
+
+.button.default,.fusion-button.fusion-button-default,.gform_wrapper .gform_button,#comment-submit,.woocommerce .checkout #place_order,.woocommerce .single_add_to_cart_button, .woocommerce button.button,#reviews input#submit,.woocommerce .login .button,.woocommerce .register .button,
+.bbp-submit-wrapper button,.wpcf7-form input[type="submit"], .wpcf7-submit, .bbp-submit-wrapper .button,#bbp_user_edit_submit, .ticket-selector-submit-btn[type=submit], .gform_page_footer input[type=button]
+{border-color: @button-accent-color;}
+
+.button.default:hover,.fusion-button.fusion-button-default:hover,.gform_wrapper .gform_button:hover,#comment-submit:hover,.woocommerce .checkout #place_order:hover,.woocommerce .single_add_to_cart_button:hover, .woocommerce button.button:hover,#reviews input#submit:hover,.woocommerce .login .button:hover,.woocommerce .register .button:hover,
+.bbp-submit-wrapper button:hover,.wpcf7-form input[type="submit"]:hover, .wpcf7-submit:hover, .bbp-submit-wrapper .button:hover,#bbp_user_edit_submit:hover, .ticket-selector-submit-btn[type=submit]:hover, .gform_page_footer input[type=button]:hover
+{border-color: @button-accent-hover-color;}
+
+.button-dimensions( @dim-height, @dim-padding-horizontal, @dim-padding-vertical, @dim-line-height @dim-font ) {
+	padding: @dim-padding-vertical @dim-padding-horizontal;
+	line-height: @dim-line-height;
+	font-size: @dim-font;
+}
+
+@button-box-shadow-1: inset 0px 1px 0px #fff;
+@button-box-shadow-3-color: rgba(0,0,0,0.3);
+
+.button-box-shadow( @box-shadow-1, @box-shadow-2, @box-shadow-3 ) {
+	-webkit-box-shadow: @box-shadow-1, @box-shadow-2, @box-shadow-3;
+	-moz-box-shadow: @box-shadow-1, @box-shadow-2, @box-shadow-3;
+	box-shadow: @box-shadow-1, @box-shadow-2, @box-shadow-3;
+}
+
+.button.default, .fusion-button-default,
+.woocommerce .checkout #place_order,
+.wpcf7-form input[type="submit"], .wpcf7-submit,
+.fusion-body #main .gform_wrapper .gform_button,
+.fusion-body #main .gform_wrapper .gform_footer .gform_button {
+	& when (@button-size = small) {
+		.button-dimensions( 32px, 20px, 9px, 14px, 12px );
+		
+		& when (@button-type = 3d) {
+			.button-box-shadow( @button-box-shadow-1, 0px 2px 0px @button-bevel-color, 1px 4px 4px 2px @button-box-shadow-3-color );
+			&:active {
+				.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 4px 4px 2px @button-box-shadow-3-color );
+			}
+		}
+	}
+
+	& when (@button-size = medium) {
+		.button-dimensions( 38px, 23px, 11px, 16px, 13px );	
+		
+		& when (@button-type = 3d) {
+			.button-box-shadow( @button-box-shadow-1, 0px 3px 0px @button-bevel-color, 1px 5px 5px 3px @button-box-shadow-3-color );
+			&:active {
+				.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 5px 5px 3px @button-box-shadow-3-color );
+			}
+		}		
+	}
+
+	& when (@button-size = large) {
+		.button-dimensions( 43px, 29px, 13px, 17px, 14px );
+
+		& when (@button-type = 3d) {
+			.button-box-shadow( @button-box-shadow-1, 0px 4px 0px @button-bevel-color, 1px 6px 6px 3px @button-box-shadow-3-color );
+			&:active {
+				.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 6px 6px 3px @button-box-shadow-3-color );
+			}
+		}		
+	}
+
+	& when (@button-size = xlarge) {
+		.button-dimensions( 55px, 40px, 17px, 21px, 18px );
+		
+		& when (@button-type = 3d) {
+			.button-box-shadow( @button-box-shadow-1, 0px 5px 0px @button-bevel-color, 1px 7px 7px 3px @button-box-shadow-3-color );
+			&:active {
+				.button-box-shadow( @button-box-shadow-1, 0px 2px 0px @button-bevel-color, 1px 7px 7px 3px @button-box-shadow-3-color );
+			}
+		}		
+	}
+}
+
+.button.default.button-3d.button-small, .fusion-button.button-small.button-3d, .ticket-selector-submit-btn[type=submit],
+.fusion-button.fusion-button-3d.fusion-button-small
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 2px 0px @button-bevel-color, 1px 4px 4px 2px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-small:active, .fusion-button.button-small.button-3d:active,
+.fusion-button.fusion-button-3d.fusion-button-small:active
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 4px 4px 2px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-medium, .fusion-button.button-medium.button-3d,
+.fusion-button.fusion-button-3d.fusion-button-medium
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 3px 0px @button-bevel-color, 1px 5px 5px 3px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-medium:active .fusion-button.button-medium.button-3d:active,
+.fusion-button.fusion-button-3d.fusion-button-medium:active
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 5px 5px 3px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-large, .fusion-button.button-large.button-3d,
+.fusion-button.fusion-button-3d.fusion-button-large
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 4px 0px @button-bevel-color, 1px 5px 6px 3px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-large:active, .fusion-button.button-large.button-3d:active,
+.fusion-button.fusion-button-3d.fusion-button-large:active
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 6px 6px 3px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-xlarge, .fusion-button.button-xlarge.button-3d,
+.fusion-button.fusion-button-3d.fusion-button-xlarge
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 5px 0px @button-bevel-color, 1px 7px 7px 3px @button-box-shadow-3-color );
+}
+.button.default.button-3d.button-xlarge:active, .fusion-button.button-xlarge.button-3d:active,
+.fusion-button.fusion-button-3d.fusion-button-xlarge:active
+{
+	.button-box-shadow( @button-box-shadow-1, 0px 2px 0px @button-bevel-color, 1px 7px 7px 3px @button-box-shadow-3-color );
+}
+
+& when (@button-type = 3d) {
+	.button.default.small, .fusion-button.fusion-button-default.fusion-button-small, #reviews input#submit,.woocommerce .login .button,.woocommerce .register .button,
+	.bbp-submit-wrapper .button,.wpcf7-form input[type="submit"].fusion-button-small, .wpcf7-submit.fusion-button-small, #bbp_user_edit_submit, .ticket-selector-submit-btn[type=submit], .gform_page_footer input[type=button], .gform_wrapper .gform_button {
+		.button-box-shadow( @button-box-shadow-1, 0px 2px 0px @button-bevel-color, 1px 4px 4px 2px @button-box-shadow-3-color );
+	}
+	.button.default.small:active, .fusion-button.fusion-button-default.fusion-button-small:active, #reviews input#submit:active,.woocommerce .login .button:active, .woocommerce .register .button:active, .bbp-submit-wrapper .button:active,.wpcf7-form input[type="submit"].fusion-button-small:active, .wpcf7-submit.fusion-button-small:active, #bbp_user_edit_submit:active, .ticket-selector-submit-btn[type=submit], .gform_page_footer input[type=button]:active, .gform_wrapper .gform_button:active {
+		.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 4px 4px 2px @button-box-shadow-3-color );
+	}
+	.button.default.medium, .fusion-button.fusion-button-default.fusion-button-medium, #comment-submit,.woocommerce .checkout #place_order,.woocommerce .single_add_to_cart_button, .woocommerce button.button, .bbp-submit-wrapper .button.button-medium,.wpcf7-form input[type="submit"].fusion-button-medium, .wpcf7-submit.fusion-button-medium {
+		.button-box-shadow( @button-box-shadow-1, 0px 3px 0px @button-bevel-color, 1px 5px 5px 3px @button-box-shadow-3-color );		
+	}
+	.button.default.medium:active, .fusion-button.fusion-button-default.fusion-button-medium:active, #comment-submit:active,.woocommerce .checkout #place_order:active,.woocommerce .single_add_to_cart_button:active, .woocommerce button.button:active,.bbp-submit-wrapper .button.button-medium:active,.wpcf7-form input[type="submit"].fusion-button-medium:active, .wpcf7-submit.fusion-button-medium:active {
+		.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 5px 5px 3px @button-box-shadow-3-color );
+	}
+	.button.default.large, .fusion-button.fusion-button-default.fusion-button-large, .bbp-submit-wrapper .button.button-large,.wpcf7-form input[type="submit"].fusion-button-large, .wpcf7-submit.fusion-button-large {
+		.button-box-shadow( @button-box-shadow-1, 0px 4px 0px @button-bevel-color, 1px 6px 6px 3px @button-box-shadow-3-color );
+	}
+	.button.default.large:active, .fusion-button.fusion-button-default.fusion-button-large:active, .bbp-submit-wrapper .button.button-large:active,.wpcf7-form input[type="submit"].fusion-button-large:active, .wpcf7-submit.fusion-button-large:active {
+		.button-box-shadow( @button-box-shadow-1, 0px 1px 0px @button-bevel-color, 1px 6px 6px 3px @button-box-shadow-3-color );
+	}
+	.button.default.xlarge, .fusion-button.fusion-button-default.fusion-button-xlarge, .bbp-submit-wrapper .button.button-xlarge,.wpcf7-form input[type="submit"].fusion-button-xlarge, .wpcf7-submit.fusion-button-xlarge {
+		.button-box-shadow( @button-box-shadow-1, 0px 5px 0px @button-bevel-color, 1px 7px 7px 3px @button-box-shadow-3-color );
+	}
+	.button.default.xlarge:active, .fusion-button.fusion-button-default.fusion-button-xlarge:active, .bbp-submit-wrapper .button.button-xlarge:active,.wpcf7-form input[type="submit"].fusion-button-xlarge:active, .wpcf7-submit.fusion-button-xlarge:active {
+		.button-box-shadow( @button-box-shadow-1, 0px 2px 0px @button-bevel-color, 1px 7px 7px 3px @button-box-shadow-3-color );
+	}
+}
+
+.button.default,.fusion-button,.button-default,.fusion-button-default,.gform_wrapper .gform_button,#comment-submit,.woocommerce .checkout #place_order,.woocommerce .single_add_to_cart_button, .woocommerce button.button,#reviews input#submit,.woocommerce .login .button,.woocommerce .register .button,
+.bbp-submit-wrapper .button,.wpcf7-form input[type="submit"], .wpcf7-submit, #bbp_user_edit_submit, .gform_page_footer input[type=button]
+{border-width: @button-border-width;border-style: solid;}
+.button.default:hover, .fusion-button.button-default:hover, .ticket-selector-submit-btn[type=submit]{border-width: @button-border-width;border-style: solid;}
+
+& when (@button-shape = Pill) {
+	.button.default,.button-default,.fusion-button-default,#comment-submit,.woocommerce .checkout #place_order,.woocommerce .single_add_to_cart_button, .woocommerce button.button,#reviews input#submit,.woocommerce .avada-shipping-calculator-form .button,.woocommerce .login .button,.woocommerce .register .button,
+	.bbp-submit-wrapper .button,.wpcf7-form input[type="submit"], .wpcf7-submit, #bbp_user_edit_submit, .ticket-selector-submit-btn[type=submit], .gform_page_footer input[type=button], .gform_wrapper .gform_button
+	{border-radius: 25px;}
+}
+
+& when (@button-shape = Round) {
+	.button.default,.button-default,.fusion-button-default,#comment-submit,.woocommerce .checkout #place_order,.woocommerce .single_add_to_cart_button, .woocommerce button.button,#reviews input#submit,.woocommerce .avada-shipping-calculator-form .button,.woocommerce .login .button,.woocommerce .register .button,
+	.bbp-submit-wrapper .button,.wpcf7-form input[type="submit"], .wpcf7-submit, #bbp_user_edit_submit, .ticket-selector-submit-btn[type=submit], .gform_page_footer input[type=button], .gform_wrapper .gform_button
+	{border-radius: 2px;}
+}
+
+& when (@button-shape = Square) {
+	.button.default,.button-default,.fusion-button-default,#comment-submit,.woocommerce .checkout #place_order,.woocommerce .single_add_to_cart_button, .woocommerce button.button,#reviews input#submit,.woocommerce .avada-shipping-calculator-form .button,.woocommerce .login .button,.woocommerce .register .button,
+	.bbp-submit-wrapper .button,.wpcf7-form input[type="submit"], .wpcf7-submit, #bbp_user_edit_submit, .ticket-selector-submit-btn[type=submit], .gform_page_footer input[type=button], .gform_wrapper .gform_button
+	{border-radius: 0px;}
+}
+
+.reading-box{background-color: @tagline-bg-color;}
+
+.isotope .isotope-item {
+  -webkit-transition-property: top, left, opacity;
+	 -moz-transition-property: top, left, opacity;
+	  -ms-transition-property: top, left, opacity;
+	   -o-transition-property: top, left, opacity;
+		  transition-property: top, left, opacity;
+}
+
+& when (@link-image-rollover = 1) {
+	.fusion-rollover .link-icon{display:none !important;}
+}
+
+& when (@zoom-image-rollover = 1) {
+	.fusion-rollover .gallery-icon{display:none !important;}
+}
+
+& when (@title-image-rollover = 1) {
+	.fusion-rollover .fusion-rollover-title{display:none;}
+}
+
+& when (@cats-image-rollover = 1) {
+	.fusion-rollover .fusion-rollover-categories{display:none;}
+}
+
+& when (@woocommerce-one-page-checkout = 1) {
+	.woocommerce .checkout #customer_details .col-1,
+	.woocommerce .checkout #customer_details .col-2 {
+		box-sizing: border-box;-moz-box-sizing: border-box;border: 1px solid;overflow: hidden;padding: 30px;margin-bottom:30px;float:left;width:48%;margin-right: 4%;
+	}
+	.rtl .woocommerce form.checkout #customer_details .col-1, 
+	.rtl .woocommerce form.checkout #customer_details .col-2 {
+		float: right;
+	}
+	.rtl .woocommerce form.checkout #customer_details .col-1 {
+		margin-left: 4%;
+		margin-right: 0;
+	}
+
+	.woocommerce form.checkout #customer_details .col-1,
+	.woocommerce form.checkout #customer_details .col-2 {
+		border-color: @sep-color;
+	}
+
+	.woocommerce form.checkout #customer_details div:last-child { margin-right: 0; }
+
+	.woocommerce form.checkout .avada-checkout-no-shipping #customer_details .col-1 {width:100%;margin-right:0;}
+	.woocommerce form.checkout .avada-checkout-no-shipping #customer_details .col-2 {display:none;}
+}
+
+& when (@woocommerce-one-page-checkout = 0) {
+	.woocommerce form.checkout .col-2, .woocommerce form.checkout #order_review_heading, .woocommerce form.checkout #order_review {
+		display: none;
+	}
+}
+
+& when (@responsive = 0) {
+	#wrapper .fusion-megamenu-wrapper.col-span-1 {
+		width: 235px;
+	}
+	#wrapper .fusion-megamenu-wrapper.col-span-2 {
+		width: 470px;
+	}
+	#wrapper .fusion-megamenu-wrapper.col-span-3 {
+		width: 705px;
+	}
+	#wrapper .fusion-megamenu-wrapper {
+		width: 940px;
+	}
+	#wrapper .fusion-megamenu-wrapper {
+		position: absolute;
+		left: 0;
+		z-index: 20000;
+	}
+	#wrapper .fusion-megamenu-wrapper a:hover {
+		color: #333;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-holder {
+		width: 100%;
+		padding: 0;
+		border-top: 3px solid @main-nav-hover-color;
+		background-color: #edebeb;
+	}
+	#wrapper .fusion-megamenu-wrapper .sub-menu {
+		padding: 0;
+		list-style: none;
+	}
+	#wrapper .fusion-megamenu-wrapper .sub-menu.deep-level a {
+		padding-left: 49px ;
+	}
+	#wrapper .fusion-megamenu-wrapper .sub-menu.deep-level .deep-level a {
+		padding-left: 64px;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu {
+		display: table;
+		padding: 0;
+		width: 100%;
+		list-style: none;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-border {
+		border-bottom: 1px solid #dcd9d9;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-submenu {
+		display: table-cell;
+		float: none;
+		padding: 29px 0;
+		border-right: 1px solid;
+	}
+	#wrapper #nav .fusion-megamenu-wrapper li a,
+	#wrapper #nav .fusion-megamenu-wrapper .fusion-megamenu-submenu li a,
+	#wrapper #sticky-nav .fusion-megamenu-wrapper li a,
+	#wrapper #sticky-nav .fusion-megamenu-wrapper .fusion-megamenu-submenu li a	{
+		display: block;
+		padding: 5px 34px;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-submenu li a:hover,
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-submenu .current-menu-item a {
+		background-color: #f3f2f2;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-submenu .fusion-megamenu-icon img {
+		margin-top: -3px;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-title {
+		margin-top: 0;
+		padding: 0 34px 15px 34px;
+		font: 18px 'MuseoSlab500Regular', arial, helvetica, sans-serif;
+		font-weight: normal;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-title a:hover {
+		text-decoration: none;
+		color: #000;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-icon,
+	.fusion-megamenu-icon {
+		display: inline;
+		margin-right: 12px;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-icon img,
+	.fusion-megamenu-icon img {
+		margin-top: -2px;
+		max-height: 15px;
+		vertical-align: middle;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-bullet,
+	.fusion-megamenu-bullet {
+		display: block;
+		float: left;
+		margin-top: 0.5em;
+		margin-right: 10px;
+		border-top: 3px solid transparent;
+		border-bottom: 3px solid transparent;
+		border-left: 3px solid #333;
+		height: 0;
+		width: 0;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-widgets-container {
+		margin-bottom: 10px;
+		color: #333;
+		font-size: 13px;
+	}
+	#wrapper .fusion-megamenu-wrapper .fusion-megamenu-widgets-container.second-level-widget {
+		padding: 0 34px;
+	}
+}
+
+& when (@responsive = 1) {
+	& when (@ipad-portrait = 0) {
+		@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+			#wrapper .fusion-page-title-bar {
+				height: @page-title-bar-height !important;
+			}
+		}
+	}
+}
+
+& when (@page-title-bar-100-width = 1) {
+	.layout-wide-mode .fusion-page-title-row { max-width: 100%; }
+}
+
+.fusion-button {
+	font-family: @button-font;
+	font-weight: @font-weight-button;
+	letter-spacing: @button-letter-spacing * 1px
+}
+
+// Image Rollover
+
+.fusion-image-wrapper .fusion-rollover {
+	.fusion-rollover-link, .fusion-rollover-gallery {
+		& when (@image-rollover-icon-circle = 1) {
+			background: none;
+
+			width: ( ( @icon-size-image-rollover * 0.5 ) + @icon-size-image-rollover ) * 1px;
+			height: ( ( @icon-size-image-rollover * 0.5 ) + @icon-size-image-rollover ) * 1px;
+
+			&:before {
+				font-size: @icon-size-image-rollover * 1px;
+				color: @icon-color-image-rollover;
+				margin-left: -( @icon-size-image-rollover / 2 ) * 1px;
+				line-height: ( ( @icon-size-image-rollover * 0.5 ) + @icon-size-image-rollover ) * 1px;
+			}
+		}
+
+		& when (@image-rollover-icon-circle = 0) {
+			width: ( ( @icon-size-image-rollover * 1.41 ) + @icon-size-image-rollover ) * 1px;
+			height: ( ( @icon-size-image-rollover * 1.41 ) + @icon-size-image-rollover ) * 1px;
+
+			&:before {
+				font-size: @icon-size-image-rollover * 1px;
+				color: @icon-color-image-rollover;
+				margin-left: -( @icon-size-image-rollover / 2 ) * 1px;
+				line-height: ( ( @icon-size-image-rollover * 1.41 ) + @icon-size-image-rollover ) * 1px;
+			}
+		}
+	}
+}
+
+.searchform .search-table .search-field input {
+	height: @search-form-height * 1px;
+}
+
+.searchform .search-table .search-button input[type="submit"] {
+	height: @search-form-height * 1px;
+	width: @search-form-height * 1px;
+	line-height: @search-form-height * 1px;
+}
+
+/* Headings
+================================================================================================= */
+
+h1, .fusion-title-size-one { margin-top: @h1-top-margin * 1em; margin-bottom: @h1-bottom-margin * 1em; }
+h2, .fusion-title-size-two { margin-top: @h2-top-margin * 1em; margin-bottom: @h2-bottom-margin * 1em; }
+h3, .fusion-title-size-three { margin-top: @h3-top-margin * 1em; margin-bottom: @h3-bottom-margin * 1em; }
+h4, .fusion-title-size-four { margin-top: @h4-top-margin * 1em; margin-bottom: @h4-bottom-margin * 1em; }
+h5, .fusion-title-size-five { margin-top: @h5-top-margin * 1em; margin-bottom: @h5-bottom-margin * 1em; }
+h6, .fusion-title-size-six { margin-top: @h6-top-margin * 1em; margin-bottom: @h6-bottom-margin * 1em; }
+
+/* Header Styles
+================================================================================================= */
+
+.fusion-logo {
+	margin: @logo-margin-top @logo-margin-right @logo-margin-bottom @logo-margin-left;
+}
+
+& when (@header-shadow = 1) {
+	.fusion-header-shadow:after {
+	    content: '';
+	    z-index: 99996;
+	    position: absolute;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 100%;
+	    pointer-events: none;
+		-webkit-box-shadow: 0px 10px 50px -2px rgba(0, 0, 0, 0.14);
+		-moz-box-shadow: 0px 10px 50px -2px rgba(0, 0, 0, 0.14);
+		box-shadow: 0px 10px 50px -2px rgba(0, 0, 0, 0.14);
+	}
+
+	body.side-header-left #side-header.header-shadow:after {
+	    content: "";
+	    z-index: 99996;
+	    position: absolute;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 100%;
+	    pointer-events: none;
+		-webkit-box-shadow: 10px 0px 50px -2px rgba(0, 0, 0, 0.14);
+		-moz-box-shadow: 10px 0px 50px -2px rgba(0, 0, 0, 0.14);
+		box-shadow: 10px 0px 50px -2px rgba(0, 0, 0, 0.14);
+	}
+	body.side-header-right #side-header.header-shadow:after {
+	    content: "";
+	    z-index: 99996;
+	    position: absolute;
+	    left: 0;
+	    top: 0;
+	    height: 100%;
+	    width: 100%;
+	    pointer-events: none;
+		-webkit-box-shadow: -10px 0px 50px -2px rgba(0, 0, 0, 0.14);
+		-moz-box-shadow: -10px 0px 50px -2px rgba(0, 0, 0, 0.14);
+		box-shadow: -10px 0px 50px -2px rgba(0, 0, 0, 0.14);
+	}
+
+	.fusion-is-sticky.fusion-header-shadow:after {
+		display: none;
+	}
+}
+
+.fusion-header-wrapper {
+	.fusion-row {
+		padding-left: @header-left-padding;
+		padding-right: @header-right-padding;
+		max-width: @site-width;
+	}
+}
+
+.fusion-header {
+	.fusion-header-v2 &, .fusion-header-v3 &, .fusion-header-v4 &, .fusion-header-v5 & {
+		border-bottom-color: @header-border-color;
+	}
+	.fusion-row {
+		padding-top: @header-top-padding;
+		padding-bottom: @header-bottom-padding;
+	}
+}
+
+.fusion-secondary-header {
+	background-color: @secondary-header-bg-color;
+	font-size: @secondary-header-font-size * 1px;
+	color: @secondary-header-font-color;
+	border-bottom-color: @header-border-color;
+
+	a, a:hover {
+		color: @secondary-header-font-color;		
+	}
+
+	.fusion-header-v2 & {
+		border-top-color: @primary-color;
+	}
+}
+
+.fusion-mobile-menu-design-modern {
+	.fusion-secondary-header {
+		.fusion-alignleft {
+			border-bottom-color: @header-border-color;
+		}
+	}
+}
+
+.fusion-header-tagline {
+	font-size: @tagline-font-size * 1px;
+	color: @tagline-font-color;
+}
+
+.fusion-secondary-main-menu, .fusion-mobile-menu-sep {
+	border-bottom-color: @header-border-color;
+}
+
+#side-header {
+	width: @side-header-width * 1px;
+	padding-top: @header-top-padding;
+	padding-bottom: @header-bottom-padding;
+	border-color: @header-border-color;
+
+	.side-header-content {
+		padding-left: @header-left-padding;
+		padding-right: @header-right-padding;
+	}
+
+	.fusion-main-menu {
+		> ul > li > a {
+			padding-left: @header-left-padding;
+			padding-right: @header-right-padding;
+
+			border-top-color: @header-border-color;
+			border-bottom-color: @header-border-color;
+			text-align: @main-nav-text-align;
+		}
+
+		> ul > li.current-menu-ancestor > a,
+		> ul > li.current-menu-item > a {
+			color: @main-nav-hover-color;
+			border-right-color: @main-nav-hover-color;
+			border-left-color: @main-nav-hover-color;
+		}
+
+		body.side-header-left & {
+			> ul > li > ul {
+				left: ( @side-header-width * 1px ) - 1px;
+			}
+
+			.fusion-custom-menu-item-contents {
+				top: 0;
+				left: ( @side-header-width * 1px ) - 1px;
+			}
+		}
+
+		.fusion-main-menu-search .fusion-custom-menu-item-contents {
+			border-top-width: 1px;
+			border-top-style: solid;
+		}
+	}
+
+	.side-header-content-1, .side-header-content-2, .fusion-secondary-menu > ul > li > a {
+		color: @secondary-menu-font-color;
+		font-size: @secondary-header-font-size * 1px;
+	}
+
+	.side-header-left & .fusion-main-menu {
+		> ul > li.current-menu-ancestor > a,
+		> ul > li.current-menu-item > a {
+			border-right-width: @main-nav-highlight-border * 1px;
+		}
+	}
+
+
+	.side-header-right & {
+		.fusion-main-menu {
+			> ul > li.current-menu-ancestor > a,
+			> ul > li.current-menu-item > a {
+				border-left-width: @main-nav-highlight-border * 1px;
+			}
+
+			ul .sub-menu li ul, ul .sub-menu {
+				left: -@main-nav-dropdown-width * 1px;
+			}
+		}
+
+		.fusion-main-menu-search .fusion-custom-menu-item-contents {
+			left: -250px;
+		}
+
+		.fusion-main-menu-cart .fusion-custom-menu-item-contents {
+			left: -180px;
+		}
+	}
+}
+
+/* Main Menu Styles
+================================================================================================= */
+
+.fusion-main-menu {
+	> ul > li {
+		padding-right: @main-nav-padding * 1px;
+
+		> a {
+			border-top: (@main-nav-highlight-border * 1px) solid transparent;
+			height: @main-nav-height * 1px;
+			line-height: @main-nav-height * 1px;
+			font-family: @nav-font;
+			font-weight: @font-weight-menu;
+			font-size: @main-nav-font-size * 1px;
+			color: @main-nav-color;
+			letter-spacing: @menu-letter-spacing * 1px;
+
+			&:hover {
+				color: @main-nav-hover-color;
+				border-color: @main-nav-hover-color;
+			}
+			
+			#side-header & {
+				height: auto;
+				min-height: @main-nav-height * 1px;
+			}
+		}
+	}
+
+	.current_page_item > a, 
+	.current-menu-item > a, 
+	.current-menu-parent > a,
+	.current-menu-ancestor > a{
+		color: @main-nav-hover-color;
+		border-color: @main-nav-hover-color;
+	}
+
+	.fusion-main-menu-icon {
+		&:after {
+			color: @main-nav-color;
+			height: @main-nav-font-size * 1px;
+			width: @main-nav-font-size * 1px;
+		}
+
+		& when (@main-nav-icon-circle = 1) {
+			&:after {
+				border: 1px solid @main-nav-color;
+				padding: 5px;
+			}		
+		}
+
+		&:hover {
+			border-color: transparent;
+		}
+
+		&:hover:after {
+			color: @main-nav-hover-color;
+		}
+
+		& when (@main-nav-icon-circle = 1) {
+			&:hover:after {
+				border: 1px solid @main-nav-hover-color;
+			}		
+		}
+	}
+
+	.fusion-main-menu-search-open .fusion-main-menu-icon:after, .fusion-main-menu-icon-active:after {
+		color: @main-nav-hover-color;
+	}
+
+	& when (@main-nav-icon-circle = 1) {
+		.fusion-main-menu-search-open .fusion-main-menu-icon:after, .fusion-main-menu-icon-active:after {
+			border: 1px solid @main-nav-hover-color;
+		}		
+	}
+
+	.sub-menu {
+		background-color: @main-nav-submenu-bg-color;
+		width: @main-nav-dropdown-width * 1px;
+		border-top: 3px solid @main-nav-hover-color;
+		font-family: @font;
+		font-weight: @font-weight-body;
+
+		ul {
+			left: @main-nav-dropdown-width * 1px;
+			top: -3px;
+		}
+
+		li a {
+			border-bottom: 1px solid @main-nav-submenu-separator-color;
+			color: @main-nav-submenu-font-color;
+			font-family: @font;
+			font-weight: @font-weight-body;
+			font-size: @main-nav-submenu-font-size * 1px;
+
+			&:hover {
+				background-color: @main-nav-submenu-hover-color;
+			}
+		}
+
+		& when (@megamenu-shadow = 1) {
+			-moz-box-shadow: 1px 1px 30px rgba(0, 0, 0, 0.06);
+			-webkit-box-shadow: 1px 1px 30px rgba(0, 0, 0, 0.06);
+			box-shadow: 1px 1px 30px rgba(0, 0, 0, 0.06);
+		}
+
+		.current_page_item > a, .current-menu-item > a, .current-menu-parent > a {
+			background-color: @main-nav-submenu-hover-color;
+		}
+	}
+
+	.fusion-custom-menu-item-contents {
+		font-family: @font;
+		font-weight: @font-weight-body;
+	}
+
+	.fusion-main-menu-search .fusion-custom-menu-item-contents, .fusion-main-menu-cart .fusion-custom-menu-item-contents, .fusion-menu-login-box .fusion-custom-menu-item-contents {
+		background-color: @main-nav-submenu-bg-color;
+		border-color: @main-nav-submenu-separator-color;
+	}
+}
+
+.rtl {
+	.fusion-main-menu {
+		> ul > li {
+			padding-right: 0;
+			padding-left: @main-nav-padding * 1px;
+		}
+
+		.sub-menu {
+			ul {
+				left: auto;
+				right: @main-nav-dropdown-width * 1px;
+			}
+		}
+	}
+}
+
+
+/* Secondary Menu Styles
+================================================================================================= */
+
+.fusion-secondary-menu {
+	> ul > li {
+		border-color: @secondary-menu-divider-color;
+	}
+	
+	> ul > li > a {
+		height: @secondary-menu-line-height * 1px;
+		line-height: @secondary-menu-line-height * 1px;
+	}
+
+	.sub-menu {
+		width: @secondary-menu-dropdown-width * 1px;
+		background-color: @secondary-menu-bg-color;
+		border-color: @secondary-menu-border-color;
+
+		a {
+			border-color: @secondary-menu-border-color;
+			color: @secondary-menu-font-color;	
+		}
+
+		a:hover {
+			background-color: @secondary-menu-hover-bg-color;
+			color: @secondary-menu-hover-font-color;
+		}
+	}
+
+	> ul > li > .sub-menu .sub-menu {
+		left: (@secondary-menu-dropdown-width * 1px) - 2px;
+	}
+
+	.fusion-custom-menu-item-contents {
+		background-color: @secondary-menu-bg-color;
+		border-color: @secondary-menu-border-color;
+		color: @secondary-menu-font-color;	
+	}
+
+	.fusion-secondary-menu-icon, .fusion-secondary-menu-icon:hover {
+		color: @main-nav-color;
+	}
+
+	.fusion-menu-cart-items {
+		a {
+			color: @secondary-menu-font-color;	
+		}
+	}
+
+	.fusion-menu-cart-item {
+		a {
+			border-color: @secondary-menu-border-color;
+		}
+
+		img {
+			border-color: @sep-color;
+		}
+
+		a:hover {
+			background-color: @secondary-menu-hover-bg-color;
+			color: @secondary-menu-hover-font-color;
+		}
+	}
+
+	.fusion-menu-cart-checkout {
+		background-color: @woo-cart-bg-color;
+
+		a:before {
+			color: @secondary-menu-font-color;
+		}
+
+		a:hover, a:hover:before {
+			color: @secondary-menu-hover-font-color;
+		}
+	}
+}
+
+.fusion-secondary-menu-icon {
+	background-color: @woo-cart-bg-color;
+	color: @main-nav-color;
+
+	&:before, &:after {
+		color: @main-nav-color;
+	}	
+}
+
+.rtl {
+	.fusion-secondary-menu {
+		> ul > li:first-child {
+			border-left: 1px solid @secondary-menu-divider-color;
+		}
+
+		> ul > li > .sub-menu .sub-menu {
+			left: auto;
+			right: (@secondary-menu-dropdown-width * 1px) - 2px;
+		}
+	}
+}
+
+
+.fusion-contact-info {
+	line-height: @secondary-menu-line-height * 1px;
+}
+
+
+/* Common Menu Styles
+================================================================================================= */
+
+.fusion-menu-cart-items {
+	font-size: @woo-icon-font-size * 1px;
+	line-height: round((@woo-icon-font-size * 1.5) * 1px);
+
+	a {
+		color: @main-nav-submenu-font-color;
+	}
+}
+
+.fusion-menu-cart-item {
+	a {
+		border-color: @main-nav-submenu-separator-color;
+	}
+
+	img {
+		border-color: @sep-color;
+	}
+
+	a:hover {
+		background-color: @main-nav-submenu-hover-color;
+	}
+}
+
+.fusion-menu-cart-checkout {
+	background-color: @woo-cart-bg-color;
+
+	a:before {
+		color: @main-nav-submenu-font-color;
+	}
+
+	a:hover, a:hover:before {
+		color: @primary-color;
+	}
+}
+
+/* Megamenu Styles
+================================================================================================= */
+
+.fusion-megamenu-holder {
+	border-color: @main-nav-hover-color;
+}
+
+.fusion-megamenu {
+	background-color: @main-nav-submenu-bg-color;
+
+	& when (@megamenu-shadow = 1) {
+		-webkit-box-shadow: 0 2px 2px #999;
+		-moz-box-shadow: 0 2px 2px #999;
+		box-shadow: 0 2px 2px #999;
+	}
+}
+
+.fusion-megamenu-wrapper .fusion-megamenu-submenu {
+	border-color: @main-nav-submenu-separator-color;
+	
+	> a {
+		&:hover {
+			background-color: @main-nav-submenu-hover-color;
+			color: @main-nav-submenu-font-color;
+			font-family: @font;
+			font-weight: @font-weight-body;
+			font-size: @main-nav-submenu-font-size * 1px;			
+		}
+	}
+}
+
+.fusion-megamenu-title {
+	& when not (@headings-font = false) {
+		font-family: @headings-font;
+	}
+	font-weight: @font-weight-headings;
+	font-size: @megamenu-title-size;
+	color: @main-nav-color;
+
+	a {
+		color: @main-nav-color;
+	}
+}
+
+.fusion-megamenu-bullet {
+	border-left-color: @main-nav-submenu-font-color;
+}
+
+.rtl .fusion-megamenu-bullet {
+	border-right-color: @main-nav-submenu-font-color;
+}
+
+.fusion-megamenu-widgets-container {
+	color: @main-nav-submenu-font-color;
+	font-family: @font;
+	font-weight: @font-weight-body;
+	font-size: @main-nav-submenu-font-size * 1px;
+}
+
+.rtl .fusion-megamenu-wrapper .fusion-megamenu-submenu .sub-menu ul {
+	right: auto;
+}
+
+/* Sticky Header Styles
+================================================================================================= */
+
+@sticky-header-rgba: @sticky-header-bg-color;
+@sticky-header-norgba-opacity: @sticky-header-bg-opacity * 100;
+
+.fusion-header-wrapper.fusion-is-sticky .fusion-header,
+.fusion-header-wrapper.fusion-is-sticky .fusion-secondary-main-menu {
+	background-color: @sticky-header-rgba;
+}
+.no-rgba .fusion-header-wrapper.fusion-is-sticky .fusion-header,
+.no-rgba .fusion-header-wrapper.fusion-is-sticky .fusion-secondary-main-menu{
+	background-color: @sticky-header-bg-color;
+	opacity: @sticky-header-bg-opacity;
+	filter: ~"progid: DXImageTransform.Microsoft.Alpha(Opacity=@{sticky-header-norgba-opacity})";
+}
+
+.fusion-is-sticky {
+	.fusion-main-menu {
+		> ul > li {
+			padding-right: @sticky-header-nav-padding * 1px;
+		}
+		> ul > li:last-child {
+			padding-right: 0;
+		}
+		> ul > li > a {
+			font-size: @sticky-header-font-size * 1px;
+		}
+	}
+
+	.rtl & .fusion-main-menu {
+		> ul > li {
+			padding-right: 0;
+			padding-left: @sticky-header-nav-padding * 1px;
+		}
+
+		> ul > li:last-child {
+			padding-left: 0;
+		}
+	}
+}
+
+/* Mobile Menu Styles
+================================================================================================= */
+
+.fusion-mobile-selector {
+	background-color: @mobile-menu-bg-color;
+	border-color: @mobile-menu-border-color;
+	font-size: @mobile-menu-font-size * 1px;
+	height: @mobile-menu-nav-height * 1px;
+	line-height: @mobile-menu-nav-height * 1px;
+	color: @mobile-menu-font-color;
+}
+
+.fusion-selector-down, .rtl .fusion-selector-down {
+	height: ( @mobile-menu-nav-height * 1px ) - 2px;
+	line-height: ( @mobile-menu-nav-height * 1px ) - 2px;
+	border-color: @mobile-menu-border-color;
+
+	&:before {
+		color: @mobile-menu-toggle-color;
+	}
+}
+
+& when ( @mobile-menu-font-size > 35 ) {
+	.fusion-selector-down {
+		font-size: 30px;
+	}
+}
+
+.fusion-mobile-nav-holder > ul, .fusion-mobile-menu-design-modern .fusion-mobile-nav-holder > ul {
+	border-color: @mobile-menu-border-color;
+}
+
+.fusion-mobile-nav-item a {
+	color: @mobile-menu-font-color;
+	font-size: @mobile-menu-font-size * 1px;
+	background-color: @mobile-menu-bg-color;
+	border-color: @mobile-menu-border-color;
+	height: @mobile-menu-nav-height * 1px;
+	line-height: @mobile-menu-nav-height * 1px;
+
+	&:hover {
+		background-color: @mobile-menu-hover-color;
+	}
+
+	&:before {
+		color: @mobile-menu-font-color;
+	}
+}
+
+.fusion-mobile-current-nav-item {
+	> a {
+		background-color: @mobile-menu-hover-color;
+	}
+}
+
+.fusion-mobile-menu-icons {
+	margin-top: @mobile-menu-icons-top-margin * 1px;
+
+	a {
+		color: @mobile-menu-toggle-color;
+
+		&:before {
+			color: @mobile-menu-toggle-color;
+		}
+	}
+}
+
+.fusion-open-submenu {
+	color: @mobile-menu-font-color;
+	height: @mobile-menu-nav-height * 1px;
+	line-height: @mobile-menu-nav-height * 1px;
+}
+
+& when ( @mobile-menu-font-size > 30 ) {
+	.fusion-open-submenu {
+		font-size: 20px;
+	}
+}
+
+.fusion-open-submenu:hover {
+	color: @primary-color;
+}
+
+
+& when (@responsive = 1) {
+	/* Media
+	================================================================================================= */
+
+	@import 'wpless_media.less';
+}
+
+& when (@responsive = 1) {
+	/* iPad Portrait
+	================================================================================================= */
+
+	& when (@ipad-portrait = 0) {
+		@import 'wpless_ipad.less';
+	}
+}
+
+
+/* Shortcodes
+================================================================================================= */
+
+// Content Boxes
+#wrapper .post-content .content-box-heading {
+	font-size: @content-box-title-size * 1px;
+	line-height: @h2-line-height * 1px;
+}
+
+/* Social Links
+================================================================================================= */
+
+// Header
+.fusion-social-links-header {
+	.fusion-social-networks {
+		a {
+			font-size: @header-social-links-size * 1px;
+		}
+
+		&.boxed-icons {
+			a {
+				padding: @header-social-links-boxed-padding * 1px;
+			}
+		}
+	}
+}
+
+// Footer
+.fusion-social-links-footer {
+	.fusion-social-networks {
+		a {
+			font-size: @footer-social-links-size * 1px;
+		}
+
+		&.boxed-icons {
+			a {
+				padding: @footer-social-links-boxed-padding * 1px;
+			}
+		}
+	}
+}
+
+// Sharing Box
+.fusion-sharing-box {
+	.fusion-social-networks {
+		a {
+			font-size: @sharing-social-links-size * 1px;
+		}
+
+		&.boxed-icons {
+			a {
+				padding: @sharing-social-links-boxed-padding * 1px;
+			}
+		}
+	}
+}
+
+// Shortcode
+.post-content {
+	.fusion-social-links {
+		.fusion-social-networks {
+			a {
+				font-size: @social-links-size * 1px;
+			}
+
+			&.boxed-icons {
+				a {
+					padding: @social-links-boxed-padding * 1px;
+				}
+			}
+		}
+	}
+}
+
+
+& when (@is-woocommerce = 1) {
+	/* Woocommerce - Dynamic Styling
+	================================================================================================= */
+	.product-images .crossfade-images {
+		background: @title-border-color;
+	}
+	.products {
+		.product-list-view {
+			border-color: @sep-color;
+			.product-excerpt-container,
+			.product-details-container {
+				border-color: @sep-color;
+			}
+		}
+	}
+
+	.order-dropdown {
+		color: @woo-dropdown-text-color;
+
+		> li {
+			&:after {
+				border-color: @woo-dropdown-border-color;
+			}
+		}
+
+		a, a:hover {
+			color: @woo-dropdown-text-color;
+		}
+
+		.current-li, ul li a {
+			background-color: @woo-dropdown-bg-color;
+			border-color: @woo-dropdown-border-color;
+		}
+
+		ul li a:hover {
+			color: @woo-dropdown-text-color;
+			background-color: lighten( @woo-dropdown-bg-color, 10% );
+		}
+	}
+
+	.catalog-ordering {
+		.order {
+			li {
+				a {
+					color: @woo-dropdown-text-color;
+					background-color: @woo-dropdown-bg-color;
+					border-color: @woo-dropdown-border-color;
+				}
+			}
+		}
+	}
+
+	.fusion-grid-list-view {
+		border-color: @woo-dropdown-border-color;
+
+		li {
+			background-color: @woo-dropdown-bg-color;
+			border-color: @woo-dropdown-border-color;		
+		}
+
+		a {
+			color: @woo-dropdown-text-color;
+		}
+
+		li a:hover {
+			color: @woo-dropdown-text-color;
+			background-color: lighten( @woo-dropdown-bg-color, 10% );
+		}
+
+		li.active-view {
+			background-color: lighten( @woo-dropdown-bg-color, 5% );
+			
+			a i {
+				color: fadeout( @woo-dropdown-text-color, 30% );
+			}
+		}
+	}
+}

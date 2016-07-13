@@ -1,0 +1,38 @@
+#plugin_admin_class input, #plugin_admin_class select {
+    display: block;
+    clear: both;
+}
+
+#plugin_admin_class input[type="radio"] {
+    display: inline;
+    clear: none;
+}
+
+/*
+**By default (for some reason) WP declairs 22px height for the select element.
+*/
+#plugin_admin_class select {
+    height: auto;
+}
+
+#plugin_admin_class .ui-widget {
+    font-size: 13px;
+}
+
+#plugin_admin_class label {
+    font-size: 12px;
+}
+
+#plugin_admin_class .form-table th {
+    width: 170px;
+}
+.ui-widget-content a{
+    color: #21759B!important;
+}
+.ui-widget-content a:hover{
+    color: #D54E21!important;
+}
+
+.postbox-container {
+    margin-right: 1%;
+}

@@ -1,0 +1,292 @@
+@fontawesome-icon-on-top-size: 64px;
+@font-awesome-small-size: 35px;
+@font-awesome-medium-size: 50px;
+@font-awesome-large-size: 65px;
+
+.fusion-content-boxes {
+	margin-bottom: 60px;
+
+	.fusion-column {
+		margin-bottom: 20px;
+	}
+
+	.heading {
+		overflow: hidden;
+		margin-bottom: 15px;
+
+		.heading-link {
+			&:hover {
+				.content-box-heading {
+					color: @primary-color;
+				}
+			
+				.fontawesome-icon {
+					background-color: @primary-color;
+					border-color: @primary-color;
+				}
+			}
+		}
+
+		.content-box-heading {
+			margin: 0;
+		}
+		
+		img { 
+			float: none;
+		}
+	}
+
+	.content-container {
+		.fusion-read-more {
+			display: block;
+			margin-top: 18px;
+
+			/* General styles in base.less */
+		}
+	}
+
+	&.content-boxes-icon-with-title,
+	&.content-boxes-icon-on-side {
+		.heading-with-icon {
+			display: table;
+			width: auto;
+
+			.heading-link {
+				display: block;
+			}
+
+			.icon,
+			.image {
+				display: table-cell;
+				vertical-align: middle;
+				float: none;
+			}
+			
+			img {
+				margin-right: 10px;
+				max-width: none;
+			}			
+			
+			.fontawesome-icon {
+				display: block;
+				float: none;
+				margin-right: 10px;
+			}
+			
+			i.small {
+				height:@font-awesome-small-size;
+				width:@font-awesome-small-size;
+				line-height:@font-awesome-small-size;
+				font-size:18px;
+			}
+			
+			i.medium {
+				height:@font-awesome-medium-size;
+				width:@font-awesome-medium-size;
+				line-height:@font-awesome-medium-size;
+				font-size:21px;
+			} 
+			
+			i.large {
+				width:@font-awesome-large-size;
+				height:@font-awesome-large-size;
+				line-height:@font-awesome-large-size;
+				font-size:24px;
+			}
+		
+			.content-box-heading {
+				display: table-cell;
+				vertical-align: middle;			
+				line-height: normal;
+			}
+			
+			&.icon-right {
+				
+				float:right !important;
+				
+				.icon, .image {
+					float:none;
+					padding-left: 10px !important;
+				}
+				
+				.icon i {
+					margin-right:0px !important;
+				}
+				
+				.content-box-heading {
+					float:none !important;
+					line-height: 27px !important;
+					text-align: right;
+				}
+				
+				
+			}			
+		}
+	
+		.content-container {
+			.fusion-read-more {
+				/* General styles in base.less */
+			}
+		}
+	}
+	
+	&.content-boxes-icon-on-side {
+		.heading {
+			margin-bottom: 15px;
+		}
+
+		.heading-with-icon {
+			.content-box-heading {
+				vertical-align: top;
+			}
+
+			.fa {
+				margin-right: 20px;
+			}
+		}
+
+		.content-container.icon-small {
+			padding-left: 55px;
+		}
+		
+		.content-container.icon-medium {
+			padding-left: 70px;
+		}
+		
+		.content-container.icon-large {
+			padding-left: 85px;
+		}
+	}
+	
+	&.content-boxes-icon-on-side.content-right {
+		
+		.content-container {
+			padding-left:0px !important;
+		}
+		.content-container.icon-small {
+			padding-right: 45px;
+		}
+		
+		.content-container.icon-medium {
+			padding-right:60px;
+		}
+		
+		.content-container.icon-large {
+			padding-right:75px;
+		}
+	}
+	
+	&.content-boxes-icon-on-top {
+		.heading {
+			text-align: center;
+	
+			.icon {
+				margin-bottom: 15px;
+			}
+	
+			.fontawesome-icon {
+				display: block;
+				float: none;
+				margin: 0 auto;
+				height: @fontawesome-icon-on-top-size;
+				width: @fontawesome-icon-on-top-size;
+				line-height: @fontawesome-icon-on-top-size;
+				font-size: 24px;
+			}
+			
+			i.small {
+				height:@font-awesome-small-size;
+				width:@font-awesome-small-size;
+				line-height:@font-awesome-small-size;
+				font-size:18px;
+			}
+			
+			i.medium {
+				height:@font-awesome-medium-size;
+				width:@font-awesome-medium-size;
+				line-height:@font-awesome-medium-size;
+				font-size:21px;
+			} 
+			
+			i.large {
+				width:@font-awesome-large-size;
+				height:@font-awesome-large-size;
+				line-height:@font-awesome-large-size;
+				font-size:24px;
+			}
+
+			img { margin-bottom: 20px; }
+		}
+		
+		.content-container, 
+		.fusion-read-more {
+			text-align: center;
+		}
+	}
+	
+	&.content-boxes-icon-boxed {
+		overflow: visible;
+		
+		.content-wrapper-boxed {
+			overflow: visible;
+			padding: 50px 18px 18px 18px;
+			text-align: center;	
+		}
+		
+		.heading {
+			overflow: visible;
+			position: relative;
+			text-align: center;
+	
+			.fontawesome-icon {
+				display: block;
+				position: absolute;
+				left: 50%;
+				top: -80px;
+				float: none;
+				margin-left: -32px;
+				height: @fontawesome-icon-on-top-size;
+				width: @fontawesome-icon-on-top-size;
+				line-height: @fontawesome-icon-on-top-size;
+				font-size: 24px;
+			}
+			
+			i.small {
+				height:@font-awesome-small-size;
+				width:@font-awesome-small-size;
+				line-height:@font-awesome-small-size;
+				font-size:18px;
+				top: -67px;
+				margin-left: -17px;
+			}
+			
+			i.medium {
+				height:@font-awesome-medium-size;
+				width:@font-awesome-medium-size;
+				line-height:@font-awesome-medium-size;
+				font-size:21px;
+				top:-76px;
+				margin-left: -25px;
+			} 
+			
+			i.large {
+				width:@font-awesome-large-size;
+				height:@font-awesome-large-size;
+				line-height:@font-awesome-large-size;
+				font-size:24px;
+				top: -85px;
+			}
+			
+			.image {
+				display: block;
+				position: absolute;
+				left: 50%;			
+			}
+		}
+		
+		.content-container, 
+		.fusion-read-more {
+			text-align: center;
+		}
+	}
+}

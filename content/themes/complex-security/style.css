@@ -1,0 +1,587 @@
+/*
+Theme Name: Complex Security Solution Theme
+Description: Child theme for Complex Security Solution Theme
+Author: Smashing Agency
+Author URI: https://smashingagency.com
+Template: Avada
+Version: 1.0.0
+Text Domain:  CSS
+*/
+
+
+@font-face {
+    font-family: 'square721_dmnormal';
+    src: url('fonts/sqr721dn-webfont.eot');
+    src: url('fonts/sqr721dn-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/sqr721dn-webfont.woff2') format('woff2'),
+         url('fonts/sqr721dn-webfont.woff') format('woff'),
+         url('fonts/sqr721dn-webfont.ttf') format('truetype'),
+         url('fonts/sqr721dn-webfont.svg#square721_dmnormal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+.tp-bullets.simplebullets.round .bullet {
+    background: rgba(0, 0, 0, 0) url("images/bullet.png") no-repeat scroll left top !important;
+}
+
+.tp-bullets.simplebullets .bullet:hover, .tp-bullets.simplebullets .bullet.selected {
+	    background: rgba(0, 0, 0, 0) url("images/bullet.png") no-repeat scroll left bottom 	!important;
+    background-position: left top;
+}
+
+
+
+
+
+.card-access-content p {
+    font-size: 18px;
+    font-weight: lighter;
+    line-height: 27px;
+}
+
+
+
+.easy-ins-img {
+    background-image: url("http://cplexsolutions.com/wp-content/uploads/2012/07/easy-ins-img.jpg");
+    background-position: center top;
+    background-repeat: no-repeat;
+    float: left;
+    padding: 137px 31px 0;
+    width: 35%;
+    text-align: center;
+    font-size: 15px;
+    line-height: 16px;
+}
+
+
+.easy-setup-Img  {
+    background-image: url(http://cplexsolutions.com/wp-content/uploads/2012/07/easysetup-img.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
+    float: left;
+    padding: 137px 40px 0;
+    width: 35%;
+    text-align: center;
+    font-size: 15px;
+    line-height: 16px;
+}
+
+
+.just-card-Img {
+    background-image: url(http://cplexsolutions.com/wp-content/uploads/2012/07/just-card-img.jpg);
+    background-position: center top;
+    background-repeat: no-repeat;
+    float: left;
+    padding: 137px 31px 0;
+    width: 30%;
+    text-align: center;
+    font-size: 15px;
+    line-height: 16px;
+}
+
+.button-custom {
+    padding: 17px 51px;
+	margin-top:50px;
+    font-weight: normal !important;
+    text-transform: lowercase;
+    font-size: 18px;
+	
+}
+
+.home #main {
+    padding-top: 0;
+}
+
+.home-aboutus p {
+    color: #44494f;
+    font-size: 16px;
+    font-weight: lighter;
+    line-height: 28px;
+}
+
+
+.home-aboutus h3 {
+    font-size: 24px !important;
+    font-weight: lighter !important;
+    border-bottom: 1px solid #e7e7e7;
+    padding: 0 10px 18px 10px;
+}
+
+.home-news h3 {
+    font-size: 24px !important;
+    font-weight: lighter !important;
+    border-bottom: 1px solid #e7e7e7;
+    padding: 0 10px 18px 10px;
+}
+
+.CardAccessIcon h2 {
+    line-height: 76px !important;
+    padding: 0 183px 0 0 !important;
+}
+
+.IntrusionAlarmsIcon h2 {
+    line-height: 51px !important;
+    padding: 0 246px 0 0 !important;
+	margin-bottom:30px;
+}
+
+.SecurityCameraIcon h2 {
+    line-height: 66px !important;
+    padding: 0 96px 0 0 !important;
+    margin-bottom: 20px;
+}
+
+.SecurityCameraIcon .fusion-imageframe {
+    margin-right: 0px !important;
+}
+
+
+
+.how-it-works h2 {
+	margin-bottom:20px!important;
+}
+
+
+.how-it-works p {
+	font-weight:lighter;
+	font-size:18px;
+}
+
+
+
+.home-news ul li {
+    list-style: none;
+    padding: 19px 0 20px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.home-news ul li:first-child {
+    list-style: none;
+    padding: 0  0 20px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+
+.home-news abbr {
+    display: none;
+}
+
+.home-news .news-title.post-title {
+    color: black;
+    float: left;
+    font-size: 18px;
+    padding: 0 0 6px;
+    line-height: 24px;
+	 font-weight: normal;
+}
+
+
+.home-news a {
+    font-weight: lighter;
+	    font-size: 15px;
+}
+
+
+.largemainsliderheading {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border-color: rgb(255, 214, 88);
+    border-style: none;
+    border-width: 0;
+    color: #ffffff;
+    font-family: "square721_dmnormal";
+    font-size: 44px !important;
+    font-weight: normal;
+    line-height: 53px !important;
+    padding: 22px 30px !important;
+    text-decoration: none;
+}
+
+
+.fusion-footer-widget-area ul li a {
+    border-bottom: none;
+    display: block;
+    padding: 2px 0;
+	font-size:14px;
+}
+
+.fusion-footer-widget-area ul li{
+	font-size: 14px;
+	font-weight: lighter;
+}
+.fusion-copyright-notice {
+    font-size: 14px;
+    text-align: center;
+	font-weight:lighter;
+}
+
+.how-it-works {
+    background-size: auto !important;
+    background-position: center 225px !important;
+	    border-top: 10px solid #fff !important;
+}
+
+
+.home .fusion-one-third .image {
+    padding: 0 0 0 48px;
+}
+
+.home .fusion-content-boxes.content-boxes-icon-on-top .heading img {
+    margin-bottom: 0px;
+}
+
+.home .fusion-content-boxes .heading {
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.home .content-container > h4 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #ec781b;
+    line-height: 0;
+    margin: 14px 0 0;
+}
+
+.home h5, .fusion-title-size-five {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 19px;
+}
+
+
+.home .fusion-title.title.fusion-title-size-five > h4 {
+    font-size: 28px;
+    font-weight: 200;
+}
+
+
+
+.quote-first {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/quote-1.jpg");
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding: 10px;
+    float: left;
+    margin: 0 0 0 -30px;
+}
+
+.quote-end {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/quote-2.jpg");
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    padding: 0 2px 4px 28px;
+}
+
+
+
+.home .company-name strong {
+    color: #d94f25;
+    font-weight: 300;
+    font-size: 20px;
+    width: 100%;
+    float: left;
+}
+
+
+.home .company-name span {
+    color: #7b7f85;
+    font-weight: 300;
+    font-size: 13px;
+}
+
+.home.fusion-testimonials.classic blockquote q {
+    display: block;
+    line-height: normal;
+    padding: 25px;
+    font-size: 15px;
+
+}
+
+.home q {
+    background-color: #fff!important;
+		font-size:10px;
+	font-weight:normal;
+	color:#545b65;
+	    font-weight: 500 !important;
+    font-family: open sans, arial !important;
+}
+
+.fusion-testimonials.classic .testimonial-image {
+    max-width: 63px;
+}
+
+
+.home .reviews {
+    margin: -28px 0 0 0;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 27px;
+}
+
+.view-all-testimonials {
+    padding: 18px 0 0 0;
+    font-size: 15px;
+    font-weight: lighter;
+}
+
+
+.home-form p {
+    font-size: 15px;
+    font-weight: lighter;
+	margin:0px;
+}
+
+.wpcf7-text {
+    background-color: #f4f5f7 !important;
+    border: 1px solid #c6c7cc;
+    color: #3a4049 !important;
+    height: 40px ;
+}
+
+
+.email {
+    width: 48% !important;
+    float: left;
+}
+
+
+.home-form .name {
+    margin: 10px 0;
+    float: left;
+    width: 100%;
+}
+
+.Phone {
+    float: left;
+    width: 48% !important;
+    margin: 0 0 0 14px;
+}
+
+
+.home-form .wpcf7-textarea {
+    background-color: #f4f5f7 !important;
+    color: #3a4049 !important;
+    float: left;
+    margin: 10px 0;
+    width: 100%;
+    height: 97px !important;
+}
+
+.wpcf7-submit {
+    width: 75px !important;
+    height: 30px;
+    color: #fff !important;
+    font-size: 18px!important;
+    font-weight: lighter !important;
+    text-transform: none;
+}
+
+
+.Phone {
+    width: 48% !important;
+    float: left;
+}
+
+.footer-fb {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/icons.png");
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding: 0 0 0 27px;
+}
+
+.footer-twitter {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/icons.png");
+    background-position: left -36px;
+    background-repeat: no-repeat;
+    padding: 0 0 0 27px;
+}
+
+.footer-linked {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/icons.png");
+    background-position: left -67px;
+    background-repeat: no-repeat;
+    padding: 0 0 0 27px;
+}
+
+.footer-add {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/icons.png");
+    background-position: left -112px;
+    background-repeat: no-repeat;
+    padding: 0 0 0 27px;
+}
+
+.footer-phone {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/icons.png");
+    background-position: left -168px;
+    background-repeat: no-repeat;
+    padding: 0 0 0 27px;
+}
+
+/*--------------- Services Offered --------------------*/
+
+.fusion-page-title-bar h1 {
+    color: #ffffff  !important;
+    font-family: "square721_dmnormal" !important;
+    font-size: 48px  !important;
+    font-weight: 500  !important;
+    line-height: 40px  !important;
+}
+
+.fusion-page-title-bar h3 {
+    font-size: 24px;
+    font-weight: lighter !important;
+	margin-top:10px;
+    line-height: 26px;
+    width: 481px !important;
+}
+
+
+
+
+.page-id-11338 .fusion-fullwidth-2::after {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/arrow-btm.jpg");
+    background-position: center 100px;
+    background-repeat: no-repeat;
+    content: "";
+    display: block;
+    left: 45%;
+    padding: 62px;
+    position: absolute;
+    width: 0;
+    z-index: 1;
+}
+
+.page-id-11338 .fusion-fullwidth-2 {
+    border-bottom: 1px solid #e1e1e1 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.page-id-11338 .fusion-fullwidth-1::after {
+    background-image: url("http://cplexsolutions.com/wp-content/themes/complex-security/images/arrow-up.jpg");
+    background-position: center 100px;
+    background-repeat: no-repeat;
+    content: "";
+    display: block;
+    left: 45%;
+    padding: 62px;
+    position: absolute;
+    width: 0;
+    z-index: 1;
+}
+
+
+/*--------------- Contact Page --------------------*/
+
+
+.title-heading-left {
+    font-size: 38px !important;
+    font-weight: lighter !important;
+    line-height: 37px !important;
+}
+
+
+.contact-title {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 51px !important;
+    padding-bottom: 12px;
+}
+
+
+.page-id-86 .wpcf7-text {
+    background-color: #f4f5f7 !important;
+    border: 1px solid #c6c7cc;
+    color: #3a4049 !important;
+    font-family: open sans,arial;
+    font-size: 18px !important;
+    font-weight: 100 !important;
+    height: 68px;
+}
+
+.page-id-86 .email {
+    float: left;
+    width: 49% !important;
+}
+
+.page-id-86 .Phone {
+    float: left;
+    width: 48.8% !important;
+}
+
+
+
+.page-id-86 .wpcf7-textarea {
+    background-color: #f4f5f7 !important;
+    color: #3a4049 !important;
+    font-family: open sans,arial;
+    font-size: 18px !important;
+    font-weight: 100 !important;
+    height: 151px;
+    margin-top: 22px;
+    width: 100%;
+}
+
+
+.captcha-left {
+    float: left;
+    font-family: open sans,arial;
+    font-size: 18px;
+    font-weight: lighter;
+    margin-top: 15px !important;
+    width: 50%;
+}
+
+
+.captcha-right {
+    float: left;
+    font-family: open sans,arial;
+    font-size: 18px;
+    font-weight: lighter;
+    margin-top: 15px !important;
+    width: 50%;
+}
+
+
+
+.wpcf7-captchac {
+    border: 1px solid #ddd;
+    height: 60px;
+    margin: 18px 0 ;
+    width: 192px;
+}
+
+
+.page-id-86 .wpcf7-captchar {
+    background-color: #f4f5f7 !important;
+    color: #3a4049 !important;
+    font-family: open sans,arial;
+    font-size: 18px !important;
+    font-weight: 100 !important;
+    height: 60px;
+    margin: 20px 0;
+    width: 263px;
+}
+
+.page-id-86 .wpcf7-submit {
+    font-size: 23px !important;
+    height: 39px !important;
+    width: 190px !important;
+color: #ffffff !important;
+}
+
+.contact-address {
+    background-image: url("http://cplexsolutions.com/wp-content/uploads/2012/07/contact-icons.jpg");
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding: 8px 0 11px 32px;
+}
+
+.contact-phone {
+    background-image: url("http://cplexsolutions.com/wp-content/uploads/2012/07/contact-icons.jpg");
+    background-position: left -58px;
+    background-repeat: no-repeat;
+    padding: 8px 0 11px 32px;
+}
