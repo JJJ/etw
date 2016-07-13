@@ -1,0 +1,12 @@
+[main]
+host = https://www.transifex.com
+
+[avada.avadapo]
+file_filter = languages/<lang>.po
+source_lang = en
+type = PO
+
+[avada.fusion-corepo]
+file_filter = languages/fusion-core-<lang>.po
+source_lang = en
+type = PO

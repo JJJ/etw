@@ -1,0 +1,38 @@
+/* News settings */
+.df-credits { float: right; width: 280px; background: #fff; margin: 20px -300px 20px 20px; position: relative; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05); }
+.df-credits .inner { padding-left: 10px; padding-right: 10px; }
+.df-credits h3 { font-size: 14px; line-height: 1.4; margin: 0;  padding: 8px 12px; border-bottom: 1px solid #eee; }
+.df-credits .df-link { font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif; font-style:italic; padding-bottom: 10px; margin: 0; }
+.df-credits .df-link a { vertical-align: middle; padding: 5px 0 0 4px; }
+.news-manager-settings { margin-right: 300px; }
+.news-manager-settings hr, .df-credits hr { border: solid #eee; border-width: 1px 0 0; clear: both; height: 0; }
+.news-manager-settings form { float: left; min-width: 463px; width: auto; }
+.news-manager-settings fieldset span.description { margin-bottom: 8px; margin-top: 4px; display: block; }
+.news-manager-settings .ui-button { margin-bottom: 5px; }
+.news-manager-settings .description { font-size: 13px; margin-bottom: 8px; }
+#nm_permalinks_tags_news input:disabled, #nm_permalinks_categories_news input:disabled { background-color: #ebebeb; }
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 959px) {
+	.df-credits { width: 100%; float: none; margin: 20px 0; }
+	.news-manager-settings { margin-right: 0; }
+}
+
+/* Widgets screen */
+ul.terms-checkbox-list, ul.terms-checkbox-list li {
+	margin: 0;
+}
+ul.terms-checkbox-list.depth-level-1 {
+	margin-left: 10px;
+}
+ul.terms-checkbox-list.depth-level-2 {
+	margin-left: 20px;
+}
+ul.terms-checkbox-list.depth-level-3 {
+	margin-left: 30px;
+}
+ul.terms-checkbox-list.depth-level-4 {
+	margin-left: 40px;
+}
+.news-manager-list { margin: 0 0 1em; padding: 0; }
+.checkbox-list { border: 1px solid #dfdfdf; background:#fff; max-height: 200px; min-height: 16px; overflow: auto; padding: 0.5em 0.9em; margin: 0.5em 0 0; }

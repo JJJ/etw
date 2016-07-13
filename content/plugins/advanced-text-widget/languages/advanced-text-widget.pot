@@ -1,0 +1,106 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Advanced Text Widget PRO\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-02 12:17-0700\n"
+"PO-Revision-Date: 2011-11-02 12:17-0700\n"
+"Last-Translator: Max Chirkov <max.chirkov@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: advanced-text-widget-pro/advancedtext.php:26
+msgid "Advanced text widget with PHP code support."
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:32
+msgid "Advanced Text"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:40
+msgid "Title above the widget"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:40
+msgid "Title:"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:41
+#: advanced-text-widget-pro/advancedtext.php:42
+msgid "PHP Code (MUST be enclosed in &lt;?php and ?&gt; tags!):"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:137
+msgid "Widget Visibility:"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:138
+msgid "Show only on specified page(s)/post(s)/category. Default is All"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:140
+msgid "Show"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:141
+msgid "Do NOT show"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:158
+msgid "Optional limitation to specific page, post or category. Use ID, slug or title."
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:158
+msgid "Slug/Title/ID:"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:162
+msgid "<p>In <strong>Post In Category</strong> add one or more cat. IDs (not Slug or Title) comma separated!</p>"
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:165
+msgid "Do not output widget title in the front-end."
+msgstr ""
+
+#: advanced-text-widget-pro/advancedtext.php:166
+msgid "Suppress Title Output"
+msgstr ""
+
+#: advanced-text-widget-pro/options/options.php:105
+msgid "Add New Condition"
+msgstr ""
+
+#: advanced-text-widget-pro/options/options.php:110
+msgid "Name 1"
+msgstr ""
+
+#: advanced-text-widget-pro/options/options.php:116
+msgid "Code 1"
+msgstr ""
+
+#: advanced-text-widget-pro/options/options.php:130
+msgid "Name "
+msgstr ""
+
+#: advanced-text-widget-pro/options/options.php:137
+msgid "Code "
+msgstr ""
+
+#: advanced-text-widget-pro/pro/functions.php:26
+msgid "Apply visibility conditions only to Advanced Text Widget"
+msgstr ""
+
+#: advanced-text-widget-pro/pro/functions.php:31
+msgid "Export Settings"
+msgstr ""
+
+#: advanced-text-widget-pro/pro/functions.php:37
+msgid "Import Settings"
+msgstr ""
+
+#: advanced-text-widget-pro/lib/wp_plugin_admin.php:191
+msgid "Settings"
+msgstr ""
+

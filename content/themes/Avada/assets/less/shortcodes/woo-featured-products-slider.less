@@ -1,0 +1,83 @@
+.fusion-woo-featured-products-slider {
+	position: relative;
+	margin-bottom: 25px;
+	
+	.fusion-carousel-wrapper {
+		overflow: hidden;
+	}
+	
+	.fusion-rollover-content {
+		.price {
+			margin-top: 3px;
+
+			.amount {
+			  font-size: 25px;
+			}  				
+		}
+	}	
+	
+	.fusion-product-buttons {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 20px;
+		padding: 0 10%;
+
+		a {
+			&.added_to_cart {
+				display: none;
+			}
+		}
+	}	
+	
+	.fusion-carousel-nav {	
+		.fusion-nav-prev, 
+		.fusion-nav-next {
+			margin-top: -31px;
+			height: 63px;
+			width: 63px;
+
+			&:before {
+				content: @left-arrow-large;
+				line-height: 63px;
+				font-size: 25px;
+			}
+		}
+
+		.fusion-nav-next {
+			&:before {
+				content: @right-arrow-large;
+			}
+		}
+	}
+}
+
+/* Used for both woo carousels */
+.fusion-woo-slider {
+	.fusion-rollover-content {
+		.fusion-rollover-title {
+			margin: 0;
+			line-height: normal;
+		}
+	}
+	
+	.fusion-carousel-title-below-image {
+		.fusion-product-buttons {
+			position: static;
+			
+			a {
+				&:first-child,
+				&:last-child {
+					display: inline-block;
+					float: none;
+					margin: 0;
+				}
+			}
+		}
+		
+		.fusion-rollover-linebreak {
+			display: block;
+			margin-bottom: 8px
+		}
+	}	
+}

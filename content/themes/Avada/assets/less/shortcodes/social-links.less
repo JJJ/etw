@@ -1,0 +1,81 @@
+.fusion-social-links {
+	//margin-bottom: @default-margin-bottom; 
+}
+
+@icon-color: #46494A;
+@boxed-icon-color: #fff;
+@boxed-icon-bg: @icon-color;
+
+.fusion-social-networks {
+	.fusion-social-network-icon {
+		margin-left: 0;
+		margin-right: 20px;
+		margin-bottom: 10px;
+		font-size: 16px;
+		color: @icon-color;
+		display: inline-block;
+
+		&:hover {
+			opacity: 0.8;
+		}
+		&:before {
+			color: inherit;
+		}
+	}
+	
+	&.boxed-icons {
+		.fusion-social-network-icon {
+			margin-right: 10px;
+			padding: 8px;		
+			background-color: @boxed-icon-bg;
+			border: none;
+			.border-radius( 3px );
+			.box-shadow( 0 1px 1px rgba( 0, 0, 0, 0.2 ) );
+			.backgroundclip( inherit );
+			border: 1px solid @boxed-icon-bg;
+			color: @boxed-icon-color;
+		}
+	}
+}
+
+.fusion-secondary-header .alignright .fusion-social-links-header {
+	.fusion-social-network-icon {
+		margin-right: 0;
+		margin-left: 20px;
+	}
+	.boxed-icons {
+		.fusion-social-network-icon {
+			margin-right: 0;
+			margin-left: 10px;
+		}
+	}
+}
+ 
+.fusion-social-links-footer {
+	display: table-cell;
+	vertical-align: middle;
+	width: 40%;
+	text-align: right;
+	
+	.fusion-social-networks {
+		margin-top: 10px;	
+
+		&.boxed-icons {
+			margin-top: 0;
+
+			.fusion-social-network-icon {
+				margin-right: 0;
+				margin-left: 10px;
+			}
+		}
+		
+		.fusion-social-network-icon {
+			margin-right: 0;
+			margin-left: 20px;
+			
+			&:first-child {
+				margin-left: 0;
+			}
+		}		
+	}
+}
