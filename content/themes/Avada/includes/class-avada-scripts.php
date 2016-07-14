@@ -73,7 +73,7 @@ class Avada_Scripts {
         if ( ! $smof_data['status_gmap'] ) {
             $map_api = 'http' . ( ( is_ssl() ) ? 's' : '' ) . '://maps.googleapis.com/maps/api/js?sensor=false&amp;language=' . substr( get_locale(), 0, 2 );
             wp_register_script( 'google-maps-api', $map_api, array(), $this->theme_info->get( 'Version' ), false );
-            wp_register_script( 'google-maps-infobox', 'http' . ( ( is_ssl() ) ? 's' : '' ) . '://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js', array(), $this->theme_info->get( 'Version' ), false );
+            wp_register_script( 'google-maps-infobox', $this->theme_uri . '/assets/js/infobox.js', array(), $this->theme_info->get( 'Version' ), false );
         }
 
         if ( ! $smof_data['dev_mode'] ) {
