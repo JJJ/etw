@@ -35,7 +35,7 @@ class Genesis_Admin_CPT_Archive_Settings extends Genesis_Admin_Boxes {
 	 *
 	 * @param \stdClass $post_type Post Type object.
 	 */
-	public function __construct( stdClass $post_type ) {
+	public function __construct( $post_type ) {
 		$this->post_type = $post_type;
 
 		$page_id = 'genesis-cpt-archive-' . $this->post_type->name;
