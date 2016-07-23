@@ -2164,6 +2164,31 @@ function wp_ajax_set_post_thumbnail() {
 }
 
 /**
+ * Ajax handler for retrieving HTML for the featured image.
+ *
+ * @since 4.6.0
+ */
+function wp_ajax_get_post_thumbnail_html() {
+	$post_ID = intval( $_POST['post_id'] );
+
+	check_ajax_referer( "update-post_$post_ID" );
+
+	if ( ! current_user_can( 'edit_post', $post_ID ) ) {
+		wp_die( -1 );
+	}
+
+	$thumbnail_id = intval( $_POST['thumbnail_id'] );
+
+	// For backward compatibility, -1 refers to no featured image.
+	if ( -1 === $thumbnail_id ) {
+		$thumbnail_id = null;
+	}
+
+	$return = _wp_post_thumbnail_html( $thumbnail_id, $post_ID );
+	wp_send_json_success( $return );
+}
+
+/**
  * Ajax handler for setting the featured image for an attachment.
  *
  * @since 4.0.0
@@ -3781,19 +3806,22 @@ function wp_ajax_delete_plugin() {
  *
  * @since 4.6.0
  *
- * @global WP_List_Table $wp_list_table Current list table instance.
- * @global string        $hook_suffix   Current admin page.
- * @global string        $s             Search term.
+ * @global string $s Search term.
  */
 function wp_ajax_search_plugins() {
 	check_ajax_referer( 'updates' );
 
-	global $wp_list_table, $hook_suffix, $s;
-	$hook_suffix = 'plugins.php';
+	$pagenow = isset( $_POST['pagenow'] ) ? sanitize_key( $_POST['pagenow'] ) : '';
+	if ( 'plugins-network' === $pagenow || 'plugins' === $pagenow ) {
+		set_current_screen( $pagenow );
+	}
 
 	/** @var WP_Plugins_List_Table $wp_list_table */
-	$wp_list_table = _get_list_table( 'WP_Plugins_List_Table' );
-	$status        = array();
+	$wp_list_table = _get_list_table( 'WP_Plugins_List_Table', array(
+		'screen' => get_current_screen(),
+	) );
+
+	$status = array();
 
 	if ( ! $wp_list_table->ajax_user_can() ) {
 		$status['errorMessage'] = __( 'Sorry, you are not allowed to manage plugins for this site.' );
@@ -3806,7 +3834,7 @@ function wp_ajax_search_plugins() {
 		'action'      => null,
 	) ), network_admin_url( 'plugins.php', 'relative' ) );
 
-	$s = sanitize_text_field( $_POST['s'] );
+	$GLOBALS['s'] = wp_unslash( $_POST['s'] );
 
 	$wp_list_table->prepare_items();
 
@@ -3822,19 +3850,21 @@ function wp_ajax_search_plugins() {
  * Ajax handler for searching plugins to install.
  *
  * @since 4.6.0
- *
- * @global WP_List_Table $wp_list_table Current list table instance.
- * @global string        $hook_suffix   Current admin page.
  */
 function wp_ajax_search_install_plugins() {
 	check_ajax_referer( 'updates' );
 
-	global $wp_list_table, $hook_suffix;
-	$hook_suffix = 'plugin-install.php';
+	$pagenow = isset( $_POST['pagenow'] ) ? sanitize_key( $_POST['pagenow'] ) : '';
+	if ( 'plugin-install-network' === $pagenow || 'plugin-install' === $pagenow ) {
+		set_current_screen( $pagenow );
+	}
 
 	/** @var WP_Plugin_Install_List_Table $wp_list_table */
-	$wp_list_table = _get_list_table( 'WP_Plugin_Install_List_Table' );
-	$status        = array();
+	$wp_list_table = _get_list_table( 'WP_Plugin_Install_List_Table', array(
+		'screen' => get_current_screen(),
+	) );
+
+	$status = array();
 
 	if ( ! $wp_list_table->ajax_user_can() ) {
 		$status['errorMessage'] = __( 'Sorry, you are not allowed to manage plugins for this site.' );
@@ -3851,6 +3881,7 @@ function wp_ajax_search_install_plugins() {
 
 	ob_start();
 	$wp_list_table->display();
+	$status['count'] = (int) $wp_list_table->get_pagination_arg( 'total_items' );
 	$status['items'] = ob_get_clean();
 
 	wp_send_json_success( $status );
@@ -3875,26 +3906,25 @@ function wp_ajax_test_url() {
 		$href = get_bloginfo( 'url' ) . $href;
 	}
 
+	// No redirects
 	$response = wp_safe_remote_get( $href, array(
 		'timeout' => 15,
 		// Use an explicit user-agent
 		'user-agent' => 'WordPress URL Test',
 	) );
 
-	$message = null;
+	$error = false;
 
 	if ( is_wp_error( $response ) ) {
-		$error = $response->get_error_message();
-
-		if ( strpos( $message, 'resolve host' ) !== false ) {
-			$message = array( 'error' => __( 'Invalid host name.' ) );
+		if ( strpos( $response->get_error_message(), 'resolve host' ) !== false ) {
+			$error = true;
 		}
-
-		wp_send_json_error( $message );
+	} elseif ( wp_remote_retrieve_response_code( $response ) === 404 ) {
+		$error = true;
 	}
 
-	if ( wp_remote_retrieve_response_code( $response ) === 404 ) {
-		wp_send_json_error( array( 'error' => __( 'Not found, HTTP error 404.' ) ) );
+	if ( $error ) {
+		wp_send_json_error( array( 'httpError' => true ) );
 	}
 
 	wp_send_json_success();
