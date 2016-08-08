@@ -16,7 +16,6 @@ defined( 'ABSPATH' ) || exit;
 
 add_action( 'admin_menu', 'wp_tracking_code_menu_item' );
 add_action( 'wp_head'   , 'wp_tracking_code_head' );
-add_action( 'wp_footer' , 'wp_tracking_code_footer' );
 
 /**
  * Add tracking code submenu item
