@@ -61,6 +61,9 @@
 						}
 						$refreshInstance.prop( 'disabled', false );
 					}, 500 );
+				},
+				error : function () {
+					$refreshInstance.prop( 'disabled', false );
 				}
 			} );
 		}

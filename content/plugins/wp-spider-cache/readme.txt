@@ -2,8 +2,8 @@
 Contributors: johnjamesjacoby, stuttter
 Tags: cache, object, output, admin, memcache, memcached
 Requires at least: 4.4
-Tested up to: 4.4
-Stable tag: 2.1.1
+Tested up to: 4.6
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -87,15 +87,20 @@ http://github.com/stuttter/wp-spider-cache
 
 == Changelog ==
 
-= 2.1.1 =
-* Saniity checks for Memcached & drop-ins
+= [2.2.0] - 2016-07-29 =
+* Refactoring throughout
+* Adding caps
+* Cache exempt cookie
 
-= 2.1.0 =
+= [2.1.1] - 2016-02-15 =
+* Sanity checks for Memcached & drop-ins
+
+= [2.1.0] - 2016-02-15 =
 * Refactor drop-ins
 * More accurate debug times
 * More protective method scopes
 * Better output cache encapsulation
 * Rename a few old functions
 
-= 2.0.0 =
+= [2.0.0] - 2016-02-15 =
 * Initial release
