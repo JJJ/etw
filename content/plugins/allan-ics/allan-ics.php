@@ -12,7 +12,9 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-//* Customize the credits
+/**
+ * Customize footer credits
+ */
 function allan_footer_creds_text() {
 	ob_start();
 
