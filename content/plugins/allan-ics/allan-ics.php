@@ -33,6 +33,6 @@ function allan_footer_creds_text() {
 	<?php
 
 	// Output footer
-	echo ob_end_clean();
+	echo ob_get_clean();
 }
 add_filter( 'genesis_footer_creds_text', 'allan_footer_creds_text' );
