@@ -237,16 +237,3 @@ function wpcodex_hide_email_shortcode( $atts , $content = null ) {
 add_shortcode( 'email', 'wpcodex_hide_email_shortcode' );
 add_filter( 'widget_text', 'shortcode_unautop' );
 add_filter( 'widget_text', 'do_shortcode' );
-
-//* Customize the credits
-add_filter( 'genesis_footer_creds_text', 'zubird_footer_creds_text' );
-function zubird_footer_creds_text() {
-	
-    echo '<div class="creds"><p>';
-    echo 'Copyright &copy; ';
-    echo date('Y');
-	echo ' Allan Integrated Control Systems. All rights reserved.</p>';
-	echo '<p><a href="https://24.123.82.146:10443" target="_blank">AICS employee login</a>';
-    echo '</p></div>';
-
-}
