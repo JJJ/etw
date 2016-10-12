@@ -36,6 +36,7 @@ function wp_flox_stats_get_site_id() {
  */
 function wp_flox_get_stats_cookie_domain() {
 	$cookie_domain = get_current_site()->cookie_domain;
+
 	return '*.' . ltrim( $cookie_domain, '.' );
 }
 
@@ -61,10 +62,10 @@ function wp_flox_get_stats_tracking_code() {
 	ob_start();
 
 	// Get site ID
-	$site_id = wp_flox_stats_get_site_id();
+	$stats_id = wp_flox_stats_get_site_id();
 
 	// No tracking code if no site exists
-	if ( empty( $site_id ) ) {
+	if ( empty( $stats_id ) ) {
 		return;
 	}
 
@@ -80,13 +81,14 @@ function wp_flox_get_stats_tracking_code() {
   (function() {
     var u="//stats.flox.io/";
     _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', 1]);
+    _paq.push(['setSiteId', <?php echo (int) $stats_id; ?>]);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
   })();
 </script>
-<noscript><p><img src="//stats.flox.io/piwik.php?idsite=<?php echo (int) $site_id; ?>" style="border:0;" alt="" /></p></noscript><?php
+<noscript><p><img src="//stats.flox.io/piwik.php?idsite=<?php echo (int) $stats_id; ?>" style="border:0;" alt="" /></p></noscript><?php
 
 	// Done
 	return ob_get_clean();
 }
+
