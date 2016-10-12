@@ -111,10 +111,10 @@ function flox_get_default_network_options() {
 
 		// Uploads
 		'ms_files_rewriting'          => 0,
-		'upload_filetypes'            => 'jpg jpeg png gif mp3 mov avi wmv midi mid pdf',
+		'upload_filetypes'            => 'jpg jpeg png gif mp3 mp4 mov avi wmv midi mid pdf',
 		'upload_space_check_disabled' => 0,
-		'blog_upload_space'           => 500,
-		'fileupload_maxk'             => 5000,
+		'blog_upload_space'           => 5000,
+		'fileupload_maxk'             => 500000,
 
 		// Initial content
 		'first_post'                  => '',
