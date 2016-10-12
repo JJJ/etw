@@ -71,7 +71,7 @@ function wp_flox_get_stats_tracking_code() {
 	// Get the cookie domain
 	$cookie_domain = wp_flox_get_stats_cookie_domain();
 
-?><script type="text/javascript">
+?><script type="text/javascript" id="wp-flox-stats-js">
   var _paq = _paq || [];
   _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
   _paq.push(["setCookieDomain", "<?php echo esc_js( $cookie_domain ); ?>"]);
