@@ -35,7 +35,8 @@ function wp_flox_stats_get_site_id() {
  * @since 0.1.0
  */
 function wp_flox_get_stats_cookie_domain() {
-	return '*.' . ltrim( COOKIE_DOMAIN, '.' );
+	$cookie_domain = get_current_site()->cookie_domain;
+	return '*.' . ltrim( $cookie_domain, '.' );
 }
 
 /**
