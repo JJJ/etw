@@ -11,4 +11,4 @@
 defined( 'ABSPATH' ) || exit();
 
 // Require drop-in
-require_once WP_CONTENT_DIR . '/plugins/wp-spider-cache/drop-ins/advanced-cache.php';
+require_once WP_CONTENT_DIR . '/plugins/wp-spider-cache/wp-spider-cache/drop-ins/advanced-cache.php';
