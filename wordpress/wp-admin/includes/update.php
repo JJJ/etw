@@ -112,7 +112,14 @@ function get_core_checksums( $version, $locale ) {
 
 	$response = wp_remote_get( $url, $options );
 	if ( $ssl && is_wp_error( $response ) ) {
-		trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
+		trigger_error(
+			sprintf(
+				/* translators: %s: support forums URL */
+				__( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="%s">support forums</a>.' ),
+				__( 'https://wordpress.org/support/' )
+			) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)' ),
+			headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE
+		);
 		$response = wp_remote_get( $http_url, $options );
 	}
 
@@ -200,6 +207,7 @@ function core_update_footer( $msg = '' ) {
 
 	switch ( $cur->response ) {
 	case 'development' :
+		/* translators: 1: WordPress version number, 2: WordPress updates admin screen URL */
 		return sprintf( __( 'You are using a development version (%1$s). Cool! Please <a href="%2$s">stay updated</a>.' ), get_bloginfo( 'version', 'display' ), network_admin_url( 'update-core.php' ) );
 
 	case 'upgrade' :
@@ -634,7 +642,7 @@ function wp_print_admin_notice_templates() {
 		<div <# if ( data.id ) { #>id="{{ data.id }}"<# } #> class="notice {{ data.className }}"><p>{{{ data.message }}}</p></div>
 	</script>
 	<script id="tmpl-wp-bulk-updates-admin-notice" type="text/html">
-		<div id="{{ data.id }}" class="notice <# if ( data.errors ) { #>notice-error<# } else { #>notice-success<# } #>">
+		<div id="{{ data.id }}" class="{{ data.className }} notice <# if ( data.errors ) { #>notice-error<# } else { #>notice-success<# } #>">
 			<p>
 				<# if ( data.successes ) { #>
 					<# if ( 1 === data.successes ) { #>
@@ -664,25 +672,25 @@ function wp_print_admin_notice_templates() {
 					<# } #>
 				<# } #>
 				<# if ( data.errors ) { #>
-					<# if ( 1 === data.errors ) { #>
-						<button class="button-link">
+					<button class="button-link bulk-action-errors-collapsed" aria-expanded="false">
+						<# if ( 1 === data.errors ) { #>
 							<?php
-							/* translators: %s: Number of failures */
-							printf( __( '%s failure.' ), '{{ data.errors }}' );
+							/* translators: %s: Number of failed updates */
+							printf( __( '%s update failed.' ), '{{ data.errors }}' );
 							?>
-						</button>
-					<# } else { #>
-						<button class="button-link">
+						<# } else { #>
 							<?php
-							/* translators: %s: Number of failures */
-							printf( __( '%s failures.' ), '{{ data.errors }}' );
+							/* translators: %s: Number of failed updates */
+							printf( __( '%s updates failed.' ), '{{ data.errors }}' );
 							?>
-						</button>
-					<# } #>
+						<# } #>
+						<span class="screen-reader-text"><?php _e( 'Show more details' ); ?></span>
+						<span class="toggle-indicator" aria-hidden="true"></span>
+					</button>
 				<# } #>
 			</p>
 			<# if ( data.errors ) { #>
-				<ul class="hidden">
+				<ul class="bulk-action-errors hidden">
 					<# _.each( data.errorMessages, function( errorMessage ) { #>
 						<li>{{ errorMessage }}</li>
 					<# } ); #>

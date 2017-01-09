@@ -7,9 +7,9 @@
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Description: Your friendly neighborhood caching solution for WordPress
- * Version:     2.2.0
+ * Version:     4.1.0
  * Text Domain: wp-spider-cache
- * Domain Path: /assets/lang/
+ * Domain Path: /wp-spider-cache/assets/lang/
  */
 
 // Exit if accessed directly
@@ -38,7 +38,7 @@ class WP_Spider_Cache_UI {
 	 *
 	 * @var string
 	 */
-	private $asset_version = '201608110002';
+	private $asset_version = '201611200001';
 
 	/**
 	 * The resulting page's hook_suffix.
@@ -140,6 +140,9 @@ class WP_Spider_Cache_UI {
 
 		// Posts
 		add_action( 'clean_post_cache', array( $this, 'clean_post' ) );
+
+		// Loaded
+		do_action( 'wp_spider_cache_loaded', $this );
 	}
 
 	/**
@@ -177,7 +180,7 @@ class WP_Spider_Cache_UI {
 		}
 
 		// Setup the plugin URL, for enqueues
-		$this->asset_url = plugin_dir_url( __FILE__ );
+		$this->asset_url = plugin_dir_url( __FILE__ ) . 'wp-spider-cache/';
 
 		// Enqueue
 		wp_enqueue_style( 'wp-spider-cache', $this->asset_url . 'assets/css/spider-cache.css', array(),          $this->asset_version );
@@ -284,11 +287,13 @@ class WP_Spider_Cache_UI {
 		$cleared = array();
 
 		// Delete user caches
-		$cleared[] = wp_cache_delete( $_user->ID,            'users'      );
-		$cleared[] = wp_cache_delete( $_user->ID,            'user_meta'  );
-		$cleared[] = wp_cache_delete( $_user->user_login,    'userlogins' );
-		$cleared[] = wp_cache_delete( $_user->user_nicename, 'userslugs'  );
-		$cleared[] = wp_cache_delete( $_user->user_email,    'useremail'  );
+		$cleared[] = wp_cache_delete( $_user->ID,            'users'        );
+		$cleared[] = wp_cache_delete( $_user->ID,            'usermeta'     );
+		$cleared[] = wp_cache_delete( $_user->ID,            'user_meta'    );
+		$cleared[] = wp_cache_delete( $_user->user_login,    'userlogins'   );
+		$cleared[] = wp_cache_delete( $_user->user_nicename, 'userslugs'    );
+		$cleared[] = wp_cache_delete( $_user->user_email,    'useremail'    );
+		$cleared[] = wp_cache_delete( $_user->user_email,    'user_signups' );
 
 		// Bail if not redirecting
 		if ( false === $redirect ) {
@@ -314,17 +319,21 @@ class WP_Spider_Cache_UI {
 	 */
 	public function set_blog_ids() {
 
-		// Blog
-		if ( empty( $_POST['type'] ) || ( 'blog' === $_POST['type'] ) ) {
-			$this->blog_ids = array( (int) get_current_blog_id() );
+		// Sanitize type
+		$type = ! empty( $_POST['type'] )
+			? sanitize_key( $_POST['type'] )
+			: '';
 
-		// Network
-		} elseif ( 'network' === $_POST['type'] ) {
-			$this->blog_ids = array( 0 );
-
-		// User
-		} elseif ( 'user' === $_POST['type'] ) {
-			$this->blog_ids = array( 0 );
+		// Set blog IDs
+		switch ( $type ) {
+			case 'user' :
+			case 'network' :
+				$this->blog_ids = array( 0 );
+				break;
+			case 'blog' :
+			case '' :
+				$this->blog_ids = array( (int) get_current_blog_id() );
+				break;
 		}
 	}
 
@@ -350,13 +359,16 @@ class WP_Spider_Cache_UI {
 		$this->check_nonce( self::INSTANCE_NONCE );
 
 		// Attempt to output the server contents
-		if ( ! empty( $_POST['name'] ) ) {
-			$server = filter_var( $_POST['name'], FILTER_VALIDATE_IP );
-			$this->set_blog_ids();
-			$this->do_rows( $server );
+		if ( empty( $_POST['name'] ) ) {
+			wp_die( -1 );
 		}
 
-		exit();
+		// Get memcache data
+		$server = filter_var( $_POST['name'], FILTER_VALIDATE_IP );
+		$this->set_blog_ids();
+		$this->do_rows( $server );
+
+		wp_die();
 	}
 
 	/**
@@ -367,17 +379,40 @@ class WP_Spider_Cache_UI {
 	public function ajax_flush_group() {
 		$this->check_nonce( self::FLUSH_NONCE );
 
-		// Loop through keys and attempt to delete them
-		if ( ! empty( $_POST['keys'] ) && ! empty( $_GET['group'] ) ) {
-			foreach ( $_POST['keys'] as $key ) {
-				wp_cache_delete(
-					$this->sanitize_key( $key           ),
-					$this->sanitize_key( $_GET['group'] )
-				);
-			}
+		// Bail if missing keys or group
+		if ( empty( $_POST['keys'] ) || empty( $_GET['group'] ) ) {
+			wp_die( $_POST );
 		}
 
-		exit();
+		// Decode group
+		$g_code = base64_decode( $_GET['group'] );
+		$keys   = array();
+
+		// Loop through ajax posted keys and attempt to delete them
+		foreach ( $_POST['keys'] as $key ) {
+
+			// Decode key
+			$k_code = base64_decode( $key );
+
+			// Deleted
+			$deleted = wp_cache_delete(
+				$this->sanitize_key( $k_code ),
+				$this->sanitize_key( $g_code )
+			);
+
+			$keys[] = array(
+				'group'  => $g_code,
+				'id'     => $k_code,
+				'code'   => $key,
+				'result' => $deleted
+			);
+		}
+
+		// Pass keys
+		wp_die( json_encode( array(
+			'success' => ! empty( $keys ),
+			'keys'    => $keys
+		) ) );
 	}
 
 	/**
@@ -389,14 +424,26 @@ class WP_Spider_Cache_UI {
 		$this->check_nonce( self::REMOVE_NONCE );
 
 		// Delete a key in a group
-		if ( ! empty( $_GET['key'] ) && ! empty( $_GET['group'] ) ) {
-			wp_cache_delete(
-				$this->sanitize_key( $_GET['key']   ),
-				$this->sanitize_key( $_GET['group'] )
-			);
+		if ( empty( $_GET['key'] ) || empty( $_GET['group'] ) ) {
+			wp_die( -1 );
 		}
 
-		exit();
+		// Decode
+		$k_code = base64_decode( $_GET['key']   );
+		$g_code = base64_decode( $_GET['group'] );
+
+		// Delete cache
+		$deleted = wp_cache_delete(
+			$this->sanitize_key( $k_code ),
+			$this->sanitize_key( $g_code )
+		);
+
+		// Pass keys
+		wp_die( json_encode( array(
+			'success' => $deleted,
+			'key'     => $k_code,
+			'group'   => $g_code
+		) ) );
 	}
 
 	/**
@@ -408,14 +455,21 @@ class WP_Spider_Cache_UI {
 		$this->check_nonce( self::GET_NONCE );
 
 		// Bail if invalid posted data
-		if ( ! empty( $_GET['key'] ) && ! empty( $_GET['group'] ) ) {
-			$this->do_item(
-				$this->sanitize_key( $_GET['key']   ),
-				$this->sanitize_key( $_GET['group'] )
-			);
+		if ( empty( $_GET['key'] ) || empty( $_GET['group'] ) ) {
+			wp_die( -1 );
 		}
 
-		exit();
+		// Decode
+		$k_code = base64_decode( $_GET['key']   );
+		$g_code = base64_decode( $_GET['group'] );
+
+		// Get the item
+		$this->do_item(
+			$this->sanitize_key( $k_code ),
+			$this->sanitize_key( $g_code )
+		);
+
+		wp_die();
 	}
 
 	/**
@@ -440,7 +494,7 @@ class WP_Spider_Cache_UI {
 			// Loop through items
 			foreach ( $list as $item ) {
 				if ( strstr( $item, "{$group}:" ) ) {
-					wp_cache_delete( $item );
+					wp_cache_delete( $item, $group );
 					$cleared++;
 				}
 			}
@@ -542,11 +596,16 @@ class WP_Spider_Cache_UI {
 	 */
 	public function retrieve_keys( $server, $port = 11211 ) {
 
+		// Get slabs
+		$list = array();
+
+		// Bail if function is missing
+		if ( ! function_exists( 'wp_cache_get_extended_stats' ) ) {
+			return $list;
+		}
+
 		// No errors
 		$old_errors = error_reporting( 0 );
-
-		// Get slabs
-		$list  = array();
 
 		// Connect to cache server
 		wp_cache_connect( $server, $port );
@@ -601,31 +660,44 @@ class WP_Spider_Cache_UI {
 	 */
 	public function do_item( $key, $group ) {
 
+		// Require pretty var_dump()
+		require_once __DIR__ . '/wp-spider-cache/includes/class-var-dump.php';
+
 		// Get results directly from cache
 		$cache   = wp_cache_get( $key, $group );
 		$full    = wp_cache_get_key( $key, $group );
 		$code    = wp_cache_get_result_code();
 		$message = wp_cache_get_result_message();
 
-		// @todo Something prettier with cached value
-		$value   = is_array( $cache ) || is_object( $cache )
-			? serialize( $cache )
-			: $cache;
-
 		// Not found?
-		if ( false === $value ) {
-			$value = 'ERR';
-		}
+		if ( false === $cache ) {
+			$cache = 'ERR';
+		} ?>
 
-		// Combine results
-		$results =
-			sprintf( esc_html__( 'Key:     %s',      'wp-spider-cache' ), $key            ) . "\n" .
-			sprintf( esc_html__( 'Group:   %s',      'wp-spider-cache' ), $group          ) . "\n" .
-			sprintf( esc_html__( 'Full:    %s',      'wp-spider-cache' ), $full           ) . "\n" .
-			sprintf( esc_html__( 'Code:    %s - %s', 'wp-spider-cache' ), $code, $message ) . "\n" .
-			sprintf( esc_html__( 'Value:   %s',      'wp-spider-cache' ), $value          ); ?>
-
-		<textarea class="sc-item" class="widefat" rows="10" cols="35"><?php echo esc_textarea( $results ); ?></textarea>
+		<table class="form-table sc-item">
+			<tbody>
+				<tr>
+					<th><?php esc_html_e( 'Key', 'wp-spider-cache' ); ?></th>
+					<td><pre><?php echo esc_html( $key ); ?></pre></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Group', 'wp-spider-cache' ); ?></th>
+					<td><pre><?php echo esc_html( $group ); ?></pre></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Full', 'wp-spider-cache' ); ?></th>
+					<td><pre><?php echo esc_html( $full ); ?></pre></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Code', 'wp-spider-cache' ); ?></th>
+					<td><pre><?php echo esc_html( "{$code} - {$message}" ); ?></pre></td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Value', 'wp-spider-cache' ); ?></th>
+					<td><?php WP_Spider_Cache_Var_Dump::dump( $cache ); ?></td>
+				</tr>
+			</tbody>
+		</table>
 
 		<?php
 	}
@@ -641,11 +713,14 @@ class WP_Spider_Cache_UI {
 	 */
 	private function get_flush_group_link( $blog_id, $group, $nonce ) {
 
+		// Encode group key
+		$g_key = base64_encode( $group );
+
 		// Setup the URL
 		$url = add_query_arg( array(
 			'action'  => 'sc-flush-group',
 			'blog_id' => (int) $blog_id,
-			'group'   => $this->sanitize_key( $group ),
+			'group'   => $this->sanitize_key( $g_key ),
 			'nonce'   => $nonce
 		), admin_url( 'admin-ajax.php' ) );
 
@@ -683,8 +758,10 @@ class WP_Spider_Cache_UI {
 		$offset  = 0;
 
 		// Offset by 1 if using cache-key salt
-		if ( wp_object_cache()->cache_key_salt ) {
-			$offset = 1;
+		if ( function_exists( 'wp_object_cache' ) ) {
+			if ( wp_object_cache()->cache_key_salt ) {
+				$offset = 1;
+			}
 		}
 
 		// Get keys for this server and loop through them
@@ -766,7 +843,7 @@ class WP_Spider_Cache_UI {
 	private function get_cache_key_links( $blog_id = 0, $group = '', $keys = array() ) {
 
 		// Setup variables used in the loop
-		$admin_url = admin_url( 'admin-ajax.php' );
+		$admin_url = admin_url( 'admin-ajax.php' ) . '#TB_inline?width=600&height=600&inlineId=sc-show-item';
 
 		// Start the output buffer
 		ob_start();
@@ -774,35 +851,34 @@ class WP_Spider_Cache_UI {
 		// Loop through keys and output data & action links
 		foreach ( $keys as $key ) :
 
+			// Encode
+			$k_code = base64_encode( $key   );
+			$g_code = base64_encode( $group );
+
 			// Get URL
 			$get_url = add_query_arg( array(
 				'blog_id' => (int) $blog_id,
-				'group'   => $this->sanitize_key( $group ),
-				'key'     => $this->sanitize_key( $key   ),
+				'group'   => $this->sanitize_key( $g_code ),
+				'key'     => $this->sanitize_key( $k_code ),
 				'action'  => 'sc-get-item',
-				'nonce'   => wp_create_nonce( self::GET_NONCE    ),
+				'nonce'   => wp_create_nonce( self::GET_NONCE ),
 			), $admin_url );
-
-			// Maybe include the blog ID in the group
-			$include_blog_id = ! empty( $blog_id )
-				? "{$blog_id}:{$group}"
-				: $group;
 
 			// Remove URL
 			$remove_url = add_query_arg( array(
-				'group'   => $this->sanitize_key( $include_blog_id ),
-				'key'     => $this->sanitize_key( $key             ),
+				'group'   => $this->sanitize_key( $g_code ),
+				'key'     => $this->sanitize_key( $k_code ),
 				'action'  => 'sc-remove-item',
 				'nonce'   => wp_create_nonce( self::REMOVE_NONCE )
 			), $admin_url ); ?>
 
-			<div class="item" data-key="<?php echo esc_attr( $key ); ?>">
+			<div class="item" data-key="<?php echo esc_attr( $k_code ); ?>">
 				<code><?php echo implode( '</code> : <code>', explode( ':', $key ) ); ?></code>
 				<div class="row-actions">
 					<span class="trash">
 						<a class="sc-remove-item" href="<?php echo esc_url( $remove_url ); ?>"><?php esc_html_e( 'Remove', 'wp-spider-cache' ); ?></a>
 					</span>
-					| <a class="sc-view-item" href="<?php echo esc_url( $get_url ); ?>"><?php esc_html_e( 'View', 'wp-spider-cache' ); ?></a>
+					| <a class="sc-view-item thickbox" href="<?php echo esc_url( $get_url ); ?>"><?php esc_html_e( 'View', 'wp-spider-cache' ); ?></a>
 				</div>
 			</div>
 
@@ -844,7 +920,9 @@ class WP_Spider_Cache_UI {
 	 * @since 2.0.0
 	 */
 	public function page() {
-		?>
+
+		// Alan Thickbox
+		add_thickbox(); ?>
 
 		<div class="wrap spider-cache" id="sc-wrapper">
 			<h2><?php esc_html_e( 'Spider Cache', 'wp-spider-cache' ); ?></h2>
@@ -852,6 +930,10 @@ class WP_Spider_Cache_UI {
 			<?php do_action( 'spider_cache_notice' ); ?>
 
 			<div class="wp-filter">
+				<div class="sc-toolbar-primary search-form">
+					<label for="sc-search-input" class="screen-reader-text"><?php esc_html_e( 'Search Cache', 'wp-spider-cache' ); ?></label>
+					<input type="search" placeholder="<?php esc_html_e( 'Search', 'wp-spider-cache' ); ?>" id="sc-search-input" class="search">
+				</div>
 				<div class="sc-toolbar-secondary">
 					<select class="sc-server-selector" data-nonce="<?php echo wp_create_nonce( self::INSTANCE_NONCE ); ?>">
 						<option value=""><?php esc_html_e( 'Select a Server', 'wp-spider-cache' ); ?></option><?php
@@ -866,10 +948,6 @@ class WP_Spider_Cache_UI {
 					?></select>
 					<button class="button action sc-refresh-instance" disabled><?php esc_html_e( 'Refresh', 'wp-spider-cache' ); ?></button>
 					<input type="hidden" name="sc-admin-type" id="sc-admin-type" value="<?php echo esc_attr( $this->get_admin_type() ); ?>">
-				</div>
-				<div class="sc-toolbar-primary search-form">
-					<label for="sc-search-input" class="screen-reader-text"><?php esc_html_e( 'Search Cache', 'wp-spider-cache' ); ?></label>
-					<input type="search" placeholder="<?php esc_html_e( 'Search', 'wp-spider-cache' ); ?>" id="sc-search-input" class="search">
 				</div>
 			</div>
 
@@ -900,10 +978,9 @@ class WP_Spider_Cache_UI {
 							<label class="screen-reader-text" for="cb-select-all-1"><?php esc_html_e( 'Select All', 'wp-spider-cache' ); ?></label>
 							<input id="cb-select-all-1" type="checkbox">
 						</td>
-						<th class="blog-id"><?php esc_html_e( 'Blog ID', 'wp-spider-cache' ); ?></th>
-						<th class="cache-group"><?php esc_html_e( 'Cache Group', 'wp-spider-cache' ); ?></th>
-						<th class="keys"><?php esc_html_e( 'Keys', 'wp-spider-cache' ); ?></th>
-						<th class="count"><?php esc_html_e( 'Count', 'wp-spider-cache' ); ?></th>
+						<th scope="col" class="manage-column cache-group column-primary"><?php esc_html_e( 'Cache Group', 'wp-spider-cache' ); ?></th>
+						<th scope="col" class="manage-column keys"><?php esc_html_e( 'Keys', 'wp-spider-cache' ); ?></th>
+						<th scope="col" class="manage-column count"><?php esc_html_e( 'Count', 'wp-spider-cache' ); ?></th>
 					</tr>
 				</thead>
 
@@ -917,10 +994,9 @@ class WP_Spider_Cache_UI {
 							<label class="screen-reader-text" for="cb-select-all-2"><?php esc_html_e( 'Select All', 'wp-spider-cache' ); ?></label>
 							<input id="cb-select-all-2" type="checkbox">
 						</td>
-						<th class="blog-id"><?php esc_html_e( 'Blog ID', 'wp-spider-cache' ); ?></th>
-						<th class="cache-group"><?php esc_html_e( 'Cache Group', 'wp-spider-cache' ); ?></th>
-						<th class="keys"><?php esc_html_e( 'Keys', 'wp-spider-cache' ); ?></th>
-						<th class="count"><?php esc_html_e( 'Count', 'wp-spider-cache' ); ?></th>
+						<th scope="col" class="manage-column cache-group column-primary"><?php esc_html_e( 'Cache Group', 'wp-spider-cache' ); ?></th>
+						<th scope="col" class="manage-column keys"><?php esc_html_e( 'Keys', 'wp-spider-cache' ); ?></th>
+						<th scope="col" class="manage-column count"><?php esc_html_e( 'Count', 'wp-spider-cache' ); ?></th>
 					</tr>
 				</tfoot>
 			</table>
@@ -988,17 +1064,15 @@ class WP_Spider_Cache_UI {
 				<input type="checkbox" name="checked[]" value="<?php echo esc_attr( $values['group'] ); ?>" id="checkbox_<?php echo esc_attr( $values['group'] ); ?>">
 				<label class="screen-reader-text" for="checkbox_<?php echo esc_attr( $values['group'] ); ?>"><?php esc_html_e( 'Select', 'wp-spider-cache' ); ?></label>
 			</th>
-			<td>
-				<code><?php echo esc_html( $values['blog_id'] ); ?></code>
-			</td>
-			<td>
+			<td class="group column-group has-row-actions column-primary" data-colname="<?php esc_html_e( 'Cache Group', 'wp-spider-cache' ); ?>">
 				<span class="row-title"><?php echo esc_html( $values['group'] ); ?></span>
 				<div class="row-actions"><span class="trash"><?php echo $this->get_flush_group_link( $values['blog_id'], $values['group'], $nonce ); ?></span></div>
+				<button type="button" class="toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'wp-spider-cache' ); ?></span></button>
 			</td>
-			<td>
+			<td class="keys column-keys" data-colname="<?php esc_html_e( 'Keys', 'wp-spider-cache' ); ?>">
 				<?php echo $this->get_cache_key_links( $values['blog_id'], $values['group'], $values['keys'] ); ?>
 			</td>
-			<td>
+			<td class="count column-count" data-colname="<?php esc_html_e( 'Count', 'wp-spider-cache' ); ?>">
 				<?php echo number_format_i18n( count( $values['keys'] ) ); ?>
 			</td>
 		</tr>
@@ -1019,7 +1093,7 @@ class WP_Spider_Cache_UI {
 		ob_start(); ?>
 
 		<tr class="sc-no-results">
-			<td colspan="5">
+			<td colspan="4" class="column-no-results">
 				<?php esc_html_e( 'No results found.', 'wp-spider-cache' ); ?>
 			</td>
 		</tr>
@@ -1042,8 +1116,8 @@ class WP_Spider_Cache_UI {
 		// Buffer
 		ob_start(); ?>
 
-		<tr class="sc-refreshing-results">
-			<td colspan="5">
+		<tr class="sc-refresh-results">
+			<td colspan="4" class="column-refreshing">
 				<?php esc_html_e( 'Refreshing...', 'wp-spider-cache' ); ?>
 			</td>
 		</tr>
@@ -1062,9 +1136,22 @@ class WP_Spider_Cache_UI {
 	 * @return array
 	 */
 	private function get_servers() {
-		return function_exists( 'wp_cache_get_server_list' )
-			? wp_cache_get_server_list()
-			: array();
+		$retval = array();
+
+		// Use drop-in function
+		if ( function_exists( 'wp_cache_get_server_list' ) ) {
+			$retval = wp_cache_get_server_list();
+
+		// Memcache exists on local server
+		} elseif ( class_exists( 'Memcache' ) ) {
+			$retval = array( array(
+				'host'   => '127.0.0.1',
+				'port'   => 11211,
+				'weight' => 10
+			) );
+		}
+
+		return $retval;
 	}
 
 	/**
@@ -1080,7 +1167,7 @@ class WP_Spider_Cache_UI {
 	 * @return string
 	 */
 	private function sanitize_key( $key = '' ) {
-		return preg_replace( '/[^a-z0-9:_\-]/', '', $key );
+		return trim( $key );
 	}
 
 	/**

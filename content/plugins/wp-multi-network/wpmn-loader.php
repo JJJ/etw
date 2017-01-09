@@ -4,11 +4,13 @@
  * Plugin Name: WP Multi-Network
  * Plugin URI:  https://wordpress.org/plugins/wp-multi-network/
  * Description: A Network Management UI for global administrators in WordPress Multisite
- * Version:     1.8.0
  * Author:      johnjamesjacoby, ddean, BrianLayman, rmccue
- * Author URI:  http://jjj.me
+ * Author URI:  https://jjj.blog
  * Tags:        blog, domain, mapping, multisite, network, networks, path, site, subdomain
  * Network:     true
+ * License:     GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Version:     2.1.0
  * Text Domain: wp-multi-network
  * Domain Path: /languages
  */
@@ -41,12 +43,17 @@ class WPMN_Loader {
 	/**
 	 * @var string Asset version
 	 */
-	public $asset_version = 201510070001;
+	public $asset_version = 201610310001;
+
+	/**
+	 * @var WP_MS_Networks_Admin|null Admin class instance
+	 */
+	public $admin = null;
 
 	/**
 	 * Load WP Multi Network
 	 *
-	 * @since 1.3
+	 * @since 1.3.0
 	 * @access public
 	 *
 	 * @uses WPMN_Loader::constants() To setup some constants
@@ -62,26 +69,31 @@ class WPMN_Loader {
 	/**
 	 * Set some constants
 	 *
-	 * @since 1.3
+	 * @since 1.3.0
 	 * @access private
 	 */
 	private function constants() {
 
 		/**
-		 * true = Redirect blogs from deleted network to holding network
-		 *        instead of deleting them. Requires network zero above.
+		 * false = Delete sites when deleting networks (default)
 		 *
-		 * false = Allow blogs belonging to deleted networks to be deleted.
+		 * true = Prevent sites from being deleted when their networks are
+		 *        deleted. Sets them to site_id 0 instead.
 		 */
 		if ( ! defined( 'RESCUE_ORPHANED_BLOGS' ) ) {
 			define( 'RESCUE_ORPHANED_BLOGS', false );
+		}
+
+		// Don't load deprecated functions
+		if ( ! defined( 'WPMN_DEPRECATED' ) ) {
+			define( 'WPMN_DEPRECATED', false );
 		}
 	}
 
 	/**
 	 * Set some globals
 	 *
-	 * @since 1.3
+	 * @since 1.3.0
 	 * @access private
 	 *
 	 * @uses plugin_dir_path() To generate bbPress plugin path
@@ -90,14 +102,14 @@ class WPMN_Loader {
 	private function setup_globals() {
 		$this->file       = __FILE__;
 		$this->basename   = plugin_basename( $this->file );
-		$this->plugin_dir = plugin_dir_path( $this->file );
-		$this->plugin_url = plugin_dir_url ( $this->file );
+		$this->plugin_dir = plugin_dir_path( $this->file ) . 'wp-multi-network/';
+		$this->plugin_url = plugin_dir_url ( $this->file ) . 'wp-multi-network/';
 	}
 
 	/**
 	 * Include the required files
 	 *
-	 * @since 1.3
+	 * @since 1.3.0
 	 * @access private
 	 *
 	 * @uses is_network_admin() To only include admin code when needed
@@ -109,7 +121,7 @@ class WPMN_Loader {
 		require $this->plugin_dir . 'includes/functions.php';
 
 		// WordPress Admin
-		if ( is_network_admin() || is_admin() ) {
+		if ( is_blog_admin() || is_network_admin() ) {
 
 			// Metaboxes
 			require $this->plugin_dir . 'includes/metaboxes/move-site.php';
@@ -122,11 +134,11 @@ class WPMN_Loader {
 			load_plugin_textdomain( 'wp-multi-network', false, dirname( $this->basename ) . '/languages/' );
 
 			// Setup the network admin
-			new WP_MS_Networks_Admin();
+			$this->admin = new WP_MS_Networks_Admin();
 		}
 
 		// Deprecated functions & classes
-		if ( defined( 'WPMN_DEPRECATED' ) && WPMN_DEPRECATED ) {
+		if ( defined( 'WPMN_DEPRECATED' ) && ( true === WPMN_DEPRECATED ) ) {
 			require $this->plugin_dir . 'includes/deprecated.php';
 		}
 
@@ -140,7 +152,7 @@ class WPMN_Loader {
 /**
  * Hook loader into plugins_loaded
  *
- * @since 1.3
+ * @since 1.3.0
  */
 function setup_multi_network() {
 	wpmn();

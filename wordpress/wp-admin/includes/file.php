@@ -77,9 +77,10 @@ $wp_file_descriptions = array(
 function get_file_description( $file ) {
 	global $wp_file_descriptions, $allowed_files;
 
-	$relative_pathinfo = pathinfo( $file );
+	$dirname = pathinfo( $file, PATHINFO_DIRNAME );
+
 	$file_path = $allowed_files[ $file ];
-	if ( isset( $wp_file_descriptions[ basename( $file ) ] ) && '.' === $relative_pathinfo['dirname'] ) {
+	if ( isset( $wp_file_descriptions[ basename( $file ) ] ) && '.' === $dirname ) {
 		return $wp_file_descriptions[ basename( $file ) ];
 	} elseif ( file_exists( $file_path ) && is_file( $file_path ) ) {
 		$template_data = implode( '', file( $file_path ) );
@@ -168,7 +169,7 @@ function wp_tempnam( $filename = '', $dir = '' ) {
 		$dir = get_temp_dir();
 	}
 
-	if ( empty( $filename ) || '.' == $filename || '/' == $filename ) {
+	if ( empty( $filename ) || '.' == $filename || '/' == $filename || '\\' == $filename ) {
 		$filename = time();
 	}
 
@@ -270,7 +271,7 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 
 	// You may have had one or more 'wp_handle_upload_prefilter' functions error out the file. Handle that gracefully.
 	if ( isset( $file['error'] ) && ! is_numeric( $file['error'] ) && $file['error'] ) {
-		return $upload_error_handler( $file, $file['error'] );
+		return call_user_func_array( $upload_error_handler, array( &$file, $file['error'] ) );
 	}
 
 	// Install user overrides. Did we mention that this voids your warranty?
@@ -312,11 +313,11 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 
 	// A correct form post will pass this test.
 	if ( $test_form && ( ! isset( $_POST['action'] ) || ( $_POST['action'] != $action ) ) ) {
-		return call_user_func( $upload_error_handler, $file, __( 'Invalid form submission.' ) );
+		return call_user_func_array( $upload_error_handler, array( &$file, __( 'Invalid form submission.' ) ) );
 	}
 	// A successful upload will pass this test. It makes no sense to override this one.
 	if ( isset( $file['error'] ) && $file['error'] > 0 ) {
-		return call_user_func( $upload_error_handler, $file, $upload_error_strings[ $file['error'] ] );
+		return call_user_func_array( $upload_error_handler, array( &$file, $upload_error_strings[ $file['error'] ] ) );
 	}
 
 	$test_file_size = 'wp_handle_upload' === $action ? $file['size'] : filesize( $file['tmp_name'] );
@@ -327,13 +328,13 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 		} else {
 			$error_msg = __( 'File is empty. Please upload something more substantial. This error could also be caused by uploads being disabled in your php.ini or by post_max_size being defined as smaller than upload_max_filesize in php.ini.' );
 		}
-		return call_user_func( $upload_error_handler, $file, $error_msg );
+		return call_user_func_array( $upload_error_handler, array( &$file, $error_msg ) );
 	}
 
 	// A properly uploaded file will pass this test. There should be no reason to override this one.
 	$test_uploaded_file = 'wp_handle_upload' === $action ? @ is_uploaded_file( $file['tmp_name'] ) : @ is_file( $file['tmp_name'] );
 	if ( ! $test_uploaded_file ) {
-		return call_user_func( $upload_error_handler, $file, __( 'Specified file failed upload test.' ) );
+		return call_user_func_array( $upload_error_handler, array( &$file, __( 'Specified file failed upload test.' ) ) );
 	}
 
 	// A correct MIME type will pass this test. Override $mimes or use the upload_mimes filter.
@@ -348,7 +349,7 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 			$file['name'] = $proper_filename;
 		}
 		if ( ( ! $type || !$ext ) && ! current_user_can( 'unfiltered_upload' ) ) {
-			return call_user_func( $upload_error_handler, $file, __( 'Sorry, this file type is not permitted for security reasons.' ) );
+			return call_user_func_array( $upload_error_handler, array( &$file, __( 'Sorry, this file type is not permitted for security reasons.' ) ) );
 		}
 		if ( ! $type ) {
 			$type = $file['type'];
@@ -362,7 +363,7 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 	 * overriding this one.
 	 */
 	if ( ! ( ( $uploads = wp_upload_dir( $time ) ) && false === $uploads['error'] ) ) {
-		return call_user_func( $upload_error_handler, $file, $uploads['error'] );
+		return call_user_func_array( $upload_error_handler, array( &$file, $uploads['error'] ) );
 	}
 
 	$filename = wp_unique_filename( $uploads['path'], $file['name'], $unique_filename_callback );
@@ -1238,7 +1239,7 @@ if ( isset( $types['ssh'] ) ) {
 		$hidden_class = ' class="hidden"';
 	}
 ?>
-<fieldset id="ssh-keys"<?php echo $hidden_class; ?>">
+<fieldset id="ssh-keys"<?php echo $hidden_class; ?>>
 <legend><?php _e( 'Authentication Keys' ); ?></legend>
 <label for="public_key">
 	<span class="field-title"><?php _e('Public Key:') ?></span>
@@ -1260,7 +1261,7 @@ foreach ( (array) $extra_fields as $field ) {
 ?>
 	<p class="request-filesystem-credentials-action-buttons">
 		<button class="button cancel-button" data-js-action="close" type="button"><?php _e( 'Cancel' ); ?></button>
-		<?php submit_button( __( 'Proceed' ), 'button', 'upgrade', false ); ?>
+		<?php submit_button( __( 'Proceed' ), '', 'upgrade', false ); ?>
 	</p>
 </div>
 </form>
