@@ -25,9 +25,6 @@ function allan_footer_creds_text() {
 			Copyright &copy; <?php echo date( 'Y' ); ?>
 			Allan Integrated Control Systems. All rights reserved.
 		</p>
-		<p>
-			<a href="https://24.123.82.146:10443" target="_blank">AICS employee login</a>
-		</p>
 	</div>
 
 	<?php
