@@ -1726,6 +1726,7 @@ function _post_states($post) {
 	 * Filters the default post display states used in the posts list table.
 	 *
 	 * @since 2.8.0
+	 * @since 3.6.0 Added the `$post` parameter.
 	 *
 	 * @param array   $post_states An array of post display states.
 	 * @param WP_Post $post        The current post object.
@@ -1794,7 +1795,7 @@ function _media_states( $post ) {
 		$media_states[] = __( 'Site Icon' );
 	}
 
-	if ( $post->ID == get_theme_mod( 'site_logo' ) ) {
+	if ( $post->ID == get_theme_mod( 'custom_logo' ) ) {
 		$media_states[] = __( 'Logo' );
 	}
 
@@ -1802,11 +1803,13 @@ function _media_states( $post ) {
 	 * Filters the default media display states for items in the Media list table.
 	 *
 	 * @since 3.2.0
+	 * @since 4.8.0 Added the `$post` parameter.
 	 *
-	 * @param array $media_states An array of media states. Default 'Header Image',
-	 *                            'Background Image', 'Site Icon', 'Logo'.
+	 * @param array   $media_states An array of media states. Default 'Header Image',
+	 *                              'Background Image', 'Site Icon', 'Logo'.
+	 * @param WP_Post $post         The current attachment object.
 	 */
-	$media_states = apply_filters( 'display_media_states', $media_states );
+	$media_states = apply_filters( 'display_media_states', $media_states, $post );
 
 	if ( ! empty( $media_states ) ) {
 		$state_count = count( $media_states );
@@ -1893,7 +1896,7 @@ function compression_test() {
  *
  * @param string       $text             The text of the button (defaults to 'Save Changes')
  * @param string       $type             Optional. The type and CSS class(es) of the button. Core values
- *                                       include 'primary', 'secondary', 'delete'. Default 'primary'
+ *                                       include 'primary', 'small', and 'large'. Default 'primary'.
  * @param string       $name             The HTML name of the submit button. Defaults to "submit". If no
  *                                       id attribute is given in $other_attributes below, $name will be
  *                                       used as the button's id.
@@ -1916,8 +1919,8 @@ function submit_button( $text = null, $type = 'primary', $name = 'submit', $wrap
  * @since 3.1.0
  *
  * @param string       $text             Optional. The text of the button. Default 'Save Changes'.
- * @param string       $type             Optional. The type of button. Accepts 'primary', 'secondary',
- *                                       or 'delete'. Default 'primary large'.
+ * @param string       $type             Optional. The type and CSS class(es) of the button. Core values
+ *                                       include 'primary', 'small', and 'large'. Default 'primary large'.
  * @param string       $name             Optional. The HTML name of the submit button. Defaults to "submit".
  *                                       If no id attribute is given in $other_attributes below, `$name` will
  *                                       be used as the button's id. Default 'submit'.
