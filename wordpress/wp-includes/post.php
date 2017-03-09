@@ -4471,7 +4471,7 @@ function get_page_uri( $page = 0 ) {
 }
 
 /**
- * Retrieve a list of pages.
+ * Retrieve a list of pages (or hierarchical post type items).
  *
  * @global wpdb $wpdb WordPress database abstraction object.
  *
@@ -5932,7 +5932,9 @@ function _publish_post_hook( $post_id ) {
 		add_post_meta( $post_id, '_pingme', '1' );
 	add_post_meta( $post_id, '_encloseme', '1' );
 
-	wp_schedule_single_event(time(), 'do_pings');
+	if ( ! wp_next_scheduled( 'do_pings' ) ) {
+		wp_schedule_single_event( time(), 'do_pings' );
+	}
 }
 
 /**

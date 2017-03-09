@@ -1077,9 +1077,12 @@ function get_term_to_edit( $id, $taxonomy ) {
  *     @type array        $meta_query             Meta query clauses to limit retrieved terms by.
  *                                                See `WP_Meta_Query`. Default empty.
  *     @type string       $meta_key               Limit terms to those matching a specific metadata key. Can be used in
- *                                                conjunction with `$meta_value`.
+ *                                                conjunction with `$meta_value`. Default empty.
  *     @type string       $meta_value             Limit terms to those matching a specific metadata value. Usually used
- *                                                in conjunction with `$meta_key`.
+ *                                                in conjunction with `$meta_key`. Default empty.
+ *     @type string       $meta_type              Type of object metadata is for (e.g., comment, post, or user).
+ *                                                Default empty.
+ *     @type string       $meta_compare           Comparison operator to test the 'meta_value'. Default empty.
  * }
  * @param array $deprecated Argument array, when using the legacy function parameter format. If present, this
  *                          parameter will be interpreted as `$args`, and the first function parameter will
@@ -2037,6 +2040,7 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	$name_matches = get_terms( $taxonomy, array(
 		'name' => $name,
 		'hide_empty' => false,
+		'parent' => $args['parent'],
 	) );
 
 	/*
@@ -2060,7 +2064,7 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 				$siblings = get_terms( $taxonomy, array( 'get' => 'all', 'parent' => $parent ) );
 
 				$existing_term = null;
-				if ( $name_match->slug === $slug && in_array( $name, wp_list_pluck( $siblings, 'name' ) ) ) {
+				if ( ( ! $slug_provided || $name_match->slug === $slug ) && in_array( $name, wp_list_pluck( $siblings, 'name' ) ) ) {
 					$existing_term = $name_match;
 				} elseif ( $slug_match && in_array( $slug, wp_list_pluck( $siblings, 'slug' ) ) ) {
 					$existing_term = $slug_match;
@@ -3809,8 +3813,8 @@ function wp_get_split_term( $old_term_id, $taxonomy ) {
 /**
  * Determine whether a term is shared between multiple taxonomies.
  *
- * Shared taxonomy terms began to be split in 4.3, but failed cron tasks or other delays in upgrade routines may cause
- * shared terms to remain.
+ * Shared taxonomy terms began to be split in 4.3, but failed cron tasks or
+ * other delays in upgrade routines may cause shared terms to remain.
  *
  * @since 4.4.0
  *
