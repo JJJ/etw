@@ -16,7 +16,7 @@ add_filter( 'wp_user_activity_menu_humility', '__return_true' );
 
 // Themes
 add_action( 'init', function() {
-        remove_action( 'barletta_footer', 'barletta_footer_credits' );
+	remove_action( 'barletta_footer', 'barletta_footer_credits' );
 } );
 
 /**
@@ -33,3 +33,21 @@ function etw_footer_credits() {
         <?php
 }
 add_action( 'barletta_footer', 'etw_footer_credits' );
+
+/**
+ * Map `unfiltered_html` capability
+ *
+ * @param array  $caps
+ * @param string $cap
+ */
+function etw_map_meta_cap( $caps = array(), $cap = '' ) {
+
+	// Map to 'manage_options'
+	if ( 'unfiltered_html' === $cap ) {
+		$caps = array( 'manage_options' );
+	}
+
+	// Return maybe-mapped caps
+	return $caps;
+}
+add_filter( 'map_meta_cap', 'etw_map_meta_cap', 10, 2 );
