@@ -1,0 +1,24 @@
+#array_gallery_meta_box {
+	display: none;
+}
+
+.array-gallery-thumbs {
+	margin-top: 10px;
+	*display: inline-block;
+  height: 1%;
+}
+
+.array-gallery-thumbs li {
+	float: left;
+	list-style: none;
+	margin: 0 10px 5px 0;
+}
+
+.array-gallery-thumbs:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    font-size: 0;
+    height: 0;
+}

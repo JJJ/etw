@@ -1,0 +1,108 @@
+/* Button Styling */
+
+#icons {
+    -webkit-font-smoothing: antialiased;
+    color: #fff;
+}
+
+#icons a {
+	/* font styles */
+    color: #fff;
+    font-size: 14px;
+	font-weight: normal;
+    line-height: 25px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    /* display styles */
+    float: left;
+    height: 24px;
+    width: 24px;
+    margin: 0 5px 5px 0;
+    border-radius: 3px;
+    /* rendering styles */
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+#icons a:hover {
+    text-decoration: none;
+    opacity: .95;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+#icons.icons-circle a {
+    border-radius: 30px;
+}
+
+#icons.icons-square a {
+    border-radius: 0;
+}
+
+.facebook-icon {
+    background-color: #5D83BA;
+}
+
+.instagram-icon {
+    background-color: #416d93;
+}
+
+.github-icon {
+    background-color: #333;
+}
+
+.twitter-icon {
+    background-color: #1dadeb;
+}
+
+.google-icon {
+    background-color: #404040;
+}
+
+.linkedin-icon {
+    background-color: #4B9DCA;
+}
+
+.feed-icon {
+    background-color: #fdaa3e;
+}
+
+.vimeo-icon {
+    background-color: #95B93E;
+}
+
+.youtube-icon {
+    background-color: #D3230A;
+}
+
+.dribbble-icon {
+    background-color: #E06192;
+}
+
+.tumblr-icon {
+    background-color: #466684;
+}
+
+.wordpress-icon {
+    background-color: #337EA1;
+}
+
+.pinterest-icon {
+    background-color: #D3230A;
+}
+
+.flickr-icon {
+    background-color: #ff0084;
+}
+
+.behance-icon {
+    background-color: #333;
+}
+
+.rdio-icon {
+    background-color: #008fd5;
+}
+
+.spotify-icon {
+    background-color: #88BD32;
+}

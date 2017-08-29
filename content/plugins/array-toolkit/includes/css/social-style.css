@@ -1,0 +1,190 @@
+/* General Styling */
+
+.dribbbles img, .flickr img {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	max-width: 100%;
+	height: auto;
+}
+
+.dribbbles li:last-child img, .flickr li:last-child img {
+    margin-bottom: 0;
+}
+
+.widget .dribbble-widget li, .widget .flickr-widget li {
+	background: none;
+	padding: 0;
+    list-style-type: none;
+}
+
+.widget .dribbbles, .widget .flickr {
+    margin: 0;
+}
+
+/* Twitter Styling */
+
+.chirp {
+	margin: 0;
+	padding: 0;
+}
+
+.chirp li:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+/* Contact Styling */
+
+#array-toolkit-form .error {
+    display: none;
+    width: 76.470588235%;
+}
+
+#array-toolkit-form .required {
+    color: #FFA737;
+    font-size: 12px;
+}
+
+#array-toolkit-form .fields-required {
+    float: right;
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 10px;
+    color: #aaa;
+}
+
+.contact-text {
+    float: left;
+    width: 29.411764706%;
+}
+
+.email-response {
+    font-size: 16px;
+    font-weight: 700;
+    position: relative;
+}
+
+.success:before {
+    font-family: 'EntypoRegular';
+    font-size: 50px;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    color: #9fcb54;
+    content: "W";
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+
+.fail:before {
+    font-family: 'EntypoRegular';
+    font-size: 50px;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    color: #da3e3e;
+    content: "X";
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 14px;
+}
+
+#array-toolkit-form, .email-response {
+    background: #f6f6f6;
+    padding: 20px;
+    float: right;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.full {
+    width: 100% !important;
+    float: left !important;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#array-toolkit-form label {
+    width: 100%;
+    float: left;
+    font-size: 14px;
+    color: #888;
+}
+
+#array-toolkit-form input[type="text"] {
+    background: #fff !important;
+    border: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+    color: #757575;
+    width: 50%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: inset rgba(0,0,0, 0.25) 0px 0px 3px;
+    -moz-box-shadow: inset rgba(0,0,0, 0.25) 0px 0px 3px;
+    -webkit-box-shadow: inset rgba(0,0,0, 0.25) 0px 0px 3px;
+}
+
+#array-toolkit-form p {
+    font-size: 11px;
+    font-weight: bold;
+    color: #757575;
+}
+
+#array-toolkit-form textarea {
+    background: #fff;
+    border: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+    color: #757575;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    box-shadow: inset rgba(0,0,0, 0.25) 0px 0px 3px;
+    -moz-box-shadow: inset rgba(0,0,0, 0.25) 0px 0px 3px;
+    -webkit-box-shadow: inset rgba(0,0,0, 0.25) 0px 0px 3px;
+}
+
+#array-toolkit-form input:focus, #array-toolkit-form textarea:focus {
+    box-shadow: inset rgba(0,0,0, 0.3) 0px 0px 5px;
+    -moz-box-shadow: inset rgba(0,0,0, 0.3) 0px 0px 5px;
+    -webkit-box-shadow: inset rgba(0,0,0, 0.3) 0px 0px 5px;
+}
+
+div#array-toolkit-form-response-output { clear: both }
+
+#message h2 {
+    margin-bottom: 5px;
+    letter-spacing: -1px;
+}
+
+#message p {
+    font-size: 16px;
+    line-height: 26px;
+    color: #aaa;
+    font-weight: normal;
+    margin-bottom: 0px;
+}

@@ -1,0 +1,7 @@
+/* Misc adjustments */
+#menu-posts-array-portfolio > a > div.wp-menu-image.dashicons.dashicons-images-alt2::before {
+	padding-top: 6px;
+}
+#menu-posts-array-slider > a > div.wp-menu-image.dashicons.dashicons-image-flip-horizontal::before {
+	font-size: 18px !important;
+}
