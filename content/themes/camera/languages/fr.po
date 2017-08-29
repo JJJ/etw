@@ -1,0 +1,281 @@
+# Translation of Camera in French (France)
+# This file is distributed under the same license as the Camera package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-15 03:15:15+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Camera\n"
+
+#: inc/template-tags.php:65
+msgctxt "Previous post link"
+msgid "%title"
+msgstr "%title"
+
+#: inc/template-tags.php:71
+msgid "Next Post"
+msgstr "Article suivant"
+
+#: inc/template-tags.php:72
+msgctxt "Next post link"
+msgid "%title"
+msgstr "%title "
+
+#: inc/template-tags.php:64
+msgid "Previous Post"
+msgstr "Article précédent"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/camera/full-width.php
+msgid "Full Width"
+msgstr "Plein écran"
+
+#: content.php:80
+msgid "Edit Post"
+msgstr "Modifier l&rsquo;article"
+
+#: single.php:27
+msgid "Posts by "
+msgstr "Articles par"
+
+#: single.php:32
+msgid "About the author"
+msgstr "À propos de l'auteur"
+
+#: sidebar.php:28
+msgid "Meta"
+msgstr "Méta"
+
+#: search.php:15
+msgid "Results for: %s"
+msgstr "Résultats pour&nbsp;: %s"
+
+#: sidebar.php:16
+msgid "Latest Posts"
+msgstr "Derniers Articles"
+
+#: inc/template-tags.php:37
+msgid "Newer Posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Articles plus récents <span class=\"meta-nav\">&rarr;</span>"
+
+#: inc/template-tags.php:32
+msgid "<span class=\"meta-nav\">&larr;</span> Older Posts"
+msgstr "<span class=\"meta-nav\">&larr;</span> Articles précédents"
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr "Navigation des articles"
+
+#: inc/customizer.php:94
+msgid "Color Scheme"
+msgstr "Jeu de couleurs"
+
+#: inc/customizer.php:67
+msgid "Theme"
+msgstr "Thème"
+
+#: inc/customizer.php:37 inc/customizer.php:99
+msgid "Dark"
+msgstr "Sombre"
+
+#: inc/customizer.php:36 inc/customizer.php:98
+msgid "Light"
+msgstr "Léger"
+
+#: header.php:33
+msgid "Close"
+msgstr "Fermer"
+
+#: functions.php:377
+msgid "Page %s"
+msgstr "Page %s"
+
+#: functions.php:344
+msgid "Your comment is awaiting moderation."
+msgstr "Votre commentaire est en attente de modération"
+
+#: functions.php:333
+msgid "(Edit)"
+msgstr "(Modifier)"
+
+#: functions.php:332
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr "<cite class=\"comment-cite\">%s</cite>"
+
+#: functions.php:333
+msgid "%1$s at %2$s"
+msgstr "%1$s à %2$s"
+
+#: functions.php:280
+msgid "More Posts"
+msgstr "Plus d'articles"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Noto Sans, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:143
+msgctxt "Noto Sans font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:121
+msgid "Sidebar"
+msgstr "Colonne latérale"
+
+#: functions.php:65
+msgid "Footer Menu"
+msgstr "Menu du pied de page"
+
+#: functions.php:64
+msgid "Primary Menu"
+msgstr "Menu principal"
+
+#: footer.php:24
+msgid "Proudly powered by %s"
+msgstr "Fièrement propulsé par %s"
+
+#: footer.php:24
+msgid "http://wordpress.org/"
+msgstr "http://wordpress.org/"
+
+#: content.php:75
+msgid "Read More"
+msgstr "Lire la Suite"
+
+#: content-page.php:40 content.php:86
+msgid "Pages:"
+msgstr "Pages&nbsp;:"
+
+#: content-page.php:36
+msgid "Edit Page"
+msgstr "Modifier la page"
+
+#: content-none.php:27
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "Contenu Introuvable. Voulez-vous lancer une recherche?"
+
+#: content-none.php:22
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "Contenu Introuvable. Réessayez en modifiant les termes de recherche."
+
+#: content-none.php:18
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "Pr&ecirc;t &agrave; publier votre premier article ? <a href=\"%1$s\">Allons-y !</a>."
+
+#: content-none.php:14
+msgid "Nothing Found"
+msgstr "Aucun Résultat"
+
+#: content-meta.php:29
+msgid "Tag"
+msgstr "Tag"
+
+#: content-meta.php:15
+msgid "Category"
+msgstr "Catégorie"
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés."
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr "Commentaires Plus Récents &rarr;"
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr "&larr; Commentaires Pr&eacute;c&eacute;dents"
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr "Navigation des commentaires"
+
+#: comments.php:27
+msgid "% Comments"
+msgstr "% commentaires"
+
+#: comments.php:27
+msgid "One Comment"
+msgstr "Un commentaire"
+
+#: comments.php:27
+msgid "Leave a Comment"
+msgstr "Laisser un commentaire"
+
+#: archive.php:92 sidebar.php:21
+msgid "Archives"
+msgstr "Archives"
+
+#: archive.php:89
+msgid "Chats"
+msgstr "Chats"
+
+#: archive.php:86
+msgid "Audios"
+msgstr "Audios"
+
+#: archive.php:83
+msgid "Statuses"
+msgstr "États"
+
+#: archive.php:80
+msgid "Links"
+msgstr "Liens"
+
+#: archive.php:77
+msgid "Quotes"
+msgstr "Citations"
+
+#: archive.php:74
+msgid "Videos"
+msgstr "Vidéos"
+
+#: archive.php:71
+msgid "Images"
+msgstr "Images"
+
+#: archive.php:68
+msgid "Galleries"
+msgstr "Galeries"
+
+#: archive.php:65
+msgid "Asides"
+msgstr "Apart&eacute;s"
+
+#: archive.php:62
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:62
+msgid "Year: %s"
+msgstr "Ann&eacute;e: %s"
+
+#: archive.php:59
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:59
+msgid "Month: %s"
+msgstr "Mois: %s"
+
+#: archive.php:56
+msgid "Day: %s"
+msgstr "Jour: %s"
+
+#. translators: %1$s: smiley
+#: 404.php:53
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "Essayez du c&ocirc;t&eacute; des archives mensuelles. %1$s"
+
+#: 404.php:34
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
+
+#: 404.php:15
+msgid "Page Not Found"
+msgstr "Page non trouvée"

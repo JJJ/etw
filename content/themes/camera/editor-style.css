@@ -1,0 +1,295 @@
+/*--------------------------------------------------------------
+Typographic styles for the post editor
+--------------------------------------------------------------*/
+
+html {
+	font-size: 62.5%;
+	overflow-y: scroll;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+}
+
+.mceContentBody {
+	color: #47525c;
+	font-family: "Noto Sans", "Helvetica", sans-serif;
+	font-size: 1.6rem;
+	line-height: 1.7;
+}
+
+.mceContentBody h1,
+.mceContentBody h2,
+.mceContentBody h3,
+.mceContentBody h4,
+.mceContentBody h5,
+.mceContentBody h6 {
+	clear: both;
+	color: #47525c;
+	font-weight: normal;
+	line-height: 1.2;
+	margin-bottom: 3%;
+}
+
+h1 {
+  font-size: 4.6rem;
+}
+@media (max-width: 500px) {
+  h1 {
+    font-size: 4.0rem;
+  }
+}
+
+h2 {
+  font-size: 3.6rem;
+}
+@media (max-width: 500px) {
+  h2 {
+    font-size: 3.2rem;
+  }
+}
+
+h3 {
+  font-size: 2.6rem;
+}
+@media (max-width: 500px) {
+  h3 {
+    font-size: 2.2rem;
+  }
+}
+
+h4 {
+  font-size: 2.0rem;
+}
+@media (max-width: 500px) {
+  h4 {
+    font-size: 1.6rem;
+  }
+}
+
+h5 {
+  font-size: 1.6rem;
+}
+@media (max-width: 500px) {
+  h5 {
+    font-size: 1.4rem;
+  }
+}
+
+h6 {
+  font-size: 1.2rem;
+}
+
+hr {
+  background-color: transparent;
+  border: 0;
+  border-bottom: dotted 1px #BCC8D3;
+  height: 2px;
+  margin: 5% 0;
+}
+
+.mceContentBody blockquote {
+	position: relative;
+	margin: 0 0 4% 0;
+	z-index: 1;
+}
+
+.mceContentBody blockquote p {
+	color: #8d9caa;
+	font-size: 2.0rem;
+	font-style: italic;
+	line-height: 1.8;
+	margin: 1em 0 0 0;
+	padding: 0 0 0 8%;
+	position: relative;
+}
+
+.mceContentBody blockquote p:before {
+	color: #8d9caa;
+	content: "\f10d";
+	font-family: "FontAwesome";
+	font-size: 1.5rem;
+	position: absolute;
+	left: 0;
+	top: 5%;
+}
+
+@media (max-width: 500px) {
+	.mceContentBody blockquote p {
+		font-size: 1.5rem;
+	    line-height: 1.8;
+	    padding-left: 10%;
+	}
+}
+
+.mceContentBody ul, .mceContentBody ol {
+	margin: 0 0 5% 25px;
+	padding-left: 0;
+}
+
+.mceContentBody ul { list-style: square; }
+
+.mceContentBody ol { list-style: decimal }
+
+.mceContentBody ul ul,
+.mceContentBody ol ol,
+.mceContentBody ul ol,
+.mceContentBody ol ul {
+	margin: .6em 0 0 1.5em;
+}
+
+.mceContentBody img {
+	max-width: 100%;
+	height: auto;
+}
+
+.highlight {
+	background: #fff198;
+	color: #404040;
+}
+
+/*--------------------------------------------------------------
+Table Styles
+--------------------------------------------------------------*/
+
+table {
+	font-size: 18px;
+	margin-bottom: 5%;
+	padding: 0;
+	width: 100%;
+}
+
+table thead {
+	background: #f7f7f7;
+
+	th { font-weight: bold }
+}
+
+table td, #content table th { padding: 10px }
+
+table td { border-bottom: solid 1px #f7f7f7 }
+
+table tr:last-child td { border-bottom: none }
+
+table tr:nth-child(even) { background: #f7f7f7 }
+
+/*--------------------------------------------------------------
+Code Styles
+--------------------------------------------------------------*/
+
+pre {
+	background: #F0F2F5;
+	font-family: "Courier 10 Pitch", Courier, monospace;
+	font-size: 1.5rem;
+	line-height: 1.6;
+	margin-bottom: 1.6em;
+	max-width: 100%;
+	overflow: auto;
+	padding: 1.6em;
+}
+
+code, kbd, tt, var {
+	font: 15px Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+}
+
+/*--------------------------------------------------------------
+Alignments
+--------------------------------------------------------------*/
+
+.alignleft {
+	display: inline;
+	float: left;
+	margin: .5em 2em 1.5em 0;
+}
+
+.alignright {
+	display: inline;
+	float: right;
+	margin: .5em 0 1.5em 2em;
+}
+
+.aligncenter {
+	clear: both;
+	display: block;
+	margin: .5em auto 1.5em auto;
+}
+
+.alignnone, a img.alignnone {
+    margin: .5em 2em 1.5em 0;
+}
+
+.aligncenter, div.aligncenter {
+    display: block;
+    margin: .5em auto 1.5em auto;
+}
+
+.alignright, a img.alignright {
+    float: right;
+    margin: .5em 0 1.5em 2em;
+}
+
+.alignleft, a img.alignleft {
+    float: left;
+    margin: .5em 2em 1.5em 0;
+}
+
+.aligncenter, a img.aligncenter {
+    display: block;
+    margin: .5em auto 1.5em auto;
+}
+
+.wp-caption {
+	background: none;
+	border: none;
+    margin: .5em 0 1.5em 0;
+	max-width: 100%;
+	padding: 0;
+}
+
+.wp-caption-dd {
+	padding: 10px 0 0 0;
+	width: 100%;
+	font-size: 1.3rem;
+	color: #8d9caa;
+}
+
+.wp-caption img[class*="wp-image-"] {
+	display: block;
+	margin: 0;
+	max-width: 100%;
+}
+
+.wp-caption-dd, .wp-caption-text, .gallery-caption {
+	font-size: 1.5rem;
+	text-align: center;
+	margin: 0 0 15px 0;
+}
+
+.wp-caption.alignnone {
+    margin: .5em 2em 1.5em 0;
+}
+
+.wp-caption.alignleft {
+    margin: .5em 2em 1.5em 0;
+}
+
+.wp-caption.alignright {
+    margin: .5em 0 1.5em 2em;
+}
+
+.pull-right {
+	float: right;
+  	margin: 1% 0 3% 5%;
+}
+
+.pull-left {
+	float: left;
+	margin: 0 5% 3% 0;
+	text-align: left;
+}
+
+.pull-right, .pull-left {
+	color: #8d9caa;
+	font-size: 2.0rem;
+	line-height: 1.8;
+	font-style: italic;
+	width: 34%;
+}

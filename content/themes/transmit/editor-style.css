@@ -1,0 +1,126 @@
+/* Body Styles */
+.mceContentBody {
+    color: #79838A;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    width: 60%;
+}
+
+.mceContentBody h1, .mceContentBody h2, .mceContentBody h3, .mceContentBody h4, .mceContentBody h5, .mceContentBody h6 {
+    color: #5C6772;
+    margin: 0 0 4% 0;
+    font-weight: normal;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.2;
+}
+
+.mceContentBody h1 {
+    font-size: 36px;
+}
+
+.mceContentBody h2 {
+    font-size: 30px;
+ }
+
+.mceContentBody h3 {
+    font-size: 22px;
+}
+
+.mceContentBody h4 {
+    font-size: 20px;
+}
+
+.mceContentBody h5 {
+    font-size: 16px;
+}
+
+.mceContentBody h6 {
+    font-size: 14px;
+}
+
+.mceContentBody p {
+    margin-bottom: 4%;
+}
+
+.mceContentBody img {
+    max-width: 100%;
+}
+
+/* Blockquote Styles */
+.mceContentBody blockquote p {
+    color: #A7B6BD;
+    padding: 0 0 0 30px;
+}
+
+/* List Styles */
+.mceContentBody ul, .mceContentBody ol {
+    margin: 0 0 4% 0;
+}
+
+.mceContentBody ul ul, .mceContentBody ul ol, .mceContentBody ol ul, .mceContentBody ol ol {
+    padding: 0 0 0 8%;
+    margin: 0 0 0 0;
+}
+
+.mceContentBody ul {
+    list-style-type: square;
+}
+
+.mceContentBody ol li {
+    list-style-type: decimal;
+}
+
+.mceContentBody hr {
+    border: 0;
+    height: 1px;
+    margin: 7% 0;
+    border-top: solid 1px #EAEFF5;
+}
+
+/* Formatting Styles */
+
+.mceContentBody code, .mceContentBody pre, .mceContentBody kbd {
+    background: #f7f7f7;
+    font-family: "Courier 10 Pitch", Courier, monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    padding: 25px;
+    max-width: 100%;
+    tab-size: 4;
+    overflow-x: hidden;
+    overflow: scroll;
+}
+
+.mceContentBody .alignright {
+    display: inline;
+    float: right;
+    margin: 1% 0 3% 5%;
+}
+
+.mceContentBody .alignleft {
+    display: inline;
+    float: left;
+    margin: 1% 5% 3% 0;
+}
+
+/* Tables */
+
+.mceContentBody table {
+    border: solid 1px #EAEFF5;
+    text-align: left;
+    width: 100%;
+}
+
+.mceContentBody tr th {
+    font-weight: bold;
+}
+
+.mceContentBody td, .mceContentBody th { padding: 10px }
+
+.mceContentBody td { border-bottom: solid 1px #f7f7f7 }
+
+.mceContentBody tr:last-child td { border-bottom: none }
+
+.mceContentBody tr.odd { background: #f7f7f7 }

@@ -1,0 +1,40 @@
+#secondary .jetpack-display-remote-posts h4 {
+	font-weight: normal;
+}
+
+#secondary .a-stats a {
+	color: #CFEA93;
+}
+
+#secondary .recentcommentsavatar tr td {
+	padding: 8px 0 8px 8px;
+}
+
+#secondary #flickr_badge_wrapper {
+	border: none;
+}
+
+#secondary .flickr-size-small a img {
+	width: 100%;
+}
+
+.site-footer #flickr_badge_wrapper {
+	background: transparent;
+	border: none;
+}
+
+.site-footer .recentcommentsavatar tr td {
+	padding: 8px 0 8px 8px;
+}
+
+.wpjp-type-playlist ul {
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none !important;
+	background: transparent !important;
+	font-size: 12px !important;
+}
+
+.wpjp-type-playlist li {
+	margin-bottom: 0 !important;
+}

@@ -1,0 +1,323 @@
+# Translation of Publisher in Greek (Polytonic)
+# This file is distributed under the same license as the Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-06-06 00:49:55+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: Publisher\n"
+
+#: inc/customizer.php:57
+msgid "Featured Image as Post Background"
+msgstr ""
+
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr ""
+
+msgid "Full Width"
+msgstr ""
+
+#: templates/template-titles.php:28 templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Συνέχεια <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-icons.php:114
+msgid "Type here and press enter."
+msgstr "Πληκτρολογῆστε ἐδῶ καὶ πατῆστε enter."
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr ""
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: single.php:87
+msgid "Tags"
+msgstr "Ἐτικέττες"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "Τελευταῖα ἄρθρα τοῦ/τῆς %s"
+
+#: single.php:81
+msgid "Category"
+msgstr "ΚΑΤΗΓΟΡΙΑ"
+
+#: single.php:40
+msgid "Details"
+msgstr "Λεπτομέρειες"
+
+#: single.php:63
+msgid "About %s"
+msgstr "Περὶ τοῦ/τῆς: %s"
+
+#: single.php:39
+msgid "Author"
+msgstr "Ἔγραψε"
+
+#: single.php:37
+msgid "Comments"
+msgstr "σχόλια"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Μεταλειτουργίες"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:31
+#: templates/template-icons.php:113
+msgid "Search"
+msgstr "Ἀναζήτηση"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "Ἀναζήτηση ἀποτελεσμάτων γιά: %s"
+
+#: inc/template-tags.php:49
+msgid "<span class=\"meta-nav\"><i class=\"icon-chevron-left\"></i></span> Older posts"
+msgstr "<span class=\"meta-nav\"><i class=\"icon-chevron-left\"></i></span> Παλαιότερα ἄρθρα"
+
+#: inc/template-tags.php:53
+msgid "Newer posts <span class=\"meta-nav\"><i class=\"icon-chevron-right\"></i></span>"
+msgstr "Νεότερα ἄρθρα <span class=\"meta-nav\"><i class=\"icon-chevron-right\"></i></span>"
+
+#: page.php:18 post-formats/format-image.php:13
+#: post-formats/format-image.php:15 post-formats/format-standard.php:13
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "Μόνιμος σύνδεσμος πρὸς %s"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "Ἑπόμενη ἀνάρτηση"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "Προηγούμενο ἄρθρο"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "Περιήγηση ἄρθρων"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr ""
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "Ἠλεκτρονικὴ διεύθυνση"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "URL LinkedIn"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "Ἡ URL τοῦ Vimeo"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "URL YouTube"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "Ἡ URL τοῦ Google+"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr ""
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "Ἡ URL τοῦ Tumblr"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "Ἡ URL τοῦ Dribbble"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "URL Flickr"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "Ἡ URL τοῦ Instagram"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "URL γιὰ τὸ Facebook"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "Σύνδεσμοι μὲ τὰ μέσα κοινωνικῆς δικτύωσης"
+
+#: inc/customizer.php:79
+msgid "Add links to your various social media sites. These icons will appear in the header."
+msgstr "Προσθέστε συνδέσμους πρὸς διάφορες ἱστοσελίδες κοινωνικῆς δικτύωσης. Τὰ εἰκονίδια αὐτὰ θὰ ἐμφανισθοῦν στὴν κεφαλίδα."
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "URL Twitter"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "Ἀπενεργοποιῆστε"
+
+#: inc/customizer.php:33
+msgid "Add your logo and social media links below."
+msgstr "Προθέστε κατωτέρω τὸν λογότυπό σας, καθὼς καὶ συνδέσμους πρὸς μέσα κοινωνικῆς δικτυώσεως."
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "Ἀνέβασμα λογοτύπου"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "Νὰ ἐνεργοποιηθεῖ"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "Ἐπιλογές θέματος ἐμφάνισης"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "Πηγαίνετε στὸ περιεχόμενο τοῦ ἱστολογίου"
+
+#: header.php:28
+msgid "Menu"
+msgstr "Μενού"
+
+#: functions.php:244
+msgid "Your comment is awaiting moderation."
+msgstr "Τὸ σχόλιό σας περιμένει ἔλεγχο γιὰ ἐνδεχόμενες ἀκρότητες."
+
+#: functions.php:231
+msgid "%1$s at %2$s"
+msgstr "%1$s,  %2$s "
+
+#: functions.php:223
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:126
+msgid "Sidebar"
+msgstr "Πλαϊνὴ στήλη"
+
+#: functions.php:77
+msgid "Primary Menu"
+msgstr "Πρωτεῦον μενού"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "Ἐπεξεργασία"
+
+#: footer.php:28
+msgid "Theme: %1$s by %2$s."
+msgstr "Θέμα: %1$s ἀπὸ τὸν/τὴν %2$s."
+
+#: footer.php:26
+msgid "Proudly powered by %s"
+msgstr "Λειτουργεῖ μὲ τὴν βοήθεια τοῦ %s"
+
+#: footer.php:26
+msgid "A Semantic Personal Publishing Platform"
+msgstr "Μιὰ πλατφόρμα σημασιολογικῶν προσωπικῶν ἐκδόσεων"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "Παλαιότερα ἄρθρα"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "Νεότερα ἄρθρα"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Ἡ ὑποβολὴ σχολίων ἔχει κλείσει."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Νεότερα σχόλια &rarr;"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Παλαιότερα σχόλια"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Συμμετάσχετε στὴν συζήτηση!"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "Συνδεθῆτε μὲ τὴν εἰκόνα στὸ πλῆρες μέγεθός της"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "Τὸ κανονικὸ μέγεθος εἶναι %s εἰκονοψηφίδες (pixel)"
+
+#: archive.php:58 sidebar.php:13
+msgid "Archives"
+msgstr "Ἀρχεῖα"
+
+#: archive.php:55 templates/template-icons.php:28
+msgid "Links"
+msgstr "Σύνδεσμοι"
+
+#: archive.php:52
+msgid "Quotes"
+msgstr ""
+
+#: archive.php:49
+msgid "Videos"
+msgstr "Βίντεο"
+
+#: archive.php:46
+msgid "Images"
+msgstr "Εἰκόνες"
+
+#: archive.php:43
+msgid "Asides"
+msgstr ""
+
+#: archive.php:40
+msgid "Year: %s"
+msgstr "Ἔτος: %s"
+
+#: archive.php:37
+msgid "Month: %s"
+msgstr "Μῆνας: %s"
+
+#: archive.php:34
+msgid "Day: %s"
+msgstr "Ἡμέρα: %s"
+
+#: archive.php:26
+msgid "Author: %s"
+msgstr "Συγγραφέας: %s"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "404 - Ἡ σελίδα δὲν βρέθηκε"
+
+#: 404.php:23
+msgid "It looks like nothing was found at this location. Try using the navigation menu or the search box to locate the page you were looking for."
+msgstr "Ὡς φαίνεται, στὴν τοποθεσία αὐτὴν δὲν βρέθηκε τίποτε. Δοκιμάστε τὸ μενοὺ πλοηγήσεως ἢ τὴν ἀναζήτηση."

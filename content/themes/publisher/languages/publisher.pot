@@ -1,0 +1,376 @@
+# Copyright (C) 2016 Array
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Publisher 2.3.2\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/theme/publisher\n"
+"POT-Creation-Date: 2016-01-01 03:29:34+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr ""
+
+#: 404.php:23
+msgid ""
+"It looks like nothing was found at this location. Try using the navigation "
+"menu or the search box to locate the page you were looking for."
+msgstr ""
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr ""
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr ""
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr ""
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr ""
+
+#: archive.php:44
+msgid "Asides"
+msgstr ""
+
+#: archive.php:47
+msgid "Images"
+msgstr ""
+
+#: archive.php:50
+msgid "Videos"
+msgstr ""
+
+#: archive.php:53
+msgid "Quotes"
+msgstr ""
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr ""
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr ""
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr ""
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr ""
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr ""
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr ""
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr ""
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr ""
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr ""
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr ""
+
+#. Translators: If there are characters in your language that are not
+#. 	 * supported by Arimo, translate this to 'off'. Do not translate
+#. 	 * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:276
+msgid "Page %s"
+msgstr ""
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr ""
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: header.php:28
+msgid "Menu"
+msgstr ""
+
+#: header.php:29
+msgid "Skip to content"
+msgstr ""
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr ""
+
+#: inc/customizer.php:33
+msgid "Add your logo and social media links below."
+msgstr ""
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr ""
+
+#: inc/customizer.php:57
+msgid "Featured Image as Post Background"
+msgstr ""
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr ""
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr ""
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr ""
+
+#: inc/customizer.php:79
+msgid ""
+"Add links to your various social media sites. These icons will appear in the "
+"header."
+msgstr ""
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr ""
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr ""
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr ""
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr ""
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr ""
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr ""
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr ""
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr ""
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr ""
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr ""
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr ""
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr ""
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr ""
+
+#: inc/customizer.php:275
+msgid "GitHub URL"
+msgstr ""
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr ""
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr ""
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr ""
+
+#: inc/template-tags.php:49
+msgid ""
+"<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> Older "
+"posts"
+msgstr ""
+
+#: inc/template-tags.php:53
+msgid ""
+"Newer posts <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></"
+"span>"
+msgstr ""
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr ""
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr ""
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr ""
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr ""
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr ""
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr ""
+
+#: single.php:37
+msgid "Comments"
+msgstr ""
+
+#: single.php:39
+msgid "Author"
+msgstr ""
+
+#: single.php:40
+msgid "Details"
+msgstr ""
+
+#: single.php:63
+msgid "About %s"
+msgstr ""
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr ""
+
+#: single.php:81
+msgid "Category"
+msgstr ""
+
+#: single.php:87
+msgid "Tags"
+msgstr ""
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr ""
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr ""
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr ""
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr ""
+
+#: templates/template-icons.php:120
+msgid "Type here and press enter."
+msgstr ""
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr ""
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Publisher"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "https://array.is/themes/publisher-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid ""
+"Curate an eclectic scrapbook of photos, videos, audio and more with "
+"Publisher. Featuring a responsive, masonry-style layout, Publisher looks "
+"just as good on your mobile device as it does on the desktop."
+msgstr ""
+
+#. Author of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Array"
+msgstr ""
+
+#. Author URI of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "https://array.is"
+msgstr ""
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr ""

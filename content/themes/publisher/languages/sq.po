@@ -1,0 +1,311 @@
+# Translation of WordPress.com - Themes - Publisher in Albanian
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-03-20 08:43:08+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: sq_AL\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "on"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "Lexoni Më Tepër"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "Faqe %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "Gjerësi e Plotë"
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Vazhdoni leximin <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "Permalidhje te komentet e %s"
+
+#: single.php:87
+msgid "Tags"
+msgstr "Etiketa"
+
+#: single.php:81
+msgid "Category"
+msgstr "KATEGORI"
+
+#: single.php:40
+msgid "Details"
+msgstr "Hollësi"
+
+#: single.php:63
+msgid "About %s"
+msgstr "Rreth %s"
+
+#: single.php:39
+msgid "Author"
+msgstr "Autor"
+
+#: single.php:37
+msgid "Comments"
+msgstr "komente"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Meta"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "Kërko"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "Përfundime Kërkimi për: %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "Permalidhje te %s"
+
+#: inc/template-tags.php:49
+msgid "<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> Older posts"
+msgstr "<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> Postime më të vjetra"
+
+#: inc/template-tags.php:53
+msgid "Newer posts <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></span>"
+msgstr "Postime më të reja <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></span>"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "Postimi Pasues"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "Postimi i Mëparshëm"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "Lëvizje te postimet"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "URL RSS-je"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "Adresë Email"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "URL LinkedIn-i"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "URL YouTube-i"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "URL Vimeo"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "URL Google+"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "URL Pinterest-i"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "URL Flickr-i"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "URL Tumblr"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "URL Dribbble"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "URL Instagram"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "URL Facebook-u"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "URL Twitter-i"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "Lidhje Mediash Shoqërore"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "Çaktivizoje"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "Aktivizo"
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "Ngarkim Logoje"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "Mundësi Teme"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "Hidhu te lënda"
+
+#: header.php:28
+msgid "Menu"
+msgstr "Menu"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "Komenti juaj po pret moderimin."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s te %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "Anështyllë"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "Menuja Parësore"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "Përpunoni"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Temë: %1$s nga %2$s."
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "Bazohet me krenari në %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "Postime Më të Vjetra"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "Postime Më të Reja"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Komentet janë mbyllur."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Komentet Më të Reja &rarr;"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Komentet Më të Vjetra"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "1 Koment"
+msgstr[1] "%1$s Komente"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Bëhuni pjesë e bashkëbisedimit!"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "Lidhje për te figura në madhësi të plotë"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "Madhësia e plotë është %s piksela"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "Arkiva"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "Lidhje"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "Citime"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "Video"
+
+#: archive.php:47
+msgid "Images"
+msgstr "Figura"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "Anësore"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "Vit: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "Muaj: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "Ditë: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: 404.php:23
+msgid "It looks like nothing was found at this location. Try using the navigation menu or the search box to locate the page you were looking for."
+msgstr "Duket se nuk u gjet gjë në këtë vend. Provoni duke përdorur menunë e lëvizjeve ose kutinë e kërkimit që të gjeni faqen që po kërkonit."

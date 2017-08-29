@@ -1,0 +1,312 @@
+# Translation of WordPress.com - Themes - Publisher in Irish
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-09-04 03:23:51+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: ga_IE\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "on"
+
+#: inc/customizer.php:275
+msgid "GitHub URL"
+msgstr "URL GitHub"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "Tuilleadh"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "Leathanach %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "Lánleithead"
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Tuilleadh <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-icons.php:120
+msgid "Type here and press enter."
+msgstr "Scríobh anseo agus brúigh enter."
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "Buan-nasc leis na freagraí ar %s"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: single.php:87
+msgid "Tags"
+msgstr "Clibeanna"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "Na hAilt Is Deireanaí ag %s"
+
+#: single.php:81
+msgid "Category"
+msgstr "RANG"
+
+#: single.php:40
+msgid "Details"
+msgstr "Sonraí"
+
+#: single.php:63
+msgid "About %s"
+msgstr "Faoi %s"
+
+#: single.php:39
+msgid "Author"
+msgstr "Údar"
+
+#: single.php:37
+msgid "Comments"
+msgstr "Freagraí"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Imshonraí"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "Cuartaigh"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "Torthaí ar: %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "Buan-nasc le %s"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "An Chéad Alt Eile"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "An tAlt Roimhe Seo"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "Treoraíocht alt"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "URL RSS"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "Seoladh Ríomhphoist"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "URL LinkedIN"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "URL Vimeo"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "URL YouTube"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "URL Google+"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "URL Pinterest"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "URL Tumblr"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "URL Dribbble"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "URL Flickr"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "URL Instagram"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "URL Facebook"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "Naisc leis na Meáin Sóisialta"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "URL Twitter"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "Cas as"
+
+#: inc/customizer.php:33
+msgid "Add your logo and social media links below."
+msgstr "Cuir do lógó agus naisc le do chuid próifíleacha ar na meáin shóisialta thíos."
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "Uaslódáil Lógó"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "Cas Air"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "Roghanna Téama"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "Beir go dtí an t-alt féin mé"
+
+#: header.php:28
+msgid "Menu"
+msgstr "Roghchlár"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "Tá do fhreagra fós le ceadú."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s ag %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "Taobh-Bharra"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "Príomhroghchlár"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "Eagar"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Téama: %1$s le %2$s."
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "Le cumhacht %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "Chun Deiridh"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "Chun Tosaigh"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Freagraí dúnta."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Freagraí Nua &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Bí ag comhrá!"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Seanfhreagraí"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "Nasc leis an íomhá lánmhéide"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "%s picteilín atá san íomhá lánmhéide"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "Cartlanna"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "Naisc"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "Athfhriotail"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "Físeáin"
+
+#: archive.php:47
+msgid "Images"
+msgstr "Íomhánna"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "Seachfhocla"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "Bliain: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "Mí: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "Lá: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "Údar: %s"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "404 — Níor Frítheadh an Leathanach"

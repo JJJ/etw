@@ -1,0 +1,42 @@
+/* These variables are used througout style.scss. */
+
+/* Body font styles */
+$sans: 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+/* Title font styles */
+$titles: 'Lato', 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+/* Color variables */
+$gray: #999;
+$black: #383F49;
+$lightgray: #eee;
+$accent: #3EB6E4;
+
+/* Responsive media query mixins */
+@mixin viewport($point) {
+	@if $point == desktop {
+		@media ( max-width: 1250px ) { @content; }
+	}
+	@else if $point == tablet {
+		@media ( max-width: 800px )  { @content; }
+	}
+	@else if $point == mobile {
+		@media ( max-width: 500px )  { @content; }
+	}
+	@else if $point == admin-bar {
+		@media ( min-width: 769px ) and ( max-width: 782px ) { @content; }
+	}
+}
+
+/* Styles for small text with uppercase font style. Used on dates and post meta */
+@mixin sans-uppercase {
+	color: #8E969E;
+	font-family: $sans;
+	font-size: 15px;
+	font-style: normal;
+}
+
+/* Transition effect used througout Designer */
+@mixin transition {
+	transition: .07s ease-in-out;
+}

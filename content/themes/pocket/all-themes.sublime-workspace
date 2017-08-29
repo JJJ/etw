@@ -1,0 +1,1345 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ba",
+				"background"
+			],
+			[
+				"social",
+				"social-navigation	 style.scss"
+			],
+			[
+				"padd",
+				"padding-left"
+			],
+			[
+				"padding",
+				"padding-left"
+			],
+			[
+				"wf",
+				"wf-loading	 style.css"
+			],
+			[
+				"pad",
+				"padding-top"
+			],
+			[
+				"tex",
+				"text-align"
+			],
+			[
+				"slide",
+				"slideUp"
+			],
+			[
+				"first",
+				"first-child"
+			],
+			[
+				"firs",
+				"first-child"
+			],
+			[
+				"border",
+				"border-left"
+			],
+			[
+				"fir",
+				"first-child"
+			],
+			[
+				"homepa",
+				"homepage_layout"
+			],
+			[
+				"border-top",
+				"border-top"
+			],
+			[
+				"nex",
+				"nextPost"
+			],
+			[
+				"post",
+				"postdate"
+			],
+			[
+				"toggle",
+				"toggleClass"
+			],
+			[
+				"drawer",
+				"drawer-open"
+			],
+			[
+				"backg",
+				"background-color"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"f",
+				"fixed"
+			],
+			[
+				"min-",
+				"mini-bar	 style.scss"
+			],
+			[
+				"pager",
+				"pagerHeight"
+			],
+			[
+				"her-",
+				"hero-pager"
+			],
+			[
+				"hero",
+				"hero_count"
+			],
+			[
+				"her_",
+				"hero_posts"
+			],
+			[
+				"draw",
+				"drawer-open"
+			],
+			[
+				"overla",
+				"overlay-toggle"
+			],
+			[
+				"sear",
+				"searchform	 style.css"
+			],
+			[
+				"box-s",
+				"box-shadow"
+			],
+			[
+				"line",
+				"line-height"
+			],
+			[
+				"cate",
+				"categories"
+			],
+			[
+				"demo",
+				"demo_text"
+			],
+			[
+				"activ",
+				"active_callback"
+			],
+			[
+				"pos",
+				"post_id"
+			],
+			[
+				"close",
+				"closest"
+			],
+			[
+				"the",
+				"the_ID"
+			],
+			[
+				"dow",
+				"download-id	 style.css"
+			],
+			[
+				"esc",
+				"esc_html__"
+			],
+			[
+				"is_sin",
+				"is_singular"
+			],
+			[
+				"coo",
+				"cookie_name"
+			],
+			[
+				"watermark_sanitize_te",
+				"watermark_sanitize_textarea"
+			],
+			[
+				"fa-angle",
+				"fa-angle-down"
+			],
+			[
+				"border-co",
+				"border-color"
+			],
+			[
+				"infi",
+				"infinite-handle"
+			],
+			[
+				"backgro",
+				"background"
+			],
+			[
+				"pd",
+				"padding-top"
+			],
+			[
+				"text",
+				"text-indent"
+			],
+			[
+				"mobile",
+				"mobile-active"
+			],
+			[
+				"gallery-wra",
+				"gallery-wrapper	 style.scss"
+			],
+			[
+				"wf-",
+				"wf-active	 style.scss"
+			],
+			[
+				"border-b",
+				"border-bottom"
+			],
+			[
+				"margin",
+				"margin-top"
+			],
+			[
+				"op",
+				"opacity"
+			],
+			[
+				"ease-in",
+				"ease-in-out"
+			],
+			[
+				"border-bot",
+				"border-bottom-color"
+			],
+			[
+				"background",
+				"background-position"
+			],
+			[
+				"border-le",
+				"border-left-color"
+			],
+			[
+				"borde-b",
+				"border-bottom"
+			],
+			[
+				"inf",
+				"infinite-handle"
+			],
+			[
+				"togg",
+				"toggle-sub"
+			],
+			[
+				"drop",
+				"drop-open"
+			],
+			[
+				"sub",
+				"submenu"
+			],
+			[
+				"paddin",
+				"padding-top"
+			],
+			[
+				"ali",
+				"alignleft	 style.css"
+			],
+			[
+				"box",
+				"box-shadow"
+			],
+			[
+				"free",
+				"freebie_file"
+			],
+			[
+				"tex-t",
+				"text-transform"
+			],
+			[
+				"align",
+				"alignright	 style.css"
+			],
+			[
+				"pa",
+				"padding"
+			],
+			[
+				"margn-",
+				"margin-top"
+			],
+			[
+				"gallery-w",
+				"gallery-wrapper	 style.scss"
+			],
+			[
+				"gallery",
+				"gallery_size"
+			],
+			[
+				"lis",
+				"list-style"
+			],
+			[
+				"jetpack",
+				"jetpack-portfolio"
+			],
+			[
+				"posts",
+				"posts_per_page"
+			],
+			[
+				"feat",
+				"featured_items"
+			],
+			[
+				"fea",
+				"featured_items"
+			],
+			[
+				"leg",
+				"legacy_links"
+			],
+			[
+				"por",
+				"portfolio_cats"
+			],
+			[
+				"clic",
+				"clickedId"
+			],
+			[
+				"page",
+				"page_id"
+			],
+			[
+				"padi",
+				"padding-bottom"
+			],
+			[
+				"in",
+				"inline-block"
+			],
+			[
+				"he",
+				"height"
+			],
+			[
+				"font-st",
+				"font-style"
+			],
+			[
+				"inln",
+				"inline-block"
+			],
+			[
+				"inline",
+				"inline"
+			],
+			[
+				"border-t",
+				"border-top-width"
+			],
+			[
+				"bordr",
+				"border-radius"
+			],
+			[
+				"border-bott",
+				"border-bottom"
+			],
+			[
+				"wid",
+				"width"
+			],
+			[
+				"border-c",
+				"border-color"
+			],
+			[
+				"fon",
+				"FontAwesome"
+			],
+			[
+				"button",
+				"button_text"
+			],
+			[
+				"trans",
+				"transparent"
+			],
+			[
+				"fon-",
+				"font-weight"
+			],
+			[
+				"bor",
+				"border-bottom"
+			],
+			[
+				"lsi",
+				"list-style"
+			],
+			[
+				"append",
+				"appendTo"
+			],
+			[
+				"cart_",
+				"cart_item"
+			],
+			[
+				"download",
+				"download_id"
+			],
+			[
+				"paddi",
+				"padding-left"
+			],
+			[
+				"purchase",
+				"purchase-button"
+			],
+			[
+				"down",
+				"download_id"
+			],
+			[
+				"class",
+				"class_name"
+			],
+			[
+				"clas",
+				"class_name"
+			],
+			[
+				"do",
+				"digital-downloads"
+			],
+			[
+				"downl",
+				"download-modal"
+			],
+			[
+				"mar",
+				"margin"
+			],
+			[
+				"font-s",
+				"font-size"
+			],
+			[
+				"border-",
+				"border-bottom-style"
+			],
+			[
+				"star",
+				"starOpacity"
+			],
+			[
+				"image",
+				"image_list"
+			],
+			[
+				"padding-",
+				"padding-top"
+			],
+			[
+				"comm",
+				"comment_count"
+			],
+			[
+				"border-r",
+				"border-right"
+			],
+			[
+				"order",
+				"order_id"
+			],
+			[
+				"font",
+				"font-weight"
+			],
+			[
+				"review",
+				"review_rating"
+			],
+			[
+				"rev",
+				"review_rating"
+			],
+			[
+				"sample",
+				"sample_download_url"
+			],
+			[
+				"bundle",
+				"bundle_items"
+			],
+			[
+				"intro",
+				"intro_feature"
+			],
+			[
+				"budne",
+				"bundle_intro_text"
+			],
+			[
+				"marg",
+				"margin-left"
+			],
+			[
+				"margin-",
+				"margin-left"
+			],
+			[
+				"backgrou",
+				"background-position"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 76.0,
+		"last_filter": "Install ",
+		"selected_items":
+		[
+			[
+				"Install ",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"browse",
+				"Preferences: Browse Packages"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"comple",
+				"CSS Completions: Prune Cache"
+			],
+			[
+				"insl",
+				"Package Control: Install Package"
+			],
+			[
+				"reposi",
+				"Package Control: Add Repository"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"tid",
+				"Tidy CSS"
+			],
+			[
+				"java",
+				"Javascript Beautify"
+			],
+			[
+				"bea",
+				"Javascript Beautify"
+			],
+			[
+				"re",
+				"Package Control: Remove Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"whitesp",
+				"Whitespace: Remove Trailing Whitespace"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"tidy",
+				"Tidy CSS"
+			],
+			[
+				"package",
+				"Package Control: Remove Package"
+			],
+			[
+				"css",
+				"Format CSS: Expanded"
+			],
+			[
+				"sass",
+				"SassBeautify"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"package re",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove	",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove package",
+				"Package Control: Remove Package"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"package remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Lorem ipsum"
+			],
+			[
+				"package remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"package install",
+				"Package Control: Install Package"
+			],
+			[
+				"package add",
+				"Package Control: Add Channel"
+			],
+			[
+				"remove pac",
+				"Package Control: Remove Package"
+			],
+			[
+				"package ins",
+				"Package Control: Install Package"
+			],
+			[
+				"package control in",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 561.0
+	},
+	"console":
+	{
+		"height": 223.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": true,
+		"side_bar_visible": true,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/mike/Sites/themes/wp-content/themes/editor/inc/customizer.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/js/editor.js",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/inc/jetpack.php",
+		"/Users/mike/Downloads/editor-wpcom/inc/extras.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/inc/extras.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/functions.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/header.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/inc/sass/style.scss",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/verb/functions.php",
+		"/Users/mike/Downloads/editor-wpcom/inc/jetpack.php",
+		"/Users/mike/Downloads/editor-wpcom/inc/template-tags.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/rtl.css",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/template-featured-posts.php",
+		"/Users/mike/Downloads/editor-wpcom/header.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/inc/template-tags.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/content.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/comments.php",
+		"/Users/mike/Sites/themes/wp-content/themes/editor/editor-style.css",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/inc/customizer.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/templates/template-titles.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/inc/typekit/typekit.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/inc/sass/style.scss",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/inc/admin/updater/theme-updater.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/inc/admin/updater/theme-updater-admin.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/footer.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/functions.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/js/paperback.js",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-hero-item.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/sidebar.php",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/sidebar.php",
+		"/Users/mike/Sites/themes/wp-content/plugins/edd-download-info/edd-download-info.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/header.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-fixed-bar.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-drawer.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/sass/style.scss",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/inc/edd/edd.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-hero-header.php",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/js/candid.js",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/wporg.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/rtl.css",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/package.json",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/.sass-cache/21f6c987910d3724ec401da26651534d8dfbeb92/style.scssc",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/.sass-cache/21f6c987910d3724ec401da26651534d8dfbeb92/variables.scssc",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/Gruntfile.js",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/admin/updater/theme-updater-admin.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/.sass-cache/753b921079b203ca4eac28e081e43a87a29c7ac5/style.scssc",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/admin/updater/theme-updater.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/customizer.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/languages/candid.pot",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/node_modules/grunt-autoprefixer/node_modules/autoprefixer/node_modules/caniuse-db/CONTRIBUTING.md",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/node_modules/grunt-autoprefixer/node_modules/autoprefixer/node_modules/caniuse-db/data.json",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/node_modules/grunt-autoprefixer/node_modules/autoprefixer/node_modules/caniuse-db/fulldata-json/data-1.0.json",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/node_modules/grunt-autoprefixer/node_modules/autoprefixer/node_modules/caniuse-db/fulldata-json/data-2.0.json",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/style.css",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-grid-item.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-page.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/comments.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/home.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/extras.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/jetpack.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/template-tags.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/index.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/js/customizer.js",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/search.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-mini-grid-item.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/archive.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/admin/updater/theme-updater-class.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/page.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/searchform.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/single.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-hero-carousel-item.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-meta.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-none.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/404.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/typekit/typekit.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/template-parts/content-big-search.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/js/candid.js",
+		"/Users/mike/Sites/themes/wp-content/themes/ampersand/functions.php",
+		"/Users/mike/Sites/themes/wp-content/themes/paperback/inc/sass/variables.scss",
+		"/Users/mike/Downloads/Work_Sans/OFL.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/style.css",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/inc/sass/style.scss",
+		"/Users/mike/Sites/themes/wp-content/plugins/unpublish/unpublish.php",
+		"/Users/mike/Sites/themes/wp-content/themes/dealotto/templates/bundles.php",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/archive.php",
+		"/Users/mike/Sites/themes-backup-before-yosemite/wp-content/themes/highlight/js/editor.js",
+		"/Users/mike/Sites/themes/wp-content/themes/crate/inc/edd/edd.php",
+		"/Users/mike/Downloads/animate.css",
+		"/Users/mike/Sites/themes/wp-content/themes/designer/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/designer/inc/sass/style.scss",
+		"/Users/mike/Sites/array/wp-content/themes/array/includes/js/array.js",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/templates/template-homepage-portfolio.php",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/inc/template-tags.php",
+		"/Users/mike/Sites/themes/wp-content/themes/author/index.php",
+		"/Users/mike/Sites/themes/wp-content/themes/author/functions.php",
+		"/Users/mike/Sites/themes/wp-content/themes/dealotto/template-parts/content-single-freebie.php",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/inc/extras.php",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/inc/extras.php",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/inc/sass/style.scss",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/style.css",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/inc/customizer.php",
+		"/Users/mike/Sites/themes/wp-config.php",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/template-parts/content-grid-item.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/partials/content-carousel.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/edd_templates/shortcode-content-image.php",
+		"/Users/mike/Sites/themes/wp-content/themes/candid/functions.php",
+		"/Users/mike/Sites/themes-backup-before-yosemite/wp-content/themes/slate/content-home-blog.php",
+		"/Users/mike/Sites/themes/wp-content/themes/watermark/functions.php",
+		"/Users/mike/Sites/themes/wp-content/plugins/array-toolkit/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/dealotto/js/dealotto.js",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/js/checkout.js",
+		"/Users/mike/Sites/array/wp-content/themes/array/support.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/index.php",
+		"/Users/mike/Sites/themes/wp-content/themes/publisher/inc/wporg.php",
+		"/Users/mike/Sites/themes/wp-content/themes/publisher/style.css",
+		"/Users/mike/Sites/themes/wp-content/themes/publisher/readme.txt",
+		"/Users/mike/Sites/themes/wp-content/themes/array-redesign/edd_templates/edd.css",
+		"/Users/mike/Sites/themes/wp-content/themes/array-redesign/inc/edd/edd.php",
+		"/Users/mike/Sites/themes/wp-content/themes/array-redesign/single-download.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/functions.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/partials/content-big-search.php",
+		"/Users/mike/Sites/themes/wp-content/themes/checkout/header.php"
+	],
+	"find":
+	{
+		"height": 33.0
+	},
+	"find_in_files":
+	{
+		"height": 115.0,
+		"where_history":
+		[
+			"/Users/mike/Sites/themes/wp-content/themes/editor",
+			"/Users/mike/Downloads/editor-wpcom",
+			"/Users/mike/Sites/themes/wp-content/themes/checkout",
+			"/Users/mike/Sites/themes/wp-content/themes/paperback",
+			"/Users/mike/Sites/themes/wp-content/themes/ampersand",
+			"/Users/mike/Sites/themes/wp-content/themes/paperback",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/paperback",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/themes/checkout",
+			"/Users/mike/Sites/themes/wp-content/themes/candid",
+			"/Users/mike/Sites/array/wp-content/themes/candid",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/array-redesign",
+			"/Users/mike/Sites/themes/wp-content/themes/array",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/array/wp-content/plugins",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/dealotto",
+			"/Users/mike/Downloads/sketch",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/themes/candid",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/checkout",
+			"/Users/mike/Sites/themes/wp-content/themes/dealotto",
+			"/Users/mike/Sites/themes/wp-content/themes/candid",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/themes/ampersand",
+			"/Users/mike/Sites/themes/wp-content/themes/publisher",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/themes/dealotto",
+			"/Users/mike/Sites/themes/wp-content/themes/designer",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/themes/pocket",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/plugins/profile-builder-pro",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Sites/themes/wp-content/themes/dealotto",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Desktop/Dealotto Backups",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/themes/wp-content/themes/watermark",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/themes/wp-content/themes/crate",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-wish-lists",
+			"/Users/mike/Sites/themes/wp-content/themes/slate",
+			"/Users/mike/Sites/themes/wp-content/themes/crate",
+			"/Users/mike/Sites/themes/wp-content/themes/checkout",
+			"/Users/mike/Sites/themes/wp-content/themes/crate",
+			"/Users/mike/Sites/themes/wp-content/plugins/woocommerce",
+			"/Users/mike/Sites/themes/wp-content/themes/crate",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/themes/crate",
+			"/Users/mike/Sites/themes/wp-content/plugins/tcwc-social-coupon",
+			"/Users/mike/Sites/themes/wp-content/plugins/cmb2",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/themes/wp-content/plugins/woocommerce",
+			"/Users/mike/Sites/themes/wp-content/plugins/woocommerce-one-page-checkout",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/themes/wp-content/plugins/woocommerce",
+			"/Users/mike/Sites/themes/wp-content/themes/publisher",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Downloads/theme&plugins",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/array/wp-content/plugins/bbpress",
+			"/Users/mike/Sites/array/wp-content/plugins/edd-bbpress-dashboard",
+			"/Users/mike/Sites/array/wp-content/plugins/edd-mailchimp",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/themes/designer",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/themes",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-reviews",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/themes/designer",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/themes/publisher",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/themes/author",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/mailbag",
+			"/Users/mike/Sites/array/wp-content/themes/array",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes,/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-fes",
+			"/Users/mike/Sites/themes/wp-content/plugins/easy-digital-downloads",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Sites/themes/wp-content/themes/startup,/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"/Users/mike/Downloads/marketify",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-reviews",
+			"/Users/mike/Sites/themes/wp-content/themes/startup",
+			"",
+			"/Users/mike/Sites/themes/wp-content/plugins/edd-reviews"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"viewport(t",
+			"viewpor(",
+			"viewport",
+			".toggle-bar",
+			"editor_the_site_logo",
+			"editor_get_link_url",
+			"WP_Customize_Category_Control",
+			"editor_featured_cat",
+			"WP_Customize_Category_Control",
+			"editor_has_featured_posts",
+			"editor_get_link_url",
+			"$license",
+			"activate",
+			"panel",
+			"active_callback",
+			"checkout_theme_options_section",
+			"enable search",
+			"active_license",
+			"header text",
+			"display",
+			"display header ",
+			"typekit",
+			"checkout_show_button_options",
+			"do_",
+			"admin-",
+			"viewport",
+			"max-wi",
+			"social-navig",
+			"toggle-",
+			".social-navigation",
+			".mini-bar ",
+			".mini-bar .share-drop li a",
+			".mini-bar .share-icons li",
+			".menu-item-has-children .toggle-sub",
+			"toggle",
+			"share",
+			"sub-menu",
+			"select",
+			"load",
+			"load ",
+			"hoverin",
+			"drawer",
+			"mini-bar",
+			"min-bar",
+			"min-bar {",
+			".menu-item-has-children .toggle-sub i",
+			"main-nav",
+			"rss",
+			"twitter",
+			".footer-navigation",
+			"sub-menu",
+			".site-header .menu-item-has-children",
+			".main-navigation .sub-menu",
+			"main-nav",
+			"toggle",
+			"main-navigation {",
+			".main-navigation",
+			"pull-exc",
+			".pull-excerpt",
+			"drop-open",
+			"transit",
+			"fbd058",
+			"page-numb",
+			"fbd058",
+			"candid",
+			"@since candid",
+			"candid",
+			"/candid",
+			"candid",
+			"Candid",
+			"candid",
+			"candid-",
+			"candid_",
+			"@package Candid",
+			"'checkout'",
+			"'candid'",
+			"ampersand_featured_image_url",
+			"toggle-sub",
+			"5.2",
+			".main-navigation a",
+			".drawer .main-navigation a",
+			"site-navigation",
+			".mobile-overlay",
+			".main-navigation",
+			"main-nav",
+			"mobile-active",
+			"1 Star",
+			"View all posts in",
+			"save-license",
+			".entry-excerpt",
+			"image_class",
+			".entry-title {",
+			".widget-area aside .widget-title",
+			"h1,",
+			".entry-title {",
+			".entry-title",
+			"16px",
+			"main-nav",
+			"$serif",
+			"$sans",
+			".block-post {",
+			".entry-title",
+			".entry-header .entry-title",
+			"h1,",
+			"lora",
+			"google",
+			"overlay-toggle",
+			".overlay-toggle span",
+			"woo",
+			"checkout",
+			".portfolio-grid-medium .gallery-thumb",
+			".site-footer {",
+			"grid-text .entr",
+			".site-content",
+			"post-navigation",
+			".next",
+			"candid_page_navs",
+			".grid-thumb-image",
+			".site-content",
+			"site-content",
+			".site-content {",
+			"slideUp",
+			"twitt",
+			"twitter",
+			"share",
+			"$author",
+			"author",
+			"single"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			".social-navigation",
+			"F35245",
+			"@since paperback",
+			"/paperback",
+			"Paperback",
+			"paperback-",
+			"paperback_",
+			"@package Paperback",
+			"'paperback'",
+			"$title",
+			"$body",
+			"F35245",
+			"",
+			"slideOutLeft",
+			"post_banner",
+			"post_slider_args",
+			"post_slider",
+			"hero_posts",
+			"hero_posts_args",
+			"grid-thumb",
+			"grid-wrapper",
+			"grid-text",
+			"demo",
+			"array-demo",
+			"demo_box",
+			"class=\"codeableFormLabel\" style=\"margin-bottom: 10px;\"",
+			"",
+			"'candid-logo'",
+			"'candid-portfolio-grid-large'",
+			"'candid-portfolio-grid-medium'",
+			"'candid-portfolio-grid-small'",
+			"'candid-full-width'",
+			"candid",
+			"'candid'",
+			"candid",
+			"'candid'",
+			"'checkout'",
+			"watermark_",
+			"Watermark",
+			"'watermark'",
+			"project",
+			"8px 8px -8",
+			"5px 5px -5",
+			"watermark",
+			"Watermark",
+			"watermark",
+			"'",
+			"**",
+			"",
+			"- ",
+			"**",
+			"candid",
+			"Candid",
+			"candid",
+			"arraythemes.com",
+			"array",
+			"'array'",
+			"array",
+			"slide",
+			"'download'",
+			"array",
+			"watermark",
+			"CANDID",
+			"candid-",
+			"Candid",
+			"Candid_",
+			"candid_",
+			"'candid'",
+			"$gray",
+			"'watermark'",
+			"Watermark",
+			"WATERMARK",
+			"'watermark'",
+			"faq-",
+			"arraythemes.com",
+			"watermark_",
+			"Watermark",
+			"'watermark'",
+			"watermark",
+			"arraythemes.com",
+			"hero-title h1",
+			"robertpaulson",
+			"paulson",
+			"robert-paulson",
+			"Robert Paulson",
+			"uu@fakeuser01.com",
+			"u@thisemailhere.com",
+			"$serif",
+			".widget-area",
+			"#secondary",
+			"watermark",
+			"homepage_text",
+			"watermark_",
+			"unpublish-ui-datetimepicker",
+			"post-navigation-links",
+			"post-navigation",
+			"full-width",
+			".main-navigation",
+			"grid-item",
+			"'watermark'",
+			"'dealotto'",
+			"$expired_loop",
+			"arraythemes.com",
+			"45b6e6",
+			"products",
+			"bundle_popup",
+			"popup_loop",
+			"1.05, 1.05, 1.05",
+			"1deg",
+			"2deg",
+			"arraythemes.com",
+			".5",
+			".6",
+			".2",
+			".9",
+			"/inc/",
+			"crate_",
+			"'crate'",
+			"site-header",
+			".product-details #secondary",
+			"product-intro",
+			"#secondary",
+			"clear",
+			"#content",
+			"crate_",
+			"crate_register_sidebars",
+			"<div",
+			"</div>"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 33.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.CSS Extended Completions":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 158.0
+	},
+	"output.sftp":
+	{
+		"height": 73.0
+	},
+	"pinned_build_system": "",
+	"project": "all-themes.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"function",
+				"functions.php"
+			],
+			[
+				"header",
+				"header.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 273.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

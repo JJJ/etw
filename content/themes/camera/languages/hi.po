@@ -1,0 +1,290 @@
+# Translation of WordPress.com - Themes - Camera in Hindi
+# This file is distributed under the same license as the WordPress.com - Themes - Camera package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-04-28 13:51:32+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: hi_IN\n"
+"Project-Id-Version: WordPress.com - Themes - Camera\n"
+
+#: inc/template-tags.php:71
+msgid "Next Post"
+msgstr "अगला पोस्ट"
+
+#: inc/template-tags.php:65
+msgctxt "Previous post link"
+msgid "%title"
+msgstr "%title"
+
+#: inc/template-tags.php:72
+msgctxt "Next post link"
+msgid "%title"
+msgstr "%title"
+
+#: inc/template-tags.php:64
+msgid "Previous Post"
+msgstr "पिछले पोस्ट"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/camera/full-width.php
+msgid "Full Width"
+msgstr "पूर्ण चौड़ाई"
+
+#: content.php:80
+msgid "Edit Post"
+msgstr "पोस्ट संपादित करे"
+
+#: single.php:48
+msgid "All posts by"
+msgstr "द्वारा सभी पोस्टस"
+
+#: single.php:27
+msgid "Posts by "
+msgstr "द्वारा पोस्टस"
+
+#: single.php:32
+msgid "About the author"
+msgstr "लेखक के बारे में"
+
+#: sidebar.php:28
+msgid "Meta"
+msgstr "मेटा"
+
+#: sidebar.php:16
+msgid "Latest Posts"
+msgstr "नवीनतम पोस्ट"
+
+#: search.php:15
+msgid "Results for: %s"
+msgstr "%s के लिए परिणाम:"
+
+#: inc/template-tags.php:93
+msgid "<span class=\"posted-on\"><i class=\"fa fa-clock-o\"></i> %1$s</span>"
+msgstr "<span class=\"posted-on\"><i class=\"fa fa-clock-o\"></i> %1$s</span>"
+
+#: inc/template-tags.php:37
+msgid "Newer Posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr "नए पोस्टस <span class=\"meta-nav\">&rarr;</span>"
+
+#: inc/template-tags.php:32
+msgid "<span class=\"meta-nav\">&larr;</span> Older Posts"
+msgstr "<span class=\"meta-nav\">&larr;</span> पुराने पोस्टस"
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr "पोस्टस नेविगेशन"
+
+#: inc/customizer.php:94
+msgid "Color Scheme"
+msgstr "रंग योजना"
+
+#: inc/customizer.php:80
+msgid "Display Avatar With Site Title"
+msgstr "साइट शीर्षक के साथ अवतार प्रदर्शन करें "
+
+#: inc/customizer.php:67
+msgid "Theme"
+msgstr "थीम"
+
+#: inc/customizer.php:37 inc/customizer.php:99
+msgid "Dark"
+msgstr "गहरा रंग"
+
+#: inc/customizer.php:36 inc/customizer.php:98
+msgid "Light"
+msgstr "हल्की"
+
+#: header.php:33
+msgid "Close"
+msgstr "बंद करें"
+
+#: functions.php:377
+msgid "Page %s"
+msgstr "पृष्ठ %s"
+
+#: functions.php:344
+msgid "Your comment is awaiting moderation."
+msgstr "आपकी टिप्पणी स्वीकृति के इंतजार में है।"
+
+#: functions.php:333
+msgid "(Edit)"
+msgstr "(संपादित करें)"
+
+#: functions.php:333
+msgid "%1$s at %2$s"
+msgstr "%1$s को %2$s"
+
+#: functions.php:332
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr "<cite class=\"comment-cite\">%s</cite>"
+
+#: functions.php:280
+msgid "More Posts"
+msgstr "अधिक पोस्टस"
+
+#: functions.php:121
+msgid "Sidebar"
+msgstr "साइडबार"
+
+#: functions.php:65
+msgid "Footer Menu"
+msgstr "फ़ुटर मेनू"
+
+#: functions.php:64
+msgid "Primary Menu"
+msgstr "प्राथमिक मेनू"
+
+#: footer.php:24
+msgid "Theme: %1$s by <a href=\"https://array.is/\">%2$s</a>"
+msgstr "थीम: <a href=\"https://array.is/\">%2$s</a> द्वारा %1$s"
+
+#: footer.php:24
+msgid "Proudly powered by %s"
+msgstr "%s द्वारा गर्व के साथ संचालित"
+
+#: footer.php:24
+msgid "http://wordpress.org/"
+msgstr "http://wordpress.org/"
+
+#: content.php:75
+msgid "Read More"
+msgstr "अधिक पढ़ें"
+
+#: content-page.php:40 content.php:86
+msgid "Pages:"
+msgstr "पृष्ठ:"
+
+#: content-page.php:36
+msgid "Edit Page"
+msgstr "पृष्ठ संपादित करे"
+
+#: content-none.php:27
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "ऐसा लगता है आप जो देख रहे हैं हमें नहीं मिल रहा है। शायद खोज मदद कर सकता है।"
+
+#: content-none.php:22
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "क्षमा करें, लेकिन कुछ भी आपके खोज शब्दों से मेल नहीं खाते। कृपया कुछ अलग खोजशब्दों के साथ फिर से प्रयास करें।"
+
+#: content-none.php:18
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "अपनी पहली पोस्ट को प्रकाशित करने के लिए तैयार हैं? <a href=\"%1$s\">यहाँ से शुरुआत करें</a>।"
+
+#: content-none.php:14
+msgid "Nothing Found"
+msgstr "कुछ नहीं मिला"
+
+#: content-meta.php:29
+msgid "Tag"
+msgstr "टैग"
+
+#: content-meta.php:15
+msgid "Category"
+msgstr "श्रेणी"
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr "टिप्पणियाँ बंद कर दी गयी है।"
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr "नई टिप्पणियां &rarr;"
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr "&larr; पुरानी टिप्पणियाँ"
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr "टिप्पणी नेविगेशन"
+
+#: comments.php:27
+msgid "% Comments"
+msgstr "% टिप्पणियाँ"
+
+#: comments.php:27
+msgid "One Comment"
+msgstr "एक टिप्पणी"
+
+#: comments.php:27
+msgid "Leave a Comment"
+msgstr "टिप्पणी करे"
+
+#: archive.php:92 sidebar.php:21
+msgid "Archives"
+msgstr "पुरालेख"
+
+#: archive.php:89
+msgid "Chats"
+msgstr "चैट्स"
+
+#: archive.php:86
+msgid "Audios"
+msgstr "ऑडियोस"
+
+#: archive.php:83
+msgid "Statuses"
+msgstr "स्थितियां"
+
+#: archive.php:80
+msgid "Links"
+msgstr "कड़ियाँ"
+
+#: archive.php:77
+msgid "Quotes"
+msgstr "उद्धरण"
+
+#: archive.php:74
+msgid "Videos"
+msgstr "वीडियोस "
+
+#: archive.php:71
+msgid "Images"
+msgstr "छवियाँ"
+
+#: archive.php:68
+msgid "Galleries"
+msgstr "गैलेरियां"
+
+#: archive.php:62
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:62
+msgid "Year: %s"
+msgstr "वर्ष: %s"
+
+#: archive.php:59
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:59
+msgid "Month: %s"
+msgstr "महीना: %s"
+
+#: archive.php:56
+msgid "Day: %s"
+msgstr "दिन: %s"
+
+#: archive.php:42
+msgid "All Posts by"
+msgstr "द्वारा सभी पोस्टस"
+
+#. translators: %1$s: smiley
+#: 404.php:53
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "मासिक अभिलेखागार में देखने की कोशिश कीजिए।  %1$s"
+
+#: 404.php:34
+msgid "Most Used Categories"
+msgstr "अधिकतर उपयोग किये गये श्रेणियाँ"
+
+#: 404.php:15
+msgid "Page Not Found"
+msgstr "पृष्ठ नहीं मिला"

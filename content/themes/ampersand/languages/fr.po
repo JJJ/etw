@@ -1,0 +1,338 @@
+# Translation of Ampersand in French (France)
+# This file is distributed under the same license as the Ampersand package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-05-06 16:08:57+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Ampersand\n"
+
+#: inc/customizer.php:150
+msgid "Disable"
+msgstr "Désactiver"
+
+#: inc/customizer.php:149
+msgid "Enable"
+msgstr "Activer"
+
+#: template-icons.php:71
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: template-icons.php:75
+msgid "RSS"
+msgstr "Flux"
+
+#: template-icons.php:67
+msgid "YouTube"
+msgstr "YouTube"
+
+#: template-icons.php:59
+msgid "Google+"
+msgstr "Google+"
+
+#: template-icons.php:63
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: template-icons.php:55
+msgid "Pinterest"
+msgstr "Pinterest"
+
+#: template-icons.php:47
+msgid "Dribbble"
+msgstr "dribbble"
+
+#: template-icons.php:51
+msgid "Flickr"
+msgstr "Flickr"
+
+#: template-icons.php:43
+msgid "Tumblr"
+msgstr "Tumblr"
+
+#: template-icons.php:35
+msgid "Facebook"
+msgstr "Facebook"
+
+#: template-icons.php:39
+msgid "Instagram"
+msgstr "Instagram"
+
+#: template-icons.php:31
+msgid "Twitter"
+msgstr "Twitter"
+
+#: functions.php:385
+msgid "Page %s"
+msgstr "Page %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio.php
+msgid "Portfolio"
+msgstr "Portfolio"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/homepage.php
+msgid "Homepage"
+msgstr "Page d'accueil "
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "Ampersand is a portfolio style theme with an empasis on beautiful, legible typography and graceful resizing for mobile browsing."
+msgstr "Ampersand est un thème de style book, qui privilégie une typographie attractive et lisible et un redimensionnement élégant pour la navigation nomade."
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/full-width.php
+msgid "Full Width"
+msgstr "Pleine largeur"
+
+#: template-titles.php:47
+msgid "Search Results for: %s"
+msgstr "Résultats de recherche pour : %s"
+
+#: template-titles.php:44
+msgid "404 - Page Not Found"
+msgstr "404 - Page Introuvable."
+
+#: template-titles.php:41
+msgid "Year: %s"
+msgstr "Ann&eacute;e: %s"
+
+#: template-titles.php:38
+msgid "Month: %s"
+msgstr "Mois: %s"
+
+#: template-titles.php:35
+msgid "Day: %s"
+msgstr "Jour: %s"
+
+#: template-titles.php:27
+msgid "Author: %s"
+msgstr "Auteur : %s"
+
+#: template-titles.php:20
+msgid "Tag: "
+msgstr "Tag:"
+
+#: single.php:46
+msgid "Previous Post:"
+msgstr "Article précédent :"
+
+#: single.php:48
+msgid "Next Post:"
+msgstr "Article Suivant:"
+
+#: template-titles.php:17
+msgid "Category: "
+msgstr "Catégorie:"
+
+#: single.php:40
+msgid "Tags:"
+msgstr "Tags:"
+
+#: single.php:34
+msgid "Category:"
+msgstr "Catégorie:"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Méta"
+
+#: sidebar.php:13
+msgid "Archives"
+msgstr "Archives"
+
+#: search.php:41
+msgid "Sorry, but nothing matched your search terms. Please try again with different keywords."
+msgstr "Contenu Introuvable. Réessayez en modifiant les termes de recherche."
+
+#: inc/template-tags.php:54 template-portfolio.php:80
+msgid "Newer posts"
+msgstr "Articles Plus R&eacute;cents"
+
+#: inc/template-tags.php:50 template-portfolio.php:79
+msgid "Older posts"
+msgstr "Articles Pr&eacute;c&eacute;dents"
+
+#: inc/template-tags.php:45
+msgid "Next Post"
+msgstr "Article suivant"
+
+#: inc/template-tags.php:44
+msgid "Previous Post"
+msgstr "Article précédent"
+
+#: inc/customizer.php:347
+msgid "RSS URL"
+msgstr "URL RSS"
+
+#: inc/template-tags.php:40
+msgid "Post navigation"
+msgstr "Navigation des articles"
+
+#: inc/customizer.php:272
+msgid "Pinterest URL"
+msgstr "URL Pinterest"
+
+#: inc/customizer.php:287
+msgid "Google+ URL"
+msgstr "URL Google+"
+
+#: inc/customizer.php:302
+msgid "Vimeo URL"
+msgstr "URL Vimeo"
+
+#: inc/customizer.php:317
+msgid "YouTube URL"
+msgstr "YouTube URL"
+
+#: inc/customizer.php:332
+msgid "LinkedIn URL"
+msgstr "URL LinkedIn"
+
+#: inc/customizer.php:212
+msgid "Instagram URL"
+msgstr "URL Instagram"
+
+#: inc/customizer.php:227
+msgid "Tumblr URL"
+msgstr "URL Tumblr"
+
+#: inc/customizer.php:242
+msgid "Dribbble URL"
+msgstr "URL Dribbble"
+
+#: inc/customizer.php:257
+msgid "Flickr URL"
+msgstr "URL Flickr"
+
+#: inc/customizer.php:182
+msgid "Twitter URL"
+msgstr "URL Twitter"
+
+#: inc/customizer.php:197
+msgid "Facebook URL"
+msgstr "URL Facebook"
+
+#: inc/customizer.php:164
+msgid "Social Media Links"
+msgstr "Liens Média sociaux"
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr "Options du thème"
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr "Recherche"
+
+#: header.php:37
+msgid "Skip to content"
+msgstr "Aller au contenu principal"
+
+#: header.php:36
+msgid "Menu"
+msgstr "Menu"
+
+#: functions.php:353
+msgid "Your comment is awaiting moderation."
+msgstr "Votre commentaire est en attente de modération."
+
+#: functions.php:332
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#. translators: 1: date, 2: time
+#: functions.php:340
+msgid "%1$s at %2$s"
+msgstr "%1$s à %2$s"
+
+#: functions.php:249
+msgid "Footer Center"
+msgstr "Pied&nbsp;de&nbsp;page Centre"
+
+#: functions.php:258
+msgid "Footer Right"
+msgstr "Pied&nbsp;de&nbsp;page Droit"
+
+#: functions.php:240
+msgid "Footer Left"
+msgstr "Pied&nbsp;de&nbsp;page Gauche"
+
+#: functions.php:172
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:231
+msgid "Sidebar"
+msgstr "Sidebar"
+
+#: functions.php:49
+msgid "Primary Menu"
+msgstr "Menu principal"
+
+#: full-width.php:26 page.php:21 single.php:30 template-portfolio-item.php:20
+msgid "Edit"
+msgstr "Modifier"
+
+#: format-standard.php:26 homepage.php:67 inc/customizer.php:122 search.php:34
+#: template-portfolio.php:70
+msgid "Read More"
+msgstr "Lire la Suite"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "% Comments"
+msgstr "% Commentaires"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "1 Comment"
+msgstr "1 commentaire"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "No Comments"
+msgstr "Pas de commentaire"
+
+#: format-standard.php:14 full-width.php:20 homepage.php:36 search.php:22
+#: single.php:18 template-portfolio-item.php:80 template-portfolio.php:60
+#: template-portfolio.php:70
+msgid "Permalink to %s"
+msgstr "Permalien vers %s"
+
+#: inc/wpcom.php:70
+msgid "Theme: %1$s by %2$s."
+msgstr "Thème %1$s par %2$s."
+
+#: inc/wpcom.php:68
+msgid "Proudly powered by %s"
+msgstr "Fièrement propulsé par %s"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Commentaires Plus Récents &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Joindre la conversation"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Commentaires Pr&eacute;c&eacute;dents"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "1 commentaire"
+msgstr[1] "%1$s commentaires"

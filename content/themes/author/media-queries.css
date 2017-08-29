@@ -1,0 +1,307 @@
+/* Tablet and Mobile */
+
+@media only screen and (max-width:768px) {
+	
+	/* Text */
+
+	body, .comment-text {
+		font: 15px/1.6 "Helvetica Neue", Helvetica, sans-serif;	
+		overflow-x: hidden;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	h1 { 
+		font-size: 36px;
+	}
+
+	h2 { 
+		font-size: 33px;
+	 }
+
+	h3 { 
+		font-size: 28px;
+	}
+
+	h4 { 
+		font-size: 24px;
+	}
+
+	h5 { 
+		font-size: 20px;
+	}
+
+	h6 { 
+		font-size: 16px;
+	}
+
+	p {
+		margin-bottom: 1.2em;
+	}
+
+	input[type="text"], input[type="email"], textarea {
+	    font-size: 16px;
+	}
+
+	.logo-default, .logo-img {
+		width: 90%;
+	}
+
+	.logo-text {
+		font-size: 30px;
+	}
+
+	.entry-title {
+		font-size: 36px;
+	}
+
+	.intro {
+		font-size: 17px;
+		margin-bottom: 5%;
+		padding-bottom: 5%;
+	}
+
+	.title-wrap {
+		padding: 5%;
+		margin-bottom: 6%;
+	}
+
+	.title-meta {
+		font-size: 10px;
+	}
+
+	.sub-title h1 {
+		font-size: 26px;
+	}
+
+	.post blockquote p {
+		font-size: 16px;
+	}
+
+	.scroll-title {
+		font-size: 40px;
+		margin-bottom: 4%;
+	}
+
+	.scroll-excerpt {
+		font-size: 17px;
+	}
+
+	.scroll-post {
+		border-top: dotted 1px #ddd;
+		padding-top: 4%;
+	}
+
+	.scroll-excerpt p:last-child {
+		margin-bottom: 0;
+	}
+
+	.scroll-post .title-meta {
+		font-size: 12px;
+	}
+
+	.scroll .sep {
+		display: none;
+	}
+
+	.scroll-post a {
+		width: 100%;
+		display: inline-block;
+		padding: 2px 0;
+		margin: 0;
+	}
+
+	/* Layout */
+
+	/* Main Mobile Nav */
+
+	.menu-wrap, .top-bar {
+		display: inline-block;
+		width: 100%;
+	}
+
+	.menu-toggle {
+		float: right;
+		display: block;
+		margin-top: 3px;
+		font-size: 24px;
+		color: #B1B8BE;
+	}
+
+	.main-nav {
+		border-top: dotted 1px #e6e6e6;
+		margin-top: 15px;
+		padding: 10px 0 0 0;
+		display: none;
+	}
+
+	.main-nav li {
+		width: 100%;
+	}
+
+	.main-nav ul {
+		position: relative;
+		display: block;
+		width: 100%;
+		top: auto;
+		left: auto;
+		box-shadow: none;
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+
+	.main-nav a, .main-nav li ul a {
+		padding: 5px 0;
+		width: 100%;
+		display: inline-block;
+	}
+
+	/* Secondary Mobile Nav */
+
+	.secondary-menu-wrap-inside {
+		padding: 0 15px;
+	}
+
+	.secondary-menu-toggle {
+		display: block;
+		position: absolute;
+		right: 15px;
+		top: 22px;
+		font-size: 24px;
+		color: #B1B8BE;
+	}
+
+	.secondary-menu {
+		border-top: dotted 1px #e6e6e6;
+		padding: 20px 0 25px 0;
+		display: none;
+	}
+
+	.secondary-menu li {
+		width: 100%;
+	}
+
+	.secondary-menu ul {
+		position: relative;
+		display: block;
+		width: 100%;
+		top: auto;
+		left: auto;
+		box-shadow: none;
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+
+	.secondary-menu li ul {
+		background: transparent;
+		border-radius: 0;
+		margin-left: 12px !important;
+		width: 100%;
+	}
+
+	.secondary-menu li ul ul {
+		left: 0;
+	}
+
+	.secondary-menu li:hover ul ul, .secondary-menu li:hover ul ul ul, .secondary-menu li:hover ul ul ul ul { display: block; }
+
+	.secondary-menu li a, .secondary-menu li ul a {
+		padding: 5px 0;
+		font-size: 15px;
+		width: 100%;
+		display: inline-block;
+	}
+
+	.secondary-menu li ul a {
+		border-bottom: dotted 1px #AAB0B9;
+	}
+
+	.secondary-menu li ul li:last-child > a {
+		border-bottom: none;
+	}
+
+	.header-inside {
+		padding: 5% 15px;
+	}
+
+	#content-wrap {
+		padding: 5% 15px;
+	}
+
+	#content {
+		width: 100%;
+	}
+
+	.post .post-content {
+		padding: 0 5%;
+	}
+
+	.post .bar {
+		margin-top: 0;
+		padding: 20px 5%;
+	}
+
+	.bar-categories, .bar-share {
+		width: 65%;
+		margin-right: 0;
+	}
+
+	#sidebar {
+		width: 100%;
+		float: left;
+		margin-top: 10%;
+	}
+
+	.widget {
+		margin-bottom: 20px;
+		padding-bottom: 20px;
+	}
+
+	.comments-wrap {
+		padding: 8% 5%;
+	}
+
+	.comment-info {
+		margin-bottom: 10px;
+	}
+
+	.comments .logged-in-as, .comment-notes {
+		font-size: 14px;
+	}
+
+	#respond h3 {
+		font-size: 28px;
+	}
+
+	.post-nav {
+		border-bottom: dotted 2px #ddd;
+		padding-top: 0;
+		margin-top: 4%;
+	}
+
+	.prev-post {
+		float: left;
+		width: 100%;
+		text-align: left;
+	}
+
+	.next-post {
+		width: 100%;
+		margin-top: 4%;
+		padding-top: 4%;
+		border-top: dotted 1px #ccc;
+	}
+
+	#footer {
+		padding: 8% 0;
+	}
+
+	#footer .copyright {
+		margin-top: 20px;
+	}
+
+	.social-icons {
+		float: left;
+		width: 100%;
+		margin-top: 20px;
+	}
+}

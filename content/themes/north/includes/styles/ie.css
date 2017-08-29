@@ -1,0 +1,30 @@
+.block-post {
+	width: 375px !important;
+	height: 375px !important;
+	margin: 0 2% 20px 0 !important;
+	padding-bottom: 31%;
+}
+
+.page-template-portfolio-php .block-post {
+	width: 360px !important;
+	height: 360px !important;
+}
+
+.single-array-portfolio .image-wrap img {
+	max-width: 100% !important;
+	min-width: 100% !important;
+	width: 100% !important;
+	height: auto !important;
+}
+
+.portfolio-link {
+	bottom: 65px !important;
+}
+
+.search-form-input {
+	padding-top: 10px !important;
+}
+
+.header-search-hidden .search-form-input {
+	padding-top: 28px !important;
+}

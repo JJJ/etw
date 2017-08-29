@@ -1,0 +1,343 @@
+# Translation of WordPress.com - Themes - Publisher in Persian
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-08-09 04:34:18+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: fa\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "روشن"
+
+#: inc/customizer.php:275
+msgid "GitHub URL"
+msgstr "نشانی وب Github"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "بیشتر بخوانید"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "صفحهٔ %s"
+
+#: inc/customizer.php:57
+msgid "Featured Image as Post Background"
+msgstr "تصویر ویژه به عنوان پس‌زمینهٔ نوشته"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "پهنای کامل"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr "جمع‌آوری مجموعه‌ای گلچین از عکس‌ها، ویدئوها، صوت و موارد دیگر با Publisher. با ویژگی پاسخگویی و چیدمانی با سبک بنایی. Publisher به همان اندازه که روی رایانهٔ رومیزی شما خوب نمایش داده می‌شود، روی ابزارهای همراه نیز زیبا ظاهر خواهد شد."
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "به خواندن ادامه دهید <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-icons.php:120
+msgid "Type here and press enter."
+msgstr "اینجا تایپ نمایید و اینتر را بفشارید."
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "۱"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "پایاپیوند به دیدگاه‌های %s"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "۰"
+
+#: single.php:87
+msgid "Tags"
+msgstr "برچسب‌ها"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "آخرین نوشته‌ها بدست %s"
+
+#: single.php:81
+msgid "Category"
+msgstr "دسـتـه‌هـا"
+
+#: single.php:40
+msgid "Details"
+msgstr "جزییات"
+
+#: single.php:63
+msgid "About %s"
+msgstr "دربارهٔ %s"
+
+#: single.php:39
+msgid "Author"
+msgstr "نویسنده"
+
+#: single.php:37
+msgid "Comments"
+msgstr "دیدگاه‌ها"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "فرا"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "جست‌وجو"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "نتایج جست‌وجو برای: %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "پایاپیوند به %s"
+
+#: inc/template-tags.php:53
+msgid "Newer posts <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></span>"
+msgstr "نوشته‌های تازه‌تر <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></span>"
+
+#: inc/template-tags.php:49
+msgid "<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> Older posts"
+msgstr "<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> نوشته‌های پیشین"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "نوشتهٔ بعدی"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "نوشتهٔ پیشین"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "ناوبری نوشته"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "رایانشانی"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "نشانی وب RSS"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "آدرس لیندکدین"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "نشانی وب ویمیو"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "آدرس یوتیوب"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "نشانی وب گوگل+"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "نشانی وب پین‌ترست"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "نشانی وب تامبلر"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "نشانی وب دریبل"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "آدرس فلیکر"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "نشانی وب اینستاگرام"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "نشانی وب فیس‌بوک"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "پیوندهای رسانه‌های اجتماعی"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "نشانی وب توییتر"
+
+#: inc/customizer.php:79
+msgid "Add links to your various social media sites. These icons will appear in the header."
+msgstr "افزودن پیوند به وب‌گاه‌های رسانه‌های اجتماعی مختلف شما. این نقشک‌ها در سرایند نمایان خواهند شد."
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "ناکارا کردن"
+
+#: inc/customizer.php:33
+msgid "Add your logo and social media links below."
+msgstr "نشان‌واره و پیوند رسانه‌های اجتماعی خود را در زیر بیفزایید."
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "بارگذاری نشان‌واره"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "کارا کردن"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "گزینه‌های پوسته"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "پرش به محتوا"
+
+#: header.php:28
+msgid "Menu"
+msgstr "گزینگان"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "دیدگاه شما چشم به راه بررسی است."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s در %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "ستون کناری"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "گزینگان اصلی"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "ویرایش"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "پوسته: %1$s کاری از %2$s."
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "با افتخار، نیرو گرفته از %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "نوشته‌های پیشین"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "نوشته‌های تازه‌تر"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "دیدگاه‌ها بسته شده‌اند."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "دیدگاه‌های تازه‌تر &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "به گفت‌وگو بپیوندید!"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "%1$s دیدگاه"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; دیدگاه‌های پیشین"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "پیوند به تصویر با اندازهٔ کامل"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "اندازهٔ کامل %s پیکسل است"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "بایگانی"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "پیوندها"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "گفتاورد"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "ویدئوها"
+
+#: archive.php:47
+msgid "Images"
+msgstr "تصویرها"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "کلمات قصار"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "سال: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "ماه: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "روز: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "نویسنده: %s"
+
+#: 404.php:23
+msgid "It looks like nothing was found at this location. Try using the navigation menu or the search box to locate the page you were looking for."
+msgstr "به نظر می‌رسد چیزی در این مکان پیدا نشده‌است. استفاده از گزینگان ناوبری یا جعبهٔ جستجو را برای یافتن صفحه‌ای که به دنبالش بودید بیازمایید."
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "۴۰۴ &mdash; صفحه یافت نشد"

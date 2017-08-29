@@ -1,0 +1,206 @@
+/* Tablet and Mobile */
+@media only screen and (max-width:500px) {
+
+	body {
+	    font: 16px/1.7 'Arimo', 'Helvetica Neue', Helvetica, sans-serif;
+	}
+
+	.header {
+		min-height: 79px;
+	}
+
+	.header .hgroup {
+		width: 100%;
+		text-align: center;
+	}
+
+	#nav-list {
+		margin: 4% 0 0 0;
+	}
+
+	.icon-nav {
+		text-align: center;
+		width: 100%;
+		margin-top: 4%;
+	}
+
+	.icon-nav a, .mobile-icon {
+		font-size: 18px;
+		margin: 0 6px;
+	}
+
+	.logo-text a {
+		font-size: 14px;
+		letter-spacing: 3px;
+		margin: 0;
+	}
+
+	.logo-subtitle {
+		float: none;
+		width: 100%;
+		margin-top: 8px;
+		font-size: 15px;
+		line-height: 20px;
+	}
+
+	.logo-image {
+		width: 100%;
+		text-align: center;
+	}
+
+	.logo {
+		float: none;
+		margin: 0 auto;
+	}
+
+	.mobile-icon {
+		top: 2px;
+		right: 56px;
+	}
+
+	.fa-spinner {
+		right: 0;
+	}
+
+	#archive-list, #searchform {
+		margin: 20px 0 0 0;
+	}
+
+	#archive-list li {
+		padding-left: 0;
+	}
+
+	#archive-list li span {
+		left: 5px;
+	}
+
+	#archive-list li a {
+		padding-left: 70px;
+	}
+
+	#searchform input[type="text"] {
+		font-size: 13px;
+	}
+
+	.widget-drawer-wrap {
+		margin-left: 0;
+	}
+
+	#widget-drawer .widget {
+		width: 100%;
+		margin-left: 0;
+	}
+
+	#widget-drawer li {
+		margin-bottom: 2%;
+		padding-bottom: 2%;
+	}
+
+	.intro {
+		font-size: 16px;
+		line-height: 22px;
+		margin-top: 0;
+		margin-bottom: 20px;
+	}
+
+	.entry-title {
+		font-size: 32px;
+		line-height: 38px;
+		margin: 0 0 18px 0;
+	}
+
+	blockquote {
+		font-size: 16px;
+		line-height: 22px;
+	}
+
+	.next-prev a{
+		line-height: 20px;
+		width: 100%;
+		text-align: center;
+	}
+
+	.prev-post a {
+		border-bottom: solid 1px #eee;
+	}
+
+	#content .post-nav a {
+		font-size: 12px;
+	}
+
+	/* Meta List Styles */
+
+	.meta-list {
+		float: left;
+		width: 100%;
+		padding: 0 0 0 0;
+		border: none;
+		border-bottom: solid 1px #eee;
+	}
+
+	/* Comment Styles */
+
+	.comments {
+		width: 100%;
+	}
+
+	.comments-wrap {
+		padding: 35px 0;
+	}
+
+	#reply-title {
+		font-size: 22px;
+	}
+
+	.commentlist li {
+		padding: 0 0 25px 0;
+		margin: 0 0 25px 0;
+	}
+
+	.commentlist > li:before {
+	    display: none;
+	}
+
+	.commentlist .children li {
+		padding-left: 20px;
+	}
+
+	.comment-body p {
+		font: 15px/25px 'Lato', 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
+	}
+
+	.commentlist #reply-title {
+		margin-top: 20px;
+	}
+
+	#respond input[type="text"], #respond textarea  {
+		font-size: 14px;
+		line-height: 22px;
+	}
+
+	#respond {
+		margin-bottom: 0px;
+	}
+
+	#commentform #submit {
+		width: 100%;
+		text-align: center;
+	}
+
+	.comment-notes, .logged-in-as {
+		font-size: 13px;
+		line-height: 16px;
+	}
+
+	.archive-col li {
+		padding: 10px 0;
+		font-size: 16px;
+	}
+}
+
+/* Tweak to iPhone Specific Menu */
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+	.archive-toggle {
+		z-index: 50;
+	}
+}

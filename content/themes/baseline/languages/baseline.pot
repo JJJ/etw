@@ -1,0 +1,719 @@
+# Copyright (C) 2016 Array
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Baseline 1.1.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
+"POT-Creation-Date: 2016-10-07 21:07:51+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.4\n"
+
+#: 404.php:18
+msgid "Page Not Found"
+msgstr ""
+
+#: 404.php:22
+msgid ""
+"It looks like nothing was found at this location. Please use the search box "
+"and links below to locate the content you were looking for."
+msgstr ""
+
+#: 404.php:27
+msgid "Sitemap"
+msgstr ""
+
+#: 404.php:35
+msgid "Latest Posts"
+msgstr ""
+
+#: 404.php:43 footer.php:16 header.php:39 template-parts/content.php:85
+msgid "Categories"
+msgstr ""
+
+#: 404.php:59 inc/template-tags.php:102
+msgid "Archives"
+msgstr ""
+
+#: comments.php:50
+msgid "Comment navigation"
+msgstr ""
+
+#: comments.php:51
+msgid "Older Comments"
+msgstr ""
+
+#: comments.php:52
+msgid "Newer Comments"
+msgstr ""
+
+#: comments.php:62
+msgid "Comments are closed."
+msgstr ""
+
+#: functions.php:79
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:80 inc/customizer.php:238
+msgid "Header Category Menu"
+msgstr ""
+
+#: functions.php:81
+msgid "Footer Category Menu"
+msgstr ""
+
+#: functions.php:82
+msgid "Social Icon Menu"
+msgstr ""
+
+#: functions.php:83
+msgid "Footer Menu"
+msgstr ""
+
+#: functions.php:126 functions.php:562
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:128
+msgid "Widgets added here will appear on the sidebar of posts and pages."
+msgstr ""
+
+#: functions.php:353 template-parts/content-featured-item.php:56
+#: template-parts/content-grid-item.php:43 template-parts/content.php:40
+#: template-parts/content.php:42
+msgid "Read More"
+msgstr ""
+
+#: functions.php:448 inc/template-tags.php:64
+msgid "Category: %s"
+msgstr ""
+
+#: functions.php:448
+msgid "<a class=\"view-all\" href=\"%s\">View All</a>"
+msgstr ""
+
+#: functions.php:450
+msgid "No articles were found."
+msgstr ""
+
+#: functions.php:487
+msgid "View all posts in %s"
+msgstr ""
+
+#: functions.php:542
+msgid "Browse"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:191
+msgid ""
+"There seems to be a temporary problem retrieving the latest updates for "
+"this theme. You can always view the latest updates in your Array account "
+"dashboard."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:213
+msgid "Getting started with %1$s"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:215
+msgid "You will find everything you need to get started with Baseline below."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:221
+msgid "Help File"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:222
+msgid "Plugins"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:223
+msgid "FAQ &amp; Support"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:224
+msgid "Latest Updates"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:248
+msgid ""
+"This help file feed seems to be temporarily down. You can always view the "
+"help file on Array in the meantime."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:248
+msgid "Help File &rarr;"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:258
+msgid "Recommended Plugins"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:260
+msgid ""
+"Below is a list of recommended plugins to install that will help you get "
+"the most out of Baseline. Although each plugin is optional, some may be "
+"required to achieve a look similiar to the theme demo."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:264
+msgid "Jetpack"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:266
+msgid "Install Array toolkit"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:266
+msgid "Install Now"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:268
+msgid "Installed"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:272
+msgid ""
+"Jetpack is a free plugin that adds support for more gallery styles, contact "
+"forms, extra widgets and more. Once installed, visit Jetpack > Settings to "
+"choose which features you would like to enable. For the best performance, "
+"we recommend deactivating all Jetpack features by default and only "
+"activating the ones you want."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:278
+#: inc/admin/updater/theme-updater-admin.php:281
+msgid "Where do I get support for Baseline?"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:285
+msgid ""
+"If you&apos;ve read through the Help File in the first tab and still have "
+"questions or are experiencing issues, we&apos;re happy to help! Simply <a "
+"href=\"%s\">visit your dashboard</a> on Array to open a support ticket."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:290
+msgid ""
+"If you&apos;ve purchased your theme via ThemeForest, you will first have to "
+"create an account at Array to get a license key and access support. Visit "
+"the <a href=\"%s\" title=\"Create an account\">ThemeForest</a> page to "
+"validate your purchase code and create an account."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:304
+msgid "Sweet, your license is active!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:310
+msgid "Activate your license to enable theme updates!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:313
+msgid ""
+"With an active license, you can get seamless, one-click theme updates to "
+"keep your site healthy and happy."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:319
+msgid ""
+"Find your license key in your <a target=\"_blank\" href=\"%s\">Array "
+"Dashboard</a>."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:334
+#: inc/admin/updater/theme-updater.php:36
+msgid "Deactivate License"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:336
+msgid "Be sure to activate your license after saving it."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:338
+#: inc/admin/updater/theme-updater.php:37
+msgid "Activate License"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:340
+#: inc/admin/updater/theme-updater.php:38
+msgid "Save License"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:350
+msgid "Join the Theme Club!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:353
+msgid "Get an entire collection of beautiful, responsive themes for one low price."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:355
+msgid ""
+"The Theme Club grants you access to our collection of pixel-perfect "
+"WordPress themes, new theme releases and speedy, expert support for one "
+"year &mdash; a massive value!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:357
+msgid "Learn about the Theme Club"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:22
+msgid "Baseline WordPress Theme"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Array"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:32
+msgid "Getting Started"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:33
+msgid "Enter your theme license key."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:34
+msgid "Enter your license key"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:35
+msgid "License Action"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:39
+#: inc/admin/updater/theme-updater.php:51
+msgid "License status is unknown."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:40
+msgid "Renew?"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:41
+msgid "unlimited"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:42
+msgid ""
+"Theme updates have been enabled. You will receive a notice on your Themes "
+"page when a theme update is available."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:43
+msgid "Your license for Baseline expires %s."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:44
+msgid "You have %1$s / %2$s sites activated."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:45
+msgid "License key expired %s."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:46
+msgid "License key has expired."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:47
+msgid "License keys do not match."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:48
+msgid "License is inactive."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:49
+msgid "License key is disabled."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:50
+msgid "Site is inactive."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:52
+msgid ""
+"Updating this theme will lose any customizations you have made. 'Cancel' to "
+"stop, 'OK' to update."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:53
+msgid ""
+"<strong>%1$s %2$s</strong> is available. <a href=\"%3$s\" "
+"class=\"thickbox\" title=\"%4s\">Check out what's new</a> or <a "
+"href=\"%5$s\"%6$s>update now</a>."
+msgstr ""
+
+#: inc/customizer.php:128
+msgid "Theme Options"
+msgstr ""
+
+#: inc/customizer.php:140
+msgid "Logo Upload"
+msgstr ""
+
+#: inc/customizer.php:159
+msgid "Font Style"
+msgstr ""
+
+#: inc/customizer.php:161
+msgid "Choose the style of font for your site."
+msgstr ""
+
+#: inc/customizer.php:164
+msgid "Sans Serif"
+msgstr ""
+
+#: inc/customizer.php:165
+msgid "Serif"
+msgstr ""
+
+#: inc/customizer.php:181
+msgid "Button Color"
+msgstr ""
+
+#: inc/customizer.php:197
+msgid "Footer Tagline"
+msgstr ""
+
+#: inc/customizer.php:200
+msgid "Change the text that appears in the footer tagline."
+msgstr ""
+
+#: inc/customizer.php:216
+msgid "Sidebar Menu Button Text"
+msgstr ""
+
+#: inc/customizer.php:219
+msgid "Change the Menu button text."
+msgstr ""
+
+#: inc/customizer.php:239
+msgid "Enable a drop down category menu on the fixed navigation bar."
+msgstr ""
+
+#: inc/customizer.php:243 inc/customizer.php:453
+msgid "Enabled"
+msgstr ""
+
+#: inc/customizer.php:244 inc/customizer.php:452
+msgid "Disabled"
+msgstr ""
+
+#: inc/customizer.php:258
+msgid "Header Category Button Label"
+msgstr ""
+
+#: inc/customizer.php:261
+msgid "Change the Category Menu button text."
+msgstr ""
+
+#: inc/customizer.php:284
+msgid "Header Image Opacity"
+msgstr ""
+
+#: inc/customizer.php:303
+msgid "Header Background Color"
+msgstr ""
+
+#: inc/customizer.php:325
+msgid "Header Height"
+msgstr ""
+
+#: inc/customizer.php:326
+msgid "Adjust the height of the header area."
+msgstr ""
+
+#: inc/customizer.php:351
+msgid "Featured Content Height"
+msgstr ""
+
+#: inc/customizer.php:376
+msgid "Featured Content Excerpt Length"
+msgstr ""
+
+#: inc/customizer.php:377
+msgid "Change the size of the excerpt on featured content."
+msgstr ""
+
+#: inc/customizer.php:396
+msgid "Index Post Style"
+msgstr ""
+
+#: inc/customizer.php:398
+msgid "Choose the layout for your post index, archive and search pages."
+msgstr ""
+
+#: inc/customizer.php:401
+msgid "One Column"
+msgstr ""
+
+#: inc/customizer.php:402
+msgid "Two Column"
+msgstr ""
+
+#: inc/customizer.php:403
+msgid "Three Column"
+msgstr ""
+
+#: inc/customizer.php:423
+msgid "Grid View Excerpt Length"
+msgstr ""
+
+#: inc/customizer.php:424
+msgid "Change the size of the excerpt on grid views."
+msgstr ""
+
+#: inc/customizer.php:446
+msgid "Auto Generate Excerpt"
+msgstr ""
+
+#: inc/customizer.php:447
+msgid "Auto generate an excerpt for blog posts on the homepage, archive and search."
+msgstr ""
+
+#: inc/customizer.php:469
+msgid "Display Header Text"
+msgstr ""
+
+#: inc/customizer.php:590
+msgid " %1$s Theme by %2$s."
+msgstr ""
+
+#: inc/jetpack.php:60
+msgid "Load more"
+msgstr ""
+
+#: inc/template-tags.php:38
+msgid "&rarr;"
+msgstr ""
+
+#: inc/template-tags.php:39
+msgid "&larr;"
+msgstr ""
+
+#: inc/template-tags.php:66
+msgid "Tag: %s"
+msgstr ""
+
+#: inc/template-tags.php:68
+msgid "Author: %s"
+msgstr ""
+
+#: inc/template-tags.php:70
+msgid "Year: %s"
+msgstr ""
+
+#: inc/template-tags.php:72
+msgid "Month: %s"
+msgstr ""
+
+#: inc/template-tags.php:74
+msgid "Day: %s"
+msgstr ""
+
+#: inc/template-tags.php:96
+msgid "Archives: %s"
+msgstr ""
+
+#: inc/template-tags.php:100
+#. translators: 1: Taxonomy singular name, 2: Current taxonomy term
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: inc/template-tags.php:221
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: inc/template-tags.php:221
+msgid "(Edit)"
+msgstr ""
+
+#: inc/template-tags.php:232
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: inc/template-tags.php:253
+msgid "Posts by "
+msgstr ""
+
+#: inc/template-tags.php:261
+msgid "Comments on"
+msgstr ""
+
+#: inc/template-tags.php:336 template-parts/content-featured-item.php:36
+msgid "Next"
+msgstr ""
+
+#: inc/template-tags.php:352 template-parts/content-featured-item.php:36
+msgid "Previous"
+msgstr ""
+
+#: search.php:15
+msgid "Search results for: %s"
+msgstr ""
+
+#: search.php:21
+msgid " results found."
+msgstr ""
+
+#: search.php:53
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords, or use the menu to find the content you are looking for."
+msgstr ""
+
+#: searchform.php:11
+msgid "Search for:"
+msgstr ""
+
+#: searchform.php:13
+msgid "Search here..."
+msgstr ""
+
+#: searchform.php:16
+msgid "Search"
+msgstr ""
+
+#: template-parts/content-none.php:15 template-parts/content-none.php:17
+msgid "Nothing Found"
+msgstr ""
+
+#: template-parts/content-none.php:24
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: template-parts/content-none.php:28
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: template-parts/content-page.php:24 template-parts/content.php:48
+msgid "Pages:"
+msgstr ""
+
+#: template-parts/content-page.php:29
+msgid "This page is empty. Click here to edit this page."
+msgstr ""
+
+#: template-parts/content.php:95
+msgid "Tags"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Baseline"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+msgid "https://arraythemes.com/themes/baseline-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Baseline is an elegant, magazine-style theme that lets you quickly and "
+"easily create a beautiful site with any content. Baseline includes one, two "
+"and three column layouts, a customizable logo and header, finely-crafted "
+"typography and a snappy featured content drawer."
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://arraythemes.com/"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Full Width"
+msgstr ""
+
+#: comments.php:30 inc/template-tags.php:264
+msgctxt "comments title"
+msgid "One Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:154
+#. Translators: If there are characters in your language that are not supported
+#. by these fonts, translate this to 'off'. Do not translate into your own
+#. language.
+msgctxt "Playfair Display font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:155 functions.php:159
+msgctxt "Noto Serif font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:158
+msgctxt "Work Sans font: on or off"
+msgid "on"
+msgstr ""
+
+#: inc/template-tags.php:70
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: inc/template-tags.php:72
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: inc/template-tags.php:74
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr ""
+
+#: inc/template-tags.php:77
+msgctxt "post format archive title"
+msgid "Asides"
+msgstr ""
+
+#: inc/template-tags.php:79
+msgctxt "post format archive title"
+msgid "Galleries"
+msgstr ""
+
+#: inc/template-tags.php:81
+msgctxt "post format archive title"
+msgid "Images"
+msgstr ""
+
+#: inc/template-tags.php:83
+msgctxt "post format archive title"
+msgid "Videos"
+msgstr ""
+
+#: inc/template-tags.php:85
+msgctxt "post format archive title"
+msgid "Quotes"
+msgstr ""
+
+#: inc/template-tags.php:87
+msgctxt "post format archive title"
+msgid "Links"
+msgstr ""
+
+#: inc/template-tags.php:89
+msgctxt "post format archive title"
+msgid "Statuses"
+msgstr ""
+
+#: inc/template-tags.php:91
+msgctxt "post format archive title"
+msgid "Audio"
+msgstr ""
+
+#: inc/template-tags.php:93
+msgctxt "post format archive title"
+msgid "Chats"
+msgstr ""

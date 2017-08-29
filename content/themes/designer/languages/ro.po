@@ -1,0 +1,415 @@
+# Translation of WordPress.com - Themes - Designer in Romanian
+# This file is distributed under the same license as the WordPress.com - Themes - Designer package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-12-04 20:11:58+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);\n"
+"X-Generator: GlotPress/2.3.0-alpha\n"
+"Language: ro\n"
+"Project-Id-Version: WordPress.com - Themes - Designer\n"
+
+#. Author URI of the plugin/theme
+#: wp-content/themes/premium/designer/style.css
+msgid "https://arraythemes.com/"
+msgstr "https://arraythemes.com/"
+
+#: single-jetpack-portfolio.php:29
+msgid "All Projects"
+msgstr "Toate proiectele"
+
+#: single-jetpack-portfolio.php:25
+msgid "Next Project"
+msgstr "Proiectul următor"
+
+#: single-jetpack-portfolio.php:24
+msgid "Previous Project"
+msgstr "Proiectul anterior"
+
+#: inc/template-tags.php:49
+msgid "Newer Posts"
+msgstr "Articole mai noi"
+
+#: inc/template-tags.php:46
+msgid "Newer Projects"
+msgstr "Proiecte mai noi"
+
+#: inc/template-tags.php:37
+msgid "Older Posts"
+msgstr "Articole mai vechi"
+
+#: inc/template-tags.php:34
+msgid "Older Projects"
+msgstr "Proiecte mai vechi"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/designer/homepage.php
+msgid "Homepage Template"
+msgstr "Șablon prima pagină"
+
+#: single.php:32
+msgid "Published by %s"
+msgstr "Publicat de %s"
+
+#: sidebar.php:23
+msgid "Meta"
+msgstr "Meta"
+
+#: search.php:16
+msgid "Results for: %s"
+msgstr "Rezultate pentru: %s"
+
+#: inc/template-tags.php:106
+msgid "<span class=\"posted-on\">%1$s</span><span class=\"byline\"> by </span> %2$s"
+msgstr "<span class=\"posted-on\">%1$s</span><span class=\"byline\"> de </span> %2$s"
+
+#: inc/template-tags.php:81
+msgctxt "Next post link"
+msgid "<span class=\"meta-nav\">Next Post</span> %title"
+msgstr "<span class=\"meta-nav\">Articolul următor</span> %title"
+
+#: inc/template-tags.php:80
+msgctxt "Previous post link"
+msgid "<span class=\"meta-nav\">Previous Post</span> %title"
+msgstr "<span class=\"meta-nav\">Articolul anterior</span> %title"
+
+#: inc/template-tags.php:77
+msgid "Post navigation"
+msgstr "Navigare articole"
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr "Navigare în articole"
+
+#: inc/extras.php:63
+msgid "Page %s"
+msgstr "Pagina %s"
+
+#: inc/customizer.php:261
+msgid "Blog Index Style"
+msgstr "Stil indexare blog"
+
+#: inc/customizer.php:212
+msgid "Square"
+msgstr "Pătrat"
+
+#: inc/customizer.php:211
+msgid "Portrait"
+msgstr "Portret"
+
+#: inc/customizer.php:210
+msgid "Landscape"
+msgstr "Peisaj"
+
+#: inc/customizer.php:209
+msgid "Tiled"
+msgstr "Placat"
+
+#: inc/customizer.php:175
+msgid "Logo Upload"
+msgstr "Încărcare logo"
+
+#: inc/customizer.php:164
+msgid "Theme Options"
+msgstr "Opțiuni temă"
+
+#: inc/customizer.php:112
+msgid "10"
+msgstr "10"
+
+#: inc/customizer.php:111
+msgid "9"
+msgstr "9"
+
+#: inc/customizer.php:110
+msgid "8"
+msgstr "8"
+
+#: inc/customizer.php:109
+msgid "7"
+msgstr "7"
+
+#: inc/customizer.php:108
+msgid "6"
+msgstr "6"
+
+#: inc/customizer.php:107
+msgid "5"
+msgstr "5"
+
+#: inc/customizer.php:106
+msgid "4"
+msgstr "4"
+
+#: inc/customizer.php:105
+msgid "3"
+msgstr "2"
+
+#: inc/customizer.php:104
+msgid "2"
+msgstr "2"
+
+#: inc/customizer.php:103
+msgid "1"
+msgstr "1"
+
+#: inc/customizer.php:88 inc/customizer.php:266
+msgid "Minimal"
+msgstr "Minim"
+
+#: inc/customizer.php:87 inc/customizer.php:265
+msgid "Default"
+msgstr "Standard"
+
+#: inc/customizer.php:72
+msgid "Dark"
+msgstr "Întunecat"
+
+#: inc/customizer.php:71
+msgid "Light"
+msgstr "Luminos"
+
+#: homepage.php:62
+msgid "Ready to publish your first project? <a href=\"%1$s\">Get started here</a>."
+msgstr "Gata să-ți publici primul proiect? <a href=\"%1$s\">Începe de aici</a>."
+
+#: header.php:76
+msgid "Theme: %1$s by <a href=\"https://arraythemes.com/\">%2$s</a>"
+msgstr "Temă: %1$s de <a href=\"https://arraythemes.com/\">%2$s</a>"
+
+#: header.php:74
+msgid "Proudly powered by %s"
+msgstr "Propulsat cu mândrie de %s"
+
+#: header.php:74
+msgid "http://wordpress.org/"
+msgstr "http://wordpress.org/"
+
+#: functions.php:326
+msgid "Your comment is awaiting moderation."
+msgstr "Comentariul tău e în așteptare."
+
+#: functions.php:315
+msgid "(Edit)"
+msgstr "(Editare)"
+
+#: functions.php:315
+msgid "%1$s at %2$s"
+msgstr "%1$s la %2$s"
+
+#: functions.php:314
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr "<cite class=\"comment-cite\">%s</cite>"
+
+#: functions.php:276
+msgid "More Posts"
+msgstr "Mai multe articole"
+
+#: functions.php:273
+msgid "More Projects"
+msgstr "Mai multe proiecte"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:130
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "on"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Lato, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:124
+msgctxt "Lato font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:102
+msgid "Sidebar"
+msgstr "Bară laterală"
+
+#: functions.php:56
+msgid "Primary Menu"
+msgstr "Meniu principal"
+
+#: content.php:23
+msgid "Read More <span>&rarr;</span>"
+msgstr "Citește mai mult <span>&rarr;</span>"
+
+#: content-portfolio-single.php:23
+msgid "Read More &rarr;"
+msgstr "Citește mai mult &rarr;"
+
+#: content-page.php:28 content-portfolio-single.php:30 content.php:31
+msgid "Edit"
+msgstr "Editare"
+
+#: content-page.php:23 content-portfolio-single.php:26 content.php:26
+msgid "Pages:"
+msgstr "Pagini:"
+
+#: content-none.php:28
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "Se pare că nu putem găsi ceea ce cauți tu. Poate o căutare ar fi de ajutor."
+
+#: content-none.php:23
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "Regret, dar nimic nu se potrivește termenilor căutării tale. Te rog încearcă din nou cu cuvinte cheie diferite."
+
+#: content-none.php:19
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "Gata să publici primul tău articol? <a href=\"%1$s\">Poți începe aici</a>."
+
+#: content-none.php:13
+msgid "Nothing Found"
+msgstr "Nu a fost găsit nimic"
+
+#: content-meta.php:71
+msgid "% Comments"
+msgstr "% comentarii"
+
+#: content-meta.php:71
+msgid "1 Comment"
+msgstr "Un comentariu"
+
+#: content-meta.php:71
+msgid "Leave Comment"
+msgstr "Lasă comentariu"
+
+#: content-meta.php:70
+msgid "Comments"
+msgstr "comentarii"
+
+#: content-meta.php:54
+msgid "Tags"
+msgstr "Etichete"
+
+#: content-meta.php:38
+msgid "Category"
+msgstr "Categorie"
+
+#: content-meta.php:30
+msgid "Author"
+msgstr "Autor"
+
+#: content-meta.php:24
+msgid "Published"
+msgstr "Publicat"
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr "Comentariile nu sunt permise."
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr "Comentarii mai noi &rarr;"
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr "&larr; Comentarii mai vechi"
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr "Navigare în comentarii"
+
+#: comments.php:28
+msgctxt "comments title"
+msgid "One Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "Un comentariu"
+msgstr[1] "%1$s comentarii"
+msgstr[2] "%1$s de comentarii"
+
+#: archive.php:126
+msgid "Posts by %s"
+msgstr "Articole de %s"
+
+#: archive.php:120 single.php:26
+msgid "Posts by "
+msgstr "Articole de"
+
+#: archive.php:95 sidebar.php:16
+msgid "Archives"
+msgstr "Arhive"
+
+#: archive.php:89
+msgid "Projects"
+msgstr "Proiecte"
+
+#: archive.php:86
+msgid "Chats"
+msgstr "Discuții"
+
+#: archive.php:83
+msgid "Audios"
+msgstr "Fișiere audio"
+
+#: archive.php:80
+msgid "Statuses"
+msgstr "Stări"
+
+#: archive.php:77
+msgid "Links"
+msgstr "Legături"
+
+#: archive.php:74
+msgid "Quotes"
+msgstr "Citate"
+
+#: archive.php:71
+msgid "Videos"
+msgstr "Fişiere video"
+
+#: archive.php:68
+msgid "Images"
+msgstr "Imagini"
+
+#: archive.php:65
+msgid "Galleries"
+msgstr "Galerii"
+
+#: archive.php:62
+msgid "Asides"
+msgstr "Laterale"
+
+#: archive.php:59
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:59
+msgid "Year: %s"
+msgstr "An: %s"
+
+#: archive.php:56
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:56
+msgid "Month: %s"
+msgstr "Lună: %s"
+
+#: archive.php:53
+msgid "Day: %s"
+msgstr "Zi: %s"
+
+#. translators: %1$s: smiley
+#: 404.php:50
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "Încearcă să cauți în arhiva lunară. %1$s"
+
+#: 404.php:31
+msgid "Most Used Categories"
+msgstr "Cele mai folosite categorii"
+
+#: 404.php:19
+msgid "It looks like nothing was found at this location. Please use the search box and links below to locate the content you were looking for."
+msgstr "Se pare că n-a fost găsit nimic la această locație. Te rog folosește caseta și legăturile de mai jos pentru a localiza conținutul pe care-l cauți."
+
+#: 404.php:14
+msgid "404 / Page Not Found"
+msgstr "404 / Pagină negăsită"

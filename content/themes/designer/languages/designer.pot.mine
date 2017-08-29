@@ -1,0 +1,679 @@
+# Copyright (C) 2016 Array
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Designer 1.2.5\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/style\n"
+"POT-Creation-Date: 2016-04-21 15:23:55+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.3\n"
+
+#: inc/customizer.php:103
+msgid "1"
+msgstr ""
+
+#: inc/customizer.php:104
+msgid "2"
+msgstr ""
+
+#: inc/customizer.php:105
+msgid "3"
+msgstr ""
+
+#: inc/customizer.php:106
+msgid "4"
+msgstr ""
+
+#: inc/customizer.php:107
+msgid "5"
+msgstr ""
+
+#: inc/customizer.php:108
+msgid "6"
+msgstr ""
+
+#: inc/customizer.php:109
+msgid "7"
+msgstr ""
+
+#: inc/customizer.php:110
+msgid "8"
+msgstr ""
+
+#: inc/customizer.php:111
+msgid "9"
+msgstr ""
+
+#: inc/customizer.php:112
+msgid "10"
+msgstr ""
+
+#: 404.php:14
+msgid "404 / Page Not Found"
+msgstr ""
+
+#: 404.php:19
+msgid ""
+"It looks like nothing was found at this location. Please use the search box "
+"and links below to locate the content you were looking for."
+msgstr ""
+
+#: 404.php:31
+msgid "Most Used Categories"
+msgstr ""
+
+#: 404.php:50
+#. translators: %1$s: smiley
+msgid "Try looking in the monthly archives. %1$s"
+msgstr ""
+
+#: archive.php:53
+msgid "Day: %s"
+msgstr ""
+
+#: archive.php:56
+msgid "Month: %s"
+msgstr ""
+
+#: archive.php:59
+msgid "Year: %s"
+msgstr ""
+
+#: archive.php:62
+msgid "Asides"
+msgstr ""
+
+#: archive.php:65
+msgid "Galleries"
+msgstr ""
+
+#: archive.php:68
+msgid "Images"
+msgstr ""
+
+#: archive.php:71
+msgid "Videos"
+msgstr ""
+
+#: archive.php:74
+msgid "Quotes"
+msgstr ""
+
+#: archive.php:77
+msgid "Links"
+msgstr ""
+
+#: archive.php:80
+msgid "Statuses"
+msgstr ""
+
+#: archive.php:83
+msgid "Audios"
+msgstr ""
+
+#: archive.php:86
+msgid "Chats"
+msgstr ""
+
+#: archive.php:89
+msgid "Projects"
+msgstr ""
+
+#: archive.php:95 sidebar.php:16
+msgid "Archives"
+msgstr ""
+
+#: archive.php:120 single.php:26
+msgid "Posts by "
+msgstr ""
+
+#: archive.php:126
+msgid "Posts by %s"
+msgstr ""
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr ""
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr ""
+
+#: content-meta.php:24
+msgid "Published"
+msgstr ""
+
+#: content-meta.php:30
+msgid "Author"
+msgstr ""
+
+#: content-meta.php:38
+msgid "Category"
+msgstr ""
+
+#: content-meta.php:54
+msgid "Tags"
+msgstr ""
+
+#: content-meta.php:70
+msgid "Comments"
+msgstr ""
+
+#: content-meta.php:71
+msgid "Leave Comment"
+msgstr ""
+
+#: content-meta.php:71
+msgid "1 Comment"
+msgstr ""
+
+#: content-meta.php:71
+msgid "% Comments"
+msgstr ""
+
+#: content-none.php:13
+msgid "Nothing Found"
+msgstr ""
+
+#: content-none.php:19
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: content-none.php:23
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: content-none.php:28
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: content-page.php:23 content-portfolio-single.php:26 content.php:26
+msgid "Pages:"
+msgstr ""
+
+#: content-page.php:28 content-portfolio-single.php:30 content.php:31
+msgid "Edit"
+msgstr ""
+
+#: content-portfolio-single.php:23
+msgid "Read More &rarr;"
+msgstr ""
+
+#: content.php:23
+msgid "Read More <span>&rarr;</span>"
+msgstr ""
+
+#: functions.php:56
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:102
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:104
+msgid "Appears when the left sidebar is expanded."
+msgstr ""
+
+#: functions.php:273
+msgid "More Projects"
+msgstr ""
+
+#: functions.php:276
+msgid "More Posts"
+msgstr ""
+
+#: functions.php:314
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr ""
+
+#: functions.php:315
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: functions.php:315
+msgid "(Edit)"
+msgstr ""
+
+#: functions.php:326
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: header.php:74
+msgid "http://wordpress.org/"
+msgstr ""
+
+#: header.php:74
+msgid "Proudly powered by %s"
+msgstr ""
+
+#: header.php:76
+msgid "Theme: %1$s by <a href=\"https://arraythemes.com/\">%2$s</a>"
+msgstr ""
+
+#: homepage.php:62
+msgid "Ready to publish your first project? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:14
+msgid "Getting Started"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:60
+msgid ""
+"There seems to be a problem retrieving the latest updates information from "
+"Array. Please check back later."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:77
+msgid "Getting started with %1$s v%2$s"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:79
+msgid ""
+"Thanks for purchasing %1$s! We truly appreciate the support and the "
+"opportunity to share our work with you. Please visit the tabs below to get "
+"started setting up your theme!"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:86
+msgid "Help File"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:87
+msgid "License"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:88
+msgid "Latest Updates"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:91
+msgid "View support forum"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:91
+msgid "Support Forum &rarr;"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:114
+msgid ""
+"This help file feed seems to be temporarily down. You can view the help "
+"file on Array in the meantime."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:114
+msgid "Help File &rarr;"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:132
+msgid "Install the Array Toolkit"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:133
+msgid "The Array Toolkit is a plugin that adds various features to your theme."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:133
+msgid "requires the Array Toolkit to enable the following features:"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:137
+#: inc/widgets/portfolio-widget.php:34 inc/widgets/portfolio-widget.php:47
+msgid "Portfolio Items"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:141
+msgid "Custom Galleries"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:146
+msgid "Slider Items"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:150
+msgid "Install Array toolkit"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:150
+msgid "Install Array Toolkit Plugin"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:159
+#: inc/admin/getting-started/getting-started.php:162
+msgid "Visit the Knowledge Base"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:160
+msgid ""
+"New to the WordPress world? Our Knowledge Base has over 20 video tutorials, "
+"from installing WordPress to working with themes and more."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:166
+msgid "Theme Support"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:167
+msgid ""
+"If you have a question about your theme, send us a message via our Creative "
+"Market profile page. Simply click the little envelope under our bio to send "
+"us a message."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:168
+msgid "Send Us A Message"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:168
+msgid "Send Us A Message &rarr;"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:176
+msgid "Activate your license for seamless updates!"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:180
+msgid ""
+"Add your license key to get theme updates without leaving your dashboard! "
+"Find your license key in your Array Dashboard in the <a class=\"thickbox\" "
+"href=\"%s\">Downloads</a> section. Save your key and then click the "
+"Activate button."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:188
+msgid "Enter your license key:"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:192
+msgid "Save License Key"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:197
+msgid "Your license is active!"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:199
+msgid "Deactivate License"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:202
+msgid "License saved! Click to activate &rarr;"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:203
+msgid "Activate License"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:212
+msgid "Updating Your Theme"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:217
+msgid ""
+"Once your license key is activated, you can download and install theme "
+"updates by going to Appearance &rarr; Themes. A <a class=\"thickbox\" "
+"href=\"%s\">notice</a> will be displayed when an update is available."
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:221
+msgid ""
+"The update process will grab the latest theme files from Array and replace "
+"your current theme. Any changes you&apos;ve made to the theme files will be "
+"overwritten, so be sure to back up your theme before updating!"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:229
+msgid "Latest Theme Updates"
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:260
+msgid ""
+" %1$s activated! Visit the <a href=\"%2$s\">Getting Started</a> page to "
+"view the help file, install the Array Toolkit or ask us a question. "
+msgstr ""
+
+#: inc/admin/getting-started/getting-started.php:262
+msgid "<a href=\"%1$s\">Hide this notice</a>"
+msgstr ""
+
+#: inc/admin/theme-updater/theme-updater.php:54
+msgid ""
+"Updating this theme will lose any customizations you have made. 'Cancel' to "
+"stop, 'OK' to update."
+msgstr ""
+
+#: inc/customizer.php:71 inc/wporg.php:69
+msgid "Light"
+msgstr ""
+
+#: inc/customizer.php:72 inc/wporg.php:70
+msgid "Dark"
+msgstr ""
+
+#: inc/customizer.php:87 inc/customizer.php:265
+msgid "Default"
+msgstr ""
+
+#: inc/customizer.php:88 inc/customizer.php:266
+msgid "Minimal"
+msgstr ""
+
+#: inc/customizer.php:164
+msgid "Theme Options"
+msgstr ""
+
+#: inc/customizer.php:175
+msgid "Logo Upload"
+msgstr ""
+
+#: inc/customizer.php:190
+msgid "Always Show Sidebar"
+msgstr ""
+
+#: inc/customizer.php:205
+msgid "Project Image Style"
+msgstr ""
+
+#: inc/customizer.php:209
+msgid "Tiled"
+msgstr ""
+
+#: inc/customizer.php:210
+msgid "Landscape"
+msgstr ""
+
+#: inc/customizer.php:211
+msgid "Portrait"
+msgstr ""
+
+#: inc/customizer.php:212
+msgid "Square"
+msgstr ""
+
+#: inc/customizer.php:226
+msgid "Number of Projects on Homepage"
+msgstr ""
+
+#: inc/customizer.php:243
+msgid "Project Archive Text"
+msgstr ""
+
+#: inc/customizer.php:261
+msgid "Blog Index Style"
+msgstr ""
+
+#: inc/extras.php:63
+msgid "Page %s"
+msgstr ""
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr ""
+
+#: inc/template-tags.php:34
+msgid "Older Projects"
+msgstr ""
+
+#: inc/template-tags.php:37
+msgid "Older Posts"
+msgstr ""
+
+#: inc/template-tags.php:46
+msgid "Newer Projects"
+msgstr ""
+
+#: inc/template-tags.php:49
+msgid "Newer Posts"
+msgstr ""
+
+#: inc/template-tags.php:77
+msgid "Post navigation"
+msgstr ""
+
+#: inc/template-tags.php:106
+msgid "<span class=\"posted-on\">%1$s</span><span class=\"byline\"> by </span> %2$s"
+msgstr ""
+
+#: inc/widgets/portfolio-widget.php:27
+msgid "Display your latest Portfolio items."
+msgstr ""
+
+#: inc/widgets/portfolio-widget.php:88
+msgid "View All Projects"
+msgstr ""
+
+#: inc/widgets/portfolio-widget.php:123
+msgid "Title:"
+msgstr ""
+
+#: inc/widgets/portfolio-widget.php:129
+msgid "Number of Projects:"
+msgstr ""
+
+#: inc/wporg.php:34
+msgid "Body Text Color"
+msgstr ""
+
+#: inc/wporg.php:48
+msgid "Accent Color"
+msgstr ""
+
+#: inc/wporg.php:65
+msgid "Sidebar Toggle Bar Color"
+msgstr ""
+
+#: inc/wporg.php:81
+msgid "Custom CSS"
+msgstr ""
+
+#: search.php:16
+msgid "Results for: %s"
+msgstr ""
+
+#: sidebar.php:23
+msgid "Meta"
+msgstr ""
+
+#: single-jetpack-portfolio.php:24
+msgid "Previous Project"
+msgstr ""
+
+#: single-jetpack-portfolio.php:25
+msgid "Next Project"
+msgstr ""
+
+#: single-jetpack-portfolio.php:29
+msgid "All Projects"
+msgstr ""
+
+#: single.php:32
+msgid "Published by %s"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Designer"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+msgid "https://arraythemes.com/themes/designer-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Promote your latest design work, sketches, audio, photography and more with "
+"Designer. Featuring an eclectic, responsive design and a fully-featured "
+"blog, you can get a professional portfolio up and running effortlessly, "
+"with zero coding required. Designer is easy to customize and ships with "
+"several portfolio styles including tiled, landscape, portrait and square."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Array"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://arraythemes.com/"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Homepage Template"
+msgstr ""
+
+#: archive.php:56
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: archive.php:59
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: comments.php:28
+msgctxt "comments title"
+msgid "One Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:124
+#. Translators: If there are characters in your language that are not supported
+#. by Lato, translate this to 'off'. Do not translate into your own language.
+msgctxt "Lato font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:130
+#. Translators: If there are characters in your language that are not supported
+#. by Arimo, translate this to 'off'. Do not translate into your own language.
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr ""
+
+#: inc/template-tags.php:80
+msgctxt "Previous post link"
+msgid "<span class=\"meta-nav\">Previous Post</span> %title"
+msgstr ""
+
+#: inc/template-tags.php:81
+msgctxt "Next post link"
+msgid "<span class=\"meta-nav\">Next Post</span> %title"
+msgstr ""

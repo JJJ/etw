@@ -1,0 +1,7 @@
+.header-wrapper, .sub-title, .arrayvideo {
+	display: inherit !important;
+}
+
+.featured-image, .featured-image img, .slides, .slides img {
+	display: block;
+}

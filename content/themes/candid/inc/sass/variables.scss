@@ -1,0 +1,34 @@
+/* These variables are used througout style.scss. */
+
+/* Body font styles */
+$sans: 'franklin-gothic-urw-1', 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+/* Title font styles */
+$serif: 'abril-display-1', 'Lora', 'Georgia', serif;
+
+/* Color variables */
+$gray: #8392a0;
+$black: #343E47;
+
+/* Responsive media query mixins */
+@mixin viewport($point) {
+	@if $point == desktop {
+		@media ( max-width: 1250px ) { @content; }
+	}
+	@else if $point == tablet {
+		@media ( max-width: 800px )  { @content; }
+	}
+	@else if $point == mobile {
+		@media ( max-width: 600px )  { @content; }
+	}
+}
+
+/* Styles for small text with uppercase font style. Used on dates and post meta */
+@mixin sans-uppercase {
+	color: $gray;
+	font-family: $sans;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 400;
+}

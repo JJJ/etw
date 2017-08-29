@@ -1,0 +1,25 @@
+.block-post {
+	width: 380px !important;
+	height: 380px !important;
+	margin: 0 2% 20px 0 !important;
+	padding-bottom: 31%;
+}
+
+.block-post:hover .box-wrap {
+	background: #333;
+}
+
+.single-array-portfolio .image-wrap img {
+	max-width: 100% !important;
+	min-width: 100% !important;
+	width: 100% !important;
+	height: auto !important;
+}
+
+#sidebar .search-form-input {
+	padding-top: 8px !important;
+}
+
+.error404 #content .search-form-input {
+	line-height: 0px;
+}

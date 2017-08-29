@@ -1,0 +1,334 @@
+# Translation of Ampersand in Irish
+# This file is distributed under the same license as the Ampersand package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-12-06 16:14:51+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Ampersand\n"
+
+#: inc/customizer.php:150
+msgid "Disable"
+msgstr "Cas as"
+
+#: inc/customizer.php:149
+msgid "Enable"
+msgstr "Cas Air"
+
+#: template-icons.php:71
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: template-icons.php:75
+msgid "RSS"
+msgstr "RSS"
+
+#: template-icons.php:67
+msgid "YouTube"
+msgstr "YouTube"
+
+#: template-icons.php:59
+msgid "Google+"
+msgstr "Google+"
+
+#: template-icons.php:63
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: template-icons.php:55
+msgid "Pinterest"
+msgstr "Pinterest"
+
+#: template-icons.php:47
+msgid "Dribbble"
+msgstr "dribbble"
+
+#: template-icons.php:51
+msgid "Flickr"
+msgstr "Flickr"
+
+#: template-icons.php:43
+msgid "Tumblr"
+msgstr "Tumblr"
+
+#: template-icons.php:35
+msgid "Facebook"
+msgstr "Facebook"
+
+#: template-icons.php:31
+msgid "Twitter"
+msgstr "Twitter"
+
+#: functions.php:385
+msgid "Page %s"
+msgstr "Leathanach %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio.php
+msgid "Portfolio"
+msgstr "Saothar"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/homepage.php
+msgid "Homepage"
+msgstr "Leathanach baile"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/full-width.php
+msgid "Full Width"
+msgstr "Lánleithead"
+
+#: template-titles.php:47
+msgid "Search Results for: %s"
+msgstr "Torthaí ar: %s"
+
+#: template-titles.php:44
+msgid "404 - Page Not Found"
+msgstr "404 - Níor fríothadh an leathanach"
+
+#: template-titles.php:41
+msgid "Year: %s"
+msgstr "Bliain: %s"
+
+#: template-titles.php:38
+msgid "Month: %s"
+msgstr "Mí: %s"
+
+#: template-titles.php:35
+msgid "Day: %s"
+msgstr "Lá: %s"
+
+#: template-titles.php:27
+msgid "Author: %s"
+msgstr "Údar: %s"
+
+#: template-titles.php:20
+msgid "Tag: "
+msgstr "Clib:"
+
+#: template-titles.php:17
+msgid "Category: "
+msgstr "Rang:"
+
+#: single.php:40
+msgid "Tags:"
+msgstr "Clibeanna:"
+
+#: single.php:34
+msgid "Category:"
+msgstr "Rang:"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Imshonraí"
+
+#: sidebar.php:13
+msgid "Archives"
+msgstr "Cartlanna"
+
+#: search.php:41
+msgid "Sorry, but nothing matched your search terms. Please try again with different keywords."
+msgstr "Sén chaoi nach raibh aon cheo ag teacht leis an méid a chuartaigh tú. B’fhéidir go dtraíálfá focla eile."
+
+#: inc/template-tags.php:54 template-portfolio.php:80
+msgid "Newer posts"
+msgstr "Chun Tosaigh"
+
+#: inc/template-tags.php:50 template-portfolio.php:79
+msgid "Older posts"
+msgstr "Chun Deiridh"
+
+#: inc/template-tags.php:45
+msgid "Next Post"
+msgstr "An Chéad Alt Eile"
+
+#: inc/template-tags.php:44
+msgid "Previous Post"
+msgstr "An tAlt Roimhe Seo"
+
+#: inc/customizer.php:347
+msgid "RSS URL"
+msgstr "URL RSS"
+
+#: inc/template-tags.php:40
+msgid "Post navigation"
+msgstr "Treoraíocht alt"
+
+#: inc/customizer.php:272
+msgid "Pinterest URL"
+msgstr "URL Pinterest"
+
+#: inc/customizer.php:287
+msgid "Google+ URL"
+msgstr "URL Google+"
+
+#: inc/customizer.php:302
+msgid "Vimeo URL"
+msgstr "URL Vimeo"
+
+#: inc/customizer.php:317
+msgid "YouTube URL"
+msgstr "URL YouTube"
+
+#: inc/customizer.php:332
+msgid "LinkedIn URL"
+msgstr "URL LinkedIN"
+
+#: inc/customizer.php:212
+msgid "Instagram URL"
+msgstr "URL Instagram"
+
+#: inc/customizer.php:227
+msgid "Tumblr URL"
+msgstr "URL Tumblr"
+
+#: inc/customizer.php:242
+msgid "Dribbble URL"
+msgstr "URL Dribbble"
+
+#: inc/customizer.php:257
+msgid "Flickr URL"
+msgstr "URL Flickr"
+
+#: inc/customizer.php:182
+msgid "Twitter URL"
+msgstr "URL Twitter"
+
+#: inc/customizer.php:197
+msgid "Facebook URL"
+msgstr "URL Facebook"
+
+#: inc/customizer.php:85
+msgid "Logo Upload"
+msgstr "Uaslódáil Lógó"
+
+#: inc/customizer.php:99
+msgid "Homepage Header Subtitle Text"
+msgstr "Téacs Fhotheideal Cheanntásc an Leathanaigh Bhaile"
+
+#: inc/customizer.php:114
+msgid "Homepage Header Button Link"
+msgstr "Nasc Chnaipe Cheanntásc an Leathanaigh Bhaile"
+
+#: inc/customizer.php:128
+msgid "Homepage Header Button Text"
+msgstr "Téacs Chnaipe Cheanntásc an Leathanaigh Bhaile"
+
+#: inc/customizer.php:164
+msgid "Social Media Links"
+msgstr "Naisc leis na Meáin Sóisialta"
+
+#: inc/customizer.php:167
+msgid "Add links to your various social media sites. These icons will appear in the footer."
+msgstr "Cuir suas naisc le do chuid próifíleacha ar na meáin shóisialta. Sa mbuntásc a thaispeánfar a ndeilbhíní seo."
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr "Roghanna Téama"
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr "Cuartaigh"
+
+#: header.php:37
+msgid "Skip to content"
+msgstr "Beir go dtí an t-alt féin mé"
+
+#: header.php:36
+msgid "Menu"
+msgstr "Roghchlár"
+
+#: functions.php:353
+msgid "Your comment is awaiting moderation."
+msgstr "Tá do fhreagra fós le ceadú."
+
+#: functions.php:332
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#. translators: 1: date, 2: time
+#: functions.php:340
+msgid "%1$s at %2$s"
+msgstr "%1$s ag %2$s"
+
+#: functions.php:249
+msgid "Footer Center"
+msgstr "Lárbhuntásc"
+
+#: functions.php:258
+msgid "Footer Right"
+msgstr "Ar Dheis an Bhuntáisc"
+
+#: functions.php:240
+msgid "Footer Left"
+msgstr "An Buntásc ar Chlé"
+
+#: functions.php:172
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:231
+msgid "Sidebar"
+msgstr "Taobh-Bharra"
+
+#: functions.php:49
+msgid "Primary Menu"
+msgstr "Príomhroghchlár"
+
+#: full-width.php:26 page.php:21 single.php:30 template-portfolio-item.php:20
+msgid "Edit"
+msgstr "Eagar"
+
+#: format-standard.php:26 homepage.php:67 inc/customizer.php:122 search.php:34
+#: template-portfolio.php:70
+msgid "Read More"
+msgstr "Tuilleadh"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "% Comments"
+msgstr "Freagraí: %"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "No Comments"
+msgstr "Gan Freagra"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "Permalink to %s comments"
+msgstr "Buan-nasc leis na freagraí ar %s"
+
+#: format-standard.php:14 full-width.php:20 homepage.php:36 search.php:22
+#: single.php:18 template-portfolio-item.php:80 template-portfolio.php:60
+#: template-portfolio.php:70
+msgid "Permalink to %s"
+msgstr "Buan-nasc le %s"
+
+#: inc/wpcom.php:70
+msgid "Theme: %1$s by %2$s."
+msgstr "Téama: %1$s le %2$s."
+
+#: inc/wpcom.php:68
+msgid "Proudly powered by %s"
+msgstr "Le cumhacht %s"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Freagraí dúnta."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Freagraí Nua &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Bí ag comhrá!"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Seanfhreagraí"

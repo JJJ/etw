@@ -1,0 +1,68 @@
+body {
+        direction: rtl;
+        unicode-bidi: embed;
+}
+
+caption, th, td {
+    font-weight: normal;
+    text-align: right;
+}
+
+#comments-title {
+	text-align: right;
+}
+
+#primary, .site-header .hgroup {
+	float: right;
+}
+
+#secondary, .navigation-wrap-inside {
+	float: left;
+}
+
+.main-navigation ul {
+	text-align: left;
+}
+
+.site-title a:after {
+	right: 0;
+}
+
+.menu-search-toggle {
+	right: auto;
+	left: -25px;
+}
+
+.menu-search {
+	text-align: left;
+	float: left;
+}
+
+.menu-toggle {
+	left: 0;
+	right: auto;
+	top: -30px;
+}
+
+.portfolio-columns .portfolio-column-text h2:after {
+	right: 0;
+}
+
+.post-detail {
+	padding: 0 0 8% 0;
+}
+
+#comments .vcard {
+	float: right;
+	margin-right: 0;
+	margin-left: 3%;
+}
+
+.featured-content-section * {
+	direction: ltr;
+	unicode-bidi: normal;
+}
+
+.blog-left-excerpt {
+	padding-right: 0;
+}

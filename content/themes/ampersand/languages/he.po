@@ -1,0 +1,335 @@
+# Translation of Ampersand in Hebrew
+# This file is distributed under the same license as the Ampersand package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-08-20 03:13:07+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Ampersand\n"
+
+#: inc/customizer.php:150
+msgid "Disable"
+msgstr "לכבות"
+
+#: inc/customizer.php:149
+msgid "Enable"
+msgstr "ערכה פעילה"
+
+#: template-icons.php:71
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: template-icons.php:75
+msgid "RSS"
+msgstr "RSS"
+
+#: template-icons.php:67
+msgid "YouTube"
+msgstr "YouTube"
+
+#: template-icons.php:59
+msgid "Google+"
+msgstr "Google+"
+
+#: template-icons.php:63
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: template-icons.php:55
+msgid "Pinterest"
+msgstr "Pinterest"
+
+#: template-icons.php:47
+msgid "Dribbble"
+msgstr "Dribbble"
+
+#: template-icons.php:51
+msgid "Flickr"
+msgstr "פליקר"
+
+#: template-icons.php:43
+msgid "Tumblr"
+msgstr "Tumblr"
+
+#: template-icons.php:35
+msgid "Facebook"
+msgstr "פייסבוק"
+
+#: template-icons.php:39
+msgid "Instagram"
+msgstr "Instagram"
+
+#: template-icons.php:31
+msgid "Twitter"
+msgstr "טוויטר"
+
+#: functions.php:385
+msgid "Page %s"
+msgstr "עמוד %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio.php
+msgid "Portfolio"
+msgstr "תיק עבודות"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/homepage.php
+msgid "Homepage"
+msgstr "עמוד הבית"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/full-width.php
+msgid "Full Width"
+msgstr "רוחב מלא"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "Ampersand is a portfolio style theme with an empasis on beautiful, legible typography and graceful resizing for mobile browsing."
+msgstr "<span dir=rtl>Ampersand היא ערכת עיצוב בסגנון תיק עבודות, עם דגש על טיפוגרפיה יפה וקריאה ועל שינוי חלק של הגודל עבור עיון במכשירים ניידים.</span>"
+
+#: template-titles.php:47
+msgid "Search Results for: %s"
+msgstr "תוצאות החיפוש: %s"
+
+#: template-titles.php:44
+msgid "404 - Page Not Found"
+msgstr "שגיאה 404 - העמוד לא נמצא"
+
+#: template-titles.php:41
+msgid "Year: %s"
+msgstr "שנה: %s"
+
+#: template-titles.php:38
+msgid "Month: %s"
+msgstr "חודש: %s"
+
+#: template-titles.php:35
+msgid "Day: %s"
+msgstr "יום: %s"
+
+#: template-titles.php:27
+msgid "Author: %s"
+msgstr "מחבר: %s"
+
+#: template-titles.php:20
+msgid "Tag: "
+msgstr "תגית:"
+
+#: template-titles.php:17
+msgid "Category: "
+msgstr "קטגוריה:"
+
+#: single.php:46
+msgid "Previous Post:"
+msgstr "רשומה קודמת:"
+
+#: single.php:48
+msgid "Next Post:"
+msgstr "רשומה הבאה:"
+
+#: single.php:40
+msgid "Tags:"
+msgstr "תגים: "
+
+#: single.php:34
+msgid "Category:"
+msgstr "קטגוריה:"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "כלים"
+
+#: sidebar.php:13
+msgid "Archives"
+msgstr "ארכיון"
+
+#: search.php:41
+msgid "Sorry, but nothing matched your search terms. Please try again with different keywords."
+msgstr "סליחה, לא נמצאו תוצאות עבור החיפוש שלך. נסה בבקשה נוסח אחר."
+
+#: inc/template-tags.php:54 template-portfolio.php:80
+msgid "Newer posts"
+msgstr "פוסטים חדשים יותר"
+
+#: inc/template-tags.php:50 template-portfolio.php:79
+msgid "Older posts"
+msgstr "פוסטים ישנים יותר"
+
+#: inc/template-tags.php:45
+msgid "Next Post"
+msgstr "הרשומה הבאה"
+
+#: inc/template-tags.php:44
+msgid "Previous Post"
+msgstr "הרשומה הקודמת"
+
+#: inc/customizer.php:347
+msgid "RSS URL"
+msgstr "כתובת RSS"
+
+#: inc/template-tags.php:40
+msgid "Post navigation"
+msgstr "ניווט ברשומות"
+
+#: inc/customizer.php:272
+msgid "Pinterest URL"
+msgstr "קישור Pinterest"
+
+#: inc/customizer.php:302
+msgid "Vimeo URL"
+msgstr "כתובת Vimeo"
+
+#: inc/customizer.php:317
+msgid "YouTube URL"
+msgstr "קישור YouTube"
+
+#: inc/customizer.php:332
+msgid "LinkedIn URL"
+msgstr "<span dir=rtl>כתובת אתר LinkedIn</span>"
+
+#: inc/customizer.php:287
+msgid "Google+ URL"
+msgstr "קישור גוגל פלוס"
+
+#: inc/customizer.php:257
+msgid "Flickr URL"
+msgstr "<span dir=rtl>כתובת אתר Flickr</span>"
+
+#: inc/customizer.php:212
+msgid "Instagram URL"
+msgstr "<span dir=rtl>כתובת אתר Instagram</span>"
+
+#: inc/customizer.php:182
+msgid "Twitter URL"
+msgstr "כתובת URL של Twitter"
+
+#: inc/customizer.php:197
+msgid "Facebook URL"
+msgstr "כתובת פייסבוק"
+
+#: inc/customizer.php:85
+msgid "Logo Upload"
+msgstr "העלאת לוגו"
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr "אפשרויות"
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr "חיפוש"
+
+#: header.php:37
+msgid "Skip to content"
+msgstr "דילוג לתוכן"
+
+#: header.php:36
+msgid "Menu"
+msgstr "תפריט"
+
+#: functions.php:353
+msgid "Your comment is awaiting moderation."
+msgstr "התגובה ממתינה לאישור."
+
+#: functions.php:332
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#. translators: 1: date, 2: time
+#: functions.php:340
+msgid "%1$s at %2$s"
+msgstr "%1$s בשעה %2$s"
+
+#: functions.php:249
+msgid "Footer Center"
+msgstr "למטה ובמרכז"
+
+#: functions.php:258
+msgid "Footer Right"
+msgstr "למטה ומימין"
+
+#: functions.php:240
+msgid "Footer Left"
+msgstr "למטה ומשמאל"
+
+#: functions.php:172
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr "off"
+
+#: functions.php:231
+msgid "Sidebar"
+msgstr " סרגל צדדי"
+
+#: functions.php:49
+msgid "Primary Menu"
+msgstr "תפריט ראשי"
+
+#: full-width.php:26 page.php:21 single.php:30 template-portfolio-item.php:20
+msgid "Edit"
+msgstr "עריכה"
+
+#: format-standard.php:26 homepage.php:67 inc/customizer.php:122 search.php:34
+#: template-portfolio.php:70
+msgid "Read More"
+msgstr "קרא עוד"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "% Comments"
+msgstr "% תגובות"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "1 Comment"
+msgstr "תגובה אחת"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "No Comments"
+msgstr "אין תגובות"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "Permalink to %s comments"
+msgstr "קשיר ישיר לתגובות על %s"
+
+#: format-standard.php:14 full-width.php:20 homepage.php:36 search.php:22
+#: single.php:18 template-portfolio-item.php:80 template-portfolio.php:60
+#: template-portfolio.php:70
+msgid "Permalink to %s"
+msgstr "קישור קבוע לרשומה %s"
+
+#: inc/wpcom.php:70
+msgid "Theme: %1$s by %2$s."
+msgstr "ערכת עיצוב: %1$s של %2$s"
+
+#: inc/wpcom.php:68
+msgid "Proudly powered by %s"
+msgstr "פועל על %s"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "סגור לתגובות."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "תגובות חדשות יותר &larr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "להצטרף לשיחה!"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "תגובה אחת"
+msgstr[1] "%1$s תגובות"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&rarr; תגובות ישנות יותר"

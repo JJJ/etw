@@ -1,0 +1,96 @@
+.mceContentBody {
+	font: 18px/1.7 'Arimo', 'Helvetica Neue', Helvetica, sans-serif;
+	max-width: 75%;
+}
+
+.mceContentBody h1, .mceContentBody h2, .mceContentBody h3, .mceContentBody h4, .mceContentBody h5, .mceContentBody h6 {
+    margin: 0 0 25px 0;
+    font-family: 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
+    font-weight: normal;
+}
+
+.mceContentBody h1 {
+	font-size: 34px;
+	line-height: 40px;
+}
+
+.mceContentBody h2 {
+	font-size: 28px;
+	line-height: 32px;
+ }
+
+.mceContentBody h3 {
+	font-size: 22px;
+	line-height: 30px;
+}
+
+.mceContentBody h4 {
+	font-size: 18px;
+	line-height: 22px;
+}
+
+.mceContentBody h5 {
+	font-size: 14px;
+	line-height: 18px;
+}
+
+.mceContentBody h6 {
+	font-size: 12px;
+}
+
+.mceContentBody p {
+	font: 18px/1.7 'Arimo', 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+.mceContentBody blockquote p {
+	border-left: solid 6px #eee;
+	padding: 0 0 0 30px;
+	margin: 0 0 30px 0;
+	font-style: italic;
+	font-size: 20px;
+	color: #aaa;
+}
+
+.mceContentBody ul {
+	margin: 0 0 30px 18px;
+	padding: 0;
+}
+
+.mceContentBody li {
+	list-style-type: square;
+	margin: 0 0 8px 0;
+}
+
+.mceContentBody ol {
+	padding-left: 20px;
+}
+.mceContentBody ol li {
+	list-style-type: decimal;
+}
+
+.highlight {
+	background: #fff198;
+	color: #222;
+}
+
+.intro {
+	font-style: italic;
+	font-size: 20px;
+	color: #aaa;
+	margin: 0 0 25px 0;
+}
+
+hr {
+	margin: 20px 0 30px;
+    border: 0;
+    border-bottom: 1px dotted #ddd;
+    height: 1px;
+}
+
+.alignright {
+	margin: 5px 0 30px 30px;
+}
+
+.alignleft {
+	margin: 5px 30px 30px 0;
+}

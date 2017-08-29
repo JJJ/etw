@@ -1,0 +1,14 @@
+#wrapper {
+	padding-left: 230px !important;
+	padding-right: 230px !important;
+}
+
+.header {
+	top: 0;
+	left: 0;
+	z-index: 100;
+}
+
+.archive-col {
+	width: 100% !important;
+}

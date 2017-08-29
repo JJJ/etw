@@ -1,0 +1,286 @@
+# Translation of Camera in German
+# This file is distributed under the same license as the Camera package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-15 03:15:15+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Camera\n"
+
+#: inc/template-tags.php:65
+msgctxt "Previous post link"
+msgid "%title"
+msgstr "%title"
+
+#: inc/template-tags.php:71
+msgid "Next Post"
+msgstr "Nächster Beitrag"
+
+#: inc/template-tags.php:72
+msgctxt "Next post link"
+msgid "%title"
+msgstr "%title "
+
+#: inc/template-tags.php:64
+msgid "Previous Post"
+msgstr "Vorheriger Beitrag"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/camera/full-width.php
+msgid "Full Width"
+msgstr "Volle Breite"
+
+#: content.php:80
+msgid "Edit Post"
+msgstr "Beitrag bearbeiten"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/camera/style.css
+msgid "Camera is an elegant, distraction-free canvas for showcasing your photography. Along with large, beautiful Featured Images, you can also create unique photo series in a full-width carousel, which accommodates your landscape and portrait photographs. Camera is perfect for travel blogs, food blogs and photo series."
+msgstr "Camera ist eine elegante, ablenkungsfreie Leinwand zur Präsentation deiner Fotografie. Neben den großen, schönen Beitragsbildern kannst du auch einzigartige Fotoserien in einem bildschirmbreiten Fotokarussell erstellen, was deinen Landschafts- und Portraitaufnahmen entgegenkommt. Camera ist perfekt für Reise- und Fotoblogs sowie Fotoserien."
+
+#: single.php:27
+msgid "Posts by "
+msgstr "Beiträge von"
+
+#: single.php:32
+msgid "About the author"
+msgstr "&Uuml;ber den Autor"
+
+#: sidebar.php:28
+msgid "Meta"
+msgstr "Meta"
+
+#: search.php:15
+msgid "Results for: %s"
+msgstr "Ergebnisse für: %s"
+
+#: sidebar.php:16
+msgid "Latest Posts"
+msgstr "Letzte Beiträge"
+
+#: inc/template-tags.php:37
+msgid "Newer Posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Neuere Beiträge <span class=\"meta-nav\">&rarr;</span>"
+
+#: inc/template-tags.php:32
+msgid "<span class=\"meta-nav\">&larr;</span> Older Posts"
+msgstr "<span class=\"meta-nav\">&larr;</span> Ältere Beiträge"
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr "Beiträge-Navigation"
+
+#: inc/customizer.php:94
+msgid "Color Scheme"
+msgstr "Farbschema"
+
+#: inc/customizer.php:67
+msgid "Theme"
+msgstr "Theme"
+
+#: inc/customizer.php:37 inc/customizer.php:99
+msgid "Dark"
+msgstr "Dunkel"
+
+#: inc/customizer.php:36 inc/customizer.php:98
+msgid "Light"
+msgstr "Licht"
+
+#: header.php:33
+msgid "Close"
+msgstr "Schließen"
+
+#: functions.php:377
+msgid "Page %s"
+msgstr "Seite %s"
+
+#: functions.php:344
+msgid "Your comment is awaiting moderation."
+msgstr "Dein Kommentar muss noch freigeschaltet werden."
+
+#: functions.php:333
+msgid "(Edit)"
+msgstr "(Bearbeiten)"
+
+#: functions.php:332
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr "<cite class=\"comment-cite\">%s</cite>"
+
+#: functions.php:333
+msgid "%1$s at %2$s"
+msgstr "%1$s um %2$s"
+
+#: functions.php:280
+msgid "More Posts"
+msgstr "Mehr Beiträge"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Noto Sans, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:143
+msgctxt "Noto Sans font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:121
+msgid "Sidebar"
+msgstr "Seitenleiste"
+
+#: functions.php:65
+msgid "Footer Menu"
+msgstr "Footer-Menü"
+
+#: functions.php:64
+msgid "Primary Menu"
+msgstr "Primäres Menü"
+
+#: footer.php:24
+msgid "Proudly powered by %s"
+msgstr "Proudly powered by %s"
+
+#: footer.php:24
+msgid "http://wordpress.org/"
+msgstr "http://wordpress.org/"
+
+#: content.php:75
+msgid "Read More"
+msgstr "Weiterlesen"
+
+#: content-page.php:40 content.php:86
+msgid "Pages:"
+msgstr "Seiten:"
+
+#: content-page.php:36
+msgid "Edit Page"
+msgstr "Seite bearbeiten"
+
+#: content-none.php:27
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "Wie es scheint, kann das Gesuchte nicht gefunden werden. Vielleicht hilft die Suchfunktion."
+
+#: content-none.php:22
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "Tut mir Leid, aber zu deinem Suchbegriff konnte nichts gefunden werden. Versuche es mit anderen Schlüsselwörtern doch erneut."
+
+#: content-none.php:18
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "Bereit deinen ersten Beitrag zu veröffentlichen? <a href=\"%1$s\">Erste Schritte</a>."
+
+#: content-none.php:14
+msgid "Nothing Found"
+msgstr "Es konnte nichts gefunden werden."
+
+#: content-meta.php:29
+msgid "Tag"
+msgstr "Schlagwort"
+
+#: content-meta.php:15
+msgid "Category"
+msgstr "Kategorie"
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr "Die Kommentarfunktion ist geschlossen."
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr "Neuere Kommentare &rarr;"
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr "&larr; Ältere Kommentare"
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr "Kommentar-Navigation"
+
+#: comments.php:27
+msgid "% Comments"
+msgstr "% Kommentare"
+
+#: comments.php:27
+msgid "One Comment"
+msgstr "Ein Kommentar"
+
+#: comments.php:27
+msgid "Leave a Comment"
+msgstr "Hinterlasse einen Kommentar"
+
+#: archive.php:92 sidebar.php:21
+msgid "Archives"
+msgstr "Archive"
+
+#: archive.php:89
+msgid "Chats"
+msgstr "Chats"
+
+#: archive.php:86
+msgid "Audios"
+msgstr "Audios"
+
+#: archive.php:83
+msgid "Statuses"
+msgstr "Status"
+
+#: archive.php:80
+msgid "Links"
+msgstr "Links"
+
+#: archive.php:77
+msgid "Quotes"
+msgstr "Zitate"
+
+#: archive.php:74
+msgid "Videos"
+msgstr "Videos"
+
+#: archive.php:71
+msgid "Images"
+msgstr "Bilder"
+
+#: archive.php:68
+msgid "Galleries"
+msgstr "Galerien "
+
+#: archive.php:65
+msgid "Asides"
+msgstr "Kurzmitteilung"
+
+#: archive.php:62
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:62
+msgid "Year: %s"
+msgstr "Jahr: %s"
+
+#: archive.php:59
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:59
+msgid "Month: %s"
+msgstr "Monat: %s"
+
+#: archive.php:56
+msgid "Day: %s"
+msgstr "Tag: %s"
+
+#. translators: %1$s: smiley
+#: 404.php:53
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "Versuchs mit einem Blick in die monatlichen Archive. %1$s"
+
+#: 404.php:34
+msgid "Most Used Categories"
+msgstr "Oft verwendete Kategorien"
+
+#: 404.php:15
+msgid "Page Not Found"
+msgstr "Seite nicht gefunden"

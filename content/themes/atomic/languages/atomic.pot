@@ -1,0 +1,800 @@
+# Copyright (C) 2017 Array
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Atomic 2.0.6\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/theme/style\n"
+"POT-Creation-Date: 2017-04-30 21:50:39+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.5.2\n"
+
+#: 404.php:15
+msgid "Page Not Found"
+msgstr ""
+
+#: 404.php:21
+msgid ""
+"It looks like nothing was found at this location. Please use the search box "
+"or the sitemap to locate the content you were looking for."
+msgstr ""
+
+#: 404.php:26
+msgid "Sitemap"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Portfolio"
+msgstr ""
+
+#: archive-jetpack-portfolio.php:57 functions.php:204
+#: taxonomy-jetpack-portfolio-type.php:58 template-parts/content-blog.php:57
+#: template-parts/content-index.php:39 template-parts/content-portfolio.php:68
+#: template-parts/content-services.php:54 template-parts/content.php:66
+msgid "Read More"
+msgstr ""
+
+#: comments.php:38
+msgid "Leave a comment"
+msgstr ""
+
+#: comments.php:56
+msgid "Comment navigation"
+msgstr ""
+
+#: comments.php:57
+msgid "Older Comments"
+msgstr ""
+
+#: comments.php:58
+msgid "Newer Comments"
+msgstr ""
+
+#: comments.php:68
+msgid "Comments are closed."
+msgstr ""
+
+#: functions.php:127
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:128
+msgid "Social Icon Menu"
+msgstr ""
+
+#: functions.php:239
+msgid "Footer - Column 1"
+msgstr ""
+
+#: functions.php:241
+msgid "Widgets added here will appear in the left column of the footer."
+msgstr ""
+
+#: functions.php:249
+msgid "Footer - Column 2"
+msgstr ""
+
+#: functions.php:251
+msgid "Widgets added here will appear in the center column of the footer."
+msgstr ""
+
+#: functions.php:259
+msgid "Footer - Column 3"
+msgstr ""
+
+#: functions.php:261 functions.php:271
+msgid "Widgets added here will appear in the right column of the footer."
+msgstr ""
+
+#: functions.php:269
+msgid "Footer - Column 4"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:206
+msgid ""
+"There seems to be a temporary problem retrieving the latest updates for "
+"this theme. You can always view the latest updates in your Array account "
+"dashboard."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:226
+msgid "Getting started with %1$s"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:228
+msgid "You will find everything you need to get started with Atomic below."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:234
+msgid "Help File"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:235
+msgid "Plugins"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:236
+msgid "FAQ &amp; Support"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:237
+msgid "Latest Updates"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:238
+msgid "Get More Themes"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:262
+msgid ""
+"This help file feed seems to be temporarily down. You can always view the "
+"help file on Array in the meantime."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:262
+msgid "Help File &rarr;"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:272
+msgid "Recommended Plugins"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:274
+msgid ""
+"Below is a list of recommended plugins to install that will help you get "
+"the most out of Atomic. Although each plugin is optional, some may be "
+"required to achieve a look similiar to the theme demo. See your help file "
+"for details."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:278
+msgid "Jetpack"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:280
+#: inc/admin/updater/theme-updater-admin.php:292
+#: inc/admin/updater/theme-updater-admin.php:304
+msgid "View on WP.org"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:282
+#: inc/admin/updater/theme-updater-admin.php:294
+#: inc/admin/updater/theme-updater-admin.php:306
+msgid "Installed"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:286
+msgid ""
+"Jetpack is a free plugin that adds support for more gallery styles, contact "
+"forms, extra widgets and more. Once installed, visit Jetpack > Settings to "
+"choose which features you would like to enable. For the best performance, "
+"we recommend deactivating all Jetpack features by default and only "
+"activating the ones you want."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:290
+msgid "MailChimp for WordPress"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:298
+msgid ""
+"MailChimp for WordPress helps you add more subscribers to your MailChimp "
+"lists using various methods. Atomic supports this plugin in any of the "
+"available widget areas."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:302
+msgid "WooCommerce"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:310
+msgid ""
+"WooCommerce is a free eCommerce plugin that allows you to sell anything, "
+"beautifully. Built to integrate seamlessly with WordPress, WooCommerce is "
+"the world’s favorite eCommerce solution that gives both store owners and "
+"developers complete control."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:316
+#: inc/admin/updater/theme-updater-admin.php:321
+msgid "Where do I get support for Atomic?"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:317
+#: inc/admin/updater/theme-updater-admin.php:335
+msgid "How do I update my theme?"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:318
+#: inc/admin/updater/theme-updater-admin.php:356
+msgid "Is WooCommerce required to use Atomic?"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:325
+msgid ""
+"If you&apos;ve read through the Help File in the first tab and still have "
+"questions or are experiencing issues, we&apos;re happy to help! Simply <a "
+"href=\"%s\">visit your dashboard</a> on Array to open a support ticket."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:330
+msgid ""
+"If you&apos;ve purchased your theme via ThemeForest, you will first have to "
+"create an account at Array to get a license key and access support. Visit "
+"the <a href=\"%s\" title=\"Create an account\">ThemeForest</a> page to "
+"validate your purchase code and create an account."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:337
+msgid ""
+"Activating your theme license will enable in-dash theme updates, so you can "
+"get the latest version of your theme in a few clicks. This helps us keep "
+"your site happy and healthy."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:339
+msgid "Follow these quick steps to retreive and activate your theme license."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:344
+msgid ""
+"First we need the license. Visit the <a href=\"%s\">Licenses</a> page on "
+"your Array Dashboard. Copy the license associated with your theme."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:347
+msgid ""
+"Paste the license in the license activation box on the right side of this "
+"page."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:348
+msgid ""
+"Click the Save License button. The license will be saved and the page will "
+"be refreshed."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:349
+msgid "Click the Activate License button to complete the activation."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:352
+msgid ""
+"Now that your license is activated, you will see a notice to update your "
+"theme on the Themes page whenever an update is available. Click the Update "
+"Now link on your theme to update the theme to the latest version."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:358
+msgid ""
+"Nope! Atomic works beautifully as a powerful multimedia magazine theme. You "
+"only have to install WooCommerce if you intend on selling goods on your "
+"site."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:371
+msgid ""
+"Join the Theme Club to download all the themes you see below and new "
+"releases for one year for <strong>only $89</strong>!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:374
+#: inc/admin/updater/theme-updater-admin.php:452
+msgid "Learn about the Theme Club"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:388
+msgid ""
+"This theme feed seems to be temporarily down. Please check back later, or "
+"visit our <a href=\"%s\">Themes page on Array</a>."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:399
+msgid "Sweet, your license is active!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:405
+msgid "Activate your license to enable theme updates!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:408
+msgid ""
+"With an active license, you can get seamless, one-click theme updates to "
+"keep your site healthy and happy."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:414
+msgid ""
+"Find your license key in your <a target=\"_blank\" href=\"%s\">Array "
+"Dashboard</a>."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:429
+#: inc/admin/updater/theme-updater.php:36
+msgid "Deactivate License"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:431
+msgid "Be sure to activate your license after saving it."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:433
+#: inc/admin/updater/theme-updater.php:37
+msgid "Activate License"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:435
+#: inc/admin/updater/theme-updater.php:38
+msgid "Save License"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:445
+msgid "Join the Theme Club!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:448
+msgid "Get an entire collection of beautiful, responsive themes for one low price."
+msgstr ""
+
+#: inc/admin/updater/theme-updater-admin.php:450
+msgid ""
+"The Theme Club grants you access to our collection of pixel-perfect "
+"WordPress themes, new theme releases and speedy, expert support for one "
+"year &mdash; a massive value!"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:22
+msgid "Atomic WordPress Theme"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Array"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:32
+msgid "Getting Started"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:33
+msgid "Enter your theme license key."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:34
+msgid "Enter your license key"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:35
+msgid "License Action"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:39
+#: inc/admin/updater/theme-updater.php:51
+msgid "License status is unknown."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:40
+msgid "Renew?"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:41
+msgid "unlimited"
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:42
+msgid ""
+"Theme updates have been enabled. You will receive a notice on your Themes "
+"page when a theme update is available."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:43
+msgid "Your license for Atomic expires %s."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:44
+msgid "You have %1$s / %2$s sites activated."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:45
+msgid "License key expired %s."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:46
+msgid "License key has expired."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:47
+msgid "License keys do not match."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:48
+msgid "License is inactive."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:49
+msgid "License key is disabled."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:50
+msgid "Site is inactive."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:52
+msgid ""
+"Updating this theme will lose any customizations you have made. 'Cancel' to "
+"stop, 'OK' to update."
+msgstr ""
+
+#: inc/admin/updater/theme-updater.php:53
+msgid ""
+"<strong>%1$s %2$s</strong> is available. <a href=\"%3$s\" "
+"class=\"thickbox\" title=\"%4s\">Check out what's new</a> or <a "
+"href=\"%5$s\"%6$s>update now</a>."
+msgstr ""
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr ""
+
+#: inc/customizer.php:85
+msgid "General Settings"
+msgstr ""
+
+#: inc/customizer.php:99
+msgid "Accent Color"
+msgstr ""
+
+#: inc/customizer.php:102
+msgid "Change the accent color of buttons and various typographical elements."
+msgstr ""
+
+#: inc/customizer.php:116
+msgid "Footer Tagline"
+msgstr ""
+
+#: inc/customizer.php:119
+msgid ""
+"Change the text that appears in the footer tagline at the bottom of your "
+"site."
+msgstr ""
+
+#: inc/customizer.php:143
+msgid "Header Title"
+msgstr ""
+
+#: inc/customizer.php:146
+msgid "Add a title to the homepage header area."
+msgstr ""
+
+#: inc/customizer.php:170
+msgid "Header Subtitle"
+msgstr ""
+
+#: inc/customizer.php:173
+msgid "Add a subtitle to the homepage header area."
+msgstr ""
+
+#: inc/customizer.php:203
+msgid "Homepage Header Height"
+msgstr ""
+
+#: inc/customizer.php:204
+msgid "Adjust the height of the homepage header title area."
+msgstr ""
+
+#: inc/customizer.php:229
+msgid "Header Image Opacity"
+msgstr ""
+
+#: inc/customizer.php:250
+msgid "Header Background Color"
+msgstr ""
+
+#: inc/customizer.php:253
+msgid ""
+"Change the background color of the header. Lower the Header Image Opacity "
+"setting to see the background color."
+msgstr ""
+
+#: inc/customizer.php:264
+msgid "Front Page"
+msgstr ""
+
+#: inc/customizer.php:284
+#. translators: %d is the front page section number
+msgid "Front Page Section %d Content"
+msgstr ""
+
+#: inc/customizer.php:285
+msgid ""
+"Select pages to feature in each area from the dropdowns. Empty sections "
+"will not be displayed."
+msgstr ""
+
+#: inc/customizer.php:313
+msgid "Number of portfolio items to show:"
+msgstr ""
+
+#: inc/customizer.php:345
+msgid "Number of testimonials to show:"
+msgstr ""
+
+#: inc/customizer.php:377
+msgid "Number of blog posts to show:"
+msgstr ""
+
+#: inc/customizer.php:408
+msgid "Number of services to show:"
+msgstr ""
+
+#: inc/customizer.php:413 inc/customizer.php:445
+msgid "Show All"
+msgstr ""
+
+#: inc/customizer.php:440
+msgid "Number of team members to show:"
+msgstr ""
+
+#: inc/customizer.php:559
+msgid " %1$s Theme by %2$s."
+msgstr ""
+
+#: inc/jetpack.php:91
+msgid "Load more"
+msgstr ""
+
+#: inc/template-tags.php:69
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: inc/template-tags.php:69
+msgid "(Edit)"
+msgstr ""
+
+#: inc/template-tags.php:80
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: inc/template-tags.php:164
+msgid "&rarr;"
+msgstr ""
+
+#: inc/template-tags.php:165
+msgid "&larr;"
+msgstr ""
+
+#: inc/template-tags.php:188
+msgid "Next:"
+msgstr ""
+
+#: inc/template-tags.php:189
+msgid "Next post:"
+msgstr ""
+
+#: inc/template-tags.php:191
+msgid "Previous:"
+msgstr ""
+
+#: inc/template-tags.php:192
+msgid "Previous post:"
+msgstr ""
+
+#: inc/template-tags.php:211 inc/template-tags.php:347
+msgid "Posts by %s"
+msgstr ""
+
+#: inc/template-tags.php:216
+msgid "All posts by %s"
+msgstr ""
+
+#: inc/template-tags.php:218
+msgid "Posted by %s"
+msgstr ""
+
+#: inc/template-tags.php:227
+msgid "All Posts"
+msgstr ""
+
+#: inc/template-tags.php:335
+msgid "Section %1$s Placeholder"
+msgstr ""
+
+#: inc/template-tags.php:355
+msgid "on"
+msgstr ""
+
+#: search.php:16
+msgid "Results for: %s"
+msgstr ""
+
+#: search.php:37 template-parts/content-none.php:24
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: searchform.php:11
+msgid "Search for:"
+msgstr ""
+
+#: searchform.php:13
+msgid "Search here..."
+msgstr ""
+
+#: searchform.php:16
+msgid "Search"
+msgstr ""
+
+#: template-parts/content-blog.php:64
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>. "
+"Read more about out how to set up the Blog section on your <a "
+"href=\"%2$s\">Getting Started page</a>."
+msgstr ""
+
+#: template-parts/content-menu-drawer.php:14
+msgid "Menu"
+msgstr ""
+
+#: template-parts/content-menu-drawer.php:18 woocommerce/woo-functions.php:32
+msgid "Close"
+msgstr ""
+
+#: template-parts/content-meta.php:18
+msgid "Posted by:"
+msgstr ""
+
+#: template-parts/content-meta.php:27 template-parts/content-meta.php:47
+msgid "Category:"
+msgstr ""
+
+#: template-parts/content-meta.php:38 template-parts/content-meta.php:62
+msgid "Tag:"
+msgstr ""
+
+#: template-parts/content-none.php:13
+msgid "Nothing Found"
+msgstr ""
+
+#: template-parts/content-none.php:19
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: template-parts/content-none.php:29
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: template-parts/content-page.php:26 template-parts/content.php:71
+msgid "Pages:"
+msgstr ""
+
+#: template-parts/content-portfolio.php:75
+msgid ""
+"Ready to publish your first portfolio item? <a href=\"%1$s\">Get started "
+"here</a>. Read more about out how to set up the Portfolio section on your "
+"<a href=\"%2$s\">Getting Started page</a>."
+msgstr ""
+
+#: template-parts/content-portfolio.php:79
+msgid "No portfolio items have been added yet."
+msgstr ""
+
+#: template-parts/content-services.php:61
+msgid ""
+"Ready to publish your first service? <a href=\"%1$s\">Get started here</a>. "
+"Read more about out how to set up the Services section on your <a "
+"href=\"%2$s\">Getting Started page</a>."
+msgstr ""
+
+#: template-parts/content-services.php:65
+msgid "No services have been added yet."
+msgstr ""
+
+#: template-parts/content-team.php:55
+msgid ""
+"Ready to publish your first team member? <a href=\"%1$s\">Get started "
+"here</a>. Read more about out how to set up the Team section on your <a "
+"href=\"%2$s\">Getting Started page</a>."
+msgstr ""
+
+#: template-parts/content-team.php:59
+msgid "No team members have been added yet."
+msgstr ""
+
+#: template-parts/content-testimonials.php:73
+msgid ""
+"Ready to publish your first testimonial? <a href=\"%1$s\">Get started "
+"here</a>. Read more about out how to set up the Testimonial section on your "
+"<a href=\"%2$s\">Getting Started page</a>."
+msgstr ""
+
+#: template-parts/content-testimonials.php:77
+msgid "No testimonials have been added yet."
+msgstr ""
+
+#: templates/template-homepage.php:34
+msgid "No sections available to display."
+msgstr ""
+
+#: templates/template-homepage.php:36
+msgid "<a class=\"button\" href=\"%s\">Set up your homepage sections &rarr;</a>"
+msgstr ""
+
+#: woocommerce/woo-functions.php:15
+msgid "WooCommerce Shop Archive Sidebar"
+msgstr ""
+
+#: woocommerce/woo-functions.php:17
+msgid "Widgets added here will appear on the sidebar of WooCommerce shop page."
+msgstr ""
+
+#: woocommerce/woo-functions.php:32
+msgid "Expand"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Atomic"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+msgid "https://arraythemes.com/themes/atomic-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Atomic makes it easy to build a bold business or portfolio site with "
+"beautiful templates for teams, services, testimonials, portfolio, blog "
+"posts and more."
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://arraythemes.com/"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Blog"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Page Builder"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Full Width"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Homepage"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Services"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Team Members"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Testimonials"
+msgstr ""
+
+#: comments.php:32
+msgctxt "comments title"
+msgid "One Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: functions.php:294
+#. Translators: If there are characters in your language that are not supported
+#. by these fonts, translate this to 'off'. Do not translate into your own
+#. language.
+msgctxt "Nunito font: on or off"
+msgid "on"
+msgstr ""

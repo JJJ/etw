@@ -1,0 +1,308 @@
+# Translation of WordPress.com - Themes - Publisher in French (France)
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-09-14 16:51:58+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: fr\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "on"
+
+#: inc/customizer.php:275
+msgid "GitHub URL"
+msgstr "URL Github"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "Lire la Suite"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "Page %s"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr "Avec Publisher, organisez un album éclectique de photos, de vidéos, de fichiers audio, etc. Avec sa mise en page adaptable de style maçonnerie, Publisher a de l’allure sur vos appareils mobiles comme sur votre PC."
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "Plein écran"
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Lire la suite <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: single.php:87
+msgid "Tags"
+msgstr "Tags"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "Derniers Articles par %s"
+
+#: single.php:81
+msgid "Category"
+msgstr "CATÉGORIE"
+
+#: single.php:40
+msgid "Details"
+msgstr "Détails"
+
+#: single.php:63
+msgid "About %s"
+msgstr "À propos de %s"
+
+#: single.php:39
+msgid "Author"
+msgstr "Auteur"
+
+#: single.php:37
+msgid "Comments"
+msgstr "commentaires"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Méta"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "Recherche"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "Résultats de recherche pour : %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "Permalien vers %s"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "Article suivant"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "Article précédent"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "Navigation des articles"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "URL RSS"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "Adresse Email"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "URL LinkedIn"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "URL Vimeo"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "YouTube URL"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "URL Google+"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "URL Pinterest"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "URL Tumblr"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "URL Dribbble"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "URL Flickr"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "URL Instagram"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "URL Facebook"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "Liens Média sociaux"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "URL Twitter"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "Désactiver"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "Activer"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "Options du thème"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "Aller au contenu principal"
+
+#: header.php:28
+msgid "Menu"
+msgstr "Menu"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "Votre commentaire est en attente de modération."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s à %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "Sidebar"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "Menu principal"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "Modifier"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Thème %1$s par %2$s."
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "Fièrement propulsé par %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "Articles Pr&eacute;c&eacute;dents"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "Articles Plus R&eacute;cents"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Commentaires Plus Récents &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Joindre la conversation"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Commentaires Pr&eacute;c&eacute;dents"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "1 commentaire"
+msgstr[1] "%1$s commentaires"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "Lien vers l&rsquo;image originale"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "La taille originale est de %s pixels"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "Archives"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "Liens"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "Citations"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "Vidéos"
+
+#: archive.php:47
+msgid "Images"
+msgstr "Images"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "Apart&eacute;s"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "Ann&eacute;e: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "Mois: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "Jour: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "Auteur : %s"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "404 &mdash; Page Introuvable"

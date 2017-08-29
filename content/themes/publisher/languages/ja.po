@@ -1,0 +1,335 @@
+# Translation of WordPress.com - Themes - Publisher in Japanese
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-09-04 03:23:51+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: ja_JP\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "on"
+
+#: inc/customizer.php:275
+msgid "GitHub URL"
+msgstr "Github URL"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "続きを読む"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "ページ %s"
+
+#: inc/customizer.php:57
+msgid "Featured Image as Post Background"
+msgstr "アイキャッチ画像を投稿の背景として使う"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "全幅"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr "Publisher を使用すると、写真、動画、音声などのさまざまな要素を含んだスクラップブックを作成できます。レスポンシブな Masonry スタイルのレイアウトを特徴とする Publisher は、モバイルデバイスでもデスクトップと同じように美しく表示されます。"
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "続きを読む <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-icons.php:120
+msgid "Type here and press enter."
+msgstr "ここに入力後 Enter キーを押してください。"
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "%s のコメントへのパーマリンク"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: single.php:87
+msgid "Tags"
+msgstr "タグ"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "%s の最新投稿"
+
+#: single.php:81
+msgid "Category"
+msgstr "カテゴリー"
+
+#: single.php:40
+msgid "Details"
+msgstr "説明"
+
+#: single.php:63
+msgid "About %s"
+msgstr "%s について"
+
+#: single.php:39
+msgid "Author"
+msgstr "作成者"
+
+#: single.php:37
+msgid "Comments"
+msgstr "コメント"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "メタ情報"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "検索"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "検索結果: %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "%s へのパーマリンク"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "次の投稿へ"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "過去の投稿へ"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "投稿ナビゲーション"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "RSS の URL"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "メールアドレス"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "LinkedIn URL"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "Vimeo URL"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "YouTube URL"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "Google+ URL"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "Pinterest URL"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "Tumblr URL"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "Dribbble URL"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "Flickr URL"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "Facebook URL"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "ソーシャルメディアリンク"
+
+#: inc/customizer.php:79
+msgid "Add links to your various social media sites. These icons will appear in the header."
+msgstr "以下からロゴと SNS リンクを追加してください。ヘッダーにアイコンが表示されます。"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "Twitter URL"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "無効化"
+
+#: inc/customizer.php:33
+msgid "Add your logo and social media links below."
+msgstr "以下からロゴと SNS リンクを追加してください。"
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "ロゴのアップロード"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "有効"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "テーマオプション"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "コンテンツへ移動"
+
+#: header.php:28
+msgid "Menu"
+msgstr "メニュー"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "あなたのコメントは承認待ちです。"
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "サイドバー"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "メインメニュー"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "編集"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Theme: %1$s by %2$s."
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "Proudly powered by %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "過去の投稿"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "新しい投稿"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "コメントは受け付けていません。"
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "新しいコメント &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "会話に参加しませんか"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "%1$s件のコメント"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; 古いコメント"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "フルサイズの画像にリンク"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "フルサイズ: %sピクセル"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "アーカイブ"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "リンク"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "引用"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "動画"
+
+#: archive.php:47
+msgid "Images"
+msgstr "画像"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "アサイド"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "年別アーカイブ: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "月別アーカイブ: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "日別アーカイブ: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "作成者: %s"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "404 &mdash; ページが見つかりません"
+
+#: 404.php:23
+msgid "It looks like nothing was found at this location. Try using the navigation menu or the search box to locate the page you were looking for."
+msgstr "コンテンツが見つかりません。ナビゲーションメニューまたは検索ボックスをお試しください。"

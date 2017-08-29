@@ -1,0 +1,269 @@
+/*--------------------------------------------------------------
+Typographic styles for the post editor
+--------------------------------------------------------------*/
+
+.mceContentBody {
+	color: #55626D;
+	font-size: 20px;
+	line-height: 1.6;
+	font-family: 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	padding: 0 1%;
+	max-width: 756px;
+}
+
+.mceContentBody h1,
+.mceContentBody h2,
+.mceContentBody h3,
+.mceContentBody h4,
+.mceContentBody h5,
+.mceContentBody h6 {
+	clear: both;
+	color: #383F49;
+	font-family: 'Lato', 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-weight: 700;
+	line-height: 1.2;
+	margin-bottom: 3%;
+}
+
+.mceContentBody h1 {
+    font-size: 50px;
+}
+
+.mceContentBody h2 {
+    font-size: 40px;
+}
+
+.mceContentBody h3 {
+    font-size: 30px;
+}
+
+.mceContentBody h4 {
+    font-size: 20px;
+}
+
+.mceContentBody h5 {
+    font-size: 16px;
+}
+
+.mceContentBody h6 {
+    font-size: 14px;
+}
+
+hr {
+	background-color: transparent;
+	border: 0;
+	border-bottom: dotted 2px #e4e4e4;
+	height: 2px;
+	margin: 5% 0;
+}
+
+.mceContentBody blockquote {
+	position: relative;
+	margin: 0 0 4% 0;
+	z-index: 1;
+}
+
+.mceContentBody blockquote p {
+	color: #383F49;
+	font-family: 'Lato', 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 28px;
+	font-weight: 700;
+	line-height: 1.6;
+	margin: 1em 0 0 0;
+	padding-top: 20px;
+	position: relative;
+}
+
+.mceContentBody blockquote p:before {
+	content: " ";
+	width: 40px;
+	height: 4px;
+	background: #383F49;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+@media (max-width: 500px) {
+	.mceContentBody blockquote p {
+		font-size: 22px;
+		line-height: 1.4;
+	}
+}
+
+.mceContentBody ul, .mceContentBody ol {
+	margin: 0 0 5% 25px;
+	padding-left: 0;
+}
+
+.mceContentBody ul { list-style: square; }
+
+.mceContentBody ol { list-style: decimal }
+
+.mceContentBody ul ul,
+.mceContentBody ol ol,
+.mceContentBody ul ol,
+.mceContentBody ol ul {
+	margin: .6em 0 0 1.5em;
+}
+
+.mceContentBody img {
+	max-width: 100%;
+	height: auto;
+}
+
+.highlight {
+	background: #fff198;
+	color: #404040;
+}
+
+/*--------------------------------------------------------------
+Table Styles
+--------------------------------------------------------------*/
+
+table {
+	font-size: 18px;
+	margin-bottom: 5%;
+	padding: 0;
+	width: 100%;
+}
+
+table thead {
+	background: #f7f7f7;
+
+	th { font-weight: bold }
+}
+
+table td, #content table th { padding: 10px }
+
+table td { border-bottom: solid 1px #f7f7f7 }
+
+table tr:last-child td { border-bottom: none }
+
+table tr:nth-child(even) { background: #f7f7f7 }
+
+/*--------------------------------------------------------------
+Code Styles
+--------------------------------------------------------------*/
+
+pre {
+	background: #F5F5F5;
+	font-family: "Courier 10 Pitch", Courier, monospace;
+	font-size: 18px;
+	line-height: 1.6;
+	margin-bottom: 1.6em;
+	max-width: 100%;
+	overflow: auto;
+	padding: 1.6em;
+}
+code, kbd, tt, var {
+	font: 15px Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+}
+
+/*--------------------------------------------------------------
+Alignments
+--------------------------------------------------------------*/
+
+.alignleft {
+	display: inline;
+	float: left;
+	margin: .5em 2em 1.5em 0;
+}
+
+.alignright {
+	display: inline;
+	float: right;
+	margin: .5em 0 1.5em 2em;
+}
+
+.aligncenter {
+	clear: both;
+	display: block;
+	margin: .5em auto 1.5em auto;
+}
+
+.alignnone, a img.alignnone {
+    margin: .5em 2em 1.5em 0;
+}
+
+.aligncenter, div.aligncenter {
+    display: block;
+    margin: .5em auto 1.5em auto;
+}
+
+.alignright, a img.alignright {
+    float: right;
+    margin: .5em 0 1.5em 2em;
+}
+
+.alignleft, a img.alignleft {
+    float: left;
+    margin: .5em 2em 1.5em 0;
+}
+
+.aligncenter, a img.aligncenter {
+    display: block;
+    margin: .5em auto 1.5em auto;
+}
+
+.wp-caption {
+	background: none;
+	border: none;
+    margin: .5em 0 1.5em 0;
+	max-width: 100%;
+	padding: 0;
+}
+
+.wp-caption-dd {
+	color: #8E969E;
+	font-family: 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 15px;
+	margin-top: 1em;
+	text-align: left;
+}
+
+.wp-caption img[class*="wp-image-"] {
+	display: block;
+	margin: 0;
+	max-width: 100%;
+}
+
+.wp-caption-text, .gallery-caption {
+	color: #8E969E;
+	font-family: 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 15px;
+	font-style: normal;
+	padding: 10px 0 0 0;
+	width: 100%;
+}
+
+.wp-caption.alignnone {
+    margin: .5em 2em 1.5em 0;
+}
+
+.wp-caption.alignleft {
+    margin: .5em 2em 1.5em 0;
+}
+
+.wp-caption.alignright {
+    margin: .5em 0 1.5em 2em;
+}
+
+.pull-right {
+	float: right;
+	margin: 1% 0 3% 5%;
+	text-align: right;
+}
+.pull-left {
+	float: left;
+	margin: 0 5% 3% 0;
+	text-align: left;
+}
+.pull-right, .pull-left {
+	color: #383F49;
+	font-family: 'Lato', 'Arimo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 24px;
+	font-weight: bold;
+	line-height: 1.4;
+	width: 34%;
+}

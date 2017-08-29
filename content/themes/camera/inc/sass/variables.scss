@@ -1,0 +1,32 @@
+/* These variables are used througout style.scss. */
+
+/* Body font styles */
+$sans: 'Noto Sans', 'Helvetica', sans-serif;
+
+/* Color variables */
+$black: #47525C;
+$lightgray: #82909D;
+
+/* Transition effect used througout Camera */
+@mixin transition {
+	transition: .07s ease-in-out;
+}
+
+/* Responsive media query mixins */
+@mixin viewport($point) {
+	@if $point == desktop {
+		@media ( max-width: 1250px ) { @content; }
+	}
+	@else if $point == tablet {
+		@media ( max-width: 800px )  { @content; }
+	}
+	@else if $point == tablet-only {
+		@media ( min-width: 500px ) and ( max-width: 768px ) { @content; }
+	}
+	@else if $point == mobile {
+		@media ( max-width: 500px )  { @content; }
+	}
+	@else if $point == admin-bar {
+		@media ( min-width: 769px ) and ( max-width: 782px ) { @content; }
+	}
+}

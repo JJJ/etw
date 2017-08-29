@@ -1,0 +1,61 @@
+.navigation-content {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.navigation-content .navigation-inner {
+    bottom: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.touch .navigation-content .navigation-inner {
+    -webkit-overflow-scrolling: touch;
+    -webkit-transform: translate3d(0,0,0);
+}
+
+.navigation-content .navigation-inner:focus {
+    outline: none;
+}
+
+.navigation-content .navigation-inner::-webkit-scrollbar {
+  visibility: hidden;
+}
+
+.has-scrollbar .navigation-inner::-webkit-scrollbar {
+  visibility: visible;
+}
+
+.navigation-content > .pane {
+    -moz-transition: all 0.2s ease 0s;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.25);
+    border-radius: 5px 5px 5px 5px;
+    bottom: 10px;
+    opacity: 0.01;
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    width: 8px;
+}
+
+.navigation-content > .pane > .slider {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+    border-radius: 3px 3px 3px 3px;
+    margin: 0 1px;
+    position: relative;
+}
+
+.navigation-content:hover > .pane, .pane.active, .pane.flashed {
+    opacity: 0.99;
+}
+
+.overthrow-enabled .overthrow {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}

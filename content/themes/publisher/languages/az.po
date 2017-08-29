@@ -1,0 +1,316 @@
+# Translation of WordPress.com - Themes - Publisher in Azerbaijani
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-06-24 12:38:03+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: az\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "açıq"
+
+#: inc/customizer.php:275
+msgid "GitHub URL"
+msgstr "Github URL"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "Davamını Oxu"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "Səhifə %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "Tam Genişlik"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Oxumağa davam et <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-icons.php:120
+msgid "Type here and press enter."
+msgstr "Buraya yaz və Daxil et klavişinə bas."
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "%s şərhi üçün daimi bağlantı"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: single.php:87
+msgid "Tags"
+msgstr "Etiketlər"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "%s tərəfindən yazılan ən son yazılar"
+
+#: single.php:81
+msgid "Category"
+msgstr "KATEQORİYA"
+
+#: single.php:40
+msgid "Details"
+msgstr "Detallar"
+
+#: single.php:63
+msgid "About %s"
+msgstr "%s haqqında"
+
+#: single.php:39
+msgid "Author"
+msgstr "Müəllif"
+
+#: single.php:37
+msgid "Comments"
+msgstr "şərhlər"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Meta"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "Axtar"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr " %s üçün Axtarışın Nəticələri:"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "%s üçün daimi bağlantı"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "Sonrakı yazı"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "Öncəki yazı"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "Yazı naviqasiyaları"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "RSS URL"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "E-poçt ünvanı"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "LinkedIn bağlantısı"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "Vimeo URL"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "YouTube bağlantısı"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "Google+ URL"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "Pinterest URL"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "Tumblr URL"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "Dribbble URL"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "Flickr bağlantısı"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "Facebook URL"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "Sosial Media Bağlantıları"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "Twitter URL"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "Deaktivasiya et"
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "Loqo yükləndi"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "Aktivləşdir"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "Mövzu parametrləri"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "Mühtəviyyata keç"
+
+#: header.php:28
+msgid "Menu"
+msgstr "Menyu"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "Şərhiniz yoxlama gözləyir."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s tarixində, saat %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "Yan menyu"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "Əsas menyu"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "Redaktə et"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Mövzu: %1$s tərəfindən %2$s."
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "%s qürurla təqdim edər"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "Daha köhnə yazılar"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "Yeni yazılar"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Şərh üçün bağlıdır."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Yeni şərhlər &rarr;"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "1 şərh"
+msgstr[1] "%1$s şərh"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Əski şərhlər"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "Tam ölçülü təsvirə bağlantı"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "Tam ölçü %s piksel"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "Arxivlər"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "Bağlantılar"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "Sitatlar"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "Videolar"
+
+#: archive.php:47
+msgid "Images"
+msgstr "Təsvirlər"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "Kənarlar"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "Ay: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "Ay: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "Gün: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "Müəllif: %s"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "404 &mdash; Səhifə Tapılmadı"

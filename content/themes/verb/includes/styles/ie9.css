@@ -1,0 +1,14 @@
+.block-post:hover .box-wrap {
+	background: #333;
+	background: rgba(52,52,52, .8);
+}
+
+#respond label {
+    position: relative !important;
+    left: 0 !important;
+    margin-left: 0px !important;
+}
+
+#respond .required {
+	display: block;
+}

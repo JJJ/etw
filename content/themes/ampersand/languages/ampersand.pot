@@ -1,0 +1,410 @@
+# Copyright (C) 2016 Array
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ampersand 2.3.1\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/theme/ampersand\n"
+"POT-Creation-Date: 2016-01-01 03:13:15+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: 404.php:17
+msgid ""
+"It looks like nothing was found at this location. Try using the navigation "
+"menu or the search box to locate the page you were looking for."
+msgstr ""
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr ""
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr ""
+
+#: format-standard.php:14 full-width.php:20 homepage.php:36 search.php:22
+#: single.php:18 template-portfolio-item.php:80 template-portfolio.php:60
+#: template-portfolio.php:70
+msgid "Permalink to %s"
+msgstr ""
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "Permalink to %s comments"
+msgstr ""
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "No Comments"
+msgstr ""
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "1 Comment"
+msgstr ""
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "% Comments"
+msgstr ""
+
+#: format-standard.php:26 homepage.php:67 inc/customizer.php:122 search.php:34
+#: template-portfolio.php:70
+msgid "Read More"
+msgstr ""
+
+#: full-width.php:26 page.php:21 single.php:30 template-portfolio-item.php:20
+msgid "Edit"
+msgstr ""
+
+#: functions.php:49
+msgid "Primary Menu"
+msgstr ""
+
+#: functions.php:172
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr ""
+
+#: functions.php:231
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:240
+msgid "Footer Left"
+msgstr ""
+
+#: functions.php:249
+msgid "Footer Center"
+msgstr ""
+
+#: functions.php:258
+msgid "Footer Right"
+msgstr ""
+
+#: functions.php:332
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr ""
+
+#. translators: 1: date, 2: time
+#: functions.php:340
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: functions.php:353
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: functions.php:385
+msgid "Page %s"
+msgstr ""
+
+#: header.php:36
+msgid "Menu"
+msgstr ""
+
+#: header.php:37
+msgid "Skip to content"
+msgstr ""
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr ""
+
+#: inc/customizer.php:85
+msgid "Logo Upload"
+msgstr ""
+
+#: inc/customizer.php:99
+msgid "Homepage Header Subtitle Text"
+msgstr ""
+
+#: inc/customizer.php:114
+msgid "Homepage Header Button Link"
+msgstr ""
+
+#: inc/customizer.php:128
+msgid "Homepage Header Button Text"
+msgstr ""
+
+#: inc/customizer.php:145
+msgid "Header Background Effect"
+msgstr ""
+
+#: inc/customizer.php:149
+msgid "Enable"
+msgstr ""
+
+#: inc/customizer.php:150
+msgid "Disable"
+msgstr ""
+
+#: inc/customizer.php:164
+msgid "Social Media Links"
+msgstr ""
+
+#: inc/customizer.php:167
+msgid ""
+"Add links to your various social media sites. These icons will appear in the "
+"footer."
+msgstr ""
+
+#: inc/customizer.php:182
+msgid "Twitter URL"
+msgstr ""
+
+#: inc/customizer.php:197
+msgid "Facebook URL"
+msgstr ""
+
+#: inc/customizer.php:212
+msgid "Instagram URL"
+msgstr ""
+
+#: inc/customizer.php:227
+msgid "Tumblr URL"
+msgstr ""
+
+#: inc/customizer.php:242
+msgid "Dribbble URL"
+msgstr ""
+
+#: inc/customizer.php:257
+msgid "Flickr URL"
+msgstr ""
+
+#: inc/customizer.php:272
+msgid "Pinterest URL"
+msgstr ""
+
+#: inc/customizer.php:287
+msgid "Google+ URL"
+msgstr ""
+
+#: inc/customizer.php:302
+msgid "Vimeo URL"
+msgstr ""
+
+#: inc/customizer.php:317
+msgid "YouTube URL"
+msgstr ""
+
+#: inc/customizer.php:332
+msgid "LinkedIn URL"
+msgstr ""
+
+#: inc/customizer.php:347
+msgid "RSS URL"
+msgstr ""
+
+#: inc/customizer.php:362
+msgid "Hide Site Tagline"
+msgstr ""
+
+#: inc/template-tags.php:40
+msgid "Post navigation"
+msgstr ""
+
+#: inc/template-tags.php:44
+msgid "Previous Post"
+msgstr ""
+
+#: inc/template-tags.php:45
+msgid "Next Post"
+msgstr ""
+
+#: inc/template-tags.php:50 template-portfolio.php:79
+msgid "Older posts"
+msgstr ""
+
+#: inc/template-tags.php:54 template-portfolio.php:80
+msgid "Newer posts"
+msgstr ""
+
+#: inc/wpcom.php:68
+msgid "Proudly powered by %s"
+msgstr ""
+
+#: inc/wpcom.php:70
+msgid "Theme: %1$s by %2$s."
+msgstr ""
+
+#: search.php:41
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with "
+"different keywords."
+msgstr ""
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr ""
+
+#: sidebar.php:13
+msgid "Archives"
+msgstr ""
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr ""
+
+#: single.php:34
+msgid "Category:"
+msgstr ""
+
+#: single.php:40
+msgid "Tags:"
+msgstr ""
+
+#: single.php:46
+msgid "Previous Post:"
+msgstr ""
+
+#: single.php:48
+msgid "Next Post:"
+msgstr ""
+
+#: template-icons.php:31
+msgid "Twitter"
+msgstr ""
+
+#: template-icons.php:35
+msgid "Facebook"
+msgstr ""
+
+#: template-icons.php:39
+msgid "Instagram"
+msgstr ""
+
+#: template-icons.php:43
+msgid "Tumblr"
+msgstr ""
+
+#: template-icons.php:47
+msgid "Dribbble"
+msgstr ""
+
+#: template-icons.php:51
+msgid "Flickr"
+msgstr ""
+
+#: template-icons.php:55
+msgid "Pinterest"
+msgstr ""
+
+#: template-icons.php:59
+msgid "Google+"
+msgstr ""
+
+#: template-icons.php:63
+msgid "Vimeo"
+msgstr ""
+
+#: template-icons.php:67
+msgid "YouTube"
+msgstr ""
+
+#: template-icons.php:71
+msgid "LinkedIn"
+msgstr ""
+
+#: template-icons.php:75
+msgid "RSS"
+msgstr ""
+
+#: template-titles.php:17
+msgid "Category: "
+msgstr ""
+
+#: template-titles.php:20
+msgid "Tag: "
+msgstr ""
+
+#: template-titles.php:27
+msgid "Author: %s"
+msgstr ""
+
+#: template-titles.php:35
+msgid "Day: %s"
+msgstr ""
+
+#: template-titles.php:38
+msgid "Month: %s"
+msgstr ""
+
+#: template-titles.php:41
+msgid "Year: %s"
+msgstr ""
+
+#: template-titles.php:44
+msgid "404 - Page Not Found"
+msgstr ""
+
+#: template-titles.php:47
+msgid "Search Results for: %s"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "Ampersand"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "https://array.is/themes/ampersand-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid ""
+"Ampersand is a portfolio style theme with an empasis on beautiful, legible "
+"typography and graceful resizing for mobile browsing."
+msgstr ""
+
+#. Author of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "Array"
+msgstr ""
+
+#. Author URI of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "https://array.is"
+msgstr ""
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/full-width.php
+msgid "Full Width"
+msgstr ""
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/homepage.php
+msgid "Homepage"
+msgstr ""
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio-item.php
+msgid "Portfolio Item"
+msgstr ""
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio.php
+msgid "Portfolio"
+msgstr ""

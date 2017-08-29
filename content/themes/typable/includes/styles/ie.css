@@ -1,0 +1,36 @@
+.search-toggle {
+	visibility: visible !important;
+	width: auto !important;
+}
+
+.search-toggle:before {
+	display: none !important;
+}
+
+.logo-text, .logo-image {
+	margin-bottom: 60px !important\0/;
+}
+
+.posts {
+	background: #fff\0/;
+}
+
+.box {
+	width: 60%\0/;
+	margin: 0 auto\0/;
+	min-width: 720px;
+}
+
+.format-quote .box {
+	padding: 170px 0 150px 0 !important\0/;
+}
+
+#respond label {
+    position: relative !important;
+    left: 0 !important;
+    margin-left: 0px !important;
+}
+
+#respond .required {
+	display: block;
+}

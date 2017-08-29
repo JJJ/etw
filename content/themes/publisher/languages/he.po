@@ -1,0 +1,304 @@
+# Translation of WordPress.com - Themes - Publisher in Hebrew
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2017-01-30 08:55:24+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.3.0-beta.1\n"
+"Language: he_IL\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Arimo, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:144
+msgctxt "Arimo font: on or off"
+msgid "on"
+msgstr "off"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "קרא עוד"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "עמוד %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "רוחב מלא"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr "<span dir=rtl>צור אוסף אקלקטי של תצלומים, סרטוני וידאו, קטעי שמע ועוד - בעזרת Publisher.</span> <span dir=rtl>Publisher כולל פריסה בסגנון אבני-בניין הניתנת להתאמה, ונראה במכשיר הנייד לא פחות טוב מאשר בשולחן העבודה.</span>"
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "להמשיך לקרוא <span class=\"meta-nav\">&larr;</span>"
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "קשיר ישיר לתגובות על %s"
+
+#: single.php:87
+msgid "Tags"
+msgstr "תגיות"
+
+#: single.php:81
+msgid "Category"
+msgstr "קטגוריה"
+
+#: single.php:63
+msgid "About %s"
+msgstr "אודות %s"
+
+#: single.php:40
+msgid "Details"
+msgstr "פרטים"
+
+#: single.php:39
+msgid "Author"
+msgstr "מאת"
+
+#: single.php:37
+msgid "Comments"
+msgstr "תגובות"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "כלים"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "חיפוש"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "תוצאות החיפוש: %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "קישור קבוע לרשומה %s"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "הרשומה הבאה"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "הרשומה הקודמת"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "ניווט ברשומות"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "כתובת דואר אלקטרוני"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "כתובת RSS"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "<span dir=rtl>כתובת אתר LinkedIn</span>"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "קישור YouTube"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "כתובת Vimeo"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "קישור גוגל פלוס"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "קישור Pinterest"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "<span dir=rtl>כתובת אתר Flickr</span>"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "כתובת Dribble"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "כתובת Tumblr"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "<span dir=rtl>כתובת אתר Instagram</span>"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "כתובת פייסבוק"
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "כתובת URL של Twitter"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "קישורים למדיה חברתית"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "לכבות"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "ערכה פעילה"
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "העלאת לוגו"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "אפשרויות"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "דילוג לתוכן"
+
+#: header.php:28
+msgid "Menu"
+msgstr "תפריט"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "התגובה ממתינה לאישור."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s בשעה %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr " סרגל צדדי"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "תפריט ראשי"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "עריכה"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "ערכת עיצוב: %1$s של %2$s"
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "פועל על %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "פוסטים ישנים יותר"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "פוסטים חדשים יותר"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "סגור לתגובות."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "תגובות חדשות יותר &larr;"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&rarr; תגובות ישנות יותר"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "תגובה אחת"
+msgstr[1] "%1$s תגובות"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "להצטרף לשיחה!"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "קישור לתמונה בגודל מלא"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "הממדים המלאים הם %s פיקסלים"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "ארכיון"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "קישורים"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "ציטוטים"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "סרטונים"
+
+#: archive.php:47
+msgid "Images"
+msgstr "תמונות"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "קצרצרים"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "שנה: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "חודש: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "יום: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "מחבר: %s"

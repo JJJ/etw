@@ -1,0 +1,328 @@
+# Translation of WordPress.com - Themes - Publisher in Portuguese (Brazil)
+# This file is distributed under the same license as the WordPress.com - Themes - Publisher package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-23 13:01:51+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: pt_BR\n"
+"Project-Id-Version: WordPress.com - Themes - Publisher\n"
+
+#: templates/template-titles.php:28
+msgid "Read More"
+msgstr "Ler mais"
+
+#: functions.php:276
+msgid "Page %s"
+msgstr "Página %s"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/publisher/style.css
+msgid "Curate an eclectic scrapbook of photos, videos, audio and more with Publisher. Featuring a responsive, masonry-style layout, Publisher looks just as good on your mobile device as it does on the desktop."
+msgstr "Promova um álbum eclético de fotos, vídeos, áudio e outros recursos com o Publisher. Apresentando um layout interessante e no estilo alvenaria, a aparência do Publisher em seu dispositivo é tão boa quanto no desktop."
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/publisher/full-width.php
+msgid "Full Width"
+msgstr "Comprimento Total"
+
+#: templates/template-titles.php:41
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Continuar lendo <span class=\"meta-nav\">&rarr;</span>"
+
+#: templates/template-icons.php:120
+msgid "Type here and press enter."
+msgstr "Escreva aqui e pressione Enter."
+
+#: templates/template-block.php:38
+msgid "%"
+msgstr "%"
+
+#: templates/template-block.php:38
+msgid "1"
+msgstr "1"
+
+#: templates/template-block.php:38
+msgid "Permalink to %s comments"
+msgstr "Link permanente para %s comentários"
+
+#: templates/template-block.php:38
+msgid "0"
+msgstr "0"
+
+#: single.php:87
+msgid "Tags"
+msgstr "Tags"
+
+#: single.php:71
+msgid "Latest Posts By %s"
+msgstr "Últimos Posts Por %s"
+
+#: single.php:81
+msgid "Category"
+msgstr "CATEGORIA"
+
+#: single.php:40
+msgid "Details"
+msgstr "Detalhes"
+
+#: single.php:63
+msgid "About %s"
+msgstr "Sobre %s"
+
+#: single.php:39
+msgid "Author"
+msgstr "Autor"
+
+#: single.php:37
+msgid "Comments"
+msgstr "comentários"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Meta"
+
+#: searchform.php:11 searchform.php:13 templates/template-icons.php:32
+#: templates/template-icons.php:119
+msgid "Search"
+msgstr "Pesquisa"
+
+#: search.php:13
+msgid "Search Results for: %s"
+msgstr "Resultados da pesquisa por: %s"
+
+#: page.php:18 post-formats/format-image.php:15
+#: post-formats/format-standard.php:15 templates/template-block.php:45
+msgid "Permalink to %s"
+msgstr "Ligação permanente para %s"
+
+#: inc/template-tags.php:49
+msgid "<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> Older posts"
+msgstr "<span class=\"meta-nav\"><i class=\"fa fa-chevron-left\"></i></span> Posts antigos"
+
+#: inc/template-tags.php:53
+msgid "Newer posts <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></span>"
+msgstr "Posts recentes <span class=\"meta-nav\"><i class=\"fa fa-chevron-right\"></i></span>"
+
+#: inc/template-tags.php:44
+msgid "Next Post"
+msgstr "Post seguinte"
+
+#: inc/template-tags.php:43
+msgid "Previous Post"
+msgstr "Post anterior"
+
+#: inc/template-tags.php:39
+msgid "Post navigation"
+msgstr "Navegação de Posts"
+
+#: inc/customizer.php:247
+msgid "RSS URL"
+msgstr "URL do feed de RSS"
+
+#: inc/customizer.php:261
+msgid "Email Address"
+msgstr "Endereço de E-mail"
+
+#: inc/customizer.php:233
+msgid "LinkedIn URL"
+msgstr "URL do LinkedIn"
+
+#: inc/customizer.php:205
+msgid "Vimeo URL"
+msgstr "URL do Vimeo"
+
+#: inc/customizer.php:219
+msgid "YouTube URL"
+msgstr "URL do YouTube"
+
+#: inc/customizer.php:191
+msgid "Google+ URL"
+msgstr "URL do Google+"
+
+#: inc/customizer.php:177
+msgid "Pinterest URL"
+msgstr "URL do Pinterest"
+
+#: inc/customizer.php:135
+msgid "Tumblr URL"
+msgstr "URL do Tumblr"
+
+#: inc/customizer.php:149
+msgid "Dribbble URL"
+msgstr "URL do Dribbble"
+
+#: inc/customizer.php:163
+msgid "Flickr URL"
+msgstr "URL do Flickr"
+
+#: inc/customizer.php:121
+msgid "Instagram URL"
+msgstr "URL do Instagram"
+
+#: inc/customizer.php:107
+msgid "Facebook URL"
+msgstr "URL do Facebook"
+
+#: inc/customizer.php:76
+msgid "Social Media Links"
+msgstr "Links de Mídias Sociais"
+
+#: inc/customizer.php:79
+msgid "Add links to your various social media sites. These icons will appear in the header."
+msgstr "Adicione links para seus sites de mídia social. Eles aparecerão como ícones no seu cabeçalho."
+
+#: inc/customizer.php:93
+msgid "Twitter URL"
+msgstr "URL do Twitter"
+
+#: inc/customizer.php:62
+msgid "Disable"
+msgstr "Desativar"
+
+#: inc/customizer.php:33
+msgid "Add your logo and social media links below."
+msgstr "Adicione seu logo e links de mídias sociais abaixo."
+
+#: inc/customizer.php:42
+msgid "Logo Upload"
+msgstr "Enviar Logo"
+
+#: inc/customizer.php:61
+msgid "Enable"
+msgstr "Ativar"
+
+#: inc/customizer.php:32
+msgid "Theme Options"
+msgstr "Opções do tema"
+
+#: header.php:29
+msgid "Skip to content"
+msgstr "Pular para o conteúdo"
+
+#: header.php:28
+msgid "Menu"
+msgstr "Menu"
+
+#: functions.php:322
+msgid "Your comment is awaiting moderation."
+msgstr "O seu comentário aguarda moderação."
+
+#. translators: 1: date, 2: time
+#: functions.php:308
+msgid "%1$s at %2$s"
+msgstr "%1$s às %2$s"
+
+#: functions.php:300
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#: functions.php:122
+msgid "Sidebar"
+msgstr "Lateral"
+
+#: functions.php:73
+msgid "Primary Menu"
+msgstr "Menu Principal"
+
+#: full-width.php:29 page.php:32 templates/template-titles.php:30
+msgid "Edit"
+msgstr "Editar"
+
+#: inc/wpcom.php:40
+msgid "Theme: %1$s by %2$s."
+msgstr "Tema: %1$s por %2$s. "
+
+#: inc/wpcom.php:38
+msgid "Proudly powered by %s"
+msgstr "Orgulhosamente mantido com %s"
+
+#: footer.php:18
+msgid "Older Posts"
+msgstr "Posts mais antigos"
+
+#: footer.php:17
+msgid "Newer Posts"
+msgstr "Posts mais recentes"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Os comentários estão desativados."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Comentários mais recentes &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "Participe da conversa!"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Comentários mais antigos"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "1 comentário"
+msgstr[1] "%1$s comentários"
+
+#: attachment.php:75
+msgid "Link to full-size image"
+msgstr "Link para a imagem original"
+
+#: attachment.php:72
+msgid "Full size is %s pixels"
+msgstr "O tamanho real é de %s pixels"
+
+#: archive.php:59 sidebar.php:13
+msgid "Archives"
+msgstr "Arquivos"
+
+#: archive.php:56 templates/template-icons.php:29
+msgid "Links"
+msgstr "Links"
+
+#: archive.php:53
+msgid "Quotes"
+msgstr "Citações"
+
+#: archive.php:50
+msgid "Videos"
+msgstr "Vídeos"
+
+#: archive.php:47
+msgid "Images"
+msgstr "Imagens"
+
+#: archive.php:44
+msgid "Asides"
+msgstr "Notas"
+
+#: archive.php:41
+msgid "Year: %s"
+msgstr "Ano: %s"
+
+#: archive.php:38
+msgid "Month: %s"
+msgstr "Mês: %s"
+
+#: archive.php:35
+msgid "Day: %s"
+msgstr "Dia: %s"
+
+#: archive.php:27
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: 404.php:16
+msgid "404 &mdash; Page Not Found"
+msgstr "404 &mdash; Página não encontrada"
+
+#: 404.php:23
+msgid "It looks like nothing was found at this location. Try using the navigation menu or the search box to locate the page you were looking for."
+msgstr "Parece que nada foi encontrado neste local. Tente usar o menu de navegação ou a barra de busca para localizar a página pela qual você estava procurando."

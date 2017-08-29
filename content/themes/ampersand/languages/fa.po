@@ -1,0 +1,379 @@
+# Translation of Ampersand in Persian
+# This file is distributed under the same license as the Ampersand package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-06-22 08:35:29+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Ampersand\n"
+
+#: inc/customizer.php:150
+msgid "Disable"
+msgstr "ناکارا کردن"
+
+#: inc/customizer.php:149
+msgid "Enable"
+msgstr "کارا کردن"
+
+#: template-icons.php:71
+msgid "LinkedIn"
+msgstr "لینکداین"
+
+#: template-icons.php:75
+msgid "RSS"
+msgstr "آراِس‌اِس"
+
+#: template-icons.php:67
+msgid "YouTube"
+msgstr "یوتیوب"
+
+#: template-icons.php:59
+msgid "Google+"
+msgstr "گوگل+"
+
+#: template-icons.php:63
+msgid "Vimeo"
+msgstr "ویمیو"
+
+#: template-icons.php:55
+msgid "Pinterest"
+msgstr "پین‌ترست"
+
+#: template-icons.php:47
+msgid "Dribbble"
+msgstr "Dribbble"
+
+#: template-icons.php:51
+msgid "Flickr"
+msgstr "فـلیکر"
+
+#: template-icons.php:43
+msgid "Tumblr"
+msgstr "تامبلر"
+
+#: template-icons.php:35
+msgid "Facebook"
+msgstr "فیسبوک"
+
+#: template-icons.php:39
+msgid "Instagram"
+msgstr "اینستاگرام"
+
+#: template-icons.php:31
+msgid "Twitter"
+msgstr "توئیتر"
+
+#: functions.php:385
+msgid "Page %s"
+msgstr "صفحهٔ %s"
+
+#: inc/customizer.php:362
+msgid "Hide Site Tagline"
+msgstr "نهفتن شعار وب‌گاه"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio-item.php
+msgid "Portfolio Item"
+msgstr "مورد نمونه‌کار"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio.php
+msgid "Portfolio"
+msgstr "نمونه‌کار"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/homepage.php
+msgid "Homepage"
+msgstr "آغازه"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "Ampersand is a portfolio style theme with an empasis on beautiful, legible typography and graceful resizing for mobile browsing."
+msgstr "Ampersand یک پوسته به سبک نمونه‌کار است. با تأکید روی زیبایی، تایپوگرافی خوانا و تغییراندازهٔ دست‌ودل‌باز برای مرورگرهای موبایل."
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/full-width.php
+msgid "Full Width"
+msgstr "پهنای کامل"
+
+#: template-titles.php:47
+msgid "Search Results for: %s"
+msgstr "نتایج جست‌وجو برای: %s"
+
+#: template-titles.php:44
+msgid "404 - Page Not Found"
+msgstr "۴۰۴ - صفحه یافت نشد"
+
+#: template-titles.php:41
+msgid "Year: %s"
+msgstr "سال: %s"
+
+#: template-titles.php:38
+msgid "Month: %s"
+msgstr "ماه: %s"
+
+#: template-titles.php:35
+msgid "Day: %s"
+msgstr "روز: %s"
+
+#: template-titles.php:27
+msgid "Author: %s"
+msgstr "نویسنده: %s"
+
+#: template-titles.php:20
+msgid "Tag: "
+msgstr "برچسب: "
+
+#: single.php:46
+msgid "Previous Post:"
+msgstr "تصویر پیشین:"
+
+#: single.php:48
+msgid "Next Post:"
+msgstr "نوشتۀ پسین:"
+
+#: template-titles.php:17
+msgid "Category: "
+msgstr "موضوع:"
+
+#: single.php:40
+msgid "Tags:"
+msgstr "برچسب‌ها:"
+
+#: single.php:34
+msgid "Category:"
+msgstr "موضوع:"
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "فرا"
+
+#: sidebar.php:13
+msgid "Archives"
+msgstr "بایگانی"
+
+#: search.php:41
+msgid "Sorry, but nothing matched your search terms. Please try again with different keywords."
+msgstr "پوزش، اما چیزی با عبارت‌های جستجوی شما همخوانی پیدا نکرد. لطفاً بار دیگر با کلیدواژه‌هایی متفاوت آزمایش کنید."
+
+#: inc/template-tags.php:54 template-portfolio.php:80
+msgid "Newer posts"
+msgstr "نوشته‌های تازه‌تر"
+
+#: inc/template-tags.php:50 template-portfolio.php:79
+msgid "Older posts"
+msgstr "نوشته‌های پیشین"
+
+#: inc/template-tags.php:45
+msgid "Next Post"
+msgstr "نوشتهٔ بعدی"
+
+#: inc/template-tags.php:44
+msgid "Previous Post"
+msgstr "نوشتهٔ پیشین"
+
+#: inc/customizer.php:347
+msgid "RSS URL"
+msgstr "نشانی وب RSS"
+
+#: inc/template-tags.php:40
+msgid "Post navigation"
+msgstr "ناوبری نوشته"
+
+#: inc/customizer.php:272
+msgid "Pinterest URL"
+msgstr "نشانی وب پین‌ترست"
+
+#: inc/customizer.php:287
+msgid "Google+ URL"
+msgstr "نشانی وب گوگل+"
+
+#: inc/customizer.php:302
+msgid "Vimeo URL"
+msgstr "نشانی وب ویمیو"
+
+#: inc/customizer.php:317
+msgid "YouTube URL"
+msgstr "آدرس یوتیوب"
+
+#: inc/customizer.php:332
+msgid "LinkedIn URL"
+msgstr "آدرس لیندکدین"
+
+#: inc/customizer.php:212
+msgid "Instagram URL"
+msgstr "نشانی وب اینستاگرام"
+
+#: inc/customizer.php:227
+msgid "Tumblr URL"
+msgstr "نشانی وب تامبلر"
+
+#: inc/customizer.php:242
+msgid "Dribbble URL"
+msgstr "نشانی وب دریبل"
+
+#: inc/customizer.php:257
+msgid "Flickr URL"
+msgstr "آدرس فلیکر"
+
+#: inc/customizer.php:182
+msgid "Twitter URL"
+msgstr "نشانی وب توییتر"
+
+#: inc/customizer.php:197
+msgid "Facebook URL"
+msgstr "نشانی وب فیس‌بوک"
+
+#: inc/customizer.php:85
+msgid "Logo Upload"
+msgstr "بارگذاری نشان‌واره"
+
+#: inc/customizer.php:99
+msgid "Homepage Header Subtitle Text"
+msgstr "متن زیرنویس سرایند صفحهٔ خانگی"
+
+#: inc/customizer.php:114
+msgid "Homepage Header Button Link"
+msgstr "پیوند دکمۀ سربرگ صفحۀ اصلی"
+
+#: inc/customizer.php:128
+msgid "Homepage Header Button Text"
+msgstr "متن دکمۀ سربرگ صفحۀ اصلی"
+
+#: inc/customizer.php:145
+msgid "Header Background Effect"
+msgstr "جلوهٔ پس‌زمینهٔ سرایند"
+
+#: inc/customizer.php:164
+msgid "Social Media Links"
+msgstr "پیوندهای رسانه‌های اجتماعی"
+
+#: inc/customizer.php:167
+msgid "Add links to your various social media sites. These icons will appear in the footer."
+msgstr "پیوندهایی به وب‌گاه‌های اجتماعی مختلف خود بیفزایید. این نقشک‌ها در پسایند نمایان خواهند شد."
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr "گزینه‌های پوسته"
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr "جست‌وجو"
+
+#: header.php:37
+msgid "Skip to content"
+msgstr "پرش به محتوا"
+
+#: header.php:36
+msgid "Menu"
+msgstr "گزینگان"
+
+#: functions.php:353
+msgid "Your comment is awaiting moderation."
+msgstr "دیدگاه شما چشم به راه بررسی است."
+
+#: functions.php:332
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#. translators: 1: date, 2: time
+#: functions.php:340
+msgid "%1$s at %2$s"
+msgstr "%1$s در %2$s"
+
+#: functions.php:249
+msgid "Footer Center"
+msgstr "مرکز پسایند"
+
+#: functions.php:258
+msgid "Footer Right"
+msgstr "راست پسایند"
+
+#: functions.php:240
+msgid "Footer Left"
+msgstr "چپ پسایند"
+
+#: functions.php:172
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr "فعال"
+
+#: functions.php:231
+msgid "Sidebar"
+msgstr "ستون کناری"
+
+#: functions.php:49
+msgid "Primary Menu"
+msgstr "گزینگان اصلی"
+
+#: full-width.php:26 page.php:21 single.php:30 template-portfolio-item.php:20
+msgid "Edit"
+msgstr "ویرایش"
+
+#: format-standard.php:26 homepage.php:67 inc/customizer.php:122 search.php:34
+#: template-portfolio.php:70
+msgid "Read More"
+msgstr "بیشتر بخوانید"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "% Comments"
+msgstr "% دیدگاه"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "1 Comment"
+msgstr "۱ دیدگاه"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "No Comments"
+msgstr "بدون دیدگاه"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "Permalink to %s comments"
+msgstr "پایاپیوند به دیدگاه‌های %s"
+
+#: format-standard.php:14 full-width.php:20 homepage.php:36 search.php:22
+#: single.php:18 template-portfolio-item.php:80 template-portfolio.php:60
+#: template-portfolio.php:70
+msgid "Permalink to %s"
+msgstr "پایاپیوند به %s"
+
+#: inc/wpcom.php:70
+msgid "Theme: %1$s by %2$s."
+msgstr "پوسته: %1$s کاری از %2$s."
+
+#: inc/wpcom.php:68
+msgid "Proudly powered by %s"
+msgstr "با افتخار، نیرو گرفته از %s"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "دیدگاه‌ها بسته شده‌اند."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "دیدگاه‌های تازه‌تر &rarr;"
+
+#: comments.php:22
+msgid "Join the conversation!"
+msgstr "به گفت‌وگو بپیوندید!"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "%1$s دیدگاه"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; دیدگاه‌های پیشین"
+
+#: 404.php:17
+msgid "It looks like nothing was found at this location. Try using the navigation menu or the search box to locate the page you were looking for."
+msgstr "به نظر می‌رسد چیزی در این مکان پیدا نشده‌است. استفاده از گزینگان ناوبری یا جعبهٔ جستجو را برای یافتن صفحه‌ای که به دنبالش بودید بیازمایید."

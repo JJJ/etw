@@ -1,0 +1,40 @@
+/* Body font styles */
+$sans: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+/* Title font styles */
+$titles: 'Roboto Condensed', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+/* Color variables */
+$gray: #999;
+$black: #404040;
+$lightgray: #eee;
+
+/* Responsive media query mixins */
+@mixin viewport($point) {
+	@if $point == desktop {
+		@media ( /* Desktop style */ max-width: 1250px ) { @content; }
+	}
+	@else if $point == mobile {
+		@media ( /* Mobile style */ max-width: 768px )  { @content; }
+	}
+	@else if $point == admin-bar {
+		@media ( /* Mobile and up */ min-width: 769px ) and ( max-width: 782px ) { @content; }
+	}
+}
+
+/* Styles for small text with uppercase font style. Used on dates and post meta */
+@mixin sans-uppercase {
+	color: #aaa;
+	font-family: $sans;
+	font-size: 14px;
+	font-style: normal;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+/* Transition effect used througout Editor */
+@mixin transition {
+	-webkit-transition: .07s ease-in;
+	-moz-transition: 	.07s ease-in;
+	transition: 		.07s ease-in;
+}

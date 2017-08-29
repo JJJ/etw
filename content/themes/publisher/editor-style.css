@@ -1,0 +1,183 @@
+/* Body Styles */
+
+.mceContentBody {
+	font-family: 'Helvetica', sans-serif;
+	font-size: 16px;
+	line-height: 26px;
+}
+
+.mceContentBody h1, .mceContentBody h2, .mceContentBody h3, .mceContentBody h4, .mceContentBody h5, .mceContentBody h6 {
+    clear: both;
+	color: #555;
+	font-weight: bold;
+	font-family: 'Arimo', 'Helvetica Neue', 'Helvetica', sans-serif;
+	margin: 0 0 2% 0;
+}
+
+.mceContentBody h1 {
+	font-size: 34px;
+	line-height: 40px;
+}
+
+.mceContentBody h2 {
+	font-size: 28px;
+	line-height: 32px;
+ }
+
+.mceContentBody h3 {
+	font-size: 20px;
+	line-height: 24px;
+}
+
+.mceContentBody h4 {
+	font-size: 18px;
+	line-height: 22px;
+}
+
+.mceContentBody h5 {
+	font-size: 14px;
+	line-height: 18px;
+}
+
+.mceContentBody h6 {
+	font-size: 12px;
+}
+
+.mceContentBody p {
+	font: 17px/27px 'Helvetica', sans-serif;
+	margin-bottom: 30px;
+	color: #555;
+}
+
+.mceContentBody img {
+	max-width: 100%;
+}
+
+/* Blockquote Styles */
+
+.mceContentBody blockquote {
+	position: relative;
+    padding: 1% 0 1% 6%;
+    margin: 0 0 3% 0;
+    border-top: dotted 1px #E7E7E7;
+    border-bottom: dotted 1px #E7E7E7;
+}
+
+.mceContentBody blockquote p {
+	font-size: 18px;
+    font-weight: bold;
+    line-height: 28px;
+}
+
+/* List Styles */
+
+.mceContentBody ul, .mceContentBody ol {
+	margin: 0 0 4% 0;
+	padding-left: 20px;
+}
+
+.mceContentBody ul ul, .mceContentBody ul ol, .mceContentBody ol ul, .mceContentBody ol ol {
+	margin-bottom: 0;
+}
+
+.mceContentBody ul {
+	list-style-type: square;
+}
+
+.mceContentBody ol li {
+	list-style-type: decimal;
+}
+
+hr {
+	background-color: #eee;
+	border: 0;
+	height: 1px;
+	margin-bottom: 1.5em;
+}
+
+/* Table Styles */
+
+.mceContentBody table {
+    border: dotted 1px #ddd;
+    padding: 1%;
+    margin-bottom: 4%;
+}
+
+.mceContentBody table td, .mceContentBody table th {
+    padding: 10px;
+    border: none;
+}
+
+.mceContentBody table td {
+    border-bottom: solid 1px #f7f7f7;
+}
+
+.mceContentBody table tr:last-child td {
+    border-bottom: none;
+}
+
+.mceContentBody table tr.odd {
+    background: #f7f7f7;
+}
+
+/* Code Styles */
+
+.mceContentBody pre {
+    position: relative;
+    background: #f7f7f7;
+    font-family: "Courier 10 Pitch", Courier, monospace;
+    font-size: 15px;
+    line-height: 20px;
+    margin-bottom: 1.6em;
+    padding: 3%;
+    overflow: auto;
+    max-width: 100%;
+    tab-size: 4;
+    -webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+/* Formatting Styles */
+
+.alignright {
+	margin: 5px 0 30px 30px;
+}
+
+.alignleft {
+	margin: 5px 30px 30px 0;
+}
+
+.highlight {
+	background: #fff198;
+	color: #222;
+}
+
+.intro-text {
+    font-size: 20px;
+    color: #999;
+}
+
+.pull-right, .pull-left {
+    width: 30%;
+    font-weight: normal;
+    font-weight: lighter;
+    font-style: italic;
+    line-height: 30px;
+    font-size: 28px;
+    border-top: dotted 2px #e7e7e7;
+}
+
+.pull-right {
+    float: right;
+    margin: 1% 0 3% 3%;
+    padding: 2% 0 0 2%;
+    text-align: right;
+}
+
+.pull-left {
+    float: left;
+    margin: 1% 5% 3% 0;
+    padding: 2% 2% 0 0;
+    text-align: left;
+}

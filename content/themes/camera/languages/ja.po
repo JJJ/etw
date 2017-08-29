@@ -1,0 +1,286 @@
+# Translation of Camera in Japanese
+# This file is distributed under the same license as the Camera package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-15 03:15:15+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Camera\n"
+
+#: inc/template-tags.php:65
+msgctxt "Previous post link"
+msgid "%title"
+msgstr "%title"
+
+#: inc/template-tags.php:71
+msgid "Next Post"
+msgstr "次の投稿へ"
+
+#: inc/template-tags.php:72
+msgctxt "Next post link"
+msgid "%title"
+msgstr "%title "
+
+#: inc/template-tags.php:64
+msgid "Previous Post"
+msgstr "過去の投稿へ"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/camera/full-width.php
+msgid "Full Width"
+msgstr "全幅"
+
+#: content.php:80
+msgid "Edit Post"
+msgstr "投稿の編集"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/camera/style.css
+msgid "Camera is an elegant, distraction-free canvas for showcasing your photography. Along with large, beautiful Featured Images, you can also create unique photo series in a full-width carousel, which accommodates your landscape and portrait photographs. Camera is perfect for travel blogs, food blogs and photo series."
+msgstr "Camera テーマは、あなたの写真を展示するための上品で邪魔ものがないキャンバスです。大きなアイキャッチ画像に加えて、縦長・横長両方の写真がきちんと収まる全幅カルーセルでユニークなフォトセットを作成することもできます。Camera は、旅行ブログ、グルメブログや写真を多く含むサイトに最適です。"
+
+#: single.php:27
+msgid "Posts by "
+msgstr "作成者: "
+
+#: single.php:32
+msgid "About the author"
+msgstr "作成者について"
+
+#: sidebar.php:28
+msgid "Meta"
+msgstr "メタ情報"
+
+#: search.php:15
+msgid "Results for: %s"
+msgstr "検索結果: %s"
+
+#: sidebar.php:16
+msgid "Latest Posts"
+msgstr "最新の投稿"
+
+#: inc/template-tags.php:37
+msgid "Newer Posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr "新しい投稿 <span class=\"meta-nav\">&rarr;</span>"
+
+#: inc/template-tags.php:32
+msgid "<span class=\"meta-nav\">&larr;</span> Older Posts"
+msgstr "<span class=\"meta-nav\">&larr;</span> 古い投稿"
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr "投稿ナビゲーション"
+
+#: inc/customizer.php:94
+msgid "Color Scheme"
+msgstr "配色 "
+
+#: inc/customizer.php:67
+msgid "Theme"
+msgstr "テーマ名"
+
+#: inc/customizer.php:37 inc/customizer.php:99
+msgid "Dark"
+msgstr "ダーク"
+
+#: inc/customizer.php:36 inc/customizer.php:98
+msgid "Light"
+msgstr "ライトカラー"
+
+#: header.php:33
+msgid "Close"
+msgstr "閉じる"
+
+#: functions.php:377
+msgid "Page %s"
+msgstr "ページ %s"
+
+#: functions.php:344
+msgid "Your comment is awaiting moderation."
+msgstr "あなたのコメントは承認待ちです。"
+
+#: functions.php:333
+msgid "(Edit)"
+msgstr "(編集)"
+
+#: functions.php:332
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr "<cite class=\"comment-cite\">%s</cite>"
+
+#: functions.php:333
+msgid "%1$s at %2$s"
+msgstr "%1$s %2$s"
+
+#: functions.php:280
+msgid "More Posts"
+msgstr "投稿をさらに読み込む"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Noto Sans, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:143
+msgctxt "Noto Sans font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:121
+msgid "Sidebar"
+msgstr "サイドバー"
+
+#: functions.php:65
+msgid "Footer Menu"
+msgstr "フッターメニュー"
+
+#: functions.php:64
+msgid "Primary Menu"
+msgstr "メインメニュー"
+
+#: footer.php:24
+msgid "Proudly powered by %s"
+msgstr "Proudly powered by %s"
+
+#: footer.php:24
+msgid "http://wordpress.org/"
+msgstr "http://ja.wordpress.org/"
+
+#: content.php:75
+msgid "Read More"
+msgstr "続きを読む"
+
+#: content-page.php:40 content.php:86
+msgid "Pages:"
+msgstr "ページ:"
+
+#: content-page.php:36
+msgid "Edit Page"
+msgstr "ページ編集"
+
+#: content-none.php:27
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "お探しのコンテンツを見つけられませんでした。検索をお試しください。"
+
+#: content-none.php:22
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "ご指定の検索条件に一致する投稿がありませんでした。他のキーワードでもう一度検索してみてください。"
+
+#: content-none.php:18
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "最初の投稿をする準備ができましたか ?  <a href=\"%1$s\">ここからスタート</a>してください。"
+
+#: content-none.php:14
+msgid "Nothing Found"
+msgstr "見つかりません"
+
+#: content-meta.php:29
+msgid "Tag"
+msgstr "タグ"
+
+#: content-meta.php:15
+msgid "Category"
+msgstr "カテゴリー"
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr "コメントは受け付けていません。"
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr "新しいコメント &rarr;"
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr "&larr; 古いコメント"
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr "コメントナビゲーション"
+
+#: comments.php:27
+msgid "% Comments"
+msgstr "%件のコメント"
+
+#: comments.php:27
+msgid "One Comment"
+msgstr "1件のコメント"
+
+#: comments.php:27
+msgid "Leave a Comment"
+msgstr "コメントをどうぞ"
+
+#: archive.php:92 sidebar.php:21
+msgid "Archives"
+msgstr "アーカイブ"
+
+#: archive.php:89
+msgid "Chats"
+msgstr "チャット"
+
+#: archive.php:86
+msgid "Audios"
+msgstr "音声"
+
+#: archive.php:83
+msgid "Statuses"
+msgstr "状態"
+
+#: archive.php:80
+msgid "Links"
+msgstr "リンク"
+
+#: archive.php:77
+msgid "Quotes"
+msgstr "引用"
+
+#: archive.php:74
+msgid "Videos"
+msgstr "動画"
+
+#: archive.php:71
+msgid "Images"
+msgstr "画像"
+
+#: archive.php:68
+msgid "Galleries"
+msgstr "ギャラリー"
+
+#: archive.php:65
+msgid "Asides"
+msgstr "アサイド"
+
+#: archive.php:62
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y年"
+
+#: archive.php:62
+msgid "Year: %s"
+msgstr "﻿年: %s"
+
+#: archive.php:59
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "Y年n月"
+
+#: archive.php:59
+msgid "Month: %s"
+msgstr "月別: %s"
+
+#: archive.php:56
+msgid "Day: %s"
+msgstr "﻿日: %s"
+
+#. translators: %1$s: smiley
+#: 404.php:53
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "月別アーカイブを見てみてください。%1$s"
+
+#: 404.php:34
+msgid "Most Used Categories"
+msgstr "よく使われているカテゴリー"
+
+#: 404.php:15
+msgid "Page Not Found"
+msgstr "ページが見つかりませんでした"

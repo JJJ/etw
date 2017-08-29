@@ -1,0 +1,409 @@
+# Copyright (C) 2014 Mike McAlister
+# This file is distributed under the GNU General Public License v2.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: Author 3.4\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tags/author\n"
+"POT-Creation-Date: 2014-03-26 03:06:50+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: 404.php:19
+msgid "404 - Page Not Found"
+msgstr ""
+
+#: 404.php:23
+msgid ""
+"Sorry, but the page you are looking for has moved or no longer exists. "
+"Please use the search below, or the menu to locate the missing page."
+msgstr ""
+
+#: comments.php:20
+msgid "This post is password protected. Enter the password to view comments."
+msgstr ""
+
+#: comments.php:34
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: comments.php:35
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: custom-archive.php:37 full-width.php:50 index.php:71 page.php:48
+msgid "Read More"
+msgstr ""
+
+#: custom-archive.php:41
+msgid "Recent Posts"
+msgstr ""
+
+#: custom-archive.php:48
+msgid "Pages"
+msgstr ""
+
+#: custom-archive.php:55
+msgid "Categories"
+msgstr ""
+
+#: custom-archive.php:62
+msgid "Contributors"
+msgstr ""
+
+#: custom-archive.php:69
+msgid "By Day"
+msgstr ""
+
+#: custom-archive.php:76
+msgid "By Month"
+msgstr ""
+
+#: customizer.php:31
+msgid "Theme Options"
+msgstr ""
+
+#: customizer.php:32
+msgid "Add your logo and social media links below."
+msgstr ""
+
+#: customizer.php:41
+msgid "Logo Upload"
+msgstr ""
+
+#: customizer.php:53
+msgid "Accent Color"
+msgstr ""
+
+#: customizer.php:68
+msgid "Homepage Excerpt Slider"
+msgstr ""
+
+#: customizer.php:72
+msgid "Enable"
+msgstr ""
+
+#: customizer.php:73
+msgid "Disable"
+msgstr ""
+
+#: customizer.php:84
+msgid "Custom CSS"
+msgstr ""
+
+#: functions.php:47
+msgid "Main Menu"
+msgstr ""
+
+#: functions.php:48
+msgid "Secondary"
+msgstr ""
+
+#: functions.php:49
+msgid "Footer Menu"
+msgstr ""
+
+#: functions.php:50
+msgid "Custom Menu"
+msgstr ""
+
+#: functions.php:111
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:112
+msgid "Widgets in this area will be shown on the sidebar of all pages."
+msgstr ""
+
+#: functions.php:118
+msgid "Footer Icons"
+msgstr ""
+
+#: functions.php:119
+msgid "This widget area is for the social media icons widget in the footer."
+msgstr ""
+
+#: functions.php:170
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr ""
+
+#: functions.php:182
+msgid "Edit"
+msgstr ""
+
+#: functions.php:183
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: functions.php:188
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: functions.php:228
+msgid "Page %s"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:14
+msgid "Getting Started"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:73
+msgid "Getting started with %1$s v%2$s"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:75
+msgid ""
+"Thanks for purchasing %1$s! We truly appreciate the support and the "
+"opportunity to share our work with you. Please visit the tabs below to get "
+"started setting up your theme!"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:82
+msgid "Help File"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:83
+msgid "License"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:84
+msgid "Latest Updates"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:87
+msgid "Support Forum &rarr;"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:108
+msgid ""
+"This help file feed seems to be temporarily down. You can view the help file "
+"on Array in the mean time."
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:108
+msgid "Help File &rarr;"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:127
+msgid "Install the Array Toolkit"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:128
+msgid "The Array Toolkit is a plugin that adds various features to your theme."
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:128
+msgid "requires the Array Toolkit to enable the following features:"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:132
+msgid "Portfolio Items"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:136
+msgid "Custom Galleries"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:141
+msgid "Slider Items"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:145
+msgid "Install Array Toolkit Plugin"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:154
+#: includes/admin/getting-started/getting-started.php:157
+msgid "Visit the Knowledge Base"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:155
+msgid ""
+"New to the WordPress world? Our Knowledge Base has over 20 video tutorials, "
+"from installing WordPress to working with themes and more."
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:165
+msgid "Activate your license for seamless updates!"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:169
+msgid ""
+"Add your license key to get theme updates without leaving your dashboard! "
+"Find your license key in your Array Dashboard in the <a class=\"thickbox\" "
+"href=\"%s\">Downloads</a> section. Save your key and then click the Activate "
+"button."
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:177
+msgid "Enter your license key:"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:181
+msgid "Save License Key"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:186
+msgid "Your license is active!"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:188
+msgid "Deactivate License"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:191
+msgid "License saved! Click to activate &rarr;"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:192
+msgid "Activate License"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:201
+msgid "Updating Your Theme"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:206
+msgid ""
+"Once your license key is activated, you can download and install theme "
+"updates by going to Appearance &rarr; Themes. A <a class=\"thickbox\" href="
+"\"%s\">notice</a> will be displayed when an update is available."
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:210
+msgid ""
+"The update process will grab the latest theme files from Array and replace "
+"your current theme. Any changes you&apos;ve made to the theme files will be "
+"overwritten, so be sure to back up your theme before updating!"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:218
+msgid "Latest Theme Updates"
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:249
+msgid ""
+" %1$s activated! Visit the <a href=\"%2$s\">Getting Started</a> page to view "
+"the help file, install the Array Toolkit or ask us a question. "
+msgstr ""
+
+#: includes/admin/getting-started/getting-started.php:251
+msgid "<a href=\"%1$s\">Hide this notice</a>"
+msgstr ""
+
+#: includes/admin/metabox.php:21
+msgid "Video"
+msgstr ""
+
+#: includes/admin/metabox.php:49
+msgid ""
+"Add video to your page by entering the video's <a class=\"thickbox\" href="
+"\"%1$s\">embed code</a> in the box above (optional). "
+msgstr ""
+
+#: includes/admin/theme-updater/theme-updater.php:54
+msgid ""
+"Updating this theme will lose any customizations you have made. 'Cancel' to "
+"stop, 'OK' to update."
+msgstr ""
+
+#: index.php:57 index.php:59 template-slider.php:37 template-slider.php:39
+msgid "/"
+msgstr ""
+
+#: index.php:60 template-slider.php:40
+msgid "Leave a comment"
+msgstr ""
+
+#: index.php:60 template-slider.php:40
+msgid "1 Comment"
+msgstr ""
+
+#: index.php:60 template-slider.php:40
+msgid "% Comments"
+msgstr ""
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr ""
+
+#: template-nav.php:13
+msgid "Previous Post"
+msgstr ""
+
+#: template-nav.php:14
+msgid "Next Post"
+msgstr ""
+
+#: template-nav.php:21
+msgid "Newer Posts"
+msgstr ""
+
+#: template-nav.php:22
+msgid "Older Posts"
+msgstr ""
+
+#: template-title.php:14
+msgid "Category / "
+msgstr ""
+
+#: template-title.php:17
+msgid "Tag / "
+msgstr ""
+
+#: template-title.php:20
+msgid "Author / %s"
+msgstr ""
+
+#: template-title.php:23
+msgid "Day / %s"
+msgstr ""
+
+#: template-title.php:26
+msgid "Month / %s"
+msgstr ""
+
+#: template-title.php:29
+msgid "Year / %s"
+msgstr ""
+
+#: template-title.php:32
+msgid "404 / Page Not Found"
+msgstr ""
+
+#: template-title.php:35
+msgid "Search Results for: %s"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Author"
+msgstr ""
+
+#. Theme URI of the plugin/theme
+msgid "https://array.is/themes/author-wordpress-theme/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Author is a very clean blog style theme. Post your photos, articles or video "
+"with this responsive design."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Mike McAlister"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://array.is"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Custom Archive"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Full Width"
+msgstr ""

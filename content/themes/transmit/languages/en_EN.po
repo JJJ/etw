@@ -1,0 +1,289 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Sent\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-06 17:50-0800\n"
+"PO-Revision-Date: 2013-12-06 17:50-0800\n"
+"Last-Translator: \n"
+"Language-Team: Okay Themes\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.6.1\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../404.php:14
+msgid "Page Not Found"
+msgstr ""
+
+#: ../404.php:16
+msgid ""
+"It looks like nothing was found at this location. Try using the navigation "
+"menu or the search box to locate the page you were looking for."
+msgstr ""
+
+#: ../archive.php:15 ../single.php:30
+msgid "Category: "
+msgstr ""
+
+#: ../archive.php:18 ../single.php:33
+msgid "Tag: "
+msgstr ""
+
+#: ../archive.php:25
+#, php-format
+msgid "Author: %s"
+msgstr ""
+
+#: ../archive.php:33
+#, php-format
+msgid "Day: %s"
+msgstr ""
+
+#: ../archive.php:36
+#, php-format
+msgid "Month: %s"
+msgstr ""
+
+#: ../archive.php:39
+#, php-format
+msgid "Year: %s"
+msgstr ""
+
+#: ../archive.php:42
+msgid "404 - Page Not Found"
+msgstr ""
+
+#: ../archive.php:45 ../search.php:12
+#, php-format
+msgid "Search Results for: %s"
+msgstr ""
+
+#: ../archive.php:59 ../index.php:23 ../page.php:18 ../search.php:24
+#: ../single.php:18 ../widgets.php:19
+#, php-format
+msgid "Permalink to %s"
+msgstr ""
+
+#: ../archive.php:64 ../index.php:28 ../search.php:19 ../single.php:23
+#, php-format
+msgid "Permalink to %s comments"
+msgstr ""
+
+#: ../archive.php:64 ../index.php:28 ../search.php:19 ../single.php:23
+msgid "No Comments"
+msgstr ""
+
+#: ../archive.php:64 ../comments.php:30 ../index.php:28 ../search.php:19
+#: ../single.php:23
+msgid "1 Comment"
+msgstr ""
+
+#: ../archive.php:64 ../index.php:28 ../search.php:19 ../single.php:23
+msgid "% Comments"
+msgstr ""
+
+#: ../archive.php:68 ../index.php:32 ../search.php:27
+msgid "Read More"
+msgstr ""
+
+#: ../archive.php:77 ../index.php:41 ../search.php:36
+msgid "Newer Posts"
+msgstr ""
+
+#: ../archive.php:78 ../index.php:42 ../search.php:37
+msgid "Older Posts"
+msgstr ""
+
+#: ../comments.php:20
+msgid "This post is password protected. Enter the password to view comments."
+msgstr ""
+
+#: ../comments.php:30
+#, php-format
+msgid "%1$s Comments"
+msgstr ""
+
+#: ../comments.php:44
+msgid "&larr; Older Comments"
+msgstr ""
+
+#: ../comments.php:45
+msgid "Newer Comments &rarr;"
+msgstr ""
+
+#: ../customizer.php:31
+msgid "Theme Options"
+msgstr ""
+
+#: ../customizer.php:40
+msgid "Logo Upload"
+msgstr ""
+
+#: ../customizer.php:52
+msgid "Accent Color"
+msgstr ""
+
+#: ../customizer.php:64
+msgid "Custom CSS"
+msgstr ""
+
+#: ../customizer.php:79
+msgid "Twitter URL"
+msgstr ""
+
+#: ../customizer.php:93
+msgid "Facebook URL"
+msgstr ""
+
+#: ../customizer.php:107
+msgid "Instagram URL"
+msgstr ""
+
+#: ../customizer.php:121
+msgid "Tumblr URL"
+msgstr ""
+
+#: ../customizer.php:135
+msgid "Dribbble URL"
+msgstr ""
+
+#: ../customizer.php:149
+msgid "Flickr URL"
+msgstr ""
+
+#: ../customizer.php:163
+msgid "Pinterest URL"
+msgstr ""
+
+#: ../customizer.php:177
+msgid "Google+ URL"
+msgstr ""
+
+#: ../customizer.php:191
+msgid "Vimeo URL"
+msgstr ""
+
+#: ../customizer.php:205
+msgid "YouTube URL"
+msgstr ""
+
+#: ../customizer.php:219
+msgid "LinkedIn URL"
+msgstr ""
+
+#: ../customizer.php:233
+msgid "RSS URL"
+msgstr ""
+
+#: ../customizer.php:250
+msgid "Transmit Backgrounds"
+msgstr ""
+
+#: ../customizer.php:254
+msgid "Disable"
+msgstr ""
+
+#: ../customizer.php:255
+msgid "Mountains"
+msgstr ""
+
+#: ../customizer.php:256
+msgid "Wood"
+msgstr ""
+
+#: ../customizer.php:257
+msgid "Desk"
+msgstr ""
+
+#: ../functions.php:44
+msgid "Main Menu"
+msgstr ""
+
+#: ../functions.php:120
+msgid "Widgets"
+msgstr ""
+
+#: ../functions.php:121
+msgid "Widgets will be shown on the Widgets page template."
+msgstr ""
+
+#: ../functions.php:145
+#, php-format
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr ""
+
+#: ../functions.php:157
+msgid "Edit"
+msgstr ""
+
+#: ../functions.php:158
+#, php-format
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: ../functions.php:163
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: ../template-icons.php:32
+msgid "Twitter"
+msgstr ""
+
+#: ../template-icons.php:41
+msgid "Dribbble"
+msgstr ""
+
+#: ../template-icons.php:50
+msgid "Facebook"
+msgstr ""
+
+#: ../template-icons.php:59
+msgid "Github"
+msgstr ""
+
+#: ../template-icons.php:68
+msgid "Instagram"
+msgstr ""
+
+#: ../template-icons.php:77
+msgid "Vimeo"
+msgstr ""
+
+#: ../template-icons.php:86
+msgid "Tumblr"
+msgstr ""
+
+#: ../template-icons.php:95
+msgid "LinkedIn"
+msgstr ""
+
+#: ../template-icons.php:104
+msgid "Flickr"
+msgstr ""
+
+#: ../template-icons.php:113
+msgid "Google+"
+msgstr ""
+
+#: ../template-icons.php:122
+msgid "RSS"
+msgstr ""
+
+#: ../template-icons.php:131
+msgid "YouTube"
+msgstr ""
+
+#: ../template-icons.php:140
+msgid "Pinterest"
+msgstr ""
+
+#: ../includes/updates/EDD_SL_Theme_Updater.php:54
+msgid ""
+"Updating this theme will lose any customizations you have made. 'Cancel' to "
+"stop, 'OK' to update."
+msgstr ""

@@ -1,0 +1,327 @@
+# Translation of WordPress.com - Themes - Camera in Portuguese (Brazil)
+# This file is distributed under the same license as the WordPress.com - Themes - Camera package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-23 13:01:56+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: GlotPress/2.1.0-alpha\n"
+"Language: pt_BR\n"
+"Project-Id-Version: WordPress.com - Themes - Camera\n"
+
+#: inc/template-tags.php:65
+msgctxt "Previous post link"
+msgid "%title"
+msgstr "%title"
+
+#: inc/template-tags.php:71
+msgid "Next Post"
+msgstr "Próximo post"
+
+#: inc/template-tags.php:72
+msgctxt "Next post link"
+msgid "%title"
+msgstr "%título"
+
+#: inc/template-tags.php:64
+msgid "Previous Post"
+msgstr "Post anterior"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/camera/full-width.php
+msgid "Full Width"
+msgstr "Largura inteira"
+
+#: content.php:80
+msgid "Edit Post"
+msgstr "Editar post"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/camera/style.css
+msgid "Camera is an elegant, distraction-free canvas for showcasing your photography. Along with large, beautiful Featured Images, you can also create unique photo series in a full-width carousel, which accommodates your landscape and portrait photographs. Camera is perfect for travel blogs, food blogs and photo series."
+msgstr "Camera é uma vitrine elegante e livre de distrações para mostrar suas fotografias. Juntamente com imagens destacadas grandes e belas, você também pode criar ensaios fotográficos com o carrossel em largura total, que acomoda fotos em retrato ou paisagem. Camera é perfeito para blogs de viagem, comida e fotos."
+
+#: single.php:36
+msgid "Add a brief bio about yourself to be shown here! <br/><a href=\"%1$s\">Edit your profile &rarr;</a>"
+msgstr "Adicione uma pequena biografia sobre você para ser mostrado aqui! <br/><a href=\"%1$s\">Edite seu perfil &rarr;</a>"
+
+#: single.php:48
+msgid "All posts by"
+msgstr "Todos os posts por"
+
+#: single.php:27
+msgid "Posts by "
+msgstr "Publicados por"
+
+#: single.php:32
+msgid "About the author"
+msgstr "Sobre o Autor"
+
+#: sidebar.php:28
+msgid "Meta"
+msgstr "Meta"
+
+#: sidebar.php:16
+msgid "Latest Posts"
+msgstr "Posts mais recentes"
+
+#: search.php:15
+msgid "Results for: %s"
+msgstr "Resultados para: %s"
+
+#: inc/template-tags.php:93
+msgid "<span class=\"posted-on\"><i class=\"fa fa-clock-o\"></i> %1$s</span>"
+msgstr "<span class=\"posted-on\"><i class=\"fa fa-clock-o\"></i> %1$s</span>"
+
+#: inc/template-tags.php:37
+msgid "Newer Posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Posts Recentes <span class=\"meta-nav\"> → </span>"
+
+#: inc/template-tags.php:32
+msgid "<span class=\"meta-nav\">&larr;</span> Older Posts"
+msgstr "<span class=\"meta-nav\"> ← </span> Posts Anteriores"
+
+#: inc/template-tags.php:27
+msgid "Posts navigation"
+msgstr "Navegação de Posts"
+
+#: inc/customizer.php:94
+msgid "Color Scheme"
+msgstr "Esquema de Cores"
+
+#: inc/customizer.php:80
+msgid "Display Avatar With Site Title"
+msgstr "Mostrar imagem do perfil com o título do site"
+
+#: inc/customizer.php:81
+msgid "(Has no effect when you have a logo enabled.)"
+msgstr "(Não tem efeito quando você tiver o logo habilitado.)"
+
+#: inc/customizer.php:67
+msgid "Theme"
+msgstr "Tema"
+
+#: inc/customizer.php:37 inc/customizer.php:99
+msgid "Dark"
+msgstr "Escuro"
+
+#: inc/customizer.php:36 inc/customizer.php:98
+msgid "Light"
+msgstr "Claro"
+
+#: header.php:33
+msgid "Close"
+msgstr "Fechar"
+
+#: functions.php:377
+msgid "Page %s"
+msgstr "Página %s"
+
+#: functions.php:344
+msgid "Your comment is awaiting moderation."
+msgstr "O seu comentário aguarda moderação."
+
+#: functions.php:333
+msgid "(Edit)"
+msgstr "(Editar)"
+
+#: functions.php:333
+msgid "%1$s at %2$s"
+msgstr "%1$s às %2$s"
+
+#: functions.php:332
+msgid "<cite class=\"comment-cite\">%s</cite>"
+msgstr "<cite class=\"comment-cite\">%s</cite>"
+
+#: functions.php:280
+msgid "More Posts"
+msgstr "Mais Postagens"
+
+#. Translators: If there are characters in your language that are not
+#. * supported by Noto Sans, translate this to 'off'. Do not translate
+#. * into your own language.
+#: functions.php:143
+msgctxt "Noto Sans font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:123
+msgid "Appears when the right sidebar is expanded."
+msgstr "Aparece quando a lateral direita está expandida"
+
+#: functions.php:121
+msgid "Sidebar"
+msgstr "Lateral"
+
+#: functions.php:65
+msgid "Footer Menu"
+msgstr "Menu do Rodapé"
+
+#: functions.php:64
+msgid "Primary Menu"
+msgstr "Menu Principal"
+
+#: footer.php:24
+msgid "Theme: %1$s by <a href=\"https://array.is/\">%2$s</a>"
+msgstr "Tema: %1$s por <a href=\"https://array.is/\">%2$s</a>"
+
+#: footer.php:24
+msgid "Proudly powered by %s"
+msgstr "Orgulhosamente mantido com %s"
+
+#: footer.php:24
+msgid "http://wordpress.org/"
+msgstr "http://wordpress.org/"
+
+#: content.php:75
+msgid "Read More"
+msgstr "Ler mais"
+
+#: content-page.php:40 content.php:86
+msgid "Pages:"
+msgstr "Páginas:"
+
+#: content-page.php:36
+msgid "Edit Page"
+msgstr "Editar página"
+
+#: content-page.php:31
+msgid "This page is blank. Add content by clicking the Edit Page link below."
+msgstr "Esta página está vazia. Adicione conteúdo clicando no link Editar Página abaixo"
+
+#: content-none.php:27
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "Parece que não podemos encontrar o que você está procurando. Talvez pesquisar pode ajudar."
+
+#: content-none.php:22
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "Nada foi encontrado com os termos da sua pesquisa. Tente novamente com algumas palavras-chaves diferentes."
+
+#: content-none.php:18
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "Pronto para publicar seu primeiro post? <a href=\"%1$s\">Comece aqui</a>."
+
+#: content-none.php:14
+msgid "Nothing Found"
+msgstr "Nada Encontrado"
+
+#: content-meta.php:29
+msgid "Tag"
+msgstr "Tag"
+
+#: content-meta.php:15
+msgid "Category"
+msgstr "Categoria"
+
+#: comments.php:66
+msgid "Comments are closed."
+msgstr "Os comentários estão desativados."
+
+#: comments.php:37 comments.php:56
+msgid "Newer Comments &rarr;"
+msgstr "Comentários mais recentes &rarr;"
+
+#: comments.php:36 comments.php:55
+msgid "&larr; Older Comments"
+msgstr "&larr; Comentários mais antigos"
+
+#: comments.php:35 comments.php:54
+msgid "Comment navigation"
+msgstr "Navegação de Comentários"
+
+#: comments.php:27
+msgid "% Comments"
+msgstr "% Comentários"
+
+#: comments.php:27
+msgid "One Comment"
+msgstr "Um comentário"
+
+#: comments.php:27
+msgid "Leave a Comment"
+msgstr "Deixe um comentário"
+
+#: archive.php:92 sidebar.php:21
+msgid "Archives"
+msgstr "Arquivos"
+
+#: archive.php:89
+msgid "Chats"
+msgstr "Chats"
+
+#: archive.php:86
+msgid "Audios"
+msgstr "Áudios"
+
+#: archive.php:83
+msgid "Statuses"
+msgstr "Status"
+
+#: archive.php:80
+msgid "Links"
+msgstr "Links"
+
+#: archive.php:77
+msgid "Quotes"
+msgstr "Citações"
+
+#: archive.php:74
+msgid "Videos"
+msgstr "Vídeos"
+
+#: archive.php:71
+msgid "Images"
+msgstr "Imagens"
+
+#: archive.php:68
+msgid "Galleries"
+msgstr "Galerias"
+
+#: archive.php:65
+msgid "Asides"
+msgstr "Notas"
+
+#: archive.php:62
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:62
+msgid "Year: %s"
+msgstr "Ano: %s"
+
+#: archive.php:59
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:59
+msgid "Month: %s"
+msgstr "Mês: %s"
+
+#: archive.php:56
+msgid "Day: %s"
+msgstr "Dia: %s"
+
+#: archive.php:42
+msgid "All Posts by"
+msgstr "Todos os posts por"
+
+#. translators: %1$s: smiley
+#: 404.php:53
+msgid "Try looking in the monthly archives. %1$s"
+msgstr "Tente olhar nos arquivos mensais. %1$s"
+
+#: 404.php:34
+msgid "Most Used Categories"
+msgstr "Categorias mais Usadas"
+
+#: 404.php:17
+msgid "It looks like nothing was found at this location. Please use the search box and links to the right to locate the content you were looking for."
+msgstr "Nada foi encontrado aqui. Por favor, utilize a caixa de pesquisa ou os links à direita para localizar o conteúdo que você está procurando."
+
+#: 404.php:15
+msgid "Page Not Found"
+msgstr "Página não encontrada"

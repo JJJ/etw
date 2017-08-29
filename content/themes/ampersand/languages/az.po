@@ -1,0 +1,347 @@
+# Translation of Ampersand in Azerbaijani
+# This file is distributed under the same license as the Ampersand package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-06-24 12:38:01+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Ampersand\n"
+
+#: inc/customizer.php:150
+msgid "Disable"
+msgstr "Deaktivasiya et"
+
+#: inc/customizer.php:149
+msgid "Enable"
+msgstr "Aktivləşdir"
+
+#: template-icons.php:71
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: template-icons.php:75
+msgid "RSS"
+msgstr "RSS"
+
+#: template-icons.php:67
+msgid "YouTube"
+msgstr "YouTube"
+
+#: template-icons.php:59
+msgid "Google+"
+msgstr "Google+"
+
+#: template-icons.php:63
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: template-icons.php:55
+msgid "Pinterest"
+msgstr "Pinterest"
+
+#: template-icons.php:47
+msgid "Dribbble"
+msgstr "Dribbble"
+
+#: template-icons.php:51
+msgid "Flickr"
+msgstr "Flickr"
+
+#: template-icons.php:43
+msgid "Tumblr"
+msgstr "Tumblr"
+
+#: template-icons.php:35
+msgid "Facebook"
+msgstr "Facebook"
+
+#: template-icons.php:39
+msgid "Instagram"
+msgstr "Instagram"
+
+#: template-icons.php:31
+msgid "Twitter"
+msgstr "Twitter"
+
+#: functions.php:385
+msgid "Page %s"
+msgstr "Səhifə %s"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/template-portfolio.php
+msgid "Portfolio"
+msgstr "Portfel"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/homepage.php
+msgid "Homepage"
+msgstr "Əsas Səhifə"
+
+#. Template Name of the plugin/theme
+#: wp-content/themes/premium/ampersand/full-width.php
+msgid "Full Width"
+msgstr "Tam Genişlik"
+
+#. Description of the plugin/theme
+#: wp-content/themes/premium/ampersand/style.css
+msgid "Ampersand is a portfolio style theme with an empasis on beautiful, legible typography and graceful resizing for mobile browsing."
+msgstr "Ampersand is a portfolio style theme with an empasis on beautiful, legible typography and graceful resizing for mobile browsing."
+
+#: template-titles.php:47
+msgid "Search Results for: %s"
+msgstr " %s üçün Axtarışın Nəticələri:"
+
+#: template-titles.php:44
+msgid "404 - Page Not Found"
+msgstr "404 - Səhifə tapılmadı"
+
+#: template-titles.php:41
+msgid "Year: %s"
+msgstr "Ay: %s"
+
+#: template-titles.php:38
+msgid "Month: %s"
+msgstr "Ay: %s"
+
+#: template-titles.php:35
+msgid "Day: %s"
+msgstr "Gün: %s"
+
+#: template-titles.php:27
+msgid "Author: %s"
+msgstr "Müəllif: %s"
+
+#: template-titles.php:20
+msgid "Tag: "
+msgstr "Etiket: "
+
+#: single.php:46
+msgid "Previous Post:"
+msgstr "Öncəki Yazı:"
+
+#: single.php:48
+msgid "Next Post:"
+msgstr "Sonrakı Yazı:"
+
+#: template-titles.php:17
+msgid "Category: "
+msgstr "Kateqoriya: "
+
+#: single.php:40
+msgid "Tags:"
+msgstr "Etiketlər:"
+
+#: single.php:34
+msgid "Category:"
+msgstr "Kateqoriya: "
+
+#: sidebar.php:20
+msgid "Meta"
+msgstr "Meta"
+
+#: sidebar.php:13
+msgid "Archives"
+msgstr "Arxivlər"
+
+#: search.php:41
+msgid "Sorry, but nothing matched your search terms. Please try again with different keywords."
+msgstr "Bağışlayın, amma axtardığınız kriteriyalara uyğun heç nə tapılmadı. Lütfən fərqli açar kəlmələr daxil edərək təkrar yoxlayın."
+
+#: inc/template-tags.php:54 template-portfolio.php:80
+msgid "Newer posts"
+msgstr "Yeni yazılar"
+
+#: inc/template-tags.php:50 template-portfolio.php:79
+msgid "Older posts"
+msgstr "Daha köhnə yazılar"
+
+#: inc/template-tags.php:45
+msgid "Next Post"
+msgstr "Sonrakı yazı"
+
+#: inc/template-tags.php:44
+msgid "Previous Post"
+msgstr "Öncəki yazı"
+
+#: inc/customizer.php:347
+msgid "RSS URL"
+msgstr "RSS URL"
+
+#: inc/template-tags.php:40
+msgid "Post navigation"
+msgstr "Yazı naviqasiyaları"
+
+#: inc/customizer.php:272
+msgid "Pinterest URL"
+msgstr "Pinterest URL"
+
+#: inc/customizer.php:287
+msgid "Google+ URL"
+msgstr "Google+ URL"
+
+#: inc/customizer.php:302
+msgid "Vimeo URL"
+msgstr "Vimeo URL"
+
+#: inc/customizer.php:317
+msgid "YouTube URL"
+msgstr "YouTube bağlantısı"
+
+#: inc/customizer.php:332
+msgid "LinkedIn URL"
+msgstr "LinkedIn bağlantısı"
+
+#: inc/customizer.php:212
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: inc/customizer.php:227
+msgid "Tumblr URL"
+msgstr "Tumblr URL"
+
+#: inc/customizer.php:242
+msgid "Dribbble URL"
+msgstr "Dribbble URL"
+
+#: inc/customizer.php:257
+msgid "Flickr URL"
+msgstr "Flickr bağlantısı"
+
+#: inc/customizer.php:182
+msgid "Twitter URL"
+msgstr "Twitter URL"
+
+#: inc/customizer.php:197
+msgid "Facebook URL"
+msgstr "Facebook URL"
+
+#: inc/customizer.php:85
+msgid "Logo Upload"
+msgstr "Loqo yükləndi"
+
+#: inc/customizer.php:145
+msgid "Header Background Effect"
+msgstr "Başlıq arxa fonu effekti"
+
+#: inc/customizer.php:164
+msgid "Social Media Links"
+msgstr "Sosial Media Bağlantıları"
+
+#: inc/customizer.php:76
+msgid "Theme Options"
+msgstr "Mövzu parametrləri"
+
+#: searchform.php:11 searchform.php:13
+msgid "Search"
+msgstr "Axtar"
+
+#: header.php:37
+msgid "Skip to content"
+msgstr "Mühtəviyyata keç"
+
+#: header.php:36
+msgid "Menu"
+msgstr "Menyu"
+
+#: functions.php:353
+msgid "Your comment is awaiting moderation."
+msgstr "Şərhiniz yoxlama gözləyir."
+
+#: functions.php:332
+msgid "<cite class=\"fn\">%s</cite>"
+msgstr "<cite class=\"fn\">%s</cite>"
+
+#. translators: 1: date, 2: time
+#: functions.php:340
+msgid "%1$s at %2$s"
+msgstr "%1$s tarixində, saat %2$s"
+
+#: functions.php:249
+msgid "Footer Center"
+msgstr "Zirzəmi Mərkəzdə"
+
+#: functions.php:258
+msgid "Footer Right"
+msgstr "Zirzəmi Sağda"
+
+#: functions.php:240
+msgid "Footer Left"
+msgstr "Zirzəmi Solda"
+
+#: functions.php:172
+msgctxt "Roboto font: on or off"
+msgid "on"
+msgstr "açıq"
+
+#: functions.php:231
+msgid "Sidebar"
+msgstr "Yan menyu"
+
+#: functions.php:49
+msgid "Primary Menu"
+msgstr "Əsas menyu"
+
+#: full-width.php:26 page.php:21 single.php:30 template-portfolio-item.php:20
+msgid "Edit"
+msgstr "Redaktə et"
+
+#: format-standard.php:26 homepage.php:67 inc/customizer.php:122 search.php:34
+#: template-portfolio.php:70
+msgid "Read More"
+msgstr "Davamını Oxu"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "% Comments"
+msgstr "% Şərh"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "1 Comment"
+msgstr "1 Şərh"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "No Comments"
+msgstr "Şərh edilməmiş"
+
+#: format-standard.php:21 homepage.php:64 homepage.php:88 search.php:29
+#: single.php:23
+msgid "Permalink to %s comments"
+msgstr "%s şərhi üçün daimi bağlantı"
+
+#: format-standard.php:14 full-width.php:20 homepage.php:36 search.php:22
+#: single.php:18 template-portfolio-item.php:80 template-portfolio.php:60
+#: template-portfolio.php:70
+msgid "Permalink to %s"
+msgstr "%s üçün daimi bağlantı"
+
+#: inc/wpcom.php:70
+msgid "Theme: %1$s by %2$s."
+msgstr "Mövzu: %1$s tərəfindən %2$s."
+
+#: inc/wpcom.php:68
+msgid "Proudly powered by %s"
+msgstr "%s qürurla təqdim edər"
+
+#: comments.php:44
+msgid "Comments are closed."
+msgstr "Şərh üçün bağlıdır."
+
+#: comments.php:39
+msgid "Newer Comments &rarr;"
+msgstr "Yeni şərhlər &rarr;"
+
+#: comments.php:25
+msgctxt "comments title"
+msgid "1 Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "1 şərh"
+msgstr[1] "%1$s şərh"
+
+#: comments.php:38
+msgid "&larr; Older Comments"
+msgstr "&larr; Əski şərhlər"
