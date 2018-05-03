@@ -1,0 +1,288 @@
+// =============================================================================
+// _FORMS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Forms
+//   02. Controls
+//   03. Selects
+//   04. Textareas
+//   05. Radios and Checkboxes
+//   06. Form Layout Elements
+// =============================================================================
+
+// Forms
+// =============================================================================
+
+.tco-form {
+  margin: 0 0 $base-spacing 0;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+
+// Controls
+// =============================================================================
+
+select.tco-form-control,
+textarea.tco-form-control,
+input[type="text"].tco-form-control,
+input[type="email"].tco-form-control,
+input[type="color"].tco-form-control,
+input[type="number"].tco-form-control,
+input[type="search"].tco-form-control,
+input[type="password"].tco-form-control {
+  display: block;
+  width: $base-form-width;
+  height: $base-form-height;
+  margin: $base-form-margin;
+  border: $base-border-width $base-border-style $base-form-border-color;
+  font-size: $base-form-font-size;
+  font-weight: $base-form-font-weight;
+  line-height: $base-form-line-height;
+  color: $color-text;
+  background-color: $white;
+  border-radius: $base-form-border-radius;
+  -webkit-box-shadow: $base-form-box-shadow;
+          box-shadow: $base-form-box-shadow;
+  -webkit-transition: none;
+          transition: none;
+
+  &:focus {
+    border-color: $base-form-border-color-focus;
+    -webkit-box-shadow: $base-form-box-shadow-focus;
+            box-shadow: $base-form-box-shadow-focus;
+    outline: none;
+  }
+
+  &::-webkit-input-placeholder { color: rgba($black, 0.25); }
+  &::-moz-placeholder          { color: rgba($black, 0.25); }
+  &:-ms-input-placeholder      { color: rgba($black, 0.25); }
+}
+
+select.tco-form-control {
+  padding: 0 $base-form-padding-x;
+
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 $color-text;
+  }
+}
+
+textarea.tco-form-control,
+input[type="text"].tco-form-control,
+input[type="email"].tco-form-control,
+input[type="color"].tco-form-control,
+input[type="number"].tco-form-control,
+input[type="search"].tco-form-control,
+input[type="password"].tco-form-control {
+  padding: $base-form-padding;
+}
+
+.tco-form-control-max {
+  max-width: 35em;
+}
+
+
+
+// Selects
+// =============================================================================
+
+.tco-select {
+  position: relative;
+  display: block;
+
+  &:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    right: 1em;
+    width: 0;
+    height: 0;
+    margin-top: -0.19em;
+    pointer-events: none;
+    border-top: 0.38em solid $color-text;
+    border-left: 0.38em solid transparent;
+    border-right: 0.38em solid transparent;
+    border-bottom: 0.38em solid transparent;
+  }
+
+  select {
+    &.tco-form-control {
+      padding-top: 0;
+      padding-bottom: 0;
+      -webkit-appearance: none;
+         -moz-appearance: none;
+              appearance: none;
+    }
+  }
+}
+
+
+
+// Textareas
+// =============================================================================
+
+textarea {
+  &.tco-form-control {
+    height: 8em;
+  }
+}
+
+
+
+// Radios and Checkboxes
+// =============================================================================
+
+label.tco-rc {
+  position: relative;
+  display: block;
+  margin: 0 0 1em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .tco-form-control-indicator {
+    position: relative;
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    margin: 0 0.5em 0 0;
+    border: $base-border-width $base-border-style $base-form-border-color;
+    line-height: 2em;
+    color: $color-text;
+    background-color: $white;
+    text-align: center;
+    vertical-align: middle;
+    box-shadow: $base-form-box-shadow;
+    pointer-events: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+
+    &:focus ~ .tco-form-control-indicator {
+      box-shadow: $base-form-box-shadow-focus;
+    }
+  }
+
+  .tco-form-control-indicator-label {
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  &.tco-checkbox {
+    .tco-form-control-indicator {
+      border-radius: $base-form-border-radius;
+    }
+
+    input:checked ~ .tco-form-control-indicator {
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 1px;
+        right: 1px;
+        width: 0.575em;
+        height: 1em;
+        margin: -0.595em auto 0;
+        border: solid currentColor;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+      }
+    }
+  }
+
+  &.tco-radio {
+    .tco-form-control-indicator {
+      border-radius: 100em;
+    }
+
+    input:checked ~ .tco-form-control-indicator {
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        width: 0.75em;
+        height: 0.75em;
+        margin: -0.375em auto 0;
+        background-color: currentColor;
+        border-radius: 100em;
+      }
+    }
+  }
+}
+
+
+
+// Form Layout Elements
+// =============================================================================
+
+.tco-form-setting {
+  border-bottom: $base-border;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  @include break($break-lg) {
+    display: table;
+    width: 100%;
+  }
+}
+
+.tco-form-setting-info {
+  padding: $base-spacing $base-spacing 0;
+
+  label {
+    display: block;
+    font-size: 0.925em;
+
+    strong {
+      display: block;
+      margin: 0 0 2px;
+    }
+
+    span {
+      display: block;
+      opacity: 0.5;
+    }
+  }
+
+  @include break($break-lg) {
+    display: table-cell;
+    vertical-align: top;
+    width: 20em;
+    padding: $base-spacing;
+  }
+}
+
+.tco-form-setting-control {
+  padding: $base-spacing;
+
+  @include break($break-lg) {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}

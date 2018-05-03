@@ -1,0 +1,60 @@
+// =============================================================================
+// _NOTICES.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-notice.notice {
+  position: relative;
+
+  @include break($break-xs) {
+    border-left: 0;
+    padding-left: 146px + 12px;
+  }
+}
+
+a.tco-notice-logo {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 146px;
+  height: 100%;
+  border-right: $base-border;
+  text-decoration: none;
+  color: $color-text;
+  background-color: transparent;
+  cursor: pointer;
+
+  @include break($break-xs) {
+    display: block;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+  }
+
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    width: 111px;
+    height: 13px;
+    margin: -7px auto 0;
+    fill: currentColor;
+  }
+}

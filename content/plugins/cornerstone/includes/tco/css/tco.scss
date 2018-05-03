@@ -1,0 +1,47 @@
+// =============================================================================
+// TCO.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Variables and Mixins
+//   02. Imports
+// =============================================================================
+
+// Variables and Mixins
+// =============================================================================
+
+@import "lib/import";
+@import "src/inc/variables";
+@import "src/inc/mixins";
+
+
+
+// Imports
+// =============================================================================
+
+@import "src/reset";
+@import "src/forms";
+@import "src/buttons";
+@import "src/scaffolding";
+@import "src/box-base";
+@import "src/box-automatic-updates";
+@import "src/box-demo-content";
+@import "src/box-extensions";
+@import "src/box-customizer-manager";
+@import "src/box-validation";
+@import "src/labels";
+@import "src/modal";
+@import "src/notices";
+@import "src/overlay";
+@import "src/confirm";
+@import "src/progress";
+@import "src/accordion";
+@import "src/status";
+@import "src/cta";
+@import "src/selectize";
+@import "src/alt-cs";
+@import "src/utilities";

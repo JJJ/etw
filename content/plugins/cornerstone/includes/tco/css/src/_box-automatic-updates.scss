@@ -1,0 +1,49 @@
+// =============================================================================
+// _BOX-AUTOMATIC-UPDATES.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. "Changelog" Link
+//   02. "Check Now" Link
+// =============================================================================
+
+// "Check Now" Link
+// =============================================================================
+
+a.tco-automatic-updates-changelog {
+  margin: 0 0 0 0.575em;
+  font-size: 0.675em;
+  font-weight: 600;
+  letter-spacing: 0.0925em;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: rgba($color-text, 0.5);
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: underline;
+    color: rgba($color-text, 0.5);
+  }
+}
+
+
+
+// "Check Now" Link
+// =============================================================================
+
+a.tco-automatic-updates-check-now {
+  text-decoration: none;
+  color: $color-text;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: underline;
+    color: currentColor;
+  }
+}

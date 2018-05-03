@@ -1,0 +1,41 @@
+// =============================================================================
+// _LABELS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-label {
+  display: inline;
+  position: relative;
+  left: 0.5em;
+  bottom: 0.85em;
+  padding: 0.15em (0.5em - 0.065em) 0.2em 0.5em;
+  font-size: 0.65em;
+  font-weight: 600;
+  letter-spacing: 0.065em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: baseline;
+  white-space: nowrap;
+  color: $white;
+  background-color: $base-btn-color;
+  border-radius: 0.25em;
+}
+
+
+
+// Colors
+// =============================================================================
+
+.tco-label-yep  { background-color: $color-yep;  }
+.tco-label-nope { background-color: $color-nope; }

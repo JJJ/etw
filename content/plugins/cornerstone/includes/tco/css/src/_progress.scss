@@ -1,0 +1,133 @@
+// =============================================================================
+// _PROGRESS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Title
+//   03. Bar
+//   04. Complete Message
+//   05. States
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-progress {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0;
+  transition: all 0.65s $base-animation;
+  transform: scale(0.5);
+  z-index: 1;
+}
+
+
+
+// Title
+// =============================================================================
+
+.tco-progress-title {
+  // overflow: hidden;
+  width: 100%;
+  margin: 0 0 25px;
+  padding: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+  color: $white;
+}
+
+
+
+// Bar
+// =============================================================================
+
+.tco-progress-bar-outer {
+  overflow: hidden;
+  height: 10px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 400px;
+  background-color: rgba($white, 0.05);
+  border-radius: 3px;
+}
+
+.tco-progress-bar-inner {
+  width: 0;
+  height: 10px;
+  background-color: darken($color-wp, 15%);
+  border-radius: 3px;
+  transition: width 0.65s $base-animation;
+}
+
+
+
+// Complete Message
+// =============================================================================
+
+.tco-progress-complete {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 500px;
+  margin: -90px auto 0;
+  text-align: center;
+  opacity: 1;
+  transition: all 1.25s $base-animation;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.tco-progress-complete-icon.dashicons {
+  display: block;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  font-size: 150px;
+  color: darken($color-wp, 15%);
+  transition: all 1.25s $base-animation;
+  transform: rotate(0deg);
+}
+
+.tco-progress-complete-title {
+  position: relative;
+  margin: -35px 0 0;
+  padding: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: $white;
+}
+
+
+
+// States
+// =============================================================================
+
+.tco-processing .tco-progress {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.tco-processing .tco-progress-complete {
+  opacity: 0;
+  transform: scale(0.5);
+  z-index: 1;
+}
+
+.tco-processing .tco-progress-complete-icon.dashicons {
+  transform: rotate(-540deg);
+}

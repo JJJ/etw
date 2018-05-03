@@ -1,0 +1,198 @@
+// =============================================================================
+// _BOX-VALIDATION.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Graphic
+//   03. Title
+//   04. Text
+//   05. Overlay
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-box-validation {
+  .tco-box-content {
+    border-bottom: 1px solid rgba($black, 0.075);
+  }
+
+  input[type="text"].tco-form-control {
+    border: 0;
+    font-size: 2em !important;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    text-align: center;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    transition: margin 0.65s $base-animation;
+
+    &[disabled],
+    &.disabled {
+      margin-top: -3em;
+    }
+  }
+}
+
+.tco-validation {
+  position: relative;
+  padding: 5%;
+  text-align: center;
+  transition: opacity 0.65s $base-animation, transform 0.65s $base-animation;
+
+  &.tco-processing {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+
+
+// Graphic
+// =============================================================================
+
+.tco-validation-graphic-icon {
+  display: inline-block;
+  width: 4em;
+  height: 4em;
+  font-size: 0.65em;
+  vertical-align: middle;
+  opacity: 0;
+  fill: $white;
+  -webkit-transform: scale(0.75);
+          transform: scale(0.75);
+  -webkit-animation: tcoIconFadeIn ease 1;
+          animation: tcoIconFadeIn ease 1;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+
+  &:nth-child(1) { fill: $color-nope; }
+  &:nth-child(5) { fill: $color-yep;  }
+
+  &:nth-child(2),
+  &:nth-child(3),
+  &:nth-child(4) {
+    width: 3em;
+    height: 3em;
+    fill: rgba($color-text, 0.35);
+  }
+
+  &:nth-child(2),
+  &:nth-child(4) {
+    margin: 0 1em;
+  }
+
+  &:nth-child(1) { -webkit-animation-delay: 0.25s; animation-delay: 0.25s; }
+  &:nth-child(2) { -webkit-animation-delay: 0.75s; animation-delay: 0.75s; }
+  &:nth-child(3) { -webkit-animation-delay: 1.25s; animation-delay: 1.25s; }
+  &:nth-child(4) { -webkit-animation-delay: 1.75s; animation-delay: 1.75s; }
+  &:nth-child(5) { -webkit-animation-delay: 2.25s; animation-delay: 2.25s; }
+
+  @include break($break-md) {
+    font-size: 1em;
+  }
+}
+
+
+//
+// Animation.
+//
+
+@-webkit-keyframes tcoIconFadeIn {
+  from { opacity: 0; -webkit-transform: scale(0.75); }
+  to   { opacity: 1; -webkit-transform: scale(1);    }
+}
+
+@keyframes tcoIconFadeIn {
+  from { opacity: 0; transform: scale(0.75); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+
+
+// Title
+// =============================================================================
+
+.tco-validation-title {
+  margin: ($base-spacing / 1.75) auto;
+  font-size: 1.5em;
+  letter-spacing: -0.015em;
+  color: currentColor;
+
+  @include break($break-md) {
+    font-size: 2em;
+  }
+}
+
+
+
+// Text
+// =============================================================================
+
+p.tco-validation-text {
+  max-width: 40em;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+
+  @include break($break-md) {
+    font-size: 1.15em;
+  }
+
+  a,
+  a:hover,
+  a:focus,
+  a:active {
+    color: currentColor;
+  }
+}
+
+.tco-validation {
+  > p.tco-validation-text {
+    &:not(:last-child) {
+      margin-bottom: $base-spacing * 1.385;
+    }
+
+    @include break($break-md) {
+      &:not(:last-child) {
+        margin-bottom: $base-spacing * 1.615;
+      }
+    }
+  }
+}
+
+
+
+// Overlay
+// =============================================================================
+
+.tco-validation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: $base-spacing;
+  text-align: center;
+  color: $color-text;
+  background-color: $white;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.15);
+  transition: opacity 0.65s $base-animation, transform 0.65s $base-animation;
+  z-index: 4;
+
+  &.tco-active {
+    pointer-events: auto;
+    opacity: 1;
+    transform: scale(1);
+  }
+}

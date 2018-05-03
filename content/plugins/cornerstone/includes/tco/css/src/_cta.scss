@@ -1,0 +1,144 @@
+// =============================================================================
+// _CTA.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Spacing
+//   03. Logos
+//   04. Actions
+//   05. Note
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-cta {
+  max-width: 18em;
+  margin: calc(10% + #{$base-spacing}) auto;
+  text-align: center;
+
+  a {
+    &:hover,
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
+  }
+}
+
+
+
+// Spacing
+// =============================================================================
+
+.tco-cta-spacing {
+  height: 0;
+  margin: $base-spacing 0 0;
+  border: 0;
+  padding: 0;
+}
+
+
+
+// Logos
+// =============================================================================
+
+.tco-cta-logo-product {
+  display: inline-block;
+  width: auto;
+  height: 7.5em;
+  margin: 0 auto;
+  line-height: 1;
+  fill: $color-text;
+}
+
+.tco-cta-logo-company {
+  display: inline-block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  line-height: 1;
+  fill: $color-text;
+}
+
+
+
+// Actions
+// =============================================================================
+
+.tco-cta-actions {
+  font-size: 0.85em;
+  border-radius: 0.45em;
+  -webkit-box-shadow: 0 1px 0 0 rgba($white, 0.715);
+          box-shadow: 0 1px 0 0 rgba($white, 0.715);
+
+  a.tco-cta-action {
+    display: block;
+    margin: 0;
+    border: 0;
+    border-color: rgba($color-text, 0.185);
+    border-style: solid;
+    border-width: 1px 1px 0;
+    padding: 1.285em (1.485em - $base-btn-letter-spacing) 1.285em 1.485em;
+    font-size: 1em;
+    font-weight: 400;
+    letter-spacing: $base-btn-letter-spacing;
+    line-height: 1.2;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: rgba($color-text, 0.45);
+    background-color: transparent;
+    -webkit-box-shadow: inset 0 1px 0 0 rgba($white, 0.715);
+            box-shadow: inset 0 1px 0 0 rgba($white, 0.715);
+    transition: color 0.3s ease;
+    cursor: pointer;
+
+    &:first-of-type {
+      border-top-left-radius: 0.45em;
+      border-top-right-radius: 0.45em;
+    }
+
+    &:last-of-type {
+      border-bottom-width: 1px;
+      border-bottom-left-radius: 0.45em;
+      border-bottom-right-radius: 0.45em;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: $color-text;
+      background-color: transparent;
+      -webkit-box-shadow: inset 0 1px 0 0 rgba($white, 0.715);
+              box-shadow: inset 0 1px 0 0 rgba($white, 0.715);
+      outline: none;
+    }
+  }
+}
+
+
+
+// Note
+// =============================================================================
+
+p.tco-cta-note {
+  margin: 0;
+  font-size: 0.85em;
+  font-style: italic;
+  color: rgba($color-text, 0.5);
+
+  a {
+    color: currentColor;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: currentColor;
+    }
+  }
+}

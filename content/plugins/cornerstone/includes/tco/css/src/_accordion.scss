@@ -1,0 +1,72 @@
+// =============================================================================
+// _ACCORDION.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Toggle
+//   03. Panel
+//   04. Panel Inner
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-accordion {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+
+
+// Toggle
+// =============================================================================
+
+.tco-accordion-toggle {
+  display: block;
+  border-top: $base-border;
+  padding: ($base-spacing / 1.35) $base-spacing;
+  font-weight: 600;
+  text-decoration: none;
+  color: rgba($color-text, 0.35);
+  background-color: $white;
+  transition: color 0.65s $base-animation;
+  cursor: pointer;
+
+  &:first-child {
+    border-top: 0;
+  }
+
+  &:hover,
+  &.tco-active,
+  &.tco-active:hover {
+    color: $color-text;
+    background-color: $white;
+  }
+}
+
+
+
+// Panel
+// =============================================================================
+
+.tco-accordion-panel {
+  display: none;
+  margin: 0;
+  border-top: $base-border;
+  background-color: $white;
+}
+
+
+
+// Panel Inner
+// =============================================================================
+
+.tco-accordion-panel-inner {
+  padding: $base-spacing;
+}

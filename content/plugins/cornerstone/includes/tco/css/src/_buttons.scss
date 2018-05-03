@@ -1,0 +1,180 @@
+// =============================================================================
+// _BUTTONS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Sizes
+//   03. Colors
+//   04. Button Group
+//   05. Disabled
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-btn,
+a.tco-btn,
+button.tco-btn,
+input[type="submit"].tco-btn {
+  display: inline-block;
+  margin: 0;
+  border: 0;
+  border-style: solid;
+  border-color: darken($base-btn-color, 12%);
+  border-bottom-width: 0.315em;
+  padding: 1.15em (1.485em - $base-btn-letter-spacing) 1.15em 1.485em;
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: $base-btn-letter-spacing;
+  line-height: 1.2;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: $white !important;
+  background-color: $base-btn-color;
+  border-radius: 0.45em;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: lighten($base-btn-color, 5%);
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+  }
+}
+
+
+
+// Sizes
+// =============================================================================
+
+.tco-btn,
+a.tco-btn,
+button.tco-btn,
+input[type="submit"].tco-btn {
+  &.tco-btn-sm {
+    padding: 0.95em (1.15em - $base-btn-letter-spacing) 0.95em 1.15em;
+    font-size: 0.725em;
+  }
+
+  &.tco-btn-lg {
+    padding: 1.285em (1.485em - $base-btn-letter-spacing) 1.285em 1.485em;
+    font-size: 1em;
+  }
+
+  &.tco-btn-xl {
+    padding: 1.315em (1.725em - $base-btn-letter-spacing) 1.315em 1.725em;
+    font-size: 1.25em;
+  }
+
+  &.tco-btn-block {
+    display: block;
+    width: 100%;
+  }
+}
+
+
+
+// Colors
+// =============================================================================
+
+.tco-btn,
+a.tco-btn,
+button.tco-btn,
+input[type="submit"].tco-btn {
+
+  //
+  // Yep, nope.
+  //
+
+  &.tco-btn-yep {
+    border-color: $color-yep-dark;
+    background-color: $color-yep;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: lighten($color-yep, 6%);
+    }
+  }
+
+  &.tco-btn-nope {
+    border-color: $color-nope-dark;
+    background-color: $color-nope;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: lighten($color-nope, 7%);
+    }
+  }
+}
+
+
+
+// Button Group
+// =============================================================================
+
+.tco-btn-group-horizontal {
+  .tco-btn,
+  a.tco-btn,
+  button.tco-btn,
+  input[type="submit"].tco-btn {
+    border-right-width: 1px;
+
+    &:first-child {
+      border-radius: 0.45em 0 0 0.45em;
+    }
+
+    &:last-child {
+      border-right: 0;
+      border-radius: 0 0.45em 0.45em 0;
+    }
+  }
+}
+
+
+.tco-btn-group-vertical {
+  .tco-btn,
+  a.tco-btn,
+  button.tco-btn,
+  input[type="submit"].tco-btn {
+    display: block;
+    border-width: 1px;
+
+    &:first-child {
+      border-radius: 0.45em 0.45em 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 0.45em 0.45em;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: -1px;
+    }
+  }
+}
+
+
+
+// Disabled
+// =============================================================================
+
+.tco-btn,
+a.tco-btn,
+button.tco-btn,
+input[type="submit"].tco-btn {
+  &.tco-btn-disabled {
+    color: rgba($white, 0.75) !important;
+    cursor: default;
+    pointer-events: none;
+  }
+}

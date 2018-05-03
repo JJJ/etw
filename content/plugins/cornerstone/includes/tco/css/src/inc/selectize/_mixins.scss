@@ -1,0 +1,38 @@
+// =============================================================================
+// _MIXINS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. TCO Common Selectize Mixins
+// =============================================================================
+
+// TCO Common Selectize Mixins
+// =============================================================================
+
+@mixin selectize-border-radius($radii) {
+  -webkit-border-radius: $radii;
+     -moz-border-radius: $radii;
+          border-radius: $radii;
+}
+
+@mixin selectize-unselectable() {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+@mixin selectize-box-shadow($shadow) {
+  -webkit-box-shadow: $shadow;
+          box-shadow: $shadow;
+}
+
+@mixin selectize-box-sizing($type: border-box) {
+  -webkit-box-sizing: $type;
+     -moz-box-sizing: $type;
+          box-sizing: $type;
+}

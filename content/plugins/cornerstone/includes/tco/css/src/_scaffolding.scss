@@ -1,0 +1,200 @@
+// =============================================================================
+// _COMMON.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Base Alterations
+//   03. Header
+//   04. Row
+//   05. Columns
+//   06. Vertical Align Middle
+//   07. WordPress .wrap
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-wrap {
+  margin: 0 0 0 -20px;
+  padding: $base-spacing;
+  @include cf();
+}
+
+@media screen and (max-width: $break-sm) {
+  .tco-wrap {
+    margin: 0 0 0 -10px;
+  }
+}
+
+
+
+// Base Alterations
+// =============================================================================
+
+//
+// 1. About.
+// 2. Settings.
+//
+
+.tco-wrap-about { // 1
+  .tco-content {
+    max-width: $base-max-width-content-sm;
+    margin: 0 auto;
+  }
+
+  @include break($break-md) {
+    .tco-content {
+      max-width: $base-max-width-main;
+      margin: 0;
+    }
+
+    .tco-main,
+    .tco-sidebar {
+      width: 100%;
+      max-width: $base-max-width-main;
+    }
+  }
+
+  @include break($break-lg) {
+    .tco-content {
+      max-width: none;
+    }
+
+    .tco-main,
+    .tco-sidebar {
+      float: left;
+    }
+
+    .tco-main {
+      margin-right: $base-spacing;
+    }
+
+    .tco-sidebar {
+      width: calc(100% - #{$base-max-width-main} - #{$base-spacing});
+      max-width: none;
+    }
+  }
+}
+
+
+.tco-wrap-settings { // 2
+  @include break($break-md) {
+    .tco-main,
+    .tco-sidebar {
+      float: left;
+    }
+
+    .tco-main {
+      width: calc(100% - #{$base-max-width-sidebar} - #{$base-spacing});
+      margin-right: $base-spacing;
+    }
+
+    .tco-sidebar {
+      max-width: $base-max-width-sidebar;
+    }
+  }
+}
+
+
+
+// Header
+// =============================================================================
+
+.tco-header {
+  margin: 0 0 $base-spacing;
+}
+
+.tco-header-title {
+  margin: 0;
+  font-size: 2em;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.3;
+}
+
+
+
+// Row
+// =============================================================================
+
+.tco-row {
+  @include cf();
+}
+
+
+
+// Column
+// =============================================================================
+
+.tco-column {
+  width: 100%;
+  margin: 0 0 $base-spacing 0;
+
+  @include break($break-md) {
+    &:first-child:nth-last-child(2),
+    &:first-child:nth-last-child(2) ~ & {
+      float: left;
+      width: calc(50% - #{$base-spacing / 2});
+      margin-right: $base-spacing;
+    }
+
+    &:first-child:nth-last-child(3),
+    &:first-child:nth-last-child(3) ~ & {
+      float: left;
+      width: calc(33.33333% - #{$base-spacing / 1.5});
+      margin-right: $base-spacing;
+    }
+
+    &:last-child {
+      margin-right: 0 !important;
+    }
+  }
+}
+
+
+
+// Vertical Align Middle
+// =============================================================================
+
+.tco-vam-outer {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.tco-vam-inner {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+
+
+// WordPress .wrap
+// =============================================================================
+
+.tco-wrap {
+  .wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+
+    > h2 {
+      display: none !important;
+    }
+
+    .notice,
+    div.updated,
+    div.error {
+      margin: 0 0 $base-spacing;
+
+      p {
+        margin: 0.5em 0;
+        line-height: 1.5;
+      }
+    }
+  }
+}

@@ -1,0 +1,145 @@
+// =============================================================================
+// _VARIABLES.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Colors
+//   02. Base Styles
+//   03. Selectize
+//   04. Breakpoints
+// =============================================================================
+
+// Colors
+// =============================================================================
+
+$white:                  #ffffff;
+$black:                  #000000;
+$color-text:             #23282d;
+$color-headings:         #23282d;
+$color-yep:              #2ecc71;
+$color-yep-dark:         darken($color-yep, 8%);
+$color-yep-light:        lighten($color-yep, 49%);
+$color-nope:             #e74c3c;
+$color-nope-dark:        darken($color-nope, 14%);
+$color-nope-light:       lighten($color-nope, 41%);
+$color-yep-cs:           #26cabc;
+$color-yep-cs-dark:      #22b3a6;
+$color-yep-cs-light:     lighten($color-yep-cs, 50%);
+$color-nope-cs:          #fe7864;
+$color-nope-cs-dark:     #fa5745;
+$color-nope-cs-light:    lighten($color-nope-cs, 29%);
+$color-wp:               #3498db;
+$color-wp-dark:          darken($color-wp, 15%);
+$color-wp-light:         lighten($color-wp, 44%);
+
+
+
+// Base Styles
+// =============================================================================
+
+$base-animation:                  cubic-bezier(0.230, 1.000, 0.320, 1.000);
+$base-max-width-content-sm:       34em;
+$base-max-width-main:             70em;
+$base-max-width-sidebar:          23em;
+$base-spacing:                    1.5em;
+$base-border-width:               1px;
+$base-border-style:               solid;
+$base-border-color:               rgba($black, 0.1);
+$base-border:                     $base-border-width $base-border-style $base-border-color;
+$base-box-title-height:           4em;
+$base-box-title-font-size:        1.185;
+$base-box-min-height:             24em;
+$base-extension-min-height:       36em;
+$base-form-width:                 100%;
+$base-form-height:                3em !important;
+$base-form-margin:                0;
+$base-form-padding-x:             0.75em;
+$base-form-padding-y:             1em;
+$base-form-padding:               $base-form-padding-y $base-form-padding-x;
+$base-form-border-color:          #d5d5d5;
+$base-form-border-color-focus:    darken($base-form-border-color, 0%);
+$base-form-font-size:             1em !important;
+$base-form-font-weight:           600;
+$base-form-line-height:           normal;
+$base-form-box-shadow:            inset 0 1px 2px rgba($black, 0.1);
+$base-form-box-shadow-focus:      $base-form-box-shadow, 0 0 0 0.2em $white, 0 0 0 0.35em rgba($base-form-border-color, 0.75);
+$base-form-border-radius:         5px;
+$base-btn-color:                  #9e9e9e;
+$base-btn-letter-spacing:         0.065em;
+
+
+
+// Selectize
+// =============================================================================
+
+$selectize-font-family: inherit;
+$selectize-font-smoothing: inherit;
+$selectize-font-size: 13px;
+$selectize-line-height: 18px;
+
+$selectize-color-text: #303030;
+$selectize-color-border: #d0d0d0;
+$selectize-color-highlight: rgba(125,168,208,0.2);
+$selectize-color-input: #fff;
+$selectize-color-input-full: $selectize-color-input;
+$selectize-color-disabled: #fafafa;
+
+$selectize-color-item: #1da7ee;
+$selectize-color-item-text: #fff;
+$selectize-color-item-active-text: #fff;
+$selectize-color-item-border: #0073bb;
+$selectize-color-item-active: #92c836;
+$selectize-color-item-active-border: #00578d;
+
+$selectize-color-dropdown: #fff;
+$selectize-color-dropdown-border: $selectize-color-border;
+$selectize-color-dropdown-border-top: #f0f0f0;
+$selectize-color-dropdown-item-active: #f5fafd;
+$selectize-color-dropdown-item-active-text: #495c68;
+$selectize-color-dropdown-item-create-text: rgba(red($selectize-color-text), green($selectize-color-text), blue($selectize-color-text), 0.5);
+$selectize-color-dropdown-item-create-active-text: $selectize-color-dropdown-item-active-text;
+$selectize-color-optgroup: $selectize-color-dropdown;
+$selectize-color-optgroup-text: $selectize-color-text;
+$selectize-lighten-disabled-item: 30%;
+$selectize-lighten-disabled-item-text: 30%;
+$selectize-lighten-disabled-item-border: 30%;
+$selectize-opacity-disabled: 0.5;
+
+$selectize-shadow-input: inset 0 1px 1px rgba(0,0,0,0.1);
+$selectize-shadow-input-focus: inset 0 1px 2px rgba(0,0,0,0.15);
+$selectize-border: 1px solid $selectize-color-border;
+$selectize-dropdown-border: 1px solid $selectize-color-dropdown-border;
+$selectize-border-radius: 3px;
+
+$selectize-width-item-border: 0;
+$selectize-max-height-dropdown: 200px;
+
+$selectize-padding-x: 8px;
+$selectize-padding-y: 8px;
+$selectize-padding-item-x: 6px;
+$selectize-padding-item-y: 2px;
+$selectize-padding-dropdown-item-x: $selectize-padding-x;
+$selectize-padding-dropdown-item-y: 5px;
+$selectize-margin-item-x: 3px;
+$selectize-margin-item-y: 3px;
+
+$selectize-arrow-size: 5px;
+$selectize-arrow-color: #808080;
+$selectize-arrow-offset: 15px;
+
+$selectize-caret-margin: 0 1px;
+$selectize-caret-margin-rtl: 0 4px 0 -2px;
+
+
+
+// Breakpoints
+// =============================================================================
+
+$break-xs:    480px;
+$break-sm:    782px;
+$break-md:    1050px;
+$break-lg:    1440px;

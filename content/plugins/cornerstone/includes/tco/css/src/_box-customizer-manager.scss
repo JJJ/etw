@@ -1,0 +1,158 @@
+// =============================================================================
+// _BOX-CUSTOMIZER-MANAGER.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Action Group
+//   02. Import
+//   03. Export and Reset
+// =============================================================================
+
+// Action Group
+// =============================================================================
+
+.tco-customizer-action-group {
+  display: table;
+  width: 100%;
+
+  &:first-of-type {
+    height: $base-box-min-height - 6em;
+    border-bottom: $base-border;
+  }
+}
+
+
+
+// Import
+// =============================================================================
+
+form.tco-customizer-import {
+  position: relative;
+  display: table-cell;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  color: $color-text;
+  outline: 2px dashed $base-border-color;
+  outline-offset: -10px;
+  transition: outline 0.65s $base-animation;
+
+  .tco-customizer-import-input {
+    transition: opacity 0.65s $base-animation, transform 0.65s $base-animation;
+  }
+
+  svg {
+    display: block;
+    width: 2.5em;
+    height: 2.5em;
+    margin: 0 auto;
+    fill: currentColor;
+    transition: transform 0.65s $base-animation;
+  }
+
+  input[type="file"] {
+    overflow: hidden;
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    z-index: -1;
+  }
+
+  label {
+    overflow: hidden;
+    display: inline-block;
+    max-width: 80%;
+    margin: ($base-spacing / 1.5) auto ($base-spacing / 3);
+    font-size: 1.25em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .tco-btn {
+    display: block;
+    margin: 0 auto;
+  }
+
+
+  //
+  // States.
+  //
+
+  &.tco-dragover {
+    outline-color: rgba($color-text, 0.35);
+    
+    svg {
+      transform: scale(1.15);
+    }
+  }
+
+  &.tco-processing {
+    .tco-customizer-import-input {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+}
+
+
+
+// Export and Reset
+// =============================================================================
+
+form.tco-customizer-export,
+form.tco-customizer-reset {
+  display: table-cell;
+  width: 50%;
+  height: 6em;
+  text-align: center;
+  vertical-align: middle;
+
+  button {
+    display: block;
+    width: 100%;
+    height: 6em;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    line-height: 1;
+    color: $color-text;
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: currentColor;
+      background-color: #fafafa;
+      -webkit-box-shadow: none;
+              box-shadow: none;
+      outline: none;
+    }
+
+    svg {
+      display: inline;
+      width: 1.75em;
+      height: 1.75em;
+      margin: 0 0.5em 0 0;
+      vertical-align: middle;
+      fill: currentColor;
+    }
+  }
+}
+
+form.tco-customizer-export {
+  button {
+    border-right: $base-border;
+  }
+}

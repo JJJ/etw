@@ -1,0 +1,188 @@
+// =============================================================================
+// _BOX-EXTENSIONS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Preview
+//   02. Messaging
+//   03. Extensions
+//   04. Extension
+//   05. Install Statuses
+// =============================================================================
+
+// Preview
+// =============================================================================
+
+.tco-box-extensions-preview-content {
+  padding: 5%;
+}
+
+.tco-box-extensions-preview-title {
+  margin: 0;
+  font-size: 1.5em;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+
+  @include break($break-md) {
+    font-size: 2em;
+  }
+}
+
+p.tco-box-extensions-preview-text {
+  max-width: 40em;
+  margin: 0.75em auto 1.35em;
+  line-height: 1.7;
+
+  @include break($break-md) {
+    font-size: 1.15em;
+  }
+}
+
+img.tco-box-extensions-preview-img {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  margin: 1.15em auto 0;
+}
+
+
+
+// Messaging
+// =============================================================================
+
+p.tco-extensions-info {
+  margin: 0;
+  border-bottom: $base-border;
+  padding: $base-spacing;
+  text-align: left;
+}
+
+
+
+// Extensions
+// =============================================================================
+
+.tco-extensions {
+  float: left;
+  width: 100%;
+  margin: 0 0 -1px;
+}
+
+
+
+// Extension
+// =============================================================================
+
+.tco-extension {
+  overflow: hidden;
+  position: relative;
+  float: left;
+  width: 100%;
+  margin: 0;
+  border-bottom: $base-border;
+  padding: 0;
+  text-align: center;
+  background-color: $white;
+  z-index: 1;
+  @include cf();
+
+  @include break($break-md) {
+    width: 33.33333%;
+    border-right: $base-border;
+
+    &:nth-child(3n) {
+      border-right: 0;
+    }
+  }
+
+  .tco-overlay-close {
+    margin: 0;
+  }
+}
+
+.tco-extension-content {
+  padding: calc(5% + #{$base-spacing * 2.25}) $base-spacing;
+  transition: opacity 0.65s $base-animation, transform 0.65s $base-animation;
+}
+
+img.tco-extension-img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.tco-extension-title {
+  overflow: hidden;
+  margin: 1em 0 0;
+  font-size: 1.25em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tco-extension-info {
+  margin: 0.35em 0 1.25em;
+  color: rgba($color-text, 0.5);
+}
+
+a.tco-extension-info-details {
+  color: currentColor;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: currentColor;
+  }
+}
+
+.tco-extension-status-icon {
+  display: block;
+  position: absolute;
+  top: $base-spacing;
+  left: $base-spacing;
+  width: $base-spacing * 1.75;
+  height: $base-spacing * 1.75;
+  color: $color-yep;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.65s $base-animation, transform 0.65s $base-animation;
+  z-index: 3;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+}
+
+
+
+// Install States
+// =============================================================================
+
+//
+// 1. Installed.
+// 2. Processing.
+//
+
+.tco-extension {
+  &.tco-extension-installed {
+    .tco-extension-status-icon {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+
+  &.tco-processing {
+    .tco-extension-content {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+}

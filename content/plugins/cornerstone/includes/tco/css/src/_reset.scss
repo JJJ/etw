@@ -1,0 +1,61 @@
+// =============================================================================
+// _RESET.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Reset
+// =============================================================================
+
+// Reset
+// =============================================================================
+
+.tco-reset,
+.tco-reset *,
+.tco-reset *:before,
+.tco-reset *:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.tco-reset {
+  position: relative;
+  font-size: 13px;
+  line-height: 1.6;
+  color: $color-text;
+}
+
+.tco-reset p {
+  margin: 0 0 $base-spacing;
+  line-height: inherit;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.tco-reset a {
+  color: #0073aa;
+  transition: color 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: #00a0d2;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+  }
+}
+
+.tco-reset img {
+  max-width: 100%;
+  height: auto;
+  border: 0;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
+}

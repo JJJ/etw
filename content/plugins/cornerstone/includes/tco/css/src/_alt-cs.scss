@@ -1,0 +1,147 @@
+// =============================================================================
+// _ALT-CS.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Reset
+//   02. Buttons
+//   03. Labels
+//   04. Box: Base
+//   05. Box: Validation
+//   06. Box: Automatic Updates
+//   07. Settings
+//   08. Utilities
+// =============================================================================
+
+// Reset
+// =============================================================================
+
+.tco-alt-cs {
+  a {
+    color: $color-yep-cs-dark;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: $color-yep-cs;
+    }
+  }
+}
+
+
+
+// Buttons
+// =============================================================================
+
+.tco-alt-cs {
+  .tco-btn,
+  a.tco-btn,
+  button.tco-btn,
+  input[type="submit"].tco-btn {
+    &.tco-btn-yep {
+      border-color: $color-yep-cs-dark;
+      background-color: $color-yep-cs;
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: lighten($color-yep-cs, 3%);
+      }
+    }
+
+    &.tco-btn-nope {
+      border-color: $color-nope-cs-dark;
+      background-color: $color-nope-cs;
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: lighten($color-nope-cs, 5%);
+      }
+    }
+  }
+}
+
+
+
+// Labels
+// =============================================================================
+
+.tco-alt-cs {
+  .tco-label-yep  { background-color: $color-yep-cs;  }
+  .tco-label-nope { background-color: $color-nope-cs; }
+}
+
+
+
+// Box: Base
+// =============================================================================
+
+.tco-alt-cs {
+  .tco-box-status {
+    &.tco-box-status-validated   { background-color: $color-yep-cs-light;  fill: $color-yep-cs;  }
+    &.tco-box-status-unvalidated { background-color: $color-nope-cs-light; fill: $color-nope-cs; }
+  }
+}
+
+
+
+// Box: Validation
+// =============================================================================
+
+.tco-alt-cs {
+  .tco-box-validation {
+    .tco-validation-graphic-icon {
+      &:nth-child(1) { fill: $color-nope-cs; }
+      &:nth-child(5) { fill: $color-yep-cs;  }
+    }
+  }
+
+  p.tco-validation-text {
+    strong {
+      color: $color-nope-cs;
+    }
+  }
+}
+
+
+
+// Box: Automatic Updates
+// =============================================================================
+
+.tco-alt-cs {
+  .tco-box-automatic-updates {
+    a.tco-automatic-updates-changelog {
+      color: rgba($color-text, 0.5);
+    }
+
+    a.tco-automatic-updates-check-now {
+      color: $color-text;
+    }
+  }
+}
+
+
+
+// Settings
+// =============================================================================
+
+.tco-alt-cs {
+  .selectize-control.multi .selectize-input [data-value] {
+    background-color: $color-yep-cs;
+  }
+}
+
+
+
+// Utilities
+// =============================================================================
+
+.tco-alt-cs {
+  .tco-c-yep  { color: $color-yep-cs;  }
+  .tco-c-nope { color: $color-nope-cs; }
+}

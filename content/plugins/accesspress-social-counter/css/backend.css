@@ -1,0 +1,783 @@
+.apsc-add-set-wrapper {
+	float:left;
+}
+.apsc-add-set-wrapper.clearfix:before,
+.apsc-add-set-wrapper.clearfix:after{
+	content:"";
+	display:table;
+}
+.apsc-add-set-wrapper.clearfix:after{
+clear:both;
+}
+
+.apsc-settings-wrapper {
+
+}
+.apsc-settings-tabs > li {
+    border: 1px solid #cccccc;
+    border-radius: 5px 5px 0 0;
+    display: inline-block;
+    margin: 2px 0 -1px 2px;
+    padding: 5px 0;
+    text-align: center;
+}
+.apsc-settings-tabs > li:hover, 
+.apsc-tabs-trigger.apsc-active-tab {
+    background: none repeat scroll 0 0 #fff;
+    border-bottom: 1px solid #fff;
+    border-radius: 4px 4px 0 0;
+}
+
+.apsc-settings-tabs {
+    border-bottom: 1px solid #ccc;
+    display: block;
+    margin-bottom: 0;
+    position: relative;
+    z-index: 5;
+}
+/*
+.apsc-tabs-trigger {
+    background: none repeat scroll 0 0 #e4e4e4;
+    color: #555;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 24px;
+    padding: 6px 10px;
+    text-decoration: none;
+}
+*/
+.apsc-tabs-trigger:hover {
+    color: #000000;
+}
+
+.apsc-option-field, 
+.apsc-fields-configurations {
+    display: inline-block;
+    width: calc(100% - 205px);
+}
+.apsc-each-config-wrapper {
+    vertical-align: top;
+    margin-bottom: 20px;
+}
+.apsc-fields-label{
+    display: inline-block;
+    vertical-align: top;
+}
+.apsc-option-inner-wrapper label {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.6;
+    padding: 5px 0;
+    vertical-align: top;
+    width: 200px;
+}
+.apsc-option-field > input[type="text"], 
+.apsc-option-wrapper input[type="text"], 
+.apsc-option-wrapper input[type="number"] {
+    display: block;
+    height: 32px;
+    width: 320px;
+}
+.apsc-option-wrapper {
+    margin-bottom: 20px;
+}
+
+.apsc-option-inner-wrapper {
+    padding-bottom: 10px;
+}
+
+.apsc-option-outer-wrapper {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.apsc-option-outer-wrapper h4{
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 29px;
+    padding: 9px 15px 9px 0;
+    margin: 0;
+}
+
+.apsc-option-field select, 
+.apsc-pro-labels-content select{
+    display: block;
+    height: 32px;
+    vertical-align: top;
+    width: 320px;
+    max-width: 320px !important;
+}
+.apsc-option-note {
+    color: #666666;
+    display: inline-block;
+    font-style: italic;
+    line-height: 1.6;
+    margin-left: 2px;
+    padding-top: 10px;
+}
+.apsc-option-note.apsc-option-width, 
+.apsc-pro-notes {
+    color: #909090;
+    display: block;
+    font-style: italic;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    margin-top:8px;
+}
+.apsc-checkbox-form {
+    display: inline-block;
+    margin-right: 2px;
+}
+
+.apsc-settings-wrapper .updated {
+    border-radius: 5px;
+    margin-left: 0;
+}
+.apsc-taxonomy-required, 
+.apsc-taxonomy-includes {
+    display: block;
+    margin-top: 5px;
+}
+
+.apsc-settings-wrapper #message > p {
+    font-size: 16px;
+    line-height: 20px;
+}
+.apsc-taxonomy-includes {
+    display: block;
+    margin-top: 10px;
+}
+.apsc-taxonomy-includes > span {
+    margin-right: 22px;
+}
+.apsc-taxonomy-includes > span {
+    margin-right: 12px;
+}
+
+.apsc-option-note.apsc-options-widths {
+    display: block;
+    margin-left: 206px;
+    margin-top: 8px;
+}
+
+.apsc-settings-submit {
+    display: block;
+    margin-top: 20px;
+}
+.apsc-settings-submit > input {
+    background: none repeat scroll 0 0 #0074a2;
+    border: medium none;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    height: 32px;
+    margin-left: 207px;
+    padding: 0 20px;
+}
+.apsc-settings-submit > input:hover {
+    opacity: 0.8;
+}
+.apsc-check-login {
+    margin-top: 0 !important;
+}
+.apsc-form-config > h2, 
+.apsc-tabs-board > h2 {
+    font-weight: bold;
+}
+.apsc-form-labels > h2 {
+    font-size: 18px;
+    font-weight: bold;
+}
+.apsc-settings-header {
+    background: #40A7CE;
+    border-bottom: 5px solid #20627B;
+    border-radius: 15px 15px 0 0;
+    color: #fff;
+    height: 65px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.apsc-logo {
+    float: left;
+    padding: 15px 0 0 20px;
+    width: auto;
+}
+.apsc-socials {
+    left: 50%;
+    margin-left: -100px;
+    position: absolute;
+    text-align: center;
+    top: 5px;
+    width: 200px;
+}
+.apsc-socials p{
+    margin: 5px 0;
+}
+.apsc-settings-header .apsc-title {
+    color: #fff;
+    float: right;
+    font-size: 20px;
+    line-height: 65px;
+    padding: 0 20px 0 0;
+}
+
+#optionsframework {
+    background: none repeat scroll 0 0 #fff;
+    max-width: 980px;
+    width: 100%;
+    display: inline-block;
+}
+.apsc-tab-wrapper{
+    padding: 15px;
+}
+#optionsframework-submit {
+    background-color: #f1f1f1;
+    border-top: 1px solid #ddd;
+    padding: 7px 10px;
+}
+#optionsframework h2 {
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+    cursor: default;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 8px 12px;
+}
+.apsc-admin-email-list{
+    padding-top: 10px;
+}
+.apsc-option-checkbox-field {
+    line-height: 33px;
+}
+.apsc-each-admin-email{
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.apsc-each-admin-email input[type="text"]{
+    display: inline-block;
+    width: 150px;
+}
+.apsc-remove-email-btn,.apsc-remove-option-value{
+    background: #333;
+    padding: 6px 10px;
+    border-radius: 50%;
+    color: #FFF;
+    cursor: pointer;
+    text-transform: lowercase;
+    font-family: Arial;
+    margin-left: 3px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+.apsc-admin-email-add-btn .button.primary-button, 
+.apsc-pro-custom-field-label .button.primary-button{
+    background: none repeat scroll 0 0 #0074a2;
+    border: medium none;
+    box-shadow: none;
+    color: #fff;
+    margin-bottom: 5px;
+}
+.apsc-option-field textarea{
+    width: 320px;
+}
+.line{
+    border-bottom: 1px solid #ddd;
+    line-height: 0 !important;
+    padding: 0 !important;
+}
+.dottedline{
+    border-bottom: 1px dashed #ddd;
+    line-height: 0 !important;
+    padding: 0 !important;
+}
+.seperator{
+    padding: 10px;
+}
+.halfseperator{
+    padding: 5px;
+}
+.apsc-included-single-wrap, 
+.apsc-required-single-wrap, 
+.apsc-required-message-single-wrap{
+    line-height: 33px;
+    display: inline-block;
+    width: 30%;
+}
+.apsc-form-labels h3{
+    /*padding: 10px 0;
+    font-size: 16px;
+    border-bottom: 1px solid #EEE;
+    margin-bottom: 20px;*/
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+    cursor: default;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 8px 12px;
+}
+.captcha-fields .apsc-option-wrapper > label {
+    width: 250px;
+}
+.captcha-fields .apsc-option-field{
+    display: inline-block;
+    width: calc(100% - 255px);
+}
+.apsc-captcha-list-field {
+    display: inline-block;
+    line-height: 33px;
+    margin-right: 25px;
+}
+.nomargin{
+    margin-bottom: 0;
+}
+.wp-picker-container input.wp-color-picker[type="text"]{
+    display: inline-block !important;
+    height: 25px;
+    vertical-align: top;
+}
+.wp-picker-input-wrap {
+    vertical-align: top;
+}
+.apsc-form-styles .apsc-option-field > input[type="text"]{
+    display: inline-block;
+}
+.width-type {
+    display: inline-block;
+    line-height: 33px;
+    margin-left: 10px;
+}
+.apsc-radio-field{
+    line-height: 33px;
+    display: inline-block;
+    margin-right: 15px;
+}
+.apsc-option-wrapper .wp-picker-container, .wp-picker-container:active{
+    margin-top: 3px;
+}
+.apsc-form-background-switch .apsc-radio-field input[type="button"]{
+    background: none repeat scroll 0 0 #0074a2;
+    border: medium none;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    height: 32px;
+    padding: 0 20px;
+    margin-left: 10px;
+}
+.apsc-form-background-switch input[type="text"]{
+    display: inline-block;
+}
+.apsc-required-message-single-wrap {
+    vertical-align: bottom;
+}
+.apsc-fields-configurations .apsc-required-message-single-wrap input[type="text"] {
+    width: 100% !important;
+}
+#board-about-settings p{
+    font-size: 14px;
+    line-height: 1.8; 
+    margin-top: 0;
+}
+#board-about-settings h3{
+    font-size: 18px;
+    padding-left: 0px;
+    padding-right: 0; 
+}
+.logo-product{
+    float: left;
+    margin-right: 20px;
+}
+.product{
+    clear: both;
+    margin-bottom: 20px;
+    display: inline-block;
+    width: 33%;
+    text-align: center;
+}
+
+.logo-product > img {
+    width: 138px;
+}
+#message.updated {
+    background: none repeat scroll 0 0 green;
+    border-radius: 0 !important;
+    color: #fff;
+    padding: 1px 12px;
+    border-left: none;
+    -webkit-box-shadow: none;
+    box-shadow: none; 
+}
+.media-upload-form div.error, .wrap div.error, .wrap div.updated{
+    margin: 0;
+}
+
+.apsc-pro-li-sortable {
+    /*background: url(../images/drag.png) no-repeat 10px center #FFF;*/
+    background: #FFF;
+    border: 1px solid #ccc;
+    border-left: 25px solid #ccc;
+    display: block;
+    /*padding: 5px 10px 5px 10px;*/
+    position: relative;
+}
+.apsc-pro-labels-head {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: move;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 33px;
+    padding: 5px 10px;
+    width: 100%;
+}
+.apsc-arrow {
+    cursor: pointer;
+    float: right;
+}
+.dragicon{
+    background: url("../images/drag.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: 11px;
+    left: -18px;
+    position: absolute;
+    top: 15px;
+    width: 11px;  
+}
+.apsc-pro-checkbox, 
+.apsc-pro-textbox, 
+.apsc-pro-select {
+    display: inline-block;
+    line-height: 33px;
+}
+.apsc-pro-inner-configs label{
+    width: 250px;
+}
+.apsc-pro-labels-content {
+    border-top: 1px solid #ccc;
+    padding: 10px;
+}
+.apsc-arrow-up{
+    font: 0/0 a;
+    background: url(../images/uparrow.png) no-repeat;
+    width: 12px;
+    height: 9px;
+    margin-top: 13px;
+}
+.apsc-arrow-down{
+    font: 0/0 a;
+    background: url(../images/downarrow.png) no-repeat;
+    width: 12px;
+    height: 9px;
+    margin-top: 13px;
+}
+.apsc-custom-li-delete{
+    background: url("../images/delete.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    cursor: pointer;
+    float: right;
+    font: 0px/0 a;
+    height: 15px;
+    margin: 9px 15px 0;
+    width: 13px;
+}
+.apsc-pro-notes{
+    padding-top: 5px;
+}
+.apsc-pro-custom-field-adder {
+    display: inline-block;
+    vertical-align: top;
+}
+.social-icon li{
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.social-icon img {
+    display: block;
+}
+.upgrade{
+    margin: 15px 0;
+}
+.upgrade a{
+    background: none repeat scroll 0 0 #0074a2;
+    border: medium none;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 32px;
+    padding: 0 20px;
+    text-decoration: none;
+}
+.apsc-pro-custom-field-adder {
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #e5e5e5;
+    width: 250px;
+}
+.apsc-pro-custom-field-adder h3{
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+    cursor: default;
+    font-size: 14px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 8px 12px;
+}
+.apsc-pro-custom-field-label {
+    margin-bottom: 5px;
+}
+.apsc-pro-custom-field-label > label {
+    display: block;
+    line-height: 24px;
+}
+.apsc-pro-custom-field-label input[type="text"]{
+    height: 32px;
+    width: 100%;
+}
+.apsc-custom-error{
+    color: #F00;
+    font-size: 12px; 
+}
+#messages.update{
+    background-color: #fff;
+    border-left: 4px solid #7ad03a;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 12px;
+    font-weight: 700;
+}
+.apsc-label-font-text,.apsc-button-font-text{
+    border: 1px solid #ddd;
+    margin: 15px 0;
+    padding: 20px;
+    background: #f8f8f8;
+}
+.apsc-option-field .apsc-color-field {
+    border-radius: 4px;
+    height: 25px !important;
+}
+.apsc-form-styler-wrapper,
+.apsc-template-preview-wrapper {
+    background: none repeat scroll 0 0 #fefefe;
+    border: 1px solid #999;
+    margin: auto;
+    width: 90%;
+    border-top: 5px solid #999;
+}
+.apsc-form-styler-wrapper > h1,
+.apsc-template-preview-wrapper > h1 {
+    background: none repeat scroll 0 0 #999;
+    color: #fff;
+    font-size: 24px;
+    line-height: 1.4;
+    margin: 0;
+    padding: 5px 0;
+    text-align: center;
+}
+.apsc-template-image-wrapper h3{
+    margin-bottom: 0 !important;
+}
+.apsc-template-image-wrapper > img {
+    display: block;
+    width: 100%;
+}
+.apsc-pro-file-extensions {
+    background: none repeat scroll 0 0 #eee;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    padding: 10px 20px;
+}
+.apsc-pro-fileuploader li {
+    display: inline-block;
+    line-height: 28px;
+    width: 19%;
+}
+.apsc-pro-file-upload-size {
+    margin-bottom: 10px;
+}
+.apsc-pro-file-upload-size input[type="text"] {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.apsc-row-half {
+    display: inline-block;
+    margin-right: 80px;
+}
+#board-about-settings p, 
+#board-upgrade-settings p, 
+#board-how_to_use-settings p{
+    font-size: 14px;
+    line-height: 1.8; 
+    margin-top: 0;
+}
+#board-about-settings h3{
+    font-size: 18px;
+    padding-left: 0px;
+    padding-right: 0; 
+}
+dd, 
+dl{
+    margin: 0;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+
+.apsc-boards-wrapper .metabox-holder {
+    border-top: medium none;
+    margin-top: -1px;
+    padding-top: 0 !important;
+    position: relative;
+    z-index: 1;
+
+}
+
+/* version 2.0.1 */
+.apsc-pro-option-value{margin: 10px 0 10px 251px;}
+.apsc-pro-option-value input[type="text"]{width: 31%;
+    display: inline-block;
+    height: 28px;}
+    .apsc-each-option-value {
+        margin-top: 5px;
+    }
+    .apsc-terms-required-msg-label{line-height: 20px !important}
+    input.button.apsc-restore-default-settings {
+        height: 32px;
+        margin-left: 10px;
+    }
+    .apsc-half-textbox input[type="text"]{width:48%;display: inline-block;}
+
+
+/*****************************************added by sadima*****************************************************/
+.apsc-sortable li.ui-sortable-handle {
+border: 1px solid #bbb;
+width: 40%;
+padding: 10px;
+background: #fff;
+}
+
+.apsc-sortable li.ui-sortable-handle:hover {
+cursor:move;
+}
+
+.apsc-success-message{
+    background: #fff;
+border-left: 4px solid #fff;
+-webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+margin: 5px 15px 2px;
+padding: 1px 12px;
+}
+
+.apsc-success-message{
+	background: none repeat scroll 0 0 #fff;
+    border-left: 4px solid #7ad03a;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    margin: 5px 0 15px;
+    padding: 1px 12px;
+}
+
+.left-icon {
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: inline-block;
+    float: right;
+    padding: 4px;
+    text-align: center;
+    width: 24px;
+}
+
+.apsc-sortable li.ui-sortable-handle {
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #bbb;
+    min-height: 24px;
+    padding: 10px;
+    width: 40%;
+}
+
+
+.social-name {
+    display:block;
+    float: left;
+    padding: 4px 0 0;
+}
+
+
+#apsc-board-cache-settings,#apsc-board-how_to_use-settings{
+    min-height: 300px;
+}
+
+#apsc-board-display-settings .apsc-option-inner-wrapper .apsc-option-field label{
+	display:block;
+}
+
+#apsc-board-display-settings .apsc-option-field {
+	display:block;
+}
+.apsc-panel{
+	float:left;
+	width:830px;
+}
+.apsc-promoFloat{
+	background: #f1f1f1;
+	float: left;
+	width: 280px;
+	padding: 10px;
+}
+.apsc-promo-buttons{
+	padding:20px 0;
+	text-align:center;
+}
+.apsc-promo-buttons a{
+	display:inline-block;
+}
+
+.apsc-extra-note {
+  background-color: #FFFBCC;
+  padding: 10px;
+  font-style: italic;
+  margin-bottom: 25px;
+  margin-top: 25px;
+  line-height:1.75;
+  box-shadow:0 0 2px;
+}
+.apsc-option-field >label {
+    width: 100%;
+    
+}
+.product img {
+    max-width: 80%;
+}
+.product a {
+    text-decoration: none;
+    color: #222;
+}
+span.product-title {
+    display: block;
+    padding-bottom: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.sub-title{
+    text-align: center;
+    margin-top: -5px;
+    margin-bottom: 30px;
+    background: #F1F1F1;
+    color: #222;
+    padding: 10px;
+}
+.apsc-add-set-wrapper h2.nav-tab-wrapper {
+    margin-bottom: 20px !important;
+}
+span.apsc-option-trigger {
+    font-weight: normal;
+}

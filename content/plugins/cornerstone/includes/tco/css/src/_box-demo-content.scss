@@ -1,0 +1,132 @@
+// =============================================================================
+// _BOX-DEMO-CONTENT.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Demo Content Control
+//   03. Demo Link
+//   04. Demo Content Notes
+//   05. Setup
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-box-demo-content {
+  .tco-vam-outer {
+    height: $base-box-min-height - 6em;
+    border-bottom: $base-border;
+  }
+
+  .tco-vam-inner {
+    padding: $base-spacing;
+
+    .tco-select {
+      float: left;
+      width: calc(100% - 3em);
+      margin: 0;
+
+      select.tco-form-control {
+        border-radius: $base-form-border-radius 0 0 $base-form-border-radius;
+
+        &:focus {
+          -webkit-box-shadow: $base-form-box-shadow;
+                  box-shadow: $base-form-box-shadow;
+        }
+      }
+    }
+
+    .tco-box-content-text {
+      font-size: 0.785em;
+      color: rgba($color-text, 0.5);
+    }
+  }
+}
+
+
+
+// Demo Content Control
+// =============================================================================
+
+.tco-demo-content-control {
+  margin: 0 auto 0.5em;
+  @include cf();
+}
+
+
+
+// Demo Link
+// =============================================================================
+
+a.tco-demo-content-link {
+  float: right;
+  display: block;
+  width: 3em;
+  height: 3em;
+  margin: 0;
+  border: $base-border-width $base-border-style $base-form-border-color;
+  border-left: 0;
+  padding: 0.75em;
+  line-height: 3em;
+  text-decoration: none;
+  color: $color-text;
+  background-color: $white;
+  border-radius: 0 5px 5px 0;
+  transition: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: currentColor;
+    background-color: #fafafa;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+}
+
+
+
+// Setup
+// =============================================================================
+
+.tco-demo-content-setup {
+  display: block;
+  width: 100%;
+  height: 6em;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  line-height: 1;
+  color: $color-text;
+  background-color: transparent;
+  cursor: pointer;
+
+  svg {
+    display: inline;
+    width: 1.75em;
+    height: 1.75em;
+    margin: 0 0.5em 0 0;
+    vertical-align: middle;
+    fill: currentColor;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: currentColor;
+    background-color: #fafafa;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+  }
+}

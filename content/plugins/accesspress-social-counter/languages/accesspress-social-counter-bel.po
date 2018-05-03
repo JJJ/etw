@@ -1,0 +1,464 @@
+# Translation of Development (trunk) in Belarusian
+# This file is distributed under the same license as the Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-06-30 17:34+0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.8\n"
+"Project-Id-Version: Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: be_BY\n"
+
+#: inc/backend/boards/social-profiles.php:240
+msgid "Please use: [aps-get-count social_media=\"posts\"] to get the Posts Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце: [aps-get-count social_media=\"posts\"] , каб атрымаць толькі паведамленняў Count. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"коска\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:246
+msgid "Comments"
+msgstr "Каментары"
+
+#: inc/backend/boards/social-profiles.php:251
+msgid "Please use: [aps-get-count social_media=\"comments\"] to get the Comments Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце:[aps-get-count social_media=\"comments\"]  , каб атрымаць толькі Comments Count . Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"коска\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/save-settings.php:88
+msgid "Settings Saved Successfully"
+msgstr "Налады паспяхова захаваны"
+
+#: inc/backend/settings.php:16
+msgid "Follow us for new updates"
+msgstr "Прытрымливайцеся новых абнаўленняў"
+
+#: inc/backend/settings.php:37
+msgid "Note: If you find any unsual issues then please check by deleting cache using the \"Delete Cache\" button below.And if you found our plugin helpful and like our plugin then please don't forget to give us a rating <a href=\"https://wordpress.org/support/view/plugin-reviews/accesspress-social-counter#postform\"> here </a>. Its the only way to keep us motivated to make the plugin even better.r\n"
+msgstr "Заўвага: Калі вы знаходзіце любыя незвычайныя пытанні, калі ласка, праверце, выдаляючы кэш з дапамогай кнопкі \"Delete Cache\", размешчаную ніжэй. І калі вы знайшлі наш плагін карысным і вам падабаецца наш плагін, калі ласка, не забудзьцеся даць нам рэйтынг <a href=\"https://wordpress.org/support/view/plugin-reviews/accesspress-social-counter#postform\"> тут </a>.  гэта будзе нашай мэтай, каб зрабіць плагін яшчэ лепш.\n"
+
+#: inc/backend/settings.php:42
+msgid "Social Profiles"
+msgstr "Сацыяльныя профілі"
+
+#: inc/backend/settings.php:43
+msgid "Display Settings"
+msgstr "Налады дысплея"
+
+#: inc/backend/settings.php:44
+msgid "Cache Settings"
+msgstr "Параметры кэша"
+
+#: inc/backend/settings.php:45
+msgid "How to use"
+msgstr "Як выкарыстоўваць"
+
+#: inc/backend/settings.php:46
+msgid "About"
+msgstr "Аб"
+
+#: inc/backend/settings.php:99
+msgid "Are you sure you want to restore default settings?"
+msgstr "Вы ўпэўненыя, што жадаеце аднавіць налады па змаўчанні?"
+
+#: inc/backend/settings.php:99
+msgid "Restore Default Settings"
+msgstr "Аднавіць налады па змаўчанні"
+
+#: inc/backend/settings.php:100
+msgid "Are you sure you want to delete cache?"
+msgstr "Вы ўпэўненыя, што хочаце выдаліць кэш?"
+
+#: inc/backend/settings.php:100
+msgid "Delete Cache"
+msgstr "Выдаліць кэш"
+
+#: inc/backend/widget.php:15
+msgid "AccessPress Social Counter Widget"
+msgstr "AccessPress Social Counter Widget"
+
+#: inc/backend/widget.php:58
+msgid "Title:"
+msgstr "Назва:"
+
+#: inc/backend/widget.php:63
+msgid "Theme:"
+msgstr "Тэма:"
+
+#. Plugin URI of the plugin/theme
+msgid "https://accesspressthemes.com/wordpress-plugins/accesspress-social-counter/"
+msgstr "https://accesspressthemes.com/wordpress-plugins/accesspress-social-counter/"
+
+#. Description of the plugin/theme
+msgid "A plugin to display your social accounts fans, subscribers and followers number on your website with handful of backend settings and interface."
+msgstr "Плагін для адлюстравання  сацыяльныя акаўнты прыхільнікаў, падпісчыкаў і колькасць паслядоўнікаў на вашым сайце з жменькай серверных налад і інтэрфейсу."
+
+#. Author of the plugin/theme
+msgid "AccessPress Themes"
+msgstr "AccessPress Тэмы"
+
+#. Author URI of the plugin/theme
+msgid "http://accesspressthemes.com"
+msgstr "http://accesspressthemes.com"
+
+#. #-#-#-#-#  tmp-accesspress-social-counter.pot (AccessPress Social Counter
+#. 1.4.3)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: accesspress-social-counter.php:79 inc/backend/boards/about.php:26
+#: inc/backend/boards/about.php:33 inc/backend/settings.php:12
+#: inc/backend/settings.php:35 inc/backend/widget.php:14
+msgid "AccessPress Social Counter"
+msgstr "AccessPress Social Counter"
+
+#: accesspress-social-counter.php:150
+msgid "Default Settings Restored Successfully"
+msgstr "Налады па змаўчанні паспяхова адноўленыя"
+
+#: accesspress-social-counter.php:204
+msgid "Cache Deleted Successfully"
+msgstr "Кэш паспяхова выдалены"
+
+#: inc/backend/boards/cache-settings.php:4
+msgid "Cache Period"
+msgstr "Перыяд кэша"
+
+#: inc/backend/boards/cache-settings.php:7
+msgid "Please enter the time in hours in which the count should be updated.Default is 24 hours"
+msgstr "Калі ласка, увядзіце час у гадзінах, у якім лічыльнік павінен быць абноўлены. Па змаўчанні складае 24 гадзіны."
+
+#: inc/backend/boards/display-settings.php:4
+msgid "Social Profile Order"
+msgstr "Сацыяльны профіль Заказа"
+
+#: inc/backend/boards/display-settings.php:32
+#: inc/backend/boards/floating-sidebar.php:22
+msgid "Choose Theme"
+msgstr "Выбраць тэму"
+
+#: inc/backend/boards/display-settings.php:35
+#: inc/backend/boards/floating-sidebar.php:24
+msgid "Theme 1"
+msgstr "Тэма 1"
+
+#: inc/backend/boards/display-settings.php:39
+#: inc/backend/boards/floating-sidebar.php:25
+msgid "Theme 2"
+msgstr "Тэма 2"
+
+#: inc/backend/boards/display-settings.php:43
+#: inc/backend/boards/floating-sidebar.php:26
+msgid "Theme 3"
+msgstr "Тэма 3"
+
+#: inc/backend/boards/display-settings.php:47
+#: inc/backend/boards/floating-sidebar.php:27
+msgid "Theme 4"
+msgstr "Тэма 4"
+
+#: inc/backend/boards/display-settings.php:51
+#: inc/backend/boards/floating-sidebar.php:28
+msgid "Theme 5"
+msgstr "Тэма 5"
+
+#: inc/backend/boards/display-settings.php:57
+msgid "Counter Format"
+msgstr "Фармат лічыльніка"
+
+#: inc/backend/boards/display-settings.php:71
+msgid "Disable Font CSS"
+msgstr "Адключэнне шрыфта CSS"
+
+#: inc/backend/boards/display-settings.php:73
+msgid "Check if you want to disable the font awesome css of our plugin"
+msgstr "Праверце, калі вы хочаце адключыць які-небудзь шрыфт CSS вашага плагіна"
+
+#: inc/backend/boards/display-settings.php:77
+msgid "Disable Frontend CSS"
+msgstr "Адключыць Frontend CSS"
+
+#: inc/backend/boards/display-settings.php:79
+msgid "Check if you want to disable all the frontend css of our plugin"
+msgstr "Праверце, калі вы хочаце адключыць усе ў вонкавым інтэрфейсе CSS  плагіна"
+
+#: inc/backend/boards/floating-sidebar.php:2
+msgid "Floating Sidebar Settings"
+msgstr "Плаваюць налады бакавой панэлі"
+
+#: inc/backend/boards/floating-sidebar.php:4
+msgid "Enable Floating Sidebar"
+msgstr "Уключыць Floating бакавую панэль"
+
+#: inc/backend/boards/floating-sidebar.php:7
+msgid "Check if you want to show floating sidebar in the frontend"
+msgstr "Праверце, калі вы хочаце паказаць бакавую панэль, якая плавае ў вэб-інтэрфейсе"
+
+#: inc/backend/boards/floating-sidebar.php:12
+msgid "Show sidebar in"
+msgstr "Паказаць бакавую панэль у"
+
+#: inc/backend/boards/floating-sidebar.php:15
+msgid "All pages"
+msgstr "Усе старонкі"
+
+#: inc/backend/boards/floating-sidebar.php:16
+msgid "Only on homepage"
+msgstr "Толькі на галоўнай старонцы"
+
+#: inc/backend/boards/floating-sidebar.php:17
+msgid "Except homepage"
+msgstr "За выключэннем галоўнай старонцы"
+
+#: inc/backend/boards/floating-sidebar.php:32
+msgid "Show Tooltip"
+msgstr "Паказаць падказцы"
+
+#: inc/backend/boards/floating-sidebar.php:34
+msgid "Check if you want to show tooltip"
+msgstr "Праверце, калі вы хочаце паказаць усплывальную падказку"
+
+#: inc/backend/boards/floating-sidebar.php:38
+msgid "Tooltip Background Color"
+msgstr "Колер фону падказкі"
+
+#: inc/backend/boards/floating-sidebar.php:44
+msgid "Tooltip Text Color"
+msgstr "Колер тэксту падказкі"
+
+#: inc/backend/boards/social-profiles.php:5
+msgid "Facebook"
+msgstr "Facebook"
+
+#: inc/backend/boards/social-profiles.php:7
+#: inc/backend/boards/social-profiles.php:36
+#: inc/backend/boards/social-profiles.php:85
+#: inc/backend/boards/social-profiles.php:112
+#: inc/backend/boards/social-profiles.php:149
+#: inc/backend/boards/social-profiles.php:190
+#: inc/backend/boards/social-profiles.php:217
+#: inc/backend/boards/social-profiles.php:237
+#: inc/backend/boards/social-profiles.php:248
+msgid "Display Counter"
+msgstr "Адлюстраваць лічыльнік"
+
+#: inc/backend/boards/social-profiles.php:8
+#: inc/backend/boards/social-profiles.php:37
+#: inc/backend/boards/social-profiles.php:86
+#: inc/backend/boards/social-profiles.php:113
+#: inc/backend/boards/social-profiles.php:150
+#: inc/backend/boards/social-profiles.php:191
+#: inc/backend/boards/social-profiles.php:218
+#: inc/backend/boards/social-profiles.php:238
+#: inc/backend/boards/social-profiles.php:249
+msgid "Show/Hide"
+msgstr "Паказваць/хаваць"
+
+#: inc/backend/boards/social-profiles.php:12
+msgid "Facebook Page ID"
+msgstr "ID старонкі Facebook"
+
+#: inc/backend/boards/social-profiles.php:15
+msgid "Please enter the page ID or page name.For example:If your page url is https://www.facebook.com/AccessPressThemes then your page ID is AccessPressThemes."
+msgstr "Калі ласка, увядзіце ID або імя старонкі. Напрыклад: Калі URL старонкі  з'яўляецца https://www.facebook.com/AccessPressThemes,  то ID з'яўляецца AccessPressThemes."
+
+#: inc/backend/boards/social-profiles.php:20
+msgid "Facebook Default Count"
+msgstr "Па змаўчанні Count facebook"
+
+#: inc/backend/boards/social-profiles.php:23
+msgid "Please enter the default count for facebook to show whenever the API is unavailable."
+msgstr "Калі ласка, увядзіце па змаўчанні  колькасць для Facebook, каб паказаць кожны раз, калі API недаступны."
+
+#: inc/backend/boards/social-profiles.php:28
+msgid "Please use: [aps-get-count social_media=\"facebook\"] to get the Facebook Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце: [aps-get-count social_media=\"facebook\"] , каб атрымаць толькі Facebook Count. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"comma\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:34
+msgid "Twitter"
+msgstr "Twitter"
+
+#: inc/backend/boards/social-profiles.php:41
+msgid "Twitter Username"
+msgstr "Імя карыстальніка Twitter"
+
+#: inc/backend/boards/social-profiles.php:44
+msgid "Please enter the twitter username.For example:apthemes"
+msgstr "Калі ласка, увядзіце імя карыстальніка Twitter. Напрыклад: appthemes"
+
+#: inc/backend/boards/social-profiles.php:48
+msgid "Twitter Consumer Key"
+msgstr "Ключ карыстальніка Twitter"
+
+#: inc/backend/boards/social-profiles.php:51
+#: inc/backend/boards/social-profiles.php:58
+#: inc/backend/boards/social-profiles.php:65
+#: inc/backend/boards/social-profiles.php:72
+msgid "Please create an app on Twitter through this link:"
+msgstr "Калі ласка, стварыць прыкладанне для Twitter па гэтай спасылцы:"
+
+#: inc/backend/boards/social-profiles.php:51
+#: inc/backend/boards/social-profiles.php:58
+#: inc/backend/boards/social-profiles.php:65
+#: inc/backend/boards/social-profiles.php:72
+msgid " and get this information."
+msgstr "і атрымйаце гэтую інфармацыю."
+
+#: inc/backend/boards/social-profiles.php:55
+msgid "Twitter Consumer Secret"
+msgstr "Сакрэт карастальніка Twitter"
+
+#: inc/backend/boards/social-profiles.php:62
+msgid "Twitter Access Token"
+msgstr "Знак доступу Twitter"
+
+#: inc/backend/boards/social-profiles.php:69
+msgid "Twitter Access Token Secret"
+msgstr "Сакрэтны знак доступу Twitter "
+
+#: inc/backend/boards/social-profiles.php:77
+msgid "Please use: [aps-get-count social_media=\"twitter\"] to get the Twitter Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце:[aps-get-count social_media=\"twitter\"], каб атрымаць толькі Twitter Count. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"comma\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:83
+msgid "Google Plus"
+msgstr "Google Plus"
+
+#: inc/backend/boards/social-profiles.php:90
+msgid "Google Plus Page Name or Profile ID"
+msgstr "Назва старонкі або профіль ID  Google Plus"
+
+#: inc/backend/boards/social-profiles.php:93
+msgid "Please enter the page name or profile ID.For example:If your page url is https://plus.google.com/+BBCNews then your page name is +BBCNews"
+msgstr "Калі ласка, увядзіце імя старонкі або ID профілю. Напрыклад: Калі URL старонкі будзе https://plus.google.com/+BBCNews,  тады ваша імя старонкі + BBCNews"
+
+#: inc/backend/boards/social-profiles.php:97
+msgid "Google API Key"
+msgstr "Google API Key"
+
+#: inc/backend/boards/social-profiles.php:100
+msgid "To get your API Key, first create a project/app in <a href=\"https://console.developers.google.com/project\" target=\"_blank\">https://console.developers.google.com/project</a> and then turn on Google+ API from \"APIs & auth >APIs inside your project.Then again go to \"APIs & auth > APIs > Credentials > Public API access\" and then click \"CREATE A NEW KEY\" button, select the \"Browser key\" option and click in the \"CREATE\" button, and then copy your API key and paste in above field."
+msgstr "Каб атрымаць ключ API, спачатку неабходна стварыць праект/дадатак у <a href=\"https://console.developers.google.com/project\" target=\"_blank\">https://console.developers.google.com/project</a> , а затым уключыце Google+ API from \"APIs & auth >, APIs унутры вашага праекта. затым зноў перайдзіце ў раздзел \"APIs & auth > APIs > Credentials > Public API access\" , а затым націсніце кнопку\"CREATE A NEW KEY\", выберыце опцыю Browser key\"  і націсніце на кнопку \"CREATE\", а затым скапіяваць ключ API і ўставіць у поле вышэй."
+
+#: inc/backend/boards/social-profiles.php:104
+msgid "Please use: [aps-get-count social_media=\"googlePlus\"] to get the Google Plus Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце: [aps-get-count social_media=\"googlePlus\"], каб атрымаць Google Plus Count толькі. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"comma\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:110
+msgid "Instagram"
+msgstr "Instagram"
+
+#: inc/backend/boards/social-profiles.php:117
+msgid "Instagram Username"
+msgstr "Імя карыстальніка Instagram"
+
+#: inc/backend/boards/social-profiles.php:120
+msgid "Please enter the instagram username"
+msgstr "Калі ласка, увядзіце імя карыстальніка Instagram"
+
+#: inc/backend/boards/social-profiles.php:124
+msgid "Instagram User ID"
+msgstr "ID карыстальніка Instagram"
+
+#: inc/backend/boards/social-profiles.php:127
+msgid "Please enter the instagram user ID.You can get this information from <a href=\"http://www.pinceladasdaweb.com.br/instagram/access-token/\" target=\"_blank\">http://www.pinceladasdaweb.com.br/instagram/access-token/</a>"
+msgstr "Калі ласка, увядзіце карыстальніка Instagram ID. Вы можаце атрымаць гэтую інфармацыю ад <a href=\"http://www.pinceladasdaweb.com.br/instagram/access-token/\" target=\"_blank\">http://www.pinceladasdaweb.com.br/instagram/access-token/</a>"
+
+#: inc/backend/boards/social-profiles.php:131
+msgid "Instagram Access Token"
+msgstr "Знак доступу Instagram"
+
+#: inc/backend/boards/social-profiles.php:134
+msgid "Please enter the instagram Access Token.You can get this information from <a href=\"http://www.pinceladasdaweb.com.br/instagram/access-token/\" target=\"_blank\">http://www.pinceladasdaweb.com.br/instagram/access-token/</a>"
+msgstr "Калі ласка, увядзіце знак доступу Instagram. Вы можаце атрымаць гэтую інфармацыю з <a href=\"http://www.pinceladasdaweb.com.br/instagram/access-token/\" target=\"_blank\">http://www.pinceladasdaweb.com.br/instagram/access-token/</a>"
+
+#: inc/backend/boards/social-profiles.php:138
+msgid "Please use: [aps-get-count social_media=\"instagram\"] to get the Instagram Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце: [aps-get-count social_media=\"instagram\"], каб атрымаць Instagram Count толькі. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"comma\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:144
+msgid "Youtube"
+msgstr "Youtube"
+
+#: inc/backend/boards/social-profiles.php:146
+msgid "Note: We have updated the functionality to work with youtube API v3 for automatic count update. So please fill the necessary credentials below."
+msgstr "Заўвага: Мы абнавілі функцыянальныя магчымасці для працы з YouTube API v3 для аўтаматычнага абнаўлення акаўнта. Таму, калі ласка, запоўніце неабходныя уліковыя дадзеныя ніжэй."
+
+#: inc/backend/boards/social-profiles.php:154
+msgid "Youtube Channel ID"
+msgstr " ID канала Youtube"
+
+#: inc/backend/boards/social-profiles.php:157
+msgid "Please enter the youtube channel ID.Your channel ID looks like: UC4WMyzBds5sSZcQxyAhxJ8g. And please note that your channel ID is different from username.Please go <a href=\"https://support.google.com/youtube/answer/3250431?hl=en\" target=\"_blank\">here</a> to know how to get your channel ID."
+msgstr "Калі ласка, увядзіце канал ID канала YouTube. Ваш ID выглядае наступным чынам: UC4WMyzBds5sSZcQxyAhxJ8g. І да вашага ведама, што ваш ID канала адрозніваецца ад імя. калі ласка прайдзіце <a href=\"https://support.google.com/youtube/answer/3250431?hl=en\" target=\"_blank\"> сюды </a> каб даведацца, як атрымаць ID канала."
+
+#: inc/backend/boards/social-profiles.php:161
+msgid "Youtube Channel URL"
+msgstr "URL канала Youtube"
+
+#: inc/backend/boards/social-profiles.php:164
+msgid "Please enter the youtube channel URL.For example:https://www.youtube.com/user/accesspressthemes"
+msgstr "Калі ласка, увядзіце URL канала YouTube. Напрыклад: https://www.youtube.com/user/accesspressthemes"
+
+#: inc/backend/boards/social-profiles.php:168
+msgid "Youtube API Key"
+msgstr "Ключ API Youtube"
+
+#: inc/backend/boards/social-profiles.php:171
+msgid "To get your API Key, first create a project/app in <a href=\"https://console.developers.google.com/project\" target=\"_blank\">https://console.developers.google.com/project</a> and then turn on both Youtube Data and Analytics API from \"APIs & auth >APIs inside your project.Then again go to \"APIs & auth > APIs > Credentials > Public API access\" and then click \"CREATE A NEW KEY\" button, select the \"Browser key\" option and click in the \"CREATE\" button, and then copy your API key and paste in above field."
+msgstr "Каб атрымаць ключ API, спачатку неабходна стварыць праект / дадатак у <a href=\"https://console.developers.google.com/project\" target=\"_blank\">https://console.developers.google.com/project</a> і затым уключыце Youtube Data і Analytics API from \"APIs & auth >APIs ўнутры вашага праекта. Затым зноў перайдзіце ў раздзел\"APIs & auth > APIs > Credentials > Public API access\" , а затым націсніце кнопку\"стварыць новы ключ\", абярыце опцыю\"Browser key\" і націсніце кнопку ''Стварыць\", а затым скапіяваць ключ API і ўставіць у поле вышэй."
+
+#: inc/backend/boards/social-profiles.php:175
+msgid "Default Subscribers Count"
+msgstr "Subscribers Count па змаўчанні"
+
+#: inc/backend/boards/social-profiles.php:178
+msgid "Please enter total number of subscribers that your youtube channel has in case the API fetching is failed for automatic update."
+msgstr "Калі ласка, увядзіце агульная колькасць абанентаў вашага канал YouTube, на выпадак наўдалага аўтаматычнага  абнаўлення."
+
+#: inc/backend/boards/social-profiles.php:182
+msgid "Please use: [aps-get-count social_media=\"youtube\"] to get the Youtube Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце:  [aps-get-count social_media=\"youtube\"], каб атрымаць Youtube Count толькі. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца \"short\" для скарочанага фармата і \"comma\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:188
+msgid "Sound Cloud"
+msgstr "Sound Cloud"
+
+#: inc/backend/boards/social-profiles.php:195
+msgid "SoundCloud Username"
+msgstr "Імя карыстальніка SoundCloud"
+
+#: inc/backend/boards/social-profiles.php:198
+msgid "Please enter the SoundCloud username.For example:bchettri"
+msgstr "Калі ласка, увядзіце імя карыстальніка SoundCloud. Напрыклад: chettri"
+
+#: inc/backend/boards/social-profiles.php:202
+msgid "SoundCloud Client ID"
+msgstr " ID кліента SoundCloud"
+
+#: inc/backend/boards/social-profiles.php:205
+msgid "Please enter the SoundCloud APP Client ID.You can get this information from <a href=\"http://soundcloud.com/you/apps/new\">http://soundcloud.com/you/apps/new</a> after creating a new app"
+msgstr "Калі ласка, увядзіце ID Client SoundCloud APP. Вы можаце атрымаць гэтую інфармацыю ад <a href=\"http://soundcloud.com/you/apps/new\">http://soundcloud.com/you/apps/new</a> пасля стварэння новага прыкладання"
+
+#: inc/backend/boards/social-profiles.php:209
+msgid "Please use: [aps-get-count social_media=\"soundcloud\"] to get the SoundCloud Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце: [aps-get-count social_media=\"soundcloud\"] , каб атрымаць SoundCloud граф толькі. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фармат з'яўляюцца \"кароткі\" для скарочанага фармат і \"коска\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:215
+msgid "Dribbble"
+msgstr "Dribbble"
+
+#: inc/backend/boards/social-profiles.php:222
+msgid "Dribbble Username"
+msgstr "Імя карыстальніка Dribbble"
+
+#: inc/backend/boards/social-profiles.php:225
+msgid "Please enter your dribbble username.For example:Creativedash"
+msgstr "Калі ласка, увядзіце ваша імя карыстальніка Dribbble. Напрыклад: Creativedash"
+
+#: inc/backend/boards/social-profiles.php:229
+msgid "Please use: [aps-get-count social_media=\"dribbble\"] to get the Dribbble Count only.You can also pass count_format parameter too in this shortcode to format your count.Formats are \"short\" for abbreviated format and \"comma\" for comma separated formats."
+msgstr "Калі ласка, выкарыстоўвайце:[aps-get-count social_media=\"dribbble\"], каб атрымаць толькі Dribbble Count. Вы можаце таксама перадаць параметр count_format таксама ў гэтым шорткодом адфарматаваць Ваш падлік. Фарматы з'яўляюцца\"short\" для скарочанага фармата і \"comma\" для падзеленых коскамі фарматаў."
+
+#: inc/backend/boards/social-profiles.php:235
+msgid "Posts"
+msgstr "Пост"

@@ -1,0 +1,72 @@
+// =============================================================================
+// _VARIABLES.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. TCO Common Selectize Variables
+// =============================================================================
+
+// TCO Common Selectize Variables
+// =============================================================================
+
+$selectize-font-family:                               inherit;
+$selectize-font-smoothing:                            inherit;
+$selectize-font-size:                                 $base-form-font-size;
+$selectize-line-height:                               $base-form-line-height;
+
+$selectize-color-text:                                $color-text;
+$selectize-color-border:                              $base-form-border-color;
+$selectize-color-highlight:                           rgba(125, 168, 208, 0.2);
+$selectize-color-input:                               $white;
+$selectize-color-input-full:                          $selectize-color-input;
+$selectize-color-disabled:                            #fafafa;
+
+$selectize-color-item:                                $color-yep;
+$selectize-color-item-text:                           $white;
+$selectize-color-item-active-text:                    $white;
+$selectize-color-item-border:                         rgba($black, 0.2);
+$selectize-color-item-active:                         $selectize-color-item;
+$selectize-color-item-active-border:                  $selectize-color-item-border;
+
+$selectize-color-dropdown:                            $white;
+$selectize-color-dropdown-border:                     $selectize-color-border;
+$selectize-color-dropdown-border-top:                 lighten($selectize-color-border, 10%);
+$selectize-color-dropdown-item-active:                #f5f5f5;
+$selectize-color-dropdown-item-active-text:           $color-text;
+$selectize-color-dropdown-item-create-text:           rgba(red($selectize-color-text), green($selectize-color-text), blue($selectize-color-text), 0.5);
+$selectize-color-dropdown-item-create-active-text:    $selectize-color-dropdown-item-active-text;
+$selectize-color-optgroup:                            $selectize-color-dropdown;
+$selectize-color-optgroup-text:                       $selectize-color-text;
+$selectize-lighten-disabled-item:                     30%;
+$selectize-lighten-disabled-item-text:                30%;
+$selectize-lighten-disabled-item-border:              30%;
+$selectize-opacity-disabled:                          0.5;
+
+$selectize-shadow-input:                              $base-form-box-shadow;
+$selectize-shadow-input-focus:                        $base-form-box-shadow;
+$selectize-border:                                    1px solid $selectize-color-border;
+$selectize-dropdown-border:                           1px solid $selectize-color-dropdown-border;
+$selectize-border-radius:                             $base-form-border-radius;
+
+$selectize-width-item-border:                         1px;
+$selectize-max-height-dropdown:                       200px;
+
+$selectize-padding-x:                                 8px;
+$selectize-padding-y:                                 8px;
+$selectize-padding-item-x:                            6px;
+$selectize-padding-item-y:                            2px;
+$selectize-padding-dropdown-item-x:                   $selectize-padding-x;
+$selectize-padding-dropdown-item-y:                   5px;
+$selectize-margin-item-x:                             3px;
+$selectize-margin-item-y:                             3px;
+
+$selectize-arrow-size:                                5px;
+$selectize-arrow-color:                               #808080;
+$selectize-arrow-offset:                              15px;
+
+$selectize-caret-margin:                              0 1px;
+$selectize-caret-margin-rtl:                          0 4px 0 -2px;

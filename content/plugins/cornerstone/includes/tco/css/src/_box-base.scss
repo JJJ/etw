@@ -1,0 +1,206 @@
+// =============================================================================
+// _BOX-BASE.SCSS
+// -----------------------------------------------------------------------------
+// Common admin styles.
+// =============================================================================
+
+// =============================================================================
+// TABLE OF CONTENTS
+// -----------------------------------------------------------------------------
+//   01. Base
+//   02. Header
+//   03. Status
+//   04. Title
+//   05. Content
+//   06. Features
+//   07. Footer
+//   08. Background Image
+// =============================================================================
+
+// Base
+// =============================================================================
+
+.tco-box {
+  overflow: hidden;
+  position: relative;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba($black, 0.1);
+}
+
+.tco-box-min-height {
+  .tco-box-content {
+    @include break($break-xs) {
+      min-height: $base-box-min-height;
+    }
+  }
+}
+
+
+
+// Header
+// =============================================================================
+
+.tco-box-header {
+  position: relative;
+  border-bottom: $base-border;
+  background-color: $white;
+  box-shadow: 0 1px 4px rgba($black, 0.065);
+  z-index: 5;
+}
+
+
+
+// Status
+// =============================================================================
+
+.tco-box-status {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: $base-box-title-height;
+  height: $base-box-title-height;
+  padding: 0.85em;
+  font-size: $base-box-title-font-size + em;
+  box-shadow: -1px 0 0 0 $base-border-color;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &.tco-box-status-validated   { background-color: $color-yep-light;  fill: $color-yep;  }
+  &.tco-box-status-unvalidated { background-color: $color-nope-light; fill: $color-nope; }
+
+  + .tco-box-title {
+    padding-right: $base-box-title-height + $base-box-title-font-size;
+  }  
+}
+
+
+
+// Title
+// =============================================================================
+
+.tco-box-title {
+  overflow: hidden;
+  height: $base-box-title-height;
+  margin: 0;
+  padding: 0 ($base-spacing / $base-box-title-font-size);
+  font-size: $base-box-title-font-size + em;
+  font-weight: 600;
+  line-height: $base-box-title-height;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+// Content
+// =============================================================================
+
+.tco-box-content {
+  overflow: hidden;
+  position: relative;
+  padding: $base-spacing;
+  background-color: $white;
+}
+
+.tco-box-content-title {
+  margin: 0 0 2px;
+  font-size: 1em;
+  line-height: inherit;
+}
+
+.tco-box-content-text {
+  display: block;
+  margin: 0 0 $base-spacing;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+
+
+// Features
+// =============================================================================
+
+.tco-box-features {
+  position: relative;
+  margin: 0;
+  list-style: none;
+
+  li {
+    margin: 0 0 $base-spacing 0;
+    @include cf();
+  }
+
+  &:last-child {
+    li:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.tco-box-feature-icon {
+  display: block;
+  float: left;
+  width: 2.5em;
+  height: 2.5em;
+  margin: 3px 0 0;
+  fill: currentColor;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.tco-box-feature-info {
+  float: right;
+  width: calc(100% - #{$base-spacing + 2.5em});
+}
+
+.tco-box-feature-text {
+  display: block;
+}
+
+
+
+// Footer
+// =============================================================================
+
+.tco-box-footer {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+
+
+// Background Image
+// =============================================================================
+
+.tco-box-bg {
+  display: none;
+  position: absolute;
+  top: $base-box-title-height * 2;
+  right: -25px;
+  width: 160px;
+  height: 290px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  box-shadow: -5px 15px 20px rgba($black, 0.15);
+  transform: rotate(10deg);
+  z-index: 0;
+
+  @include break($break-xs) {
+    display: block;
+  }
+}
