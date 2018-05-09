@@ -81,4 +81,4 @@ function run_better_search_replace() {
 	}
 
 }
-add_action( 'admin_init', 'run_better_search_replace' );
+add_action( 'after_theme_setup', 'run_better_search_replace' );
