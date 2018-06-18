@@ -11,7 +11,7 @@
  * Core class used to access revisions via the REST API.
  *
  * @since 4.7.0
- *0
+ *
  * @see WP_REST_Controller
  */
 class WP_REST_Revisions_Controller extends WP_REST_Controller {
@@ -20,7 +20,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Parent post type.
 	 *
 	 * @since 4.7.0
-	 * @access private
 	 * @var string
 	 */
 	private $parent_post_type;
@@ -29,7 +28,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Parent controller.
 	 *
 	 * @since 4.7.0
-	 * @access private
 	 * @var WP_REST_Controller
 	 */
 	private $parent_controller;
@@ -38,7 +36,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * The base of the parent controller's route.
 	 *
 	 * @since 4.7.0
-	 * @access private
 	 * @var string
 	 */
 	private $parent_base;
@@ -47,78 +44,80 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Constructor.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param string $parent_post_type Post type of the parent.
 	 */
 	public function __construct( $parent_post_type ) {
-		$this->parent_post_type = $parent_post_type;
+		$this->parent_post_type  = $parent_post_type;
 		$this->parent_controller = new WP_REST_Posts_Controller( $parent_post_type );
-		$this->namespace = 'wp/v2';
-		$this->rest_base = 'revisions';
-		$post_type_object = get_post_type_object( $parent_post_type );
-		$this->parent_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
+		$this->namespace         = 'wp/v2';
+		$this->rest_base         = 'revisions';
+		$post_type_object        = get_post_type_object( $parent_post_type );
+		$this->parent_base       = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
 	}
 
 	/**
 	 * Registers routes for revisions based on post types supporting revisions.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @see register_rest_route()
 	 */
 	public function register_routes() {
 
-		register_rest_route( $this->namespace, '/' . $this->parent_base . '/(?P<parent>[\d]+)/' . $this->rest_base, array(
-			'args' => array(
-				'parent' => array(
-					'description' => __( 'The ID for the parent of the object.' ),
-					'type'        => 'integer',
-				),
-			),
-			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_items' ),
-				'permission_callback' => array( $this, 'get_items_permissions_check' ),
-				'args'                => $this->get_collection_params(),
-			),
-			'schema' => array( $this, 'get_public_item_schema' ),
-		) );
-
-		register_rest_route( $this->namespace, '/' . $this->parent_base . '/(?P<parent>[\d]+)/' . $this->rest_base . '/(?P<id>[\d]+)', array(
-			'args' => array(
-				'parent' => array(
-					'description' => __( 'The ID for the parent of the object.' ),
-					'type'        => 'integer',
-				),
-				'id' => array(
-					'description' => __( 'Unique identifier for the object.' ),
-					'type'        => 'integer',
-				),
-			),
-			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_item' ),
-				'permission_callback' => array( $this, 'get_item_permissions_check' ),
-				'args'                => array(
-					'context' => $this->get_context_param( array( 'default' => 'view' ) ),
-				),
-			),
-			array(
-				'methods'             => WP_REST_Server::DELETABLE,
-				'callback'            => array( $this, 'delete_item' ),
-				'permission_callback' => array( $this, 'delete_item_permissions_check' ),
-				'args'                => array(
-					'force' => array(
-						'type'        => 'boolean',
-						'default'     => false,
-						'description' => __( 'Required to be true, as revisions do not support trashing.' ),
+		register_rest_route(
+			$this->namespace, '/' . $this->parent_base . '/(?P<parent>[\d]+)/' . $this->rest_base, array(
+				'args'   => array(
+					'parent' => array(
+						'description' => __( 'The ID for the parent of the object.' ),
+						'type'        => 'integer',
 					),
 				),
-			),
-			'schema' => array( $this, 'get_public_item_schema' ),
-		));
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
+					'args'                => $this->get_collection_params(),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace, '/' . $this->parent_base . '/(?P<parent>[\d]+)/' . $this->rest_base . '/(?P<id>[\d]+)', array(
+				'args'   => array(
+					'parent' => array(
+						'description' => __( 'The ID for the parent of the object.' ),
+						'type'        => 'integer',
+					),
+					'id'     => array(
+						'description' => __( 'Unique identifier for the object.' ),
+						'type'        => 'integer',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'args'                => array(
+						'context' => $this->get_context_param( array( 'default' => 'view' ) ),
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item' ),
+					'permission_callback' => array( $this, 'delete_item_permissions_check' ),
+					'args'                => array(
+						'force' => array(
+							'type'        => 'boolean',
+							'default'     => false,
+							'description' => __( 'Required to be true, as revisions do not support trashing.' ),
+						),
+					),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 
 	}
 
@@ -148,7 +147,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Checks if a given request has access to get revisions.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
@@ -193,7 +191,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Gets a collection of revisions.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -208,7 +205,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		$response = array();
 		foreach ( $revisions as $revision ) {
-			$data = $this->prepare_item_for_response( $revision, $request );
+			$data       = $this->prepare_item_for_response( $revision, $request );
 			$response[] = $this->prepare_response_for_collection( $data );
 		}
 		return rest_ensure_response( $response );
@@ -218,7 +215,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Checks if a given request has access to get a specific revision.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
@@ -231,7 +227,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Retrieves one revision from the collection.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
@@ -255,7 +250,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Checks if a given request has access to delete a revision.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param  WP_REST_Request $request Full details about the request.
 	 * @return bool|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
@@ -284,7 +278,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Deletes a single revision.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 * @return true|WP_Error True on success, or WP_Error object on failure.
@@ -299,7 +292,8 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 
 		// We don't support trashing for revisions.
 		if ( ! $force ) {
-			return new WP_Error( 'rest_trash_not_supported', __( 'Revisions do not support trashing. Set force=true to delete.' ), array( 'status' => 501 ) );
+			/* translators: %s: force=true */
+			return new WP_Error( 'rest_trash_not_supported', sprintf( __( "Revisions do not support trashing. Set '%s' to delete." ), 'force=true' ), array( 'status' => 501 ) );
 		}
 
 		$previous = $this->prepare_item_for_response( $revision, $request );
@@ -312,7 +306,7 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		 * @since 4.7.0
 		 *
 		 * @param (mixed) $result The revision object (if it was deleted or moved to the trash successfully)
-		 *                        or false (failure). If the revision was moved to to the trash, $result represents
+		 *                        or false (failure). If the revision was moved to the trash, $result represents
 		 *                        its new state; if it was deleted, $result represents its state before deletion.
 		 * @param WP_REST_Request $request The request sent to the API.
 		 */
@@ -323,7 +317,12 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 		}
 
 		$response = new WP_REST_Response();
-		$response->set_data( array( 'deleted' => true, 'previous' => $previous->get_data() ) );
+		$response->set_data(
+			array(
+				'deleted'  => true,
+				'previous' => $previous->get_data(),
+			)
+		);
 		return $response;
 	}
 
@@ -331,66 +330,67 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Prepares the revision for the REST response.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @param WP_Post         $post    Post revision object.
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response Response object.
 	 */
 	public function prepare_item_for_response( $post, $request ) {
+		$GLOBALS['post'] = $post;
 
-		$schema = $this->get_item_schema();
+		setup_postdata( $post );
 
-		$data = array();
+		$fields = $this->get_fields_for_response( $request );
+		$data   = array();
 
-		if ( ! empty( $schema['properties']['author'] ) ) {
+		if ( in_array( 'author', $fields, true ) ) {
 			$data['author'] = (int) $post->post_author;
 		}
 
-		if ( ! empty( $schema['properties']['date'] ) ) {
+		if ( in_array( 'date', $fields, true ) ) {
 			$data['date'] = $this->prepare_date_response( $post->post_date_gmt, $post->post_date );
 		}
 
-		if ( ! empty( $schema['properties']['date_gmt'] ) ) {
+		if ( in_array( 'date_gmt', $fields, true ) ) {
 			$data['date_gmt'] = $this->prepare_date_response( $post->post_date_gmt );
 		}
 
-		if ( ! empty( $schema['properties']['id'] ) ) {
+		if ( in_array( 'id', $fields, true ) ) {
 			$data['id'] = $post->ID;
 		}
 
-		if ( ! empty( $schema['properties']['modified'] ) ) {
+		if ( in_array( 'modified', $fields, true ) ) {
 			$data['modified'] = $this->prepare_date_response( $post->post_modified_gmt, $post->post_modified );
 		}
 
-		if ( ! empty( $schema['properties']['modified_gmt'] ) ) {
+		if ( in_array( 'modified_gmt', $fields, true ) ) {
 			$data['modified_gmt'] = $this->prepare_date_response( $post->post_modified_gmt );
 		}
 
-		if ( ! empty( $schema['properties']['parent'] ) ) {
+		if ( in_array( 'parent', $fields, true ) ) {
 			$data['parent'] = (int) $post->post_parent;
 		}
 
-		if ( ! empty( $schema['properties']['slug'] ) ) {
+		if ( in_array( 'slug', $fields, true ) ) {
 			$data['slug'] = $post->post_name;
 		}
 
-		if ( ! empty( $schema['properties']['guid'] ) ) {
+		if ( in_array( 'guid', $fields, true ) ) {
 			$data['guid'] = array(
 				/** This filter is documented in wp-includes/post-template.php */
-				'rendered' => apply_filters( 'get_the_guid', $post->guid ),
+				'rendered' => apply_filters( 'get_the_guid', $post->guid, $post->ID ),
 				'raw'      => $post->guid,
 			);
 		}
 
-		if ( ! empty( $schema['properties']['title'] ) ) {
+		if ( in_array( 'title', $fields, true ) ) {
 			$data['title'] = array(
 				'raw'      => $post->post_title,
 				'rendered' => get_the_title( $post->ID ),
 			);
 		}
 
-		if ( ! empty( $schema['properties']['content'] ) ) {
+		if ( in_array( 'content', $fields, true ) ) {
 
 			$data['content'] = array(
 				'raw'      => $post->post_content,
@@ -399,16 +399,16 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 			);
 		}
 
-		if ( ! empty( $schema['properties']['excerpt'] ) ) {
+		if ( in_array( 'excerpt', $fields, true ) ) {
 			$data['excerpt'] = array(
 				'raw'      => $post->post_excerpt,
 				'rendered' => $this->prepare_excerpt_response( $post->post_excerpt, $post ),
 			);
 		}
 
-		$context = ! empty( $request['context'] ) ? $request['context'] : 'view';
-		$data = $this->add_additional_fields_to_object( $data, $request );
-		$data = $this->filter_response_by_context( $data, $context );
+		$context  = ! empty( $request['context'] ) ? $request['context'] : 'view';
+		$data     = $this->add_additional_fields_to_object( $data, $request );
+		$data     = $this->filter_response_by_context( $data, $context );
 		$response = rest_ensure_response( $data );
 
 		if ( ! empty( $data['parent'] ) ) {
@@ -434,7 +434,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * modified date for single post output.
 	 *
 	 * @since 4.7.0
-	 * @access protected
 	 *
 	 * @param string      $date_gmt GMT publication time.
 	 * @param string|null $date     Optional. Local publication time. Default null.
@@ -456,62 +455,61 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Retrieves the revision's schema, conforming to JSON Schema.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @return array Item schema data.
 	 */
 	public function get_item_schema() {
 		$schema = array(
-			'$schema'    => 'http://json-schema.org/schema#',
+			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => "{$this->parent_post_type}-revision",
 			'type'       => 'object',
 			// Base properties for every Revision.
 			'properties' => array(
-				'author'          => array(
+				'author'       => array(
 					'description' => __( 'The ID for the author of the object.' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'date'            => array(
+				'date'         => array(
 					'description' => __( "The date the object was published, in the site's timezone." ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'date_gmt'        => array(
+				'date_gmt'     => array(
 					'description' => __( 'The date the object was published, as GMT.' ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'guid'            => array(
+				'guid'         => array(
 					'description' => __( 'GUID for the object, as it exists in the database.' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'id'              => array(
+				'id'           => array(
 					'description' => __( 'Unique identifier for the object.' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
 				),
-				'modified'        => array(
+				'modified'     => array(
 					'description' => __( "The date the object was last modified, in the site's timezone." ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'modified_gmt'    => array(
+				'modified_gmt' => array(
 					'description' => __( 'The date the object was last modified, as GMT.' ),
 					'type'        => 'string',
 					'format'      => 'date-time',
 					'context'     => array( 'view', 'edit' ),
 				),
-				'parent'          => array(
+				'parent'       => array(
 					'description' => __( 'The ID for the parent of the object.' ),
 					'type'        => 'integer',
 					'context'     => array( 'view', 'edit', 'embed' ),
-					),
-				'slug'            => array(
+				),
+				'slug'         => array(
 					'description' => __( 'An alphanumeric identifier for the object unique to its type.' ),
 					'type'        => 'string',
 					'context'     => array( 'view', 'edit', 'embed' ),
@@ -544,7 +542,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Retrieves the query params for collections.
 	 *
 	 * @since 4.7.0
-	 * @access public
 	 *
 	 * @return array Collection parameters.
 	 */
@@ -558,7 +555,6 @@ class WP_REST_Revisions_Controller extends WP_REST_Controller {
 	 * Checks the post excerpt and prepare it for single post output.
 	 *
 	 * @since 4.7.0
-	 * @access protected
 	 *
 	 * @param string  $excerpt The post excerpt.
 	 * @param WP_Post $post    Post revision object.
