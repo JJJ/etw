@@ -11,7 +11,7 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
       'post_type' => array( 'cs_template' ),
       'post_status' => array( 'tco-data', 'publish' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'meta_key' => '_cs_template_type',
       'meta_value' => 'preset',
     ) );
@@ -48,7 +48,7 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
       try {
 
         global $wpdb;
-        $results = $this->plugin->loadComponent('Template_Manager')->lookup_default_presets();
+        $results = $this->plugin->component('Template_Manager')->lookup_default_presets();
 
         foreach ($results as $key => $value) {
           $record = $this->make_record( (int) $value );
@@ -105,6 +105,8 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
 
   public function create( $params ) {
 
+    $this->permission_check();
+
     $atts = $this->atts_from_request( $params );
 
     $preset = new Cornerstone_Template( array(
@@ -145,6 +147,8 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
 
   public function update( $params ) {
 
+    $this->permission_check();
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -168,6 +172,9 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
   }
 
   public function delete( $params ) {
+
+    $this->permission_check();
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -182,6 +189,30 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
     return $this->make_response( array( 'id' => $id, 'type' => $this->name ) );
   }
 
+  public function permission_check() {
+
+    $post_types = $this->plugin->component('App_Permissions')->get_user_post_types();
+
+    $permissions = array(
+      'headers.save_presets',
+      'footers.save_presets',
+      'content.cs_global_block.save_presets'
+    );
+
+    foreach ($post_types as $type) {
+      $permissions[] = "content.$type.save_presets";
+    }
+
+    $allowed = false;
+    foreach ( $permissions as $permission ) {
+      $allowed = $allowed || $this->plugin->component('App_Permissions')->user_can( $permission );
+    }
+
+    if ( ! $allowed ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
+  }
 
   public function make_response( $data ) {
 

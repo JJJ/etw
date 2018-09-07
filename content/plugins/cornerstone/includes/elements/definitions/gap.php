@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Gap', '__x__' ),
-  'values' => array_merge(
-    x_values_gap(),
-    x_values_omega()
-  ),
+  'values' => x_values_element_gap(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_gap() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_gap(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_gap(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_gap(),
+    'controls_adv'       => x_controls_element_gap( true ),
+    'control_groups'     => x_control_groups_element_gap(),
+    'control_groups_adv' => x_control_groups_element_gap( true ),
   );
 }
 

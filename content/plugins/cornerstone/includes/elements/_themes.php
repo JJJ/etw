@@ -18,9 +18,10 @@
 //   07. Menu Item Collapsed (Sub): Default
 //   08. Menu Item Inline (Top): Default
 //   09. Menu Item Inline (Sub): Default
-//   10. Cart Button: Default
-//   11. Cart Toggle: Default
-//   12. Search Dropdown: Default
+//   10. Menu Item Layered: Default
+//   11. Cart Button: Default
+//   12. Cart Toggle: Default
+//   13. Search Dropdown: Default
 // =============================================================================
 
 // Button: Default
@@ -95,8 +96,8 @@ function x_module_theme_social_default() {
 
 function x_module_theme_menu_item_modal_default() {
   return array(
-    'anchor_padding'       => x_module_value( '0.75em', 'style' ),
-    'anchor_sub_indicator' => x_module_value( false, 'all' ),
+    'anchor_padding'            => x_module_value( '0.75em', 'style' ),
+    'anchor_sub_indicator_icon' => x_module_value( 'angle-right', 'markup' ),
   );
 }
 
@@ -156,6 +157,19 @@ function x_module_theme_menu_item_inline_sub_default() {
   return array(
     'anchor_padding'     => x_module_value( '0.75em', 'style' ),
     'anchor_text_margin' => x_module_value( '5px auto 5px 5px', 'style' ),
+  );
+}
+
+
+
+// Menu Item Layered: Default
+// =============================================================================
+
+function x_module_theme_menu_item_layered_default() {
+  return array(
+    'anchor_padding'            => x_module_value( '0.75em', 'style' ),
+    'anchor_text_margin'        => x_module_value( '5px auto 5px 5px', 'style' ),
+    'anchor_sub_indicator_icon' => x_module_value( 'angle-right', 'markup' ),
   );
 }
 

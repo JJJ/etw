@@ -14,17 +14,6 @@ class CS_Settings_Responsive_Text {
 		);
 	}
 
-	public function controls() {
-		return array(
-			'elements' => array(
-				'type' => 'sortable',
-				'options' => array(
-					'element' => 'responsive-text'
-				)
-			)
-		);
-	}
-
 	public function get_data( $key ) {
 
 		global $post;
@@ -44,9 +33,7 @@ class CS_Settings_Responsive_Text {
 
 	}
 
-	public function handler( $data ) {
-
-    global $post;
+	public function handler( $post, $data ) {
 
     $settings = CS()->common()->get_post_settings( $post->ID );
     $settings['responsive_text'] = ( isset( $data['elements'] ) ) ? $data['elements'] : array();
@@ -55,7 +42,7 @@ class CS_Settings_Responsive_Text {
 
     //
     $buffer = '';
-    $orchestrator = CS()->loadComponent( 'Element_Orchestrator' );
+    $orchestrator = CS()->component( 'Element_Orchestrator' );
     $definition = $orchestrator->get( 'responsive-text' );
     foreach ($settings['responsive_text'] as $element ) {
       $buffer .= $definition->build_shortcode( $definition->sanitize( $element ), '', null );

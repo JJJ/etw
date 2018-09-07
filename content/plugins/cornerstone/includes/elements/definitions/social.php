@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Social', '__x__' ),
-  'values' => array_merge(
-    x_values_anchor( x_bar_module_settings_anchor( 'social' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_social(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_social() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'social' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_anchor( x_bar_module_settings_anchor( 'social' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_social(),
+    'controls_adv'       => x_controls_element_social( true ),
+    'control_groups'     => x_control_groups_element_social(),
+    'control_groups_adv' => x_control_groups_element_social( true ),
   );
 }
 

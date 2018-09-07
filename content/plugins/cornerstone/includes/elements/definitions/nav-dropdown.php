@@ -19,13 +19,7 @@
 
 $data = array(
   'title'  => __( 'Navigation Dropdown', '__x__' ),
-  'values' => array_merge(
-    x_values_menu( x_bar_module_settings_menu( 'dropdown' ) ),
-    x_values_anchor( x_bar_module_settings_anchor( 'toggle' ) ),
-    x_values_dropdown(),
-    x_values_anchor( x_bar_module_settings_anchor( 'menu-item-dropdown' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_nav_dropdown(),
 );
 
 
@@ -35,20 +29,10 @@ $data = array(
 
 function x_element_builder_setup_nav_dropdown() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_menu( x_bar_module_settings_menu( 'dropdown' ) ),
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'toggle' ) ),
-      x_control_groups_dropdown(),
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'menu-item-dropdown' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_menu( x_bar_module_settings_menu( 'dropdown' ) ),
-      x_controls_anchor( x_bar_module_settings_anchor( 'toggle' ) ),
-      x_controls_dropdown(),
-      x_controls_anchor( x_bar_module_settings_anchor( 'menu-item-dropdown' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_nav_dropdown(),
+    'controls_adv'       => x_controls_element_nav_dropdown( true ),
+    'control_groups'     => x_control_groups_element_nav_dropdown(),
+    'control_groups_adv' => x_control_groups_element_nav_dropdown( true ),
   );
 }
 

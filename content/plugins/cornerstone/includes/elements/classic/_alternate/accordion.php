@@ -25,9 +25,10 @@ class CS_Accordion extends Cornerstone_Element_Base {
         array( 'title' => __( 'Accordion Item 2', 'cornerstone' ), 'content' => __( 'Add some content to your accordion item here.', 'cornerstone' ) )
       ),
       array(
-      	'element' => 'accordion-item',
-        'newTitle' => __( 'Accordion Item %s', 'cornerstone' ),
-        'floor'    => 1
+        'add_label' => __( 'Item', 'cornerstone' ),
+      	'element'   => 'accordion-item',
+        'newTitle'  => __( 'Accordion Item %s', 'cornerstone' ),
+        'floor'     => 1
       )
     );
 

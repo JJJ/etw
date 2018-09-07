@@ -6,8 +6,9 @@
 // Tabs element.
 // =============================================================================
 
-$mod_id = ( isset( $mod_id ) ) ? $mod_id : '';
-$class  = ( isset( $class )  ) ? $class  : '';
+$mod_id      = ( isset( $mod_id ) ) ? $mod_id : '';
+$class       = ( isset( $class )  ) ? $class  : '';
+$set_initial = ! did_action( 'cs_element_rendering' );
 
 
 // Atts: Tabs
@@ -19,8 +20,10 @@ $atts_tabs = array(
 
 if ( isset( $id ) && ! empty( $id ) ) {
   $atts_tabs['id'] = $id;
-} else {
-  $atts_tabs['id'] = 'x-tabs-' . $mod_id;
+}
+
+if ( $tabs_panels_equal_height === true ) {
+  $atts_tabs = array_merge( $atts_tabs, cs_element_js_atts( 'tabs', array( 'equalPanelHeight' => $tabs_panels_equal_height ) ) );
 }
 
 
@@ -31,7 +34,7 @@ if ( isset( $id ) && ! empty( $id ) ) {
 
 <div <?php echo x_atts( $atts_tabs ); ?>>
 
-  <div class="x-tablist">
+  <div class="x-tabs-list">
     <ul role="tablist">
 
       <?php foreach ( $_custom_data['_modules'] as $key => $tab ) : ?>
@@ -41,14 +44,14 @@ if ( isset( $id ) && ! empty( $id ) ) {
         $tab_atts = array(
           'id'                  => 'tab-' . $tab['_id'],
           'role'                => 'tab',
-          'aria-selected'       => ( $key === 0 ) ? 'true' : 'false',
+          'aria-selected'       => ( $key === 0 && $set_initial ) ? 'true' : 'false',
           'aria-controls'       => 'panel-' . $tab['_id'],
           'data-x-toggle'       => 'tab',
           'data-x-toggleable'   => 'tab-item-' . $tab['_id'],
-          'data-x-toggle-group' => 'tab-group-' . $tab['_p'],
+          'data-x-toggle-group' => 'tab-group-' . $mod_id,
         );
 
-        if ( $key === 0 ) {
+        if ( $key === 0 && $set_initial  ) {
           $tab_atts['class'] = 'x-active';
         }
 
@@ -56,7 +59,7 @@ if ( isset( $id ) && ! empty( $id ) ) {
 
         <li role="presentation">
           <button <?php echo x_atts( $tab_atts ); ?>>
-            <?php echo do_shortcode( $tab['tab_label'] ); ?>
+            <span><?php echo do_shortcode( $tab['tab_label_content'] ); ?></span>
           </button>
         </li>
 
@@ -65,7 +68,7 @@ if ( isset( $id ) && ! empty( $id ) ) {
     </ul>
   </div>
 
-  <div class="x-tab-panels">
+  <div class="x-tabs-panels">
 
     <?php foreach ( $_custom_data['_modules'] as $key => $tab ) : ?>
 
@@ -73,14 +76,14 @@ if ( isset( $id ) && ! empty( $id ) ) {
 
       $panel_atts = array(
         'id'                => 'panel-' . $tab['_id'],
-        'class'             => 'x-tab-panel',
+        'class'             => 'x-tabs-panel',
         'role'              => 'tabpanel',
         'aria-labelledby'   => 'tab-' . $tab['_id'],
-        'aria-hidden'       => ( $key === 0 ) ? 'false' : 'true',
+        'aria-hidden'       => ( $key === 0 && $set_initial ) ? 'false' : 'true',
         'data-x-toggleable' => 'tab-item-' . $tab['_id'],
       );
 
-      if ( $key === 0 ) {
+      if ( $key === 0 && $set_initial ) {
         $panel_atts['class'] .= ' x-active';
       }
 

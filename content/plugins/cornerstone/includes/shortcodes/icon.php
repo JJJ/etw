@@ -41,9 +41,13 @@ function x_shortcode_icon( $atts ) {
 
   }
 
-  $unicode = fa_unicode( $type );
 
-  $output = "<i {$id} class=\"{$class} x-icon-{$type}\"{$style} data-x-icon=\"&#x{$unicode};\" aria-hidden=\"true\"></i>";
+  $icon_attr = fa_get_attr( $type );
+  $data_attr = $icon_attr['attr'];
+  $unicode = $icon_attr['unicode'];
+
+
+  $output = "<i {$id} class=\"{$class} x-icon-{$type}\"{$style} $data_attr=\"&#x{$unicode};\" aria-hidden=\"true\"></i>";
 
   return $output;
 }

@@ -164,17 +164,12 @@ $text_selector = ( isset( $text_selector ) && $text_selector != '' ) ? $text_sel
 
   .$_el<?php echo $text_selector; ?> .x-text-content {
     @if $text_graphic === true {
-      -webkit-flex-direction: $text_flex_direction;
-              flex-direction: $text_flex_direction;
-      -webkit-justify-content: $text_flex_justify;
-              justify-content: $text_flex_justify;
-      -webkit-align-items: $text_flex_align;
-              align-items: $text_flex_align;
+      flex-direction: $text_flex_direction;
+      justify-content: $text_flex_justify;
+      align-items: $text_flex_align;
       @if $text_flex_wrap === true {
-        -webkit-flex-wrap: wrap;
-                flex-wrap: wrap;
-        -webkit-align-content: $text_flex_align;
-                align-content: $text_flex_align;
+        flex-wrap: wrap;
+        align-content: $text_flex_align;
       }
     }
   }

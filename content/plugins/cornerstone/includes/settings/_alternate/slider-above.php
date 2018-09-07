@@ -130,11 +130,11 @@ class CS_Settings_Slider_Above extends Cornerstone_Legacy_Setting_Section {
 
   }
 
-  public function handler( $atts ) {
+  public function handler( $post, $atts ) {
 
-		global $post;
-  	if ( $post->post_type != 'page')
-    	return;
+  	if ( 'page' !== $post->post_type ) {
+      return;
+    }
 
   	extract( $atts );
 

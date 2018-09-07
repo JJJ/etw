@@ -14,7 +14,7 @@ class Cornerstone_Data_Controller  extends Cornerstone_Plugin_Component {
 	protected $orchestrator;
 
 	public function setup() {
-		$this->orchestrator = $this->plugin->loadComponent( 'Element_Orchestrator' );
+		$this->orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 	}
 
 	/**
@@ -141,7 +141,7 @@ class Cornerstone_Data_Controller  extends Cornerstone_Plugin_Component {
 	}
 
 	public function get_elements( $post = '') {
-		$this->set_post( CS()->common()->locatePost( $post ) );
+		$this->set_post( CS()->common()->locate_post( $post ) );
 		return $this->get();
 	}
 

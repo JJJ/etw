@@ -8,15 +8,28 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
 
   public function load_all() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      return;
+    }
+
     $posts = get_posts( array(
-      'post_type' => $this->plugin->common()->getAllowedPostTypes(),
+      'post_type' => $this->plugin->component('App_Permissions')->get_user_post_types(),
       'post_status' => 'any',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     foreach ($posts as $post) {
+
+      $post_type_obj = get_post_type_object( $post->post_type );
+      $caps = (array) $post_type_object->cap;
+
+      if ( ! current_user_can( $caps['edit_post'], $post->ID ) ) {
+        continue;
+      }
+
       $records[] = $this->make_record( $post );
+
     }
 
     foreach ($records as $record) {
@@ -59,10 +72,31 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     if ( is_int( $post ) ) {
       $post = get_post( $post );
     }
+
+    $post_type_obj = get_post_type_object( $post->post_type );
+    $caps = (array) $post_type_obj->cap;
+
+    $skip = array();
+    $skip[] = (int) get_option( 'page_for_posts' );
+
+    if ( function_exists('wc_get_page_id') ) {
+      $skip[] = (int) wc_get_page_id( 'shop' );
+    }
+
+    if ( in_array( (int) $post->ID, $skip, true ) ) {
+      throw new Exception( 'cornerstone', 'Page content inaccessible.' );
+    }
+
+    if (! current_user_can( $caps['edit_post'], $post->ID ) || ! $this->plugin->component('App_Permissions')->user_can_access_post_type($post->post_type) ) {
+      throw new Exception( 'cornerstone', 'Unauthorized' );
+    }
+
     $content = new Cornerstone_Content( $post );
     $record = $content->serialize();
     $record['post-type'] = $post->post_type;
-    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    $record['post-type-label'] = isset( $post_type_obj->labels ) ? $post_type_obj->labels->singular_name : $post->post_type;
+    $record['edit-url'] = get_edit_post_link( $post->ID, '' );
+    $record['language'] = $this->plugin->component('Wpml')->get_language_data_from_post( $post, true );
     return $record;
   }
 
@@ -114,27 +148,6 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     return $atts;
   }
 
-  // public function create( $params ) {
-  //   $atts = $this->atts_from_request( $params );
-  //   $content = new Cornerstone_Content( $atts );
-  //   return $this->make_response( $this->to_resource( $content->save() ) );
-  // }
-
-  // public function delete( $params ) {
-  //   $atts = $this->atts_from_request( $params );
-  //
-  //   if ( ! $atts['id'] ) {
-  //     throw new Exception( 'Attempting to delete Content without specifying an ID.' );
-  //   }
-  //
-  //   $id = (int) $atts['id'];
-  //
-  //   $content = new Cornerstone_Content( $id );
-  //   $content->delete();
-  //
-  //   return $this->make_response( array( 'id' => $id, 'type' => $this->name ) );
-  // }
-
   public function update( $params ) {
 
     $atts = $this->atts_from_request( $params );
@@ -143,9 +156,13 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
       throw new Exception( 'Attempting to update Content without specifying an ID.' );
     }
 
-    $id = (int) $atts['id'];
+    $post = get_post( (int) $atts['id'] );
 
-    $content = new Cornerstone_Content( $id );
+    if ( ! $this->plugin->component('App_Permissions')->user_can_access_post_type($post->post_type) ) {
+      throw new Exception( 'Unauthorized');
+    }
+
+    $content = new Cornerstone_Content( $post );
 
     if ( isset( $atts['elements'] ) ) {
       $content->set_elements( $atts['elements'] );

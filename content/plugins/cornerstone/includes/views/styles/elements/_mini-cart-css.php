@@ -70,8 +70,7 @@
 ?>
 
 .$_el .cart_list {
-  -webkit-order: $cart_order_items;
-          order: $cart_order_items;
+  order: $cart_order_items;
 }
 
 .$_el .mini_cart_item {
@@ -233,8 +232,7 @@
 ?>
 
 .$_el .x-mini-cart .total {
-  -webkit-order: $cart_order_total;
-          order: $cart_order_total;
+  order: $cart_order_total;
   margin: $cart_total_margin;
   @unless $cart_total_border_width?? || $cart_total_border_style?? {
     border-width: $cart_total_border_width;
@@ -284,10 +282,8 @@
 ?>
 
 .$_el .x-mini-cart .buttons {
-  -webkit-order: $cart_order_buttons;
-          order: $cart_order_buttons;
-  -webkit-justify-content: $cart_buttons_justify_content;
-          justify-content: $cart_buttons_justify_content;
+  order: $cart_order_buttons;
+  justify-content: $cart_buttons_justify_content;
   margin: $cart_buttons_margin;
   @unless $cart_buttons_border_width?? || $cart_buttons_border_style?? {
     border-width: $cart_buttons_border_width;

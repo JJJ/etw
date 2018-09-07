@@ -54,5 +54,5 @@ if ( $alert_close === true ) {
 
 <div <?php echo x_atts( $atts ); ?>>
   <?php echo $alert_close_content; ?>
-  <?php echo $alert_content; ?>
+  <div class="x-alert-content"><?php echo $alert_content; ?></div>
 </div>

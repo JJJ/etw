@@ -16,6 +16,9 @@
           </div>
         </div>
         <div class="tco-row">
+          <div class="tco-column" data-tco-module="cs-role-manager"></div>
+        </div>
+        <div class="tco-row">
           <div class="tco-column">
             <div class="tco-box">
               <header class="tco-box-header">

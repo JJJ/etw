@@ -61,10 +61,10 @@ function x_shortcode_icon_list_item( $atts, $content = null ) {
     $link_end   = '';
   }
 
-  $unicode = fa_unicode( $type );
+  $icon_attr = fa_data_icon( $type );
 
   $output = "<li {$id} class=\"{$class}\" {$style}>"
-            . "<i class=\"x-icon-{$type}\"{$icon_style} data-x-icon=\"&#x{$unicode};\" aria-hidden=\"true\"></i>"
+            . "<i class=\"x-icon-{$type}\"{$icon_style} $icon_attr aria-hidden=\"true\"></i>"
             . $link_begin
               . do_shortcode( $content )
             . $link_end

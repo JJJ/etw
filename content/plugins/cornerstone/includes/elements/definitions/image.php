@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Image', '__x__' ),
-  'values' => array_merge(
-    x_values_image( x_bar_module_settings_image() ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_image(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_image() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_image( x_bar_module_settings_image() ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_image( x_bar_module_settings_image() ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_image(),
+    'controls_adv'       => x_controls_element_image( true ),
+    'control_groups'     => x_control_groups_element_image(),
+    'control_groups_adv' => x_control_groups_element_image( true ),
   );
 }
 

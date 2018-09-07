@@ -32,8 +32,7 @@ function x_shortcode_prompt( $atts ) {
   $target      = ( $target      == 'blank' ) ? 'target="_blank"' : '';
 
   if ( $button_icon != '' ) {
-    $unicode     = fa_unicode( $button_icon );
-    $button_icon = '<i class="x-icon-' . $button_icon . ' mvn mls mrs" data-x-icon="&#x' . $unicode . ';"></i>';
+    $button_icon = '<i class="x-icon-' . $button_icon . ' mvn mls mrs" ' . fa_data_icon( $button_icon ) . '></i>';
   }
 
   if ( $circle == 'true' ) {

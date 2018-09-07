@@ -74,17 +74,12 @@ $anchor_k_pre    = ( isset( $anchor_k_pre ) && $anchor_k_pre != ''       ) ? $an
 
 
 .$_el<?php echo $anchor_selector; ?> .x-anchor-content {
-  -webkit-flex-direction: $<?php echo $anchor_k_pre; ?>anchor_flex_direction;
-          flex-direction: $<?php echo $anchor_k_pre; ?>anchor_flex_direction;
-  -webkit-justify-content: $<?php echo $anchor_k_pre; ?>anchor_flex_justify;
-          justify-content: $<?php echo $anchor_k_pre; ?>anchor_flex_justify;
-  -webkit-align-items: $<?php echo $anchor_k_pre; ?>anchor_flex_align;
-          align-items: $<?php echo $anchor_k_pre; ?>anchor_flex_align;
+  flex-direction: $<?php echo $anchor_k_pre; ?>anchor_flex_direction;
+  justify-content: $<?php echo $anchor_k_pre; ?>anchor_flex_justify;
+  align-items: $<?php echo $anchor_k_pre; ?>anchor_flex_align;
   @if $<?php echo $anchor_k_pre; ?>anchor_flex_wrap === true {
-    -webkit-flex-wrap: wrap;
-            flex-wrap: wrap;
-    -webkit-align-content: $<?php echo $anchor_k_pre; ?>anchor_flex_align;
-            align-content: $<?php echo $anchor_k_pre; ?>anchor_flex_align;
+    flex-wrap: wrap;
+    align-content: $<?php echo $anchor_k_pre; ?>anchor_flex_align;
   }
   @unless $<?php echo $anchor_k_pre; ?>anchor_padding?? {
     padding: $<?php echo $anchor_k_pre; ?>anchor_padding;

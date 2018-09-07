@@ -4,6 +4,10 @@
 
   public function manager_delete( $data ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.delete') ) {
+      return new WP_Error( 'cornerstone', 'Unauthorized' );
+    }
+
     if ( ! isset( $data['ids'] ) ) {
       return new WP_Error( 'cornerstone', 'Ids to delete missing.' );
     }
@@ -18,7 +22,7 @@
 
   public function prepare_export( $data ) {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.download') ) {
       return new WP_Error( 'cornerstone', 'Unauthorized' );
     }
 
@@ -48,6 +52,10 @@
   }
 
   public function prepare_global_blocks_export( $data ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.download') ) {
+      return new WP_Error( 'cornerstone', 'Unauthorized' );
+    }
 
     if ( ! isset( $data['ids'] ) ) {
       return new WP_Error( 'cornerstone', 'Ids to export missing.' );
@@ -112,10 +120,9 @@
 
   }
 
-
   public function upload_media( $data ) {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.import') ) {
       return new WP_Error( 'cornerstone', 'Unauthorized' );
     }
 
@@ -154,6 +161,10 @@
   }
 
   public function import_templates( $data ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.import') ) {
+      return new WP_Error( 'cornerstone', 'Unauthorized' );
+    }
 
     if ( ! isset( $data['packageSignature'] ) ) {
       return new WP_Error( 'cornerstone', 'Package signature missing.' );
@@ -202,6 +213,10 @@
 
   public function prepare_global_blocks_import( $data ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.import') ) {
+      return new WP_Error( 'cornerstone', 'Unauthorized' );
+    }
+
     $global_blocks = array();
 
     if ( ! isset( $data['globalBlockRequests'] ) ) {
@@ -231,11 +246,15 @@
 
   public function hide_starter_pack() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.import') ) {
+      return new WP_Error( 'cornerstone', 'Unauthorized' );
+    }
+
     if ( ! current_user_can( 'manage_options' ) ) {
       return new WP_Error( 'cornerstone', 'Unauthorized' );
     }
 
-    $this->plugin->loadComponent('Template_Manager')->hide_starter_pack();
+    $this->plugin->component('Template_Manager')->hide_starter_pack();
 
     return array( 'success' => true );
 
@@ -244,7 +263,7 @@
   public function get_default_presets() {
 
     $default_presets = array();
-    $results = $this->plugin->loadComponent('Template_Manager')->lookup_default_presets();
+    $results = $this->plugin->component('Template_Manager')->lookup_default_presets();
 
     foreach ($results as $type => $id ) {
       $default_presets[] = array(
@@ -262,7 +281,7 @@
 
   public function update_default_presets( $data ) {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.manage_default_presets') ) {
       return new WP_Error( 'cornerstone', 'Unauthorized' );
     }
 
@@ -270,7 +289,7 @@
       return new WP_Error( 'cornerstone', 'No data' );
     }
 
-    $current = $this->plugin->loadComponent('Template_Manager')->lookup_default_presets();
+    $current = $this->plugin->component('Template_Manager')->lookup_default_presets();
 
     $clear = array();
     $update = array();

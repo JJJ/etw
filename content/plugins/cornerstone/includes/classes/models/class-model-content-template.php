@@ -36,6 +36,10 @@ class Cornerstone_Model_Content_Template extends Cornerstone_Plugin_Component {
 
   public function create( $params ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     $template = new Cornerstone_Template( array(
@@ -51,6 +55,10 @@ class Cornerstone_Model_Content_Template extends Cornerstone_Plugin_Component {
   }
 
   public function update( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      throw new Exception( 'Unauthorized' );
+    }
 
     $atts = $this->atts_from_request( $params );
 

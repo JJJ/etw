@@ -40,7 +40,7 @@ class Cornerstone_Builder_Renderer extends Cornerstone_Plugin_Component {
 
     setup_postdata( $post );
 
-    $this->enqueue_extractor = $this->plugin->loadComponent( 'Enqueue_Extractor' );
+    $this->enqueue_extractor = $this->plugin->component( 'Enqueue_Extractor' );
     $this->enqueue_extractor->start();
 
     if ( !isset( $data['batch'] ) )

@@ -157,11 +157,13 @@ class Cornerstone_Settings_Section {
 	final public function save( $data, $content = null ) {
 
 		$data = $this->controls()->sanitize( $data );
-		if( isset( $data['elements'] ) ) {
-			$data['elements'] = CS()->loadComponent('Common')->sanitize_value_deep( $data['elements'] );
+
+    if ( isset( $data['elements'] ) ) {
+			$data['elements'] = CS()->component('Common')->sanitize_value_deep( $data['elements'] );
 		}
 
-		return $this->definition->handler( wp_parse_args( $data, $this->available_defaults() ), $content );
+		return $this->definition->handler( $content->get_post(), wp_parse_args( $data, $this->available_defaults() ), $content );
+
 	}
 
 	final protected function get_file_array( $file = '' ) {

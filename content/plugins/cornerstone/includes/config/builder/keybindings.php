@@ -19,6 +19,8 @@ return array(
   'alt-key-press' => 'keydown:alt',
   'alt-key-release' => 'keyup:alt',
 	'skeleton-mode'  => 'mod+k',
+  'advanced-mode'  => 'mod+shift+a',
   'save'  => 'mod+s',
   'find'  => 'mod+f',
+  'esc'   => 'esc'
 );

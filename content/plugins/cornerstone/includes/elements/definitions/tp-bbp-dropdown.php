@@ -33,12 +33,12 @@ $data = array(
 
 function x_element_builder_setup_tp_bbp_dropdown() {
   return array(
-    'control_groups' => array_merge(
+    'control_groups_adv' => array_merge(
       x_control_groups_anchor( x_bar_module_settings_anchor( 'toggle' ) ),
       x_control_groups_dropdown(),
       x_control_groups_omega()
     ),
-    'controls' => array_merge(
+    'controls_adv' => array_merge(
       x_controls_anchor( x_bar_module_settings_anchor( 'toggle' ) ),
       x_controls_dropdown(),
       x_controls_omega()

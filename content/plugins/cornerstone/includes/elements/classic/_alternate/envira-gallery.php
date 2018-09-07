@@ -24,14 +24,21 @@ class CS_Envira_Gallery extends Cornerstone_Element_Base {
       $envira_galleries = Envira_Gallery::get_instance()->get_galleries();
 
       if ( is_array( $envira_galleries ) ) {
-      	foreach ( $envira_galleries as $eg ) {
-	        $found[] = array(
-	          'value' => $eg['id'],
-	          'label' => $eg['config']['title']
-	        );
-	      }
-      }
+        foreach ( $envira_galleries as $eg ) {
 
+          if ( !isset( $eg['config']['title']) ) {
+            $gallery_post = get_post( intval( $eg['id'] ) );
+            $gallery_title = $gallery_post->post_title;
+          } else {
+            $gallery_title = $eg['config']['title'];
+          }
+
+          $found[] = array(
+            'value' => $eg['id'],
+            'label' => $gallery_title
+          );
+        }
+      }
 
     }
 

@@ -16,9 +16,11 @@ function x_shortcode_section( $atts, $content = null ) {
     'parallax'                     => '',
     'separator_top_type'           => 'none',
     'separator_top_height'         => '',
+    'separator_top_inset'          => '',
     'separator_top_angle_point'    => '',
     'separator_bottom_type'        => 'none',
     'separator_bottom_height'      => '',
+    'separator_bottom_inset'       => '',
     'separator_bottom_angle_point' => '',
   ), $atts, 'x_section' ) );
 
@@ -36,9 +38,11 @@ function x_shortcode_section( $atts, $content = null ) {
   $parallax_class               = ( $parallax                     == 'true' ) ? ' parallax' : '';
   $separator_top_type           = ( $separator_top_type           != 'none' ) ? $separator_top_type : 'none';
   $separator_top_height         = ( $separator_top_height         != ''     ) ? $separator_top_height : '50px';
+  $separator_top_inset          = ( $separator_top_inset          != ''     ) ? $separator_top_inset : '0px';
   $separator_top_angle_point    = ( $separator_top_angle_point    != ''     ) ? $separator_top_angle_point : '50';
   $separator_bottom_type        = ( $separator_bottom_type        != 'none' ) ? $separator_bottom_type : 'none';
   $separator_bottom_height      = ( $separator_bottom_height      != ''     ) ? $separator_bottom_height : '50px';
+  $separator_bottom_inset       = ( $separator_bottom_inset       != ''     ) ? $separator_bottom_inset : '0px';
   $separator_bottom_angle_point = ( $separator_bottom_angle_point != ''     ) ? $separator_bottom_angle_point : '50';
 
 
@@ -101,7 +105,7 @@ function x_shortcode_section( $atts, $content = null ) {
         break;
     }
 
-    $separator_top = '<div class="x-section-separator x-section-separator-top x-section-separator-' . $separator_top_type . '" style="height: ' . $separator_top_height . ';">' . $separator_top_content . '</div>';
+    $separator_top = '<div class="x-section-separator x-section-separator-top x-section-separator-' . $separator_top_type . '" style="top: ' . $separator_top_inset . '; height: ' . $separator_top_height . ';">' . $separator_top_content . '</div>';
 
   }
 
@@ -131,7 +135,7 @@ function x_shortcode_section( $atts, $content = null ) {
         break;
     }
 
-    $separator_bottom = '<div class="x-section-separator x-section-separator-bottom x-section-separator-' . $separator_bottom_type . '" style="height: ' . $separator_bottom_height . ';">' . $separator_bottom_content . '</div>';
+    $separator_bottom = '<div class="x-section-separator x-section-separator-bottom x-section-separator-' . $separator_bottom_type . '" style="bottom: ' . $separator_bottom_inset . '; height: ' . $separator_bottom_height . ';">' . $separator_bottom_content . '</div>';
 
   }
 

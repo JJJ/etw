@@ -10,6 +10,7 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
     add_filter( 'cornerstone_option_model_whitelist', array( $this, 'whitelist_options' ) );
     add_filter( 'cornerstone_option_model_load_' . $this->option_key, array( $this, 'load_transform' ) );
     add_filter( 'cornerstone_option_model_save_' . $this->option_key, array( $this, 'save_transform' ) );
+    add_filter( 'cornerstone_option_model_permissions_' . $this->option_key, array( $this, 'permissions' ), 10, 2 );
   }
 
   public function assignments_deleted( $entity_id ) {
@@ -148,10 +149,12 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
 
     unset( $post_types['attachment'] );
 
+    $post_types = array_keys( $post_types );
+
     $posts = get_posts( array(
-      'post_type' => array_keys( $post_types ) ,
+      'post_type' => apply_filters('cs_header_assignment_post_types', $post_types ),
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     foreach ($posts as $post) {
@@ -211,7 +214,12 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
 
       // Start by using the global header
       $match = $assignments['global'];
-      $post = get_post();
+
+      if ( function_exists( 'is_shop' ) && is_shop() ) {
+        $post = get_post( wc_get_page_id( 'shop' ) );
+      } else {
+        $post = get_post();
+      }
 
       // Allow integrations to detect assignments
       $match = apply_filters( 'cs_locate_header_assignment', $match, $assignments, $post );
@@ -226,7 +234,7 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
           $match = $assignments['post_types'][ $post->post_type ];
         }
 
-        $source_post_id = CS()->loadComponent('Wpml')->get_source_id_for_post($post->ID, $post->post_type);
+        $source_post_id = CS()->component('Wpml')->get_source_id_for_post($post->ID, $post->post_type);
         if ( isset( $assignments['posts'][ 'post-' . $source_post_id ] ) ) {
           $match = $assignments['posts'][ 'post-' . $source_post_id ];
         }
@@ -262,6 +270,10 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
     }
 
     return $this->located;
+  }
+
+  public function permissions( $value, $operation ) {
+    return $this->plugin->component('App_Permissions')->user_can('headers.manage_assignments');
   }
 
 }

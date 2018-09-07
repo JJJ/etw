@@ -76,7 +76,7 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
     //
     // }
 
-    CS()->loadComponent('Cleanup')->clean_generated_styles();
+    CS()->component('Cleanup')->clean_generated_styles();
 
 	}
 

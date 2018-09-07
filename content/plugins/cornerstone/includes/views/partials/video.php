@@ -62,7 +62,7 @@ switch ( $video_type ) {
       }
 
       if ( $mejs_source_is_vimeo ) {
-        wp_enqueue_script( 'froogaloop' );
+        wp_enqueue_script( 'mediaelement-vimeo' );
         $mime = array( 'type' => 'video/vimeo' );
       } else if ( $mejs_source_is_youtube ) {
         $mime = array( 'type' => 'video/youtube' );

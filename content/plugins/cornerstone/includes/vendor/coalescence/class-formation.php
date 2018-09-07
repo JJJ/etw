@@ -3,6 +3,11 @@
 class TCO_Coalescence_Formation {
 
   public $formation = array();
+  public $selector_prefix = '';
+
+  public function __construct( $selector_prefix = '' ) {
+    $this->selector_prefix = $selector_prefix;
+  }
 
   public function add_items( $items ) {
 
@@ -15,6 +20,11 @@ class TCO_Coalescence_Formation {
   }
 
   public function add_item( $declaration ) {
+
+    $colon = strpos($declaration['declarations'], ":");
+    if ( $colon === strrpos($declaration['declarations'], ":") && $colon === strlen($declaration['declarations']) - 1 ) {
+      return;
+    }
 
     $directive = ( $declaration['directive'] ) ? $declaration['directive'] : 'root';
 
@@ -43,7 +53,7 @@ class TCO_Coalescence_Formation {
       }
 
       foreach ( $selectors as $selector => $declarations) {
-        $buffer .= $selector . ' {';
+        $buffer .= $this->selector_prefix . $selector . ' {';
         $buffer .= implode( ';', $declarations ) . ';';
         $buffer .= '}';
       }

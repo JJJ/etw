@@ -77,6 +77,14 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
       'image',
       __( 'Image', 'cornerstone' ),
       __( 'Specify the image you would like to use for your Feature List Item.', 'cornerstone' ),
+      ''
+    );
+
+    $this->addControl(
+      'graphic_image_alt_text',
+      'text',
+      __( 'Graphic Alt Text', 'cornerstone' ),
+      NULL,
       ''//,
       // array(
       //   'condition' => array(

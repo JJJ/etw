@@ -6,29 +6,30 @@ class TCO_Coalescence_Template_Declaration extends TCO_Coalescence_Template_Node
   protected $directive = null;
   protected $conditions = array();
   protected $keys = array();
-  protected $id = null;
   protected $value = '';
 
   protected function setup() {
-    $this->id = uniqid();
     if ( $this->value ) {
       $this->add_keys( $this->value );
     }
   }
 
-  public function get_id() {
-    return $this->id();
-  }
-
   public function add_keys( $value, $group = 'value' ) {
+
+    preg_match_all( TCO_Coalescence::$variable_pattern, $value, $matches );
+    $found = array_filter( $matches[1] );
+
+    if ( 0 >= count( $found ) ) {
+      return;
+    }
 
     if ( ! isset( $this->keys[ $group ] ) ) {
       $this->keys[ $group ] = array();
     }
 
-    preg_match_all( TCO_Coalescence::$variable_pattern, $value, $matches );
-    $keys = array_merge( $this->keys[ $group ], array_filter( $matches[1] ) );
+    $keys = array_merge( $this->keys[ $group ], $found );
     $this->keys[ $group ] = array_unique( $keys );
+
   }
 
   public function set_directive( $directive ) {

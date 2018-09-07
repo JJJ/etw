@@ -12,12 +12,16 @@ $atts = cs_atts( array(
 
 $icon_style = ( $icon_color != '' ) ? "color: $icon_color;" : '';
 
-$icon_atts = cs_atts( array(
+$icon_atts = array(
 	'class' => 'x-icon-' . $type,
-	'data-x-icon' => fa_entity( $type ),
 	'aria-hidden' => 'true',
 	'style' => $icon_style
-) );
+);
+
+$icon_attr = fa_get_attr( $type );
+$icon_atts[$icon_attr['attr']] = $icon_attr['entity'];
+
+$icon_atts = cs_atts( $icon_atts );
 
 $link_begin = '';
 $link_end   = '';

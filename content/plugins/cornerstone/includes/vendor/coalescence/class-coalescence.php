@@ -10,20 +10,22 @@ class TCO_Coalescence {
   public $reductions;
   public $items;
   public $formation;
+  public $selector_prefix = '';
 
   /**
    * Reset when instantiating
    */
-  public function __construct() {
-    $this->reset();
-  }
+   public function __construct( $selector_prefix = '' ) {
+     $this->selector_prefix = $selector_prefix;
+     $this->reset();
+   }
 
   /**
    * Reset coalescence, allowing reuse
    * @return none
    */
   public function reset() {
-    $this->formation = new TCO_Coalescence_Formation;
+    $this->formation = new TCO_Coalescence_Formation($this->selector_prefix);
     $this->templates = array();
     $this->reductions = array();
     $this->items = array();

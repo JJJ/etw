@@ -82,7 +82,7 @@ function countChars( field, cntfield ) {
             cntfield.removeClass().addClass('aioseop_count_good');
         }
     } else {
-        if ( cntfield.val() > ( field_size - 91 ) ) {
+        if ( cntfield.val() > ( field_size - 10 ) ) {
             cntfield.removeClass().addClass('aioseop_count_bad');
         } else {
             cntfield.removeClass().addClass('aioseop_count_good');
@@ -282,280 +282,91 @@ jQuery( document ).ready(
 				}
 			}
 		);
-	}
-);
 
-/**
- * @summary Custom jQuery plugin that enables image uploader in wordpress.
- *
- * @since 2.3.13
- * @since 2.4.14 Added success callback and options.
- * @see http://www.webmaster-source.com/2013/02/06/using-the-wordpress-3-5-media-uploader-in-your-plugin-or-theme/
- *
- * @param object options Plugin options.
- */
-jQuery.fn.aioseopImageUploader = function( options ) {
-	// Keep reference to this.
-	var self = this;
+        /**
+         * @summary workaround for bug that causes radio inputs to lose settings when meta box is dragged.
+         *
+         * props to commentluv for this fix
+         * @author commentluv.
+         * @link https://core.trac.wordpress.org/ticket/16972
+         * @since 1.0.0
+         */
+        jQuery(document).ready(
+            function () {
+                // listen for drag drop of metaboxes , bind mousedown to .hndle so it only fires when starting to drag
+                jQuery('.hndle').mousedown(
+                    function () {
 
-	// Options
-	self.options = jQuery.extend(
-		{
-			success: undefined,
-		}, options
-	);
+                        // set live event listener for mouse up on the content .wrap and wait a tick to give the dragged div time to settle before firing the reclick function
+                        jQuery('.wrap').mouseup(
+                            function () {
+                                aiosp_store_radio();
+                                setTimeout(function () {
+                                    aiosp_reclick_radio();
+                                }, 50);
+                            }
+                        );
+                    }
+                );
+            }
+        );
 
-	// Set input target when to update image url value
-	self.target = jQuery( self ).next();
+        /**
+         * @summary Javascript for using WP media uploader. Indentifies which DOM should use custom uploader plugin.
+         *
+         * @see http://www.webmaster-source.com/2013/02/06/using-the-wordpress-3-5-media-uploader-in-your-plugin-or-theme/
+         * @since ?
+         * @since 2.3.11.2 Use WP 3.5 new media uploader
+         * @since 2.3.13 Fixed issue #[740](https://github.com/semperfiwebdesign/all-in-one-seo-pack/issues/740)
+         *
+         */
+        jQuery(document).ready(
+            function ($) {
+                jQuery('.aioseop_upload_image_button').each(
+                    function () {
+                        jQuery(this).aioseopImageUploader(
+                            {
+                                success: function (url, el) {
+                                    // Update checker
+                                    if (jQuery(el).prev().length > 0) {
+                                        jQuery(el).prev().val(1);
+                                    }
+                                },
+                            }
+                        );
+                    }
+                );
+            }
+        );
 
-	// Uploader per image button
-	// * Having only one uploader was causing problems when multiple image buttons where in place
-	self.uploader = wp.media(
-		{
-			title: 'Choose Image',
-			button: {
-				text: 'Choose Image'
-			},
-			multiple: false
-		}
-	);
-
-	/**
-	 * Event handler that will be called when an image is selected from media uploader.
-	 */
-	self.onSelect = function() {
-		var url = self.uploader.state().get( 'selection' ).first().toJSON().url;
-		if ( self.target.length >= 0 ) {
-			jQuery( self.target ).val( url );
-		}
-		if ( self.options.success !== undefined ) {
-			self.options.success( url, self );
-		}
-	};
-
-	/**
-	 * Click event handler.
-	 * @param object e Click event.
-	 */
-	self.onClick = function( e ) {
-		e.preventDefault();
-		self.uploader.open();
-	};
-
-	// Set uploader select handler
-	self.uploader.on( 'select', self.onSelect );
-
-	// Set click handler
-	jQuery( self ).click( self.onClick );
-};
-
-/**
- * @summary Javascript for using WP media uploader. Indentifies which DOM should use custom uploader plugin.
- *
- * @see http://www.webmaster-source.com/2013/02/06/using-the-wordpress-3-5-media-uploader-in-your-plugin-or-theme/
- * @since ?
- * @since 2.3.11.2 Use WP 3.5 new media uploader
- * @since 2.3.13 Fixed issue #[740](https://github.com/semperfiwebdesign/all-in-one-seo-pack/issues/740)
- *
- */
-jQuery( document ).ready(
-	function($){
-
-		jQuery( '.aioseop_upload_image_button' ).each(
-			function() {
-				jQuery( this ).aioseopImageUploader(
-					{
-						success: function( url, el ) {
-							// Update checker
-							if ( jQuery( el ).prev().length > 0 ) {
-								jQuery( el ).prev().val( 1 );
-							}
-						},
-					}
-				);
-			}
-		);
-
-	}
-);
-
-/**
- * @summary workaround for bug that causes radio inputs to lose settings when meta box is dragged.
- *
- * props to commentluv for this fix
- * @author commentluv.
- * @link https://core.trac.wordpress.org/ticket/16972
- * @since 1.0.0
- */
-jQuery( document ).ready(
-	function() {
-
-		// listen for drag drop of metaboxes , bind mousedown to .hndle so it only fires when starting to drag
-		jQuery( '.hndle' ).mousedown(
-			function() {
-
-				// set live event listener for mouse up on the content .wrap and wait a tick to give the dragged div time to settle before firing the reclick function
-				jQuery( '.wrap' ).mouseup(
-					function() {
-						aiosp_store_radio();
-						setTimeout( function() {
-                            aiosp_reclick_radio();
-                        }, 50 );
-					}
-				);
-			}
-		);
-	}
-);
-
-/**
- * @summary Stores object of all radio buttons that are checked for entire form.
- *
- * @since 1.0.0
- */
-function aiosp_store_radio() {
-	var radioshack = {};
-	jQuery( 'input[type="radio"]' ).each(
-		function() {
-			if ( jQuery( this ).is( ':checked' ) ) {
-				radioshack[ jQuery( this ).attr( 'name' ) ] = jQuery( this ).val();
-			}
-			jQuery( document ).data( 'radioshack', radioshack );
-		}
-	);
-}
-
-/**
- * @summary Detects mouseup and restore all radio buttons that were checked.
- *
- * @since 1.0.0
- */
-function aiosp_reclick_radio() {
-
-	// gets the object of checked radio button names and values
-	var radios = jQuery( document ).data( 'radioshack' );
-
-	// steps thru each object element and trigger a click on it's corresponding radio button
-	for ( var key in radios ) {
-		jQuery( 'input[name="' + key + '"]' )
-			.filter( '[value="' + radios[ key ] + '"]' )
-			.trigger( 'click' );
-	}
-	// unbinds the event listener on .wrap  (prevents clicks on inputs from triggering function)
-	jQuery( '.wrap' ).unbind( 'mouseup' );
-}
-
-/**
- * @summary Handdles ajax call.
- *
- * @since 1.0.0
- * @param $action.
- * @param $setting.
- * @param $options.
- * @param $success.
- */
-function aioseop_handle_ajax_call( action, settings, options, success ) {
-	var aioseop_sack = new sack( ajaxurl );
-	aioseop_sack.execute = 1;
-	aioseop_sack.method = 'POST';
-	aioseop_sack.setVar( "action", action );
-	aioseop_sack.setVar( "settings", settings );
-	aioseop_sack.setVar( "options", options );
-	if ( typeof success != 'undefined' ) {
-		aioseop_sack.onCompletion = success;
-	}
-	aioseop_sack.setVar(
-		"nonce-aioseop",
-		jQuery( 'input[name="nonce-aioseop"]' ).val()
-	);
-	aioseop_sack.setVar(
-		"nonce-aioseop-edit",
-		jQuery( 'input[name="nonce-aioseop-edit"]' ).val()
-	);
-	aioseop_sack.onError = function() {
-		alert( 'Ajax error on saving.' );
-	};
-	aioseop_sack.runAJAX();
-}
-
-/**
- * @summary Handdles posts URL.
- *
- * @since 1.0.0
- * @param $action.
- * @param $setting.
- * @param $options.
- * @param $success.
- */
-function aioseop_handle_post_url( action, settings, options, success) {
-	jQuery( "div#aiosp_" + settings ).fadeOut(
-		'fast', function() {
-			var loading = '<label class="aioseop_loading aioseop_' + settings + '_loading"></label> Please wait...';
-			jQuery( "div#aiosp_" + settings ).fadeIn(
-				'fast', function() {
-					aioseop_handle_ajax_call( action, settings, options, success );
-				}
-			);
-			jQuery( "div#aiosp_" + settings ).html( loading );
-		}
-	);
-}
-
-/**
- * @summary Handles when AIOSEOP is overflowed.
- *
- * @since 1.0.0
- * @param $element.
- * @return mixed.
- */
-function aioseop_is_overflowed( element ) {
-	return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
-}
-
-/**
- * @summary Handles when overflowed border.
- *
- * @since 1.0.0
- * @param $el.
- */
-function aioseop_overflow_border( el ) {
-	if ( aioseop_is_overflowed( el ) ) {
-		el.className = 'aioseop_option_div aioseop_overflowed';
-	} else {
-		el.className = 'aioseop_option_div';
-	}
-}
-
-/**
- * @since 1.0.0
- * @return mixed.
- */
-jQuery( document ).ready(
-	function() {
-		jQuery( "#poststuff .aioseop_radio_type input[type='radio']" ).on(
-			'click', function() {
-				var previousValue = jQuery( this ).attr( 'previousValue' );
-				var name = jQuery( this ).attr( 'name' );
-				if ( typeof previousValue == 'undefined' ) {
-					if ( jQuery( this ).prop( "checked" ) ) {
-						jQuery( this ).prop( 'checked', true );
-						jQuery( this ).attr( 'previousValue', 'checked' );
-					} else {
-						jQuery( this ).prop( 'checked', false );
-						jQuery( this ).attr( 'previousValue', false );
-					}
-					return;
-				}
-				if ( previousValue == 'checked' ) {
-					jQuery( this ).prop( 'checked', false );
-					jQuery( this ).attr( 'previousValue', false );
-				} else {
-					jQuery( "input[name=" + name + "]:radio" )
-					.attr( 'previousValue', false );
-					jQuery( this ).attr( 'previousValue', 'checked' );
-				}
-			}
-		);
+        jQuery(document).ready(
+            function () {
+                jQuery("#poststuff .aioseop_radio_type input[type='radio']").on(
+                    'click', function () {
+                        var previousValue = jQuery(this).attr('previousValue');
+                        var name = jQuery(this).attr('name');
+                        if (typeof previousValue == 'undefined') {
+                            if (jQuery(this).prop("checked")) {
+                                jQuery(this).prop('checked', true);
+                                jQuery(this).attr('previousValue', 'checked');
+                            } else {
+                                jQuery(this).prop('checked', false);
+                                jQuery(this).attr('previousValue', false);
+                            }
+                            return;
+                        }
+                        if (previousValue == 'checked') {
+                            jQuery(this).prop('checked', false);
+                            jQuery(this).attr('previousValue', false);
+                        } else {
+                            jQuery("input[name=" + name + "]:radio")
+                                .attr('previousValue', false);
+                            jQuery(this).attr('previousValue', 'checked');
+                        }
+                    }
+                );
+            }
+        );
 		if ( typeof aiosp_data.pointers != 'undefined' ) {
 
 			/**
@@ -800,21 +611,252 @@ jQuery( document ).ready(
 				return false;
 			}
 		);
+
+
+		jQuery( "div#aiosp_robots_default_metabox" )
+		.delegate(
+			"a.aiosp_robots_delete_rule", "click", function( e ) {
+				e.preventDefault();
+				aioseop_handle_post_url(
+					'aioseop_ajax_delete_rule',
+					'robots_rules',
+                    jQuery( this ).attr( "data-id" ),
+					function() {
+                        window.location.reload();
+                    }
+				);
+				return false;
+			}
+		);
+
+		jQuery( "a.aiosp_robots_physical" ).on( 'click', function( e ) {
+			e.preventDefault();
+			aioseop_handle_post_url(
+				'aioseop_ajax_robots_physical',
+				'robots_physical_import_delete',//'robots_metabox', // No element of the ID existed, and unsure which element its intended for.
+				jQuery( this ).attr( "data-action" ),
+				function( data ) {
+					if ( data.data && data.data.message ) {
+						alert( data.data.message );
+					}
+					window.location.reload();
+				},
+				true
+			);
+			return false;
+		});
+
+        aiospinitAll();
+        aiospinitCounting();
+
 	}
 );
 
+/**
+ * @summary Custom jQuery plugin that enables image uploader in wordpress.
+ *
+ * @since 2.3.13
+ * @since 2.4.14 Added success callback and options.
+ * @see http://www.webmaster-source.com/2013/02/06/using-the-wordpress-3-5-media-uploader-in-your-plugin-or-theme/
+ *
+ * @param object options Plugin options.
+ */
+jQuery.fn.aioseopImageUploader = function( options ) {
+	// Keep reference to this.
+	var self = this;
 
-jQuery( document ).ready(
-	function() {
-			// TODO: consider moving EVERYTHING that needs ready() to this function
-			initAll( jQuery );
-      initCounting( jQuery );
+  // Options
+	self.options = jQuery.extend(
+		{
+			success: undefined,
+		}, options
+	);
+
+	// Set input target when to update image url value
+	self.target = jQuery( self ).next();
+
+	// Uploader per image button
+	// * Having only one uploader was causing problems when multiple image buttons where in place
+	self.uploader = wp.media(
+		{
+			title: 'Choose Image',
+			button: {
+				text: 'Choose Image'
+			},
+			multiple: false
+		}
+	);
+
+	/**
+	 * Event handler that will be called when an image is selected from media uploader.
+	 */
+	self.onSelect = function() {
+		var url = self.uploader.state().get( 'selection' ).first().toJSON().url;
+		if ( self.target.length >= 0 ) {
+			jQuery( self.target ).val( url );
+		}
+		if ( self.options.success !== undefined ) {
+			self.options.success( url, self );
+		}
+	};
+
+	/**
+	 * Click event handler.
+	 * @param object e Click event.
+	 */
+	self.onClick = function( e ) {
+		e.preventDefault();
+		self.uploader.open();
+	};
+
+	// Set uploader select handler
+	self.uploader.on( 'select', self.onSelect );
+
+	// Set click handler
+	jQuery( self ).click( self.onClick );
+};
+
+/**
+ * @summary Stores object of all radio buttons that are checked for entire form.
+ *
+ * @since 1.0.0
+ */
+function aiosp_store_radio() {
+	var radioshack = {};
+	jQuery( 'input[type="radio"]' ).each(
+		function() {
+			if ( jQuery( this ).is( ':checked' ) ) {
+				radioshack[ jQuery( this ).attr( 'name' ) ] = jQuery( this ).val();
+			}
+			jQuery( document ).data( 'radioshack', radioshack );
+		}
+	);
+}
+
+/**
+ * @summary Detects mouseup and restore all radio buttons that were checked.
+ *
+ * @since 1.0.0
+ */
+function aiosp_reclick_radio() {
+
+	// gets the object of checked radio button names and values
+	var radios = jQuery( document ).data( 'radioshack' );
+
+	// steps thru each object element and trigger a click on it's corresponding radio button
+	for ( var key in radios ) {
+		jQuery( 'input[name="' + key + '"]' )
+			.filter( '[value="' + radios[ key ] + '"]' )
+			.trigger( 'click' );
 	}
-);
+	// unbinds the event listener on .wrap  (prevents clicks on inputs from triggering function)
+	jQuery( '.wrap' ).unbind( 'mouseup' );
+}
 
-function initAll($){
-	if ( $( '.aiseop-date' ).length > 0 && $( '.aiseop-date' ).eq( 0 ).prop( 'type' ).toLowerCase() === 'text' ) {
-		$( '.aiseop-date' ).datepicker(
+/**
+ * @summary Handdles ajax call.
+ *
+ * @since 1.0.0
+ * @param $action.
+ * @param $setting.
+ * @param $options.
+ * @param $success.
+ */
+function aioseop_handle_ajax_call( action, settings, options, success ) {
+	var aioseop_sack = new sack( ajaxurl );
+	aioseop_sack.execute = 1;
+	aioseop_sack.method = 'POST';
+	aioseop_sack.setVar( "action", action );
+	aioseop_sack.setVar( "settings", settings );
+	aioseop_sack.setVar( "options", options );
+	if ( typeof success != 'undefined' ) {
+		aioseop_sack.onCompletion = success;
+	}
+	aioseop_sack.setVar(
+		"nonce-aioseop",
+		jQuery( 'input[name="nonce-aioseop"]' ).val()
+	);
+	aioseop_sack.setVar(
+		"nonce-aioseop-edit",
+		jQuery( 'input[name="nonce-aioseop-edit"]' ).val()
+	);
+	aioseop_sack.onError = function() {
+		alert( 'Ajax error on saving.' );
+	};
+	aioseop_sack.runAJAX();
+}
+
+/**
+ * @summary Handdles posts URL.
+ *
+ * @since 1.0.0
+ * @param $action.
+ * @param $setting.
+ * @param $options.
+ * @param $success.
+ */
+function aioseop_handle_post_url( action, settings, options, success_function, use_native) {
+	jQuery( "div#aiosp_" + settings ).fadeOut(
+		'fast', function() {
+			var loading = '<label class="aioseop_loading aioseop_' + settings + '_loading"></label> Please wait...';
+			jQuery( "div#aiosp_" + settings ).fadeIn(
+				'fast', function() {
+                    if(use_native) {
+                        jQuery.ajax({
+                            url     : ajaxurl,
+                            method  : 'POST',
+                            dataType: 'json',
+                            data    : {
+                                'action'    : action,
+                                'options'   : options,
+                                'settings'  : settings,
+                                'nonce-aioseop': jQuery( 'input[name="nonce-aioseop"]' ).val(),
+                                'nonce-aioseop-edit': jQuery( 'input[name="nonce-aioseop-edit"]' ).val()
+                            },
+                            success : function(data){
+                                if(success_function){
+                                    success_function(data);
+                                }
+                            }
+                        });
+                    }else{
+					    aioseop_handle_ajax_call( action, settings, options, success_function );
+                    }
+				}
+			);
+			jQuery( "div#aiosp_" + settings ).html( loading );
+		}
+	);
+}
+
+/**
+ * @summary Handles when AIOSEOP is overflowed.
+ *
+ * @since 1.0.0
+ * @param $element.
+ * @return mixed.
+ */
+function aioseop_is_overflowed( element ) {
+	return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+}
+
+/**
+ * @summary Handles when overflowed border.
+ *
+ * @since 1.0.0
+ * @param $el.
+ */
+function aioseop_overflow_border( el ) {
+	if ( aioseop_is_overflowed( el ) ) {
+		el.className = 'aioseop_option_div aioseop_overflowed';
+	} else {
+		el.className = 'aioseop_option_div';
+	}
+}
+
+function aiospinitAll(){
+  if ( jQuery( '.aiseop-date' ).length > 0 && jQuery( '.aiseop-date' ).eq( 0 ).prop( 'type' ).toLowerCase() === 'text' ) {
+	  jQuery( '.aiseop-date' ).datepicker(
 			{
 				dateFormat: "yy-mm-dd"
 			}
@@ -822,13 +864,12 @@ function initAll($){
 	}
 }
 
-function initCounting($){
+function aiospinitCounting(){
     /* count them characters */
-    $( '.aioseop_count_chars' ).on('keyup keydown', function(){
-        countChars( $(this).eq(0), $(this).parent().find('[name="' + $(this).attr('data-length-field') + '"]').eq(0));
+	jQuery( '.aioseop_count_chars' ).on('keyup keydown', function(){
+        countChars( jQuery(this).eq(0), jQuery(this).parent().find('[name="' + jQuery(this).attr('data-length-field') + '"]').eq(0));
     });
-    $( '.aioseop_count_chars' ).each(function(){
-        countChars( $(this).eq(0), $(this).parent().find('[name="' + $(this).attr('data-length-field') + '"]').eq(0));
+	jQuery( '.aioseop_count_chars' ).each(function(){
+        countChars( jQuery(this).eq(0), jQuery(this).parent().find('[name="' + jQuery(this).attr('data-length-field') + '"]').eq(0));
     });
 }
-

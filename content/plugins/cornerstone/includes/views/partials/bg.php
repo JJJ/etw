@@ -14,6 +14,8 @@ $bg_atts = array(
   'aria-hidden' => 'true'
 );
 
+$bg_atts = array_merge( $bg_atts, cs_element_js_atts( 'bg' ) );
+
 if ( isset( $bg_border_radius ) && $bg_border_radius !== 'inherit' ) {
   $bg_atts['style'] = 'border-radius: ' . $bg_border_radius . ';';
 }
@@ -27,7 +29,7 @@ if ( isset( $bg_lower_type ) && $bg_lower_type != 'none' ) {
 
   if ( $bg_lower_parallax && $bg_lower_type !== 'color' ) {
     $bg_lower_data = array( 'parallaxSize' => $bg_lower_parallax_size, 'parallaxDir' => $bg_lower_parallax_direction, 'parallaxRev' => $bg_lower_parallax_reverse );
-    $bg_lower_atts = array_merge( $bg_lower_atts, cs_element_js_atts( 'bg_layer', $bg_lower_data ) ); // 02
+    $bg_lower_atts = array_merge( $bg_lower_atts, cs_element_js_atts( 'bg_layer', $bg_lower_data ) );
   }
 
   switch ( $bg_lower_type ) {
@@ -56,7 +58,7 @@ if ( isset( $bg_upper_type ) && $bg_upper_type != 'none' ) {
 
   if ( $bg_upper_parallax && $bg_upper_type !== 'color' ) {
     $bg_upper_data = array( 'parallaxSize' => $bg_upper_parallax_size, 'parallaxDir' => $bg_upper_parallax_direction, 'parallaxRev' => $bg_upper_parallax_reverse );
-    $bg_upper_atts = array_merge( $bg_upper_atts, cs_element_js_atts( 'bg_layer', $bg_upper_data ) ); // 02
+    $bg_upper_atts = array_merge( $bg_upper_atts, cs_element_js_atts( 'bg_layer', $bg_upper_data ) );
   }
 
   switch ( $bg_upper_type ) {

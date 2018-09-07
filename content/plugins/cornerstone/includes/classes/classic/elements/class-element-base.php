@@ -429,7 +429,7 @@ abstract class Cornerstone_Element_Base {
 	public function preview_enqueue() { }
 
 	public function preview($element, $orchestrator, $parent = null, $transient = null, $inception = false ) {
-    return CS()->loadComponent( 'Legacy_Renderer' )->renderElement( $element );
+    return CS()->component( 'Legacy_Renderer' )->renderElement( $element );
   }
 
 

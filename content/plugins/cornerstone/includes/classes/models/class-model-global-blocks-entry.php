@@ -7,11 +7,15 @@ class Cornerstone_Model_Global_Blocks_Entry extends Cornerstone_Plugin_Component
 
   public function setup() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content.cs_global_block') ) {
+      return;
+    }
+
     $posts = get_posts( array(
       'post_type' => 'cs_global_block',
       'orderby' => 'type',
       'post_status' => 'tco-data',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'cs_all_wpml' => true
     ) );
 
@@ -29,7 +33,7 @@ class Cornerstone_Model_Global_Blocks_Entry extends Cornerstone_Plugin_Component
         'has-content' => (bool) $post->post_content,
         'modified' => date_i18n( get_option( 'date_format' ), strtotime( $post->post_modified ) ),
         'permalink' => get_permalink( $post ),
-        'language' => $this->plugin->loadComponent('Wpml')->get_language_data( $post->ID, $post->post_type )
+        'language' => $this->plugin->component('Wpml')->get_language_data( $post->ID, $post->post_type )
       );
 
     }

@@ -10,7 +10,7 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
 
   public function start( $context ) {
 
-    $this->zones = $this->plugin->loadComponent('Common')->get_preview_zones();
+    $this->zones = $this->plugin->component('Common')->get_preview_zones();
 
     $this->setup_context_all();
     do_action('cs_element_rendering');
@@ -24,7 +24,7 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
       }
     }
 
-    $this->enqueue_extractor = $this->plugin->loadComponent( 'Enqueue_Extractor' );
+    $this->enqueue_extractor = $this->plugin->component( 'Enqueue_Extractor' );
     $this->enqueue_extractor->start();
 
     add_action( 'cs_styling_add_styles', array( $this, 'track_inline_styling_handles' ) );
@@ -58,178 +58,212 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
     );
   }
 
-  public function render_element( $data ) {
+  public function render_element( $model ) {
 
     $response = '';
     $this->zone_output = array();
     $this->inline_styling_handles = array();
     $inline_css = '';
 
-    if ( 'markup' === $data['action'] ) {
+    $render_data = array();
+    $element_data = $model;
+    $element_manager = CS()->component('Element_Manager');
+    $definition = $element_manager->get_element( $model['_type'] );
 
-      $render_data = array();
-      $element_data = $data['model'];
-      $element_manager = CS()->loadComponent('Element_Manager');
-      $definition = $element_manager->get_element( $data['model']['_type'] );
+    /**
+     * Attach zone output siphens
+     */
 
-      /**
-       * Attach zone output siphens
-       */
+    foreach ( $this->zones as $zone ) {
+      remove_all_actions( $zone );
+      add_action( $zone, array( $this, 'zone_siphen_start' ), 0 );
+    }
 
-      foreach ( $this->zones as $zone ) {
-        remove_all_actions( $zone );
-        add_action( $zone, array( $this, 'zone_siphen_start' ), 0 );
-      }
-
-      $parent_attr_keys = array();
-      $parent_attr_html_keys = array();
-      $parent_html_keys = array();
-      $attr_keys = $definition->get_designated_keys( 'attr' );
-      $attr_html_keys = $definition->get_designated_keys( 'attr', 'html' );
-      $markup_html_keys = $definition->get_designated_keys('markup', 'html' );
+    $parent_attr_keys = array();
+    $parent_attr_html_keys = array();
+    $parent_html_keys = array();
+    $attr_keys = $definition->get_designated_keys( 'attr' );
+    $attr_html_keys = $definition->get_designated_keys( 'attr:html' );
+    $markup_html_keys = $definition->get_designated_keys('markup:html' );
 
 
-      // Does not support recursive shadowing
-      if ( $definition->is_shadow() && isset( $data['model']['_transient'] ) && isset( $data['model']['_transient']['parent'] ) ) {
+    // Does not support recursive shadowing
+    if ( $definition->is_child() && isset( $model['_transient'] ) && isset( $model['_transient']['parent'] ) ) {
 
-        $parent_definition = $element_manager->get_element( $data['model']['_transient']['parent']['_type'] );
-        $parent_data = x_module_decorate( $data['model']['_transient']['parent'] );
+      $parent_definition = $element_manager->get_element( $model['_transient']['parent']['_type'] );
+      $parent_data = x_module_decorate( $model['_transient']['parent'] );
 
-        $parent_attr_keys = $parent_definition->get_designated_keys( 'attr' );
-        $parent_attr_html_keys = $parent_definition->get_designated_keys( 'attr', 'html' );
-        $parent_html_keys = $parent_definition->get_designated_keys('markup', 'html' );
+      $parent_attr_keys = $parent_definition->get_designated_keys( 'attr' );
+      $parent_attr_html_keys = $parent_definition->get_designated_keys( 'attr:html' );
+      $parent_html_keys = $parent_definition->get_designated_keys('markup:html' );
 
-        $element_data['p_mod_id'] = $parent_data['mod_id'];
+      $element_data['p_mod_id'] = $parent_data['mod_id'];
 
-        foreach ($parent_data as $key => $value) {
-          if ( ! isset( $element_data[$key] ) ) {
-            $element_data[$key] = $value;
-          }
+      foreach ($parent_data as $key => $value) {
+        if ( ! isset( $element_data[$key] ) ) {
+          $element_data[$key] = $value;
         }
-
-      }
-
-      $markup_html_keys = array_merge( $parent_html_keys, $markup_html_keys );
-
-      // Don't allow classic elements to use HTML keys
-      if ( 0 === strpos($definition->get_type(), 'classic:' ) ) {
-        $markup_html_keys = array();
-      }
-
-
-      /**
-       * Replace keys designated as attributes with {{model.atts.key_name}}
-       */
-
-      foreach ($attr_keys as $key) {
-        $render_data[$key] = "{{model.atts.$key}}";
-      }
-
-      foreach ($parent_attr_keys as $key) {
-        $render_data[$key] = "{{model.parent.atts.$key}}";
-      }
-
-      foreach ($attr_html_keys as $key) {
-        $render_data[$key] = "{{hs model.atts.$key}}";
-      }
-
-      foreach ($parent_attr_html_keys as $key) {
-        $render_data[$key] = "{{hs model.parent.atts.$key}}";
-      }
-
-      $this->html_cache = array();
-
-      foreach ($element_data as $key => $value) {
-
-        // attr keys are already set to handlebar template properties
-        if ( in_array( $key, $attr_keys, true )
-          || in_array( $key, $attr_html_keys, true )
-          || in_array( $key, $parent_attr_keys, true )
-          || in_array( $key, $parent_attr_html_keys, true )
-        ) {
-          continue;
-        }
-
-        // base64 encode HTML within handlebars helper
-        if ( in_array($key, $markup_html_keys, true) ) {
-          $render_data[$key] = $this->isolate_html( $key, $value );
-          continue;
-        }
-
-        // Pass through other values
-        $render_data[$key] = $value;
-
-      }
-
-      if ( isset( $data['model']['_id'] ) ) {
-        $render_data['_id'] = '{{model.id}}';
-      }
-
-      /**
-       * Render the module using a registered filter
-       */
-
-      ob_start();
-      $definition->render( $render_data );
-      $response = ob_get_clean();
-
-      /**
-       * Restore Isolated HTML
-       */
-
-      $response = $this->restore_html( $response );
-
-
-
-      /**
-       * Add htmlSafe helper to atts inside style attributes
-       */
-      $response = preg_replace_callback('/style="(.+?)"/', array( $this, 'add_htmlsafe_helper' ), $response);
-
-      /**
-       * Add data-cs-observeable on root element if not supplied by view
-       */
-      if ( -1 !== strpos($response, 'data-cs-observeable' ) ) {
-        $response = preg_replace('/<\s*?\w+\s?/', "$0 data-cs-observeable=\"{{observer}}\" ", $response, 1 );
-      }
-
-      /**
-       * Capture output that was deffered into any registered zones
-       */
-
-      foreach ( $this->zones as $zone ) {
-        add_action( $zone, array( $this, 'zone_siphen_end' ), 9999999 );
-        do_action( $zone );
-      }
-
-      foreach ($this->zone_output as $key => $value) {
-        $html = preg_replace('/<!--(.|\n)*?-->/', '', $value);
-        $markup = base64_encode( apply_filters( 'cs_render_element_zone_output', $html ) );
-        $response .= "{{preview/zone-pipe model=model zone=\"$key\" markup=\"$markup\"}}";
-      }
-
-      $styling = $this->plugin->loadComponent('Styling');
-      foreach ($this->inline_styling_handles as $handle) {
-        $inline_css .= $styling->get_generated_styles_by_handle( $handle ) . ' ';
       }
 
     }
 
-    $this->plugin->loadComponent('Font_Manager')->flush_queue();
+    $markup_html_keys = array_merge( $parent_html_keys, $markup_html_keys );
+
+    // Don't allow classic elements to use HTML keys
+    if ( 0 === strpos($definition->get_type(), 'classic:' ) ) {
+      $markup_html_keys = array();
+    }
+
+
+    /**
+     * Replace keys designated as attributes with {{model.atts.key_name}}
+     */
+
+    foreach ($attr_keys as $key) {
+      $render_data[$key] = "{{model.atts.$key}}";
+    }
+
+    foreach ($parent_attr_keys as $key) {
+      $render_data[$key] = "{{model.parent.atts.$key}}";
+    }
+
+    foreach ($attr_html_keys as $key) {
+      $render_data[$key] = "{{hs model.atts.$key}}";
+    }
+
+    foreach ($parent_attr_html_keys as $key) {
+      $render_data[$key] = "{{hs model.parent.atts.$key}}";
+    }
+
+    $this->html_cache = array();
+
+    foreach ($element_data as $key => $value) {
+
+      // attr keys are already set to handlebar template properties
+      if ( in_array( $key, $attr_keys, true )
+        || in_array( $key, $attr_html_keys, true )
+        || in_array( $key, $parent_attr_keys, true )
+        || in_array( $key, $parent_attr_html_keys, true )
+      ) {
+        continue;
+      }
+
+      // base64 encode HTML within handlebars helper
+      if ( in_array($key, $markup_html_keys, true) ) {
+        $render_data[$key] = $this->isolate_html( $key . 'aaa', $value );
+        continue;
+      }
+
+      // Pass through other values
+      $render_data[$key] = $value;
+
+    }
+
+    if ( isset( $model['_id'] ) ) {
+      $render_data['_id'] = '{{model.id}}';
+    }
+
+    if ( $definition->render_children() ) {
+
+      add_filter('cornerstone_preview_container_output', '__return_false');
+      $decorate_parent = x_module_decorate( $render_data );
+
+      if ( isset( $model['_transient']['children'] ) ) {
+
+        $render_data['_modules'] = array();
+
+        foreach ($model['_transient']['children'] as $index => $child) {
+
+          $child['_transient'] = array( 'parent' => $render_data );
+          $child_render_data = x_module_decorate( $child, $decorate_parent );
+          $child_definition = $element_manager->get_element( $model['_type'] );
+          $child_markup_html_keys = $child_definition->get_designated_keys('markup:html');
+
+          foreach ($child as $key => $value) {
+
+            // base64 encode HTML within handlebars helper
+            if ( in_array($key, $child_markup_html_keys, true) ) {
+              $child_render_data[$key] = $this->isolate_html( "child_$key", $value );
+              continue;
+            }
+
+          }
+
+          $render_data['_modules'][] = $child_render_data;
+
+        }
+
+      }
+
+    }
+
+    /**
+     * Render the module using a registered filter
+     */
+
+    ob_start();
+    $definition->render( $render_data );
+    $response = ob_get_clean();
+
+    /**
+     * Restore Isolated HTML
+     */
+
+    $response = $this->restore_html( $response );
+
+
+
+    /**
+     * Add htmlSafe helper to atts inside style attributes
+     */
+    $response = preg_replace_callback('/style="(.+?)"/', array( $this, 'add_htmlsafe_helper' ), $response);
+
+    /**
+     * Add data-cs-observeable on root element if not supplied by view
+     */
+    if ( -1 !== strpos($response, 'data-cs-observeable' ) ) {
+      $response = preg_replace('/<\s*?\w+\s?/', "$0 data-cs-observeable=\"{{observer}}\" ", $response, 1 );
+    }
+
+    /**
+     * Capture output that was deffered into any registered zones
+     */
+
+    foreach ( $this->zones as $zone ) {
+      add_action( $zone, array( $this, 'zone_siphen_end' ), 9999999 );
+      do_action( $zone );
+    }
+
+    foreach ($this->zone_output as $key => $value) {
+      $html = preg_replace('/<!--(.|\n)*?-->/', '', $value);
+      $markup = base64_encode( apply_filters( 'cs_render_element_zone_output', $html ) );
+      $response .= "{{preview/zone-pipe model=model zone=\"$key\" markup=\"$markup\"}}";
+    }
+
+    $styling = $this->plugin->component('Styling');
+    foreach ($this->inline_styling_handles as $handle) {
+      $inline_css .= $styling->get_generated_styles_by_handle( $handle ) . ' ';
+    }
+
+    $this->plugin->component('Font_Manager')->flush_queue();
+
+    if ( $definition->render_children() ) {
+      remove_filter('cornerstone_preview_container_output', '__return_false');
+    }
 
     return array(
-      'template' => apply_filters( 'cs_render_element_template', $response ),
-      'inline_css' => $inline_css,
-      'extractions' => array(
-        'scripts' => $this->enqueue_extractor->extract_scripts(),
-        'styles' => $this->enqueue_extractor->extract_styles()
-      )
+      'template'    => apply_filters( 'cs_render_element_template', $response ),
+      'inline_css'  => $inline_css,
+      'type'        => $model['_type'],
+      'extractions' => $this->enqueue_extractor->extract()
     );
   }
 
   public function isolate_html( $key, $content ) {
 
-    $content = apply_filters( 'cs_render_element_isolate_html', do_shortcode( $content ) );
+    global $wp_embed;
+
+    $content = apply_filters( 'cs_render_element_isolate_html', do_shortcode( $wp_embed->autoembed( $content ) ) );
 
     if ( ! $content ) {
       return '';

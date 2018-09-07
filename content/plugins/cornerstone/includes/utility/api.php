@@ -13,7 +13,7 @@
  * @return none
  */
 function cornerstone_set_default_post_types( $types ) {
-	CS()->component( 'Common' )->set_default_post_types( $types );
+	// Deprecated
 }
 
 /**
@@ -52,7 +52,7 @@ function cornerstone_register_element( $type, $atts, $deprecated = null ) {
     return;
   }
 
-  CS()->loadComponent( 'Element_Manager' )->register_element( $type, $atts );
+  CS()->component( 'Element_Manager' )->register_element( $type, $atts );
 
 }
 
@@ -89,78 +89,80 @@ function cornerstone_unregister_integration( $name ) {
 }
 
 function cornerstone_register_element_styles( $id, $elements ) {
-  return CS()->loadComponent( 'Element_Front_End' )->register_element_styles( $id, $elements );
+  return CS()->component( 'Element_Front_End' )->register_element_styles( $id, $elements );
 }
 
 function cornerstone_register_styles( $id, $css ) {
-  return CS()->loadComponent( 'Styling' )->add_styles( $id, $css );
+  return CS()->component( 'Styling' )->add_styles( $id, $css );
 }
 
 function cornerstone_options_register_option( $name, $default_value = null, $options = array() ) {
-  $options_bootstrap = CS()->loadComponent( 'Options_Bootstrap' );
+  $options_bootstrap = CS()->component( 'Options_Bootstrap' );
   $options_bootstrap->register_option( $name, $default_value, $options );
 }
 
 function cornerstone_options_register_options( $group, $options = array() ) {
-  $options_bootstrap = CS()->loadComponent( 'Options_Bootstrap' );
+  $options_bootstrap = CS()->component( 'Options_Bootstrap' );
   $options_bootstrap->register_options( $group, $options );
 }
 
 function cornerstone_options_get_defaults() {
-  return CS()->loadComponent( 'Options_Bootstrap' )->get_defaults();
+  return CS()->component( 'Options_Bootstrap' )->get_defaults();
 }
 
 function cornerstone_options_get_default( $name ) {
-  return CS()->loadComponent( 'Options_Bootstrap' )->get_default( $name );
+  return CS()->component( 'Options_Bootstrap' )->get_default( $name );
 }
 
 function cornerstone_options_get_value( $name ) {
-  return CS()->loadComponent( 'Options_Bootstrap' )->get_value( $name );
+  return CS()->component( 'Options_Bootstrap' )->get_value( $name );
 }
 
 function cornerstone_options_update_value( $name, $value ) {
-  return CS()->loadComponent( 'Options_Bootstrap' )->update_value( $name, $value );
+  return CS()->component( 'Options_Bootstrap' )->update_value( $name, $value );
 }
 
 function cornerstone_options_register_section( $name, $value = array() ) {
-  return CS()->loadComponent( 'Options_Manager' )->register_section( $name, $value );
+  return CS()->component( 'Options_Manager' )->register_section( $name, $value );
 }
 
 function cornerstone_options_register_sections( $groups ) {
-  return CS()->loadComponent( 'Options_Manager' )->register_sections( $groups );
+  return CS()->component( 'Options_Manager' )->register_sections( $groups );
 }
 
 function cornerstone_options_register_control( $option_name, $control ) {
-  return CS()->loadComponent( 'Options_Manager' )->register_control( $option_name, $control );
+  return CS()->component( 'Options_Manager' )->register_control( $option_name, $control );
 }
 
 function cornerstone_options_unregister_option( $name ) {
-  return CS()->loadComponent( 'Options_Bootstrap' )->unregister_option( $name );
+  return CS()->component( 'Options_Bootstrap' )->unregister_option( $name );
 }
 
 function cornerstone_options_unregister_section( $name ) {
-  return CS()->loadComponent( 'Options_Manager' )->unregister_section( $name );
+  return CS()->component( 'Options_Manager' )->unregister_section( $name );
 }
 
 function cornerstone_options_unregister_control( $option_name ) {
-  return CS()->loadComponent( 'Options_Manager' )->unregister_control( $option_name );
+  return CS()->component( 'Options_Manager' )->unregister_control( $option_name );
 }
 
 function cornerstone_options_enable_custom_css( $option_name, $selector = '' ) {
-  return CS()->loadComponent( 'Options_Manager' )->enable_custom_css( $option_name, $selector = '' );
+  return CS()->component( 'Options_Manager' )->enable_custom_css( $option_name, $selector = '' );
 }
 
 function cornerstone_options_enable_custom_js( $option_name ) {
-  return CS()->loadComponent( 'Options_Manager' )->enable_custom_js( $option_name );
+  return CS()->component( 'Options_Manager' )->enable_custom_js( $option_name );
 }
 
 function cornerstone_get_element( $name ) {
-  return CS()->loadComponent('Element_Manager')->get_element( $name );
+  return CS()->component('Element_Manager')->get_element( $name );
 }
 
 
 function cornerstone_preview_container_output() {
-	echo '{{yield}}';
+  if ( apply_filters('cornerstone_preview_container_output', true ) ) {
+    echo '{{yield}}';
+  }
 }
 
 /**
@@ -169,7 +171,7 @@ function cornerstone_preview_container_output() {
  * @return string
  */
 function cornerstone_get_header_data( $fallback = false ) {
-  $regions = CS()->loadComponent( 'Regions' );
+  $regions = CS()->component( 'Regions' );
   return ( $regions ) ? $regions->get_active_header_data( $fallback ) : '';
 }
 
@@ -180,35 +182,39 @@ function cornerstone_get_header_data( $fallback = false ) {
  * @return string
  */
 function cornerstone_get_footer_data( $fallback = false ) {
-  $regions = CS()->loadComponent( 'Regions' );
+  $regions = CS()->component( 'Regions' );
   return ( $regions ) ? $regions->get_active_footer_data( $fallback ) : '';
 }
 
 function cornerstone_enqueue_custom_script( $id, $content, $type = 'text/javascript' ) {
-	return CS()->loadComponent( 'Inline_Scripts' )->add_script( $id, $content, $type );
+	return CS()->component( 'Inline_Scripts' )->add_script( $id, $content, $type );
 }
 
 function cornerstone_dequeue_custom_script( $id ) {
-	return CS()->loadComponent( 'Inline_Scripts' )->remove_script( $id );
+	return CS()->component( 'Inline_Scripts' )->remove_script( $id );
 }
 
 function cornerstone_post_process_css( $css, $minify = false ) {
-	CS()->loadComponent('Font_Manager');
-  CS()->loadComponent('Color_Manager');
-	return CS()->loadComponent( 'Styling' )->external_post_process( $css, $minify );
+	CS()->component('Font_Manager');
+  CS()->component('Color_Manager');
+	return CS()->component( 'Styling' )->external_post_process( $css, $minify );
 }
 
 function cornerstone_post_process_color( $value ) {
-  CS()->loadComponent('Color_Manager');
+  CS()->component('Color_Manager');
 	return apply_filters('cornerstone_css_post_process_color', $value);
 }
 
 function cornerstone_cleanup_generated_styles() {
-  return CS()->loadComponent('Cleanup')->clean_generated_styles();
+  return CS()->component('Cleanup')->clean_generated_styles();
 }
 
 function cornerstone_restore_import_starter_pack() {
-  return CS()->loadComponent('Template_Manager')->unhide_starter_pack();
+  return CS()->component('Template_Manager')->unhide_starter_pack();
+}
+
+function cornerstone_queue_font( $font ) {
+  return CS()->component('Font_Manager')->queue_font( $font );
 }
 
 /**

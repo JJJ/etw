@@ -21,8 +21,7 @@
 
 .$_el.x-statbar {
   @unless $statbar_direction === 'row' {
-    -webkit-flex-direction: $statbar_direction;
-            flex-direction: $statbar_direction;
+    flex-direction: $statbar_direction;
   }
   @if $statbar_direction === 'row' || $statbar_direction === 'row-reverse' {
     @if $statbar_width_row !== 'auto' {
@@ -86,8 +85,7 @@
 
 .$_el.x-statbar .x-statbar-bar {
   @if $statbar_label === true {
-    -webkit-justify-content: $statbar_label_justify;
-            justify-content: $statbar_label_justify;
+    justify-content: $statbar_label_justify;
   }
   @unless $statbar_bar_border_radius?? {
     border-radius: $statbar_bar_border_radius;

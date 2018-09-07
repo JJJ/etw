@@ -203,8 +203,8 @@ abstract class Cornerstone_Legacy_Setting_Section {
 		return (int) $this->priority;
 	}
 
-	final public function save( $data ) {
-		$this->handler( wp_parse_args( $data, $this->get_defaults() ) );
+	final public function save( $data, $content ) {
+		$this->handler( $content->get_post(), wp_parse_args( $data, $this->get_defaults() ) );
 		return true;
 	}
 

@@ -50,6 +50,12 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 		return $isolated;
 	}
 
+  public function extract() {
+    return array(
+      'scripts' => $this->extract_scripts(),
+      'styles' => $this->extract_styles()
+    );
+  }
 
 	public function get_scripts() {
 
@@ -109,7 +115,7 @@ class Cornerstone_Enqueue_Extractor extends Cornerstone_Plugin_Component {
 
 		$new_script = array(
 			'tag' => $tag,
-			'src' => $src,
+			'src' => $this->plugin->component('Common')->fix_script_tags( $handle, $src ),
 			'obj' => $obj,
 		);
 

@@ -5,7 +5,7 @@
 // 01. Assign linked group ID to GLOBAL so it can be accessed by items. This
 //     GLOBAL is reset as each new accordion is populated on the page.
 // 02. If accordion is linked, `uniqid()` is used to produce a unique ID for
-//     the group ID. If the accordion is not linked, value is `NULL`.
+//     the group ID. If the accordion is not linked, value is `false`.
 // 03. Cleanup after ourselves.
 
 function x_shortcode_accordion( $atts, $content = null ) {
@@ -22,7 +22,7 @@ function x_shortcode_accordion( $atts, $content = null ) {
   $class = ( $class != '' ) ? 'x-accordion ' . esc_attr( $class ) : 'x-accordion';
   $style = ( $style != '' ) ? 'style="' . $style . '"' : '';
 
-  $x_accordion_group_id = ( $link === 'true' ) ? uniqid() : NULL; // 02
+  $x_accordion_group_id = ( $link === 'true' ) ? uniqid() : false; // 02
 
   $output = "<div {$id} class=\"{$class}\" {$style}>" . do_shortcode( $content ) . "</div>";
 
@@ -48,21 +48,21 @@ function x_shortcode_accordion_item( $atts, $content = null ) {
     'open'      => ''
   ), $atts, 'x_accordion_item' ) );
 
-  $id    = ( $id    != '' ) ? 'id="' . esc_attr( $id ) . '"' : '';
-  $class = ( $class != '' ) ? 'x-accordion-group ' . esc_attr( $class ) : 'x-accordion-group';
-  $style = ( $style != '' ) ? 'style="' . $style . '"' : '';
-  $title = ( $title != '' ) ? $title : 'Make Sure to Set a Title';
+  $id        = ( $id    != ''     ) ? 'id="' . esc_attr( $id ) . '"' : '';
+  $class     = ( $class != ''     ) ? 'x-accordion-group ' . esc_attr( $class ) : 'x-accordion-group';
+  $style     = ( $style != ''     ) ? 'style="' . $style . '"' : '';
+  $title     = ( $title != ''     ) ? $title : 'Make Sure to Set a Title';
 
   GLOBAL $x_accordion_group_id;
 
-  $toggle_group_id      = ( $parent_id != '' ) ? $parent_id : ( ! is_null( $x_accordion_group_id ) ) ? $x_accordion_group_id : NULL;
+  $toggle_group_id      = ( ! empty( $parent_id ) ) ? $parent_id : ( ( ! empty( $x_accordion_group_id ) ) ? $x_accordion_group_id : false );
 
   $toggleable_id        = uniqid();
   $attr_toggleable      = ' data-x-toggleable="' . $toggleable_id . '"';
 
   $class_toggle         = ( $open == 'true' ) ? '' : ' collapsed';
   $attr_id_toggle       = 'id="tab-' . $toggleable_id . '"';
-  $attr_toggle_group    = ( ! is_null( $toggle_group_id ) ) ? ' data-x-toggle-group="' . $toggle_group_id . '"' : '';
+  $attr_toggle_group    = ( ! empty( $toggle_group_id ) ) ? ' data-x-toggle-group="' . $toggle_group_id . '"' : '';
   $attr_aria_selected   = ( $open == 'true' ) ? ' aria-selected="true"' : ' aria-selected="false"';
   $attr_aria_expanded   = ( $open == 'true' ) ? ' aria-expanded="true"' : ' aria-expanded="false"';
   $attr_aria_controls   = ' aria-controls="panel-' . $toggleable_id . '"';
@@ -74,7 +74,7 @@ function x_shortcode_accordion_item( $atts, $content = null ) {
 
   $output = "<div {$id} class=\"{$class}\" {$style}>"
             . '<div class="x-accordion-heading">'
-              . "<a {$attr_id_toggle} class=\"x-accordion-toggle{$class_toggle}\" role=\"tab\" data-x-toggle=\"collapse-b\"{$attr_toggleable}{$attr_toggle_group}{$attr_aria_selected}{$attr_aria_expanded}{$attr_aria_controls}{$parent_id}>{$title}</a>"
+              . "<a {$attr_id_toggle} class=\"x-accordion-toggle{$class_toggle}\" role=\"tab\" data-x-toggle=\"collapse-b\"{$attr_toggleable}{$attr_toggle_group}{$attr_aria_selected}{$attr_aria_expanded}{$attr_aria_controls}>{$title}</a>"
             . '</div>'
             . "<div {$attr_id_body} class=\"x-accordion-body{$class_body}\" role=\"tabpanel\" data-x-toggle-collapse=\"1\"{$attr_toggleable}{$attr_aria_hidden}{$attr_aria_labelledby}>"
               . '<div class="x-accordion-inner">'

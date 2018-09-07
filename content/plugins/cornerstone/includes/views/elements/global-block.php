@@ -90,15 +90,18 @@ if ( in_array( $global_block_id, $cs_global_block_ancestory, true) || $global_bl
 
 if ( ! $error ) {
 
+  $front_end = CS()->component('Element_Front_End');
+  $front_end->start_load_styles();
   array_push( $cs_global_block_ancestory, $global_block_id );
   $content = str_replace( '[cs_content]', '[cs_content _p="' . $global_block_id . '" no_wrap=true]', $global_block_post->post_content );
   $content = do_shortcode( $content );
   array_pop( $cs_global_block_ancestory );
+  $front_end->stop_load_styles();
 
   $post_settings = CS()->common()->get_post_settings( $global_block_id );
 
   if ( apply_filters( '_cornerstone_custom_css', isset( $post_settings['custom_css'] ) ) ) {
-    CS()->loadComponent('Styling')->add_styles( "$global_block_id-custom", $post_settings['custom_css'] );
+    CS()->component('Styling')->add_styles( "$global_block_id-custom", $post_settings['custom_css'] );
   }
 
   if ( isset( $post_settings['custom_js'] ) ) {

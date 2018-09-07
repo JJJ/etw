@@ -41,45 +41,42 @@ function x_shortcode_recent_posts( $atts ) {
 
   $data = cs_generate_data_attributes( 'recent_posts', $js_params );
 
+  $posts = get_posts( array(
+    'orderby'             => 'date',
+    'post_type'           => "{$type}",
+    'posts_per_page'      => "{$count}",
+    'offset'              => "{$offset}",
+    "{$category_type}"    => "{$category}",
+    'ignore_sticky_posts' => $no_sticky
+  ) );
+
   $output = "<div {$id} class=\"{$class}{$orientation}\" {$style} {$data} data-fade=\"{$fade}\" >";
 
-    $q = new WP_Query( array(
-      'orderby'             => 'date',
-      'post_type'           => "{$type}",
-      'posts_per_page'      => "{$count}",
-      'offset'              => "{$offset}",
-      "{$category_type}"    => "{$category}",
-      'ignore_sticky_posts' => $no_sticky
-    ) );
-
-    if ( $q->have_posts() ) : while ( $q->have_posts() ) : $q->the_post();
+    foreach ($posts as $post) {
 
       if ( $no_image == 'true' ) {
         $image_output       = '';
         $image_output_class = 'no-image';
       } else {
-        $image              = wp_get_attachment_image_src( get_post_thumbnail_id(), 'entry-cropped' );
+        $image              = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'entry-cropped' );
         $bg_image           = ( $image[0] != '' ) ? ' style="background-image: url(' . $image[0] . ');"' : '';
         $image_output       = '<div class="x-recent-posts-img"' . $bg_image . '></div>';
         $image_output_class = 'with-image';
       }
 
-      // $excerpt = ( $show_excerpt ) ? '<div class="x-recent-posts-excerpt"><p>' . preg_replace('/<a.*?more-link.*?<\/a>/', '', cs_get_raw_excerpt() ) . '</p></div>' : '';
-
-      $output .= '<a class="x-recent-post' . $count . ' ' . $image_output_class . '" href="' . get_permalink( get_the_ID() ) . '" title="' . esc_attr( sprintf( csi18n('shortcodes.recent-posts-permalink'), the_title_attribute( 'echo=0' ) ) ) . '">'
-                 . '<article id="post-' . get_the_ID() . '" class="' . implode( ' ', get_post_class() ) . '">'
+      $output .= '<a class="x-recent-post' . $count . ' ' . $image_output_class . '" href="' . get_permalink( $post->ID ) . '" title="' . esc_attr( sprintf( csi18n('shortcodes.recent-posts-permalink'), the_title_attribute( array( 'echo' => false, 'post' => $post->ID ) ) ) ) . '">'
+                 . '<article id="post-' . $post->ID . '" class="' . implode( ' ', get_post_class('', $post->ID) ) . '">'
                    . '<div class="entry-wrap">'
                      . $image_output
                      . '<div class="x-recent-posts-content">'
-                       . '<h3 class="h-recent-posts">' . get_the_title() . '</h3>'
-                       . '<span class="x-recent-posts-date">' . get_the_date() . '</span>'
-                       // . $excerpt
+                       . '<h3 class="h-recent-posts">' . get_the_title( $post->ID ) . '</h3>'
+                       . '<span class="x-recent-posts-date">' . get_the_date( '', $post->ID ) . '</span>'
                      . '</div>'
                    . '</div>'
                  . '</article>'
                . '</a>';
 
-    endwhile; endif; wp_reset_postdata();
+    }
 
   $output .= '</div>';
 

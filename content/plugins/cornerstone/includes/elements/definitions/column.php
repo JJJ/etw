@@ -18,14 +18,11 @@
 // =============================================================================
 
 $data = array(
-  'title'  => __( 'Column', '__x__' ),
-  'values' => array_merge(
-    x_values_column(),
-    x_values_omega( array( 'add_style' => true ) )
-  ),
+  'title'   => __( 'Column', '__x__' ),
+  'values'  => x_values_element_column(),
   'options' => array(
     'fallback_content' => '&nbsp;'
-  )
+  ),
 );
 
 
@@ -35,14 +32,10 @@ $data = array(
 
 function x_element_builder_setup_column() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_column(),
-      x_control_groups_omega( array( 'add_style' => true ) )
-    ),
-    'controls' => array_merge(
-      x_controls_column(),
-      x_controls_omega( array( 'add_style' => true ) )
-    ),
+    'controls'           => x_controls_element_column(),
+    'controls_adv'       => x_controls_element_column( true ),
+    'control_groups'     => x_control_groups_element_column(),
+    'control_groups_adv' => x_control_groups_element_column( true ),
   );
 }
 

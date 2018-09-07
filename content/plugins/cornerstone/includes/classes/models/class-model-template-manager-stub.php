@@ -7,11 +7,15 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
 
   public function load_all() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates') ) {
+      return;
+    }
+
     $posts = get_posts( array(
       'post_type' => array( 'cs_template', 'cs_user_templates' ),
       'post_status' => array( 'tco-data', 'publish' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
     ) );
 
     foreach ($posts as $post) {
@@ -26,6 +30,10 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
   public function make_record( $post, $load_meta = false ) {
 
     try {
+
+      if ( ! $this->plugin->component('App_Permissions')->user_can('templates') ) {
+        throw new Exception( 'Unauthorized' );
+      }
 
       $template = new Cornerstone_Template( $post );
 
@@ -90,6 +98,10 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
 
   public function update( $params ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates') ) {
+      return new WP_Error( 'cornerstone', 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -100,7 +112,8 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
 
     $template = new Cornerstone_Template( $id );
 
-    if ( isset( $atts['title'] ) ) {
+
+    if ( isset( $atts['title'] ) && $this->plugin->component('App_Permissions')->user_can('templates.rename') ) {
       $template->set_title( $atts['title'] );
     }
 
@@ -112,11 +125,11 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
       $template->set_subtype( $atts['subtype'] );
     }
 
-    if ( isset( $atts['preview'] ) ) {
+    if ( isset( $atts['preview'] ) && $this->plugin->component('App_Permissions')->user_can('templates.update_preview_image') ) {
       $template->set_preview( $atts['preview'] );
     }
 
-    if ( isset( $atts['hidden'] ) ) {
+    if ( isset( $atts['hidden'] ) && $this->plugin->component('App_Permissions')->user_can('templates.hide') ) {
       $template->set_hidden( $atts['hidden'] );
     }
 

@@ -25,5 +25,6 @@ return array(
 	'update_check'                => array( 'Updates', 'ajax_update_check', false ),
 	'validation'                  => array( 'Validation', 'ajax_validation', false ),
 	'validation_revoke'           => array( 'Validation', 'ajax_revoke', false ),
+  'yoast_do_shortcode'          => array( 'Yoast', 'ajax_yoast_do_shortcode', false ),
 
 );

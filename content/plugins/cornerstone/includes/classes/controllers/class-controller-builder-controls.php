@@ -16,7 +16,7 @@ class Cornerstone_Controller_Builder_Controls extends Cornerstone_Plugin_Compone
       'post_type' => $data['post_type'],
       'post_status' => isset( $data['post_status'] ) ? $data['post_status'] : array( 'any', 'tco-data' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) ) );
 
     $options = array();

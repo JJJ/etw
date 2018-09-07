@@ -7,6 +7,10 @@ class Cornerstone_Model_Footers_Entry extends Cornerstone_Plugin_Component {
 
   public function setup() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('footers') ) {
+      return;
+    }
+
     global $wpdb;
     $records = array();
 
@@ -18,7 +22,7 @@ class Cornerstone_Model_Footers_Entry extends Cornerstone_Plugin_Component {
         'id' => (string)$post['ID'],
         'title' => $post['post_title'],
         'modified' => date_i18n( get_option( 'date_format' ), strtotime( $post['post_modified'] ) ),
-        'language' => $this->plugin->loadComponent('Wpml')->get_language_data( $post['ID'], 'cs_footer' )
+        'language' => $this->plugin->component('Wpml')->get_language_data( $post['ID'], 'cs_footer' )
       );
 
     }

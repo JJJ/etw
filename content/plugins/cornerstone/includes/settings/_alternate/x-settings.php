@@ -421,9 +421,8 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
 
   }
 
-  public function handler( $atts ) {
+  public function handler( $post, $atts ) {
 
-    global $post;
   	extract( $atts );
 
   	$classes = explode(' ', $body_css_class );

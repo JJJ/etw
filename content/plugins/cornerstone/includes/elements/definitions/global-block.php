@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Global Block', '__x__' ),
-  'values' => array_merge(
-    x_values_global_block(),
-    x_values_omega()
-  ),
+  'values' => x_values_element_global_block(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_global_block() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_global_block(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_global_block(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_global_block(),
+    'controls_adv'       => x_controls_element_global_block( true ),
+    'control_groups'     => x_control_groups_element_global_block(),
+    'control_groups_adv' => x_control_groups_element_global_block( true ),
   );
 }
 

@@ -19,11 +19,7 @@
 
 $data = array(
   'title'  => __( 'Video', '__x__' ),
-  'values' => array_merge(
-    x_values_video(),
-    x_values_frame( array( 'frame_content_type' => 'video' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_video(),
 );
 
 
@@ -33,16 +29,10 @@ $data = array(
 
 function x_element_builder_setup_video() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_video(),
-      x_control_groups_frame( array( 'frame_content_type' => 'video' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_video(),
-      x_controls_frame( array( 'frame_content_type' => 'video' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_video(),
+    'controls_adv'       => x_controls_element_video( true ),
+    'control_groups'     => x_control_groups_element_video(),
+    'control_groups_adv' => x_control_groups_element_video( true ),
   );
 }
 

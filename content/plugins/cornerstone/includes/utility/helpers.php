@@ -9,12 +9,8 @@ function e_csi18n( $key ) {
 	echo csi18n( $key );
 }
 
-/**
- * Get all the Font Awesome unicode values
- * @return array Hash list of icon aliases and unicode values
- */
-function fa_all_unicode() {
-	return CS()->common()->getFontIcons();
+function cs_fa_all() {
+  return CS()->common()->getFontIds();
 }
 
 /**
@@ -23,7 +19,8 @@ function fa_all_unicode() {
  * @return string      String containing unicode reference for the requested icon
  */
 function fa_unicode( $key ) {
-	return CS()->common()->getFontIcon( $key );
+  $icon = CS()->common()->getFontIcon( $key );
+  return is_array($icon) ? $icon[1] : '';
 }
 
 
@@ -36,15 +33,28 @@ function fa_entity( $key ) {
 	return '&#x' . fa_unicode( $key ) . ';';
 }
 
+function fa_get_attr( $key ) {
+  $icon = CS()->common()->getFontIcon( $key );
+  return array(
+    'attr' => 'data-x-icon-' . $icon[0],
+    'unicode' => $icon[1],
+    'entity'  => '&#x' . $icon[1] . ';'
+  );
+}
+
 /**
  * Template function that returns a data attribute for an icon
  * @param  string $key Icon to lookup
  * @return string      Data attribute string that can be placed inside an element tag
  */
 function fa_data_icon( $key ) {
-	return 'data-x-icon="' . fa_unicode( $key ) . '"';
+  $icon = fa_get_attr( $key );
+  return $icon['attr']. '="' . $icon['entity'] . '"';
 }
 
+function fa_locate_from_unicode( $unicode ) {
+  return CS()->common()->getFontIconKeyFromUnicode( $unicode );
+}
 
 /**
  * Alternate for wp_localize_script that outputs a function to return the data
@@ -318,6 +328,12 @@ function cs_deep_array_merge ( array &$defaults, array $data, $max_depth = -1 ) 
 
 function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 
+  global $cs_shortcode_aliases;
+
+  if ( ! $cs_shortcode_aliases ) {
+    $cs_shortcode_aliases = array();
+  }
+
 	if ( is_array( $new_tag ) ) {
 		foreach ($new_tag as $tag) {
 			cs_alias_shortcode( $tag, $existing_tag, $filter_atts );
@@ -331,6 +347,15 @@ function cs_alias_shortcode( $new_tag, $existing_tag, $filter_atts = true ) {
 
 	global $shortcode_tags;
 	add_shortcode( $new_tag, $shortcode_tags[ $existing_tag ] );
+
+  if ( ! in_array($new_tag, $cs_shortcode_aliases) ) {
+    $cs_shortcode_aliases[] = $new_tag;
+  }
+
+  if ( ! in_array($existing_tag, $cs_shortcode_aliases) ) {
+    $cs_shortcode_aliases[] = $existing_tag;
+  }
+
 
 	if ( ! $filter_atts || ! has_filter( $tag = "shortcode_atts_$existing_tag" ) ) {
 		return;
@@ -524,10 +549,9 @@ function cs_send_json_error( $data = null ) {
  * @param  string $content Content to make an excerpt for
  * @return string          Text result
  */
-function cs_derive_excerpt( $content, $store = false ) {
+function cs_derive_excerpt( $content ) {
 
-
-	$the_content = apply_filters( 'the_content', $content );
+	$the_content = do_shortcode( $content );
 	$length = apply_filters( 'excerpt_length', 55 );
 
 	$offset = 0;
@@ -545,12 +569,12 @@ function cs_derive_excerpt( $content, $store = false ) {
 
 	}
 
-	if ( $store === true ) {
-		return trim( $reduction );
-	}
+	return trim( $reduction );
 
-	return wp_trim_words( trim( $reduction ), $length, apply_filters( 'excerpt_more', ' [&hellip;]' ) );
+}
 
+function cs_format_excerpt( $excerpt ) {
+  return wp_trim_words( $excerpt, apply_filters( 'excerpt_length', 55 ), apply_filters( 'excerpt_more', ' [&hellip;]' ) );
 }
 
 /**
@@ -634,13 +658,13 @@ function cs_to_component_name( $name ) {
 }
 
 function cs_debug( $message ) {
-  CS()->loadComponent('Debug')->add_message($message);
+  CS()->component('Debug')->add_message($message);
 }
 
 function cs_set_curl_timeout_begin( $timeout ) {
-  CS()->loadComponent('Networking')->set_curl_timeout_begin( $timeout );
+  CS()->component('Networking')->set_curl_timeout_begin( $timeout );
 }
 
 function cs_set_curl_timeout_end() {
-  CS()->loadComponent('Networking')->set_curl_timeout_end();
+  CS()->component('Networking')->set_curl_timeout_end();
 }

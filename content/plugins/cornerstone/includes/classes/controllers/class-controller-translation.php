@@ -18,7 +18,7 @@ class Cornerstone_Controller_Translation extends Cornerstone_Plugin_Component {
       return new WP_Error( 'cornerstone', 'Source invalid.' );
     }
 
-    $wpml = $this->plugin->loadComponent('Wpml');
+    $wpml = $this->plugin->component('Wpml');
 
     if ( ! in_array( $source_post->post_type, $wpml->get_translateable_post_types(), true ) ) {
       return new WP_Error( 'cornerstone', 'WPML does not allow this post type (' . $source_post->post_type . ') to be translated.' );
@@ -29,12 +29,14 @@ class Cornerstone_Controller_Translation extends Cornerstone_Plugin_Component {
     }
 
     global $sitepress;
+    global $iclTranslationManagement;
 
     $copy_from = isset( $data['copyFrom'] ) ? $data['copyFrom'] : null;
 
     if ( $copy_from ) {
 
       $duplicate = $sitepress->make_duplicate( $copy_from, $data['lang'] );
+      $iclTranslationManagement->reset_duplicate_flag( $duplicate ); // Translate Independently
 
       if ( 0 === $duplicate ) {
         return new WP_Error( 'cornerstone', 'Unable to duplicate.' );
@@ -54,7 +56,7 @@ class Cornerstone_Controller_Translation extends Cornerstone_Plugin_Component {
 
     // Set trid
     $this->wpml_lang = $data['lang'];
-    $details = $this->plugin->loadComponent('Wpml')->get_element_language_details( $source_post->ID );
+    $details = $this->plugin->component('Wpml')->get_element_language_details( $source_post->ID );
 
     $this->wpml_trid = isset( $details['trid'] ) ? $details['trid'] : null;
     $source_language = isset( $details['source_language_code'] ) ? $details['source_language_code'] : null;

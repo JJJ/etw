@@ -42,8 +42,8 @@ function x_shortcode_callout( $atts ) {
   $target      = ( $target      == 'blank' ) ? 'target="_blank"' : '';
 
   if ( $button_icon != '' ) {
-    $unicode     = fa_unicode( $button_icon );
-    $button_icon = '<i class="x-icon-' . $button_icon . ' mvn mln mrs" data-x-icon="&#x' . $unicode . ';"></i>';
+    $icon_attr     = fa_data_icon( $button_icon );
+    $button_icon = '<i class="x-icon-' . $button_icon . ' mvn mln mrs" ' . $icon_attr . '></i>';
   }
 
   if ( $circle == 'true' ) {

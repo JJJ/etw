@@ -8,21 +8,35 @@ class Cornerstone_Controller_Render extends Cornerstone_Plugin_Component {
       return array();
     }
 
-    $renderer = $this->plugin->loadComponent( 'Element_Renderer' );
+    $renderer = $this->plugin->component( 'Element_Renderer' );
     $renderer->start( isset($data['context']) ? $data['context'] : array() );
-    $this->plugin->loadComponent('Font_Manager')->set_previewing();
+    $this->plugin->component('Font_Manager')->set_previewing();
+    $batch = array();
+    $cached = array();
 
-    foreach ($data['batch'] as $key => $value) {
-      $data['batch'][$key]['response'] = $renderer->render_element( $value['data'] );
-      $data['batch'][$key]['response']['hash'] = $value['data']['hash'];
-      $data['batch'][$key]['response']['timestamp'] = $value['data']['timestamp'];
+    foreach ($data['batch'] as $index => $value) {
+
+      $hash = $value['data']['hash'];
+
+      if ( ! isset( $cached[$hash] ) ) {
+        $cached[$hash] = $renderer->render_element( $value['data']['model'] );
+      }
+
+      $batch[] = array(
+        'response' => $cached[$hash],
+        'hash'     => $hash,
+        'ts'       => $value['data']['ts'],
+        'type'     => isset($value['data']['model']['_type']) ? $value['data']['model']['_type'] : null,
+        'jobID'    => $value['jobID']
+      );
+
     }
 
     $extractions = $renderer->get_extractions();
     $renderer->end();
 
     return array(
-      'batch' => $data['batch'],
+      'batch' => $batch,
       'extractions' => $extractions,
       'debug' => $renderer->enqueue_extractor->counter
     );

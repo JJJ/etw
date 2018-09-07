@@ -124,6 +124,24 @@ class Cornerstone_Settings_Handler extends Cornerstone_Plugin_Component {
 			return cs_send_json_error();
 		}
 
+    if ( isset( $data['permissions'] ) ) {
+
+      $permissions = json_decode( wp_unslash($data['permissions']), true );
+
+      if ( is_null( $permissions ) ) {
+        return cs_send_json_error(array('Unable to decode permissions', $data['permissions']));
+      }
+
+      $save_permissions = $this->plugin->component('App_Permissions')->update_stored_permissions( $permissions );
+
+      if ( is_wp_error( $save_permissions ) ) {
+        return cs_send_json_error( $save_permissions );
+      }
+
+      unset($data['permissions']);
+
+    }
+
 		$this->setup_controls();
 		$data = $this->controls->sanitize( $data );
 

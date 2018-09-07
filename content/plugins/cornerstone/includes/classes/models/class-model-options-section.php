@@ -6,7 +6,12 @@ class Cornerstone_Model_Options_Section extends Cornerstone_Plugin_Component {
   public $name = 'options/section';
 
   public function setup() {
-    $options_manager = $this->plugin->loadComponent( 'Options_Manager' );
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('theme_options') ) {
+      return;
+    }
+
+    $options_manager = $this->plugin->component( 'Options_Manager' );
     $options_manager->register();
     $records = $options_manager->get_sections();
 

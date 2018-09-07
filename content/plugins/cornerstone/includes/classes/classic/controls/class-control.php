@@ -45,7 +45,7 @@ class Cornerstone_Control {
 
 	final public static function mixinFactory( $name, $config = array() ) {
 
-		$mixins = CS()->config_group( 'controls/mixins' );
+		$mixins = Cornerstone_Control_Mixins::get_mk2_mixins();
 
 		$type = $config['mixin'];
 		unset( $config['mixin'] );
@@ -210,10 +210,11 @@ class Cornerstone_Control {
 			return $sanitized;
 		}
 
-		if ( !is_scalar( $item ) || is_null( $item ) )
+		if ( !is_scalar( $item ) || is_null( $item ) ) {
 			return '';
+    }
 
-		return sanitize_text_field( (string) $item );
+		return self::sanitize_html( (string) $item );
 	}
 
 	public static function kses_tags( ) {

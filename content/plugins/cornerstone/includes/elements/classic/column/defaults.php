@@ -6,6 +6,7 @@
 
 return array(
 
+  'title'        => '',
 	'id'           => '',
 	'class'        => '',
 	'style'        => '',

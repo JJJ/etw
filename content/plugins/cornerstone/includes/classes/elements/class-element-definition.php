@@ -23,9 +23,11 @@ class Cornerstone_Element_Definition {
       'options'        => array(),
       'style'          => null,
 
-      'builder'        => null,
-      'controls'       => array(),
-      'control_groups' => array(),
+      'builder'            => null,
+      'controls'           => array(),
+      'control_groups'     => array(),
+      'controls_adv'       => array(),
+      'control_groups_adv' => array(),
       // 'conditions'     => array(),
       // 'supports'       => array(),
       'icon'           => null,
@@ -42,7 +44,7 @@ class Cornerstone_Element_Definition {
 
     $this->def = array_merge( $defaults, $this->def, array_intersect_key( $update, $defaults ) );
 
-    if ( isset( $this->def['options']['shadow'] ) && $this->def['options']['shadow'] ) {
+    if ( $this->is_child() ) {
       $this->def['options']['private'] = true;
     }
 
@@ -71,10 +73,12 @@ class Cornerstone_Element_Definition {
   }
 
   public function apply_defaults( $data ) {
+
     $defaults = $this->get_defaults();
+    $designations = $this->get_designations();
 
     foreach ($defaults as $key => $value) {
-      if ( ! isset( $data[$key] ) ) {
+      if ( ! isset( $data[$key] ) || (isset( $designations[$key] ) && 'all:readonly' === $designations[$key] ) ) {
         $data[$key] = $value;
       }
     }
@@ -93,21 +97,41 @@ class Cornerstone_Element_Definition {
     return $designations;
   }
 
-  public function get_designated_keys( $type, $sub_group = null ) {
+  public function get_designated_keys() {
+
+    $args = func_get_args();
 
     $designations = $this->get_designations();
+
     $keys = array();
 
-    foreach ($designations as $key => $value) {
-      $parts = explode(':', $value);
-      $designation_type = array_shift($parts);
-      $designation_sub_group = implode(':', $parts);
-      $sub_group_check = is_null( $sub_group ) ? true : $sub_group === $designation_sub_group;
-      if ( $type === $designation_type && $sub_group_check ) {
-        $keys[] = $key;
+    foreach ($args as $group) {
+
+      $top_level = false === strpos( $group, ':' );
+      $wild      = 0 === strpos( $group, '*' );
+
+      foreach ($designations as $key => $value) {
+
+        $check = $value;
+        $parts = explode(':', $value);
+        $primary = array_shift($parts);
+
+        if ( $top_level ) {
+          $check = $primary;
+        }
+
+        if ( $wild ) {
+          $check = str_replace($primary,'*', $check);
+        }
+
+        if ( $check === $group ) {
+          $keys[] = $key;
+        }
+
       }
     }
-    return $keys;
+
+    return array_unique( $keys );
   }
 
   public function get_style_template() {
@@ -118,16 +142,23 @@ class Cornerstone_Element_Definition {
         return '';
       }
 
-      $this->style = is_callable( $this->def['style'] ) ? call_user_func( $this->def['style'], $this->type ) : $this->def['style'];
+      $this->style = trim( is_callable( $this->def['style'] ) ? call_user_func( $this->def['style'], $this->type ) : $this->def['style'] );
 
     }
 
     return $this->style;
   }
 
+
   public function get_compiled_style() {
-    $template = CS()->loadComponent( 'Coalescence' )->create_template( $this->get_style_template() );
+
+    if ( ! apply_filters('cs_compile_element_style_templates', true ) ) {
+      return '[]';
+    }
+
+    $template = CS()->component( 'Coalescence' )->create_template( $this->get_style_template() );
     return $template->serialize();
+
   }
 
   // Redundant. Could be removed if all style template processing was done client side in the builder.
@@ -148,6 +179,10 @@ class Cornerstone_Element_Definition {
     $post_process_keys = array();
     foreach ($style_keys as $data_key => $style_key) {
 
+      if ( 'all:readonly' === $style_key ) {
+        continue;
+      }
+
       $pos = strpos($style_key, ':' );
 
       if ( false === $pos ) {
@@ -158,14 +193,11 @@ class Cornerstone_Element_Definition {
 
     }
 
-    if ( empty( $post_process_keys ) ) {
-      return $data;
-    }
-
-    // function preProcess( data ) {
-    foreach ($data as $key => $value) {
-      if ( isset($post_process_keys[$key])) {
-        $data[$key] = '%%post ' . $post_process_keys[$key] . '%%' . $value .'%%/post%%';
+    if ( ! empty( $post_process_keys ) ) {
+      foreach ($data as $key => $value) {
+        if ( isset($post_process_keys[$key]) && $value ) {
+          $data[$key] = '%%post ' . $post_process_keys[$key] . '%%' . $value .'%%/post%%';
+        }
       }
     }
 
@@ -177,12 +209,24 @@ class Cornerstone_Element_Definition {
     return $this->def['title'];
   }
 
-  public function is_shadow() {
-    return ( isset( $this->def['options']['shadow'] ) && $this->def['options']['shadow'] );
+  public function is_child() {
+    return ( isset( $this->def['options']['child'] ) && $this->def['options']['child'] );
+  }
+
+  public function is_classic() {
+    return 0 === strpos($this->type, 'classic:');
+  }
+
+  public function is_child_or_classic_child() {
+    return $this->is_child() || ( isset( $this->def['options']['classic'] ) && isset( $this->def['options']['classic']['child'] ) && $this->def['options']['classic']['child'] );
   }
 
   public function is_private() {
-    return ( isset( $this->def['options']['private'] ) && $this->def['options']['private'] );
+    return ( isset( $this->def['options']['private'] ) && $this->def['options']['private'] ) || $this->is_child_or_classic_child();
+  }
+
+  public function render_children() {
+    return ( isset( $this->def['options']['render_children'] ) && $this->def['options']['render_children'] );
   }
 
   public function get_type() {
@@ -198,10 +242,13 @@ class Cornerstone_Element_Definition {
       'title'          => $this->def['title'],
       'options'        => $this->def['options'],
       'values'         => $this->def['values'],
-      'style'          => $this->get_compiled_style(),
-      'controls'       => $this->def['controls'],
-      'control_groups' => $this->def['control_groups'],
-      'active'         => $this->def['active']
+      // 'stylecompiled'  => $this->get_compiled_style(),
+      'style'              => $this->get_style_template(),
+      'controls'           => $this->def['controls'],
+      'control-groups'     => $this->def['control_groups'],
+      'controls-adv'       => $this->def['controls_adv'],
+      'control-groups-adv' => $this->def['control_groups_adv'],
+      'active'             => $this->def['active']
     );
 
     if ( is_string( $this->def['icon'] ) ) {
@@ -230,10 +277,7 @@ class Cornerstone_Element_Definition {
 
     $sanitized = array();
     if ( ! isset( $this->sanitize_html_safe_keys ) ) {
-      $markup_keys = $this->get_designated_keys('markup', 'html' );
-      $attr_keys = $this->get_designated_keys('attr', 'html' );
-      $raw_keys = $this->get_designated_keys('markup', 'raw' );
-      $this->sanitize_html_safe_keys = array_merge( $markup_keys, $attr_keys, $raw_keys );
+      $this->sanitize_html_safe_keys = $this->get_designated_keys('*:html', '*:raw' );
     }
 
     $internal_keys = array( '_id', '_p', '_type', '_region', '_modules', '_transient' );
@@ -264,25 +308,19 @@ class Cornerstone_Element_Definition {
     $designated_keys = array_keys( $this->def['values'] );
 
     if ( ! isset( $this->escape_html_safe_keys ) ) {
-
-      $this->escape_html_safe_keys = array_merge(
-        $this->get_designated_keys('markup', 'html' ),
-        $this->get_designated_keys('attr', 'html' ),
-        $this->get_designated_keys('markup', 'raw' )
-      );
-
+      $this->escape_html_safe_keys = $this->get_designated_keys('*:html', '*:raw');
     }
 
     $html_safe_keys = $this->escape_html_safe_keys;
 
-    if ( $this->is_shadow() && isset( $data['_transient'] ) && isset( $data['_transient']['parent'] ) ) {
+    if ( $this->is_child() && isset( $data['_transient'] ) && isset( $data['_transient']['parent'] ) ) {
 
-      $parent_definition = CS()->loadComponent('Element_Manager')->get_element( $data['_transient']['parent']['_type'] );
+      $parent_definition = CS()->component('Element_Manager')->get_element( $data['_transient']['parent']['_type'] );
 
       $html_safe_keys = array_merge( $html_safe_keys,
-        $parent_definition->get_designated_keys('markup', 'html' ),
-        $parent_definition->get_designated_keys('attr', 'html' ),
-        $parent_definition->get_designated_keys('markup', 'raw' )
+        $parent_definition->get_designated_keys('markup:html' ),
+        $parent_definition->get_designated_keys('attr:html' ),
+        $parent_definition->get_designated_keys('markup:raw' )
       );
 
       $designated_keys = array_merge( $designated_keys, array_keys( $parent_definition->get_designations() ) );
@@ -311,23 +349,26 @@ class Cornerstone_Element_Definition {
     return $escaped;
   }
 
-  public function save( $data, $content ) {
+  public function save( $data, $content, $atts = array() ) {
 
-    $tag = "cs_element_" . str_replace('-', '_', $data['_type'] );
-    $_id = $data['_id'];
+    $type = str_replace('-', '_', $data['_type'] );
+    $tag = "cs_element_$type";
 
-    $shortcode = "[$tag _id=\"$_id\"]";
+    $atts = array_merge( $atts, array( '_id' => $data['_id'] ) );
+    $atts = cs_atts( $atts );
+    $shortcode = "[$tag $atts]";
 
     if ( ! $content && isset( $this->def['options']['fallback_content'] ) ) {
       $content = $this->def['options']['fallback_content'];
     }
 
     if ( $content ) {
-
       $shortcode .= $content . "[/$tag]";
     }
 
-    return $shortcode;
+    $shortcode = apply_filters("cs_save_element_output_$type", $shortcode, $data, $content );
+
+    return apply_filters('cs_save_element_output', $shortcode, $data, $content );
   }
 
   public function render( $data ) {

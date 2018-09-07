@@ -20,7 +20,7 @@ class CS_Mailchimp extends Cornerstone_Element_Base {
 
 
     if ( $this->is_active() ) {
-      $forms = get_posts( array( 'post_type' => 'x-email-forms', 'posts_per_page' => 999 ) );
+      $forms = get_posts( array( 'post_type' => 'x-email-forms', 'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ) ) );
     }
 
     foreach ($forms as $form) {

@@ -86,7 +86,7 @@ $graphic_k_pre    = ( isset( $graphic_k_pre    ) && $graphic_k_pre    != '' ) ? 
   }
 
   @if $<?php echo $graphic_k_pre; ?>graphic_has_alt === true {
-    .$_el<?php echo $graphic_selector; ?>[class*="active"] .x-graphic-icon {
+    .$_el<?php echo $graphic_selector; ?> .x-graphic-icon[class*="active"] {
       @unless $<?php echo $graphic_k_pre; ?>graphic_icon_text_shadow_dimensions?? {
         @if $<?php echo $graphic_k_pre; ?>graphic_icon_text_shadow_color_alt === 'transparent' {
           text-shadow: none;

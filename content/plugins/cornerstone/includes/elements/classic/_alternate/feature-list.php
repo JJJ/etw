@@ -279,6 +279,7 @@ class CS_Feature_List extends Cornerstone_Element_Base {
         $e_params['graphic_icon'] = $e['graphic_icon'];
       } else if ( $graphic == 'image' ) {
         $e_params['graphic_image'] = $e['graphic_image'];
+        $e_params['graphic_image_alt_text'] = $e['graphic_image_alt_text'];
       }
 
       if ( $graphic_animation != 'none' ) {

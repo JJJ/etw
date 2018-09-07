@@ -4,7 +4,7 @@ class Cornerstone_Controller_Design_Cloud extends Cornerstone_Plugin_Component {
 
   public function cache_index( $data ) {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.design_cloud') ) {
       return new WP_Error( 'cornerstone', 'Unauthorized' );
     }
 
@@ -20,7 +20,7 @@ class Cornerstone_Controller_Design_Cloud extends Cornerstone_Plugin_Component {
 
   public function get_cached_index() {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! $this->plugin->component('App_Permissions')->user_can('templates.design_cloud') ) {
       return new WP_Error( 'cornerstone', 'Unauthorized' );
     }
 

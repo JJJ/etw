@@ -12,6 +12,8 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
 
     add_action('x_render_children', 'x_render_bar_modules', 10, 3 );
 
+    add_filter('cs_save_element_output_section', array( $this, 'section_nextpage_support' ), 10, 3 );
+
   }
 
   public function register_element( $name, $element ) {
@@ -50,14 +52,40 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
     return $elements;
   }
 
+  public function get_public_definitions() {
+
+    $elements = array();
+
+    foreach ($this->elements as $element) {
+      if ( ! $element->is_private() ) {
+        $elements[] = $element;
+      }
+    }
+
+    usort( $elements, array( $this, 'sort_definitions' ) );
+
+    return $elements;
+  }
+
+  public function sort_definitions( $a, $b ) {
+    return strcasecmp( $a->get_title(), $b->get_title() );
+  }
+
   public function register_native_elements() {
 
     $this->register_element('undefined', array(
-      'title' => csi18n('elements.undefined-title')
+      'title' => csi18n('elements.undefined-title'),
+      'options' => array(
+        'private' => true
+      )
     ) );
 
-    $this->register_element('root', array() );
-    $this->register_element('region', array() );
+    $this->register_element('root', array( 'options' => array( 'private' => true )) );
+
+    $this->register_element('region', array(
+      'title'   => csi18n('elements.region-title'),
+      'options' => array( 'private' => true )
+    ) );
 
     $this->register_element('bar', array(
       'title' => csi18n('elements.bar-title')
@@ -67,9 +95,11 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
       'title' => csi18n('elements.container-title')
     ) );
 
-    $this->load_files($this->plugin->get_registry('elements', 'base'), $this->path( 'includes/elements' ));
-    $this->load_files($this->plugin->get_registry('elements', 'mixins'), $this->path( 'includes/elements/mixins' ));
-    $this->load_files($this->plugin->get_registry('elements', 'definitions'), $this->path( 'includes/elements/definitions' ));
+    $this->load_files( $this->plugin->get_registry( 'elements', 'base' ), $this->path( 'includes/elements' ) );
+    $this->load_files( $this->plugin->get_registry( 'elements', 'mixins_controls' ), $this->path( 'includes/elements/mixins_controls' ) );
+    $this->load_files( $this->plugin->get_registry( 'elements', 'mixins_includes' ), $this->path( 'includes/elements/mixins_includes' ) );
+    $this->load_files( $this->plugin->get_registry( 'elements', 'mixins_elements' ), $this->path( 'includes/elements/mixins_elements' ) );
+    $this->load_files( $this->plugin->get_registry( 'elements', 'definitions' ), $this->path( 'includes/elements/definitions' ) );
 
   }
 
@@ -84,7 +114,7 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
 
   public function upgrade_classic_elements() {
 
-    $classic_elements = $this->plugin->loadComponent( 'Element_Orchestrator' )->getModels();
+    $classic_elements = $this->plugin->component( 'Element_Orchestrator' )->getModels();
 
     foreach ($classic_elements as $element) {
       $this->register_element( 'classic:' . $element['name'], $this->upgrade_classic_element( $element ) );
@@ -107,6 +137,10 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
       $options['no_server_render'] = true;
     }
 
+    if ( isset($options['classic']['manageChild'] ) ) {
+      $options['render_children'] = true;
+    }
+
     $protected_keys = ( isset( $options['classic']['protected_keys'] ) && is_array( $options['classic']['protected_keys'] ) ) ? $options['classic']['protected_keys'] : array();
 
     foreach ($options_to_migrate as $key) {
@@ -127,7 +161,7 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
 
     foreach ($element['defaults'] as $key => $value) {
       if ( 'elements' === $key ) {
-        $options['default_children'] = CS()->loadComponent('Element_Migrations')->migrate_classic($value);
+        $options['default_children'] = CS()->component('Element_Migrations')->migrate_classic($value);
         continue;
       }
       $designation = 'markup';
@@ -220,7 +254,7 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
 
     $render_data['_type'] = str_replace('classic:', '', $render_data['_type']);
 
-    echo $this->plugin->loadComponent('Builder_Renderer')->render_element( $render_data, '{{yield}}' );
+    echo $this->plugin->component('Builder_Renderer')->render_element( $render_data, '{{yield}}' );
   }
 
   public function sanitize_element( $data ) {
@@ -255,6 +289,18 @@ class Cornerstone_Element_Manager extends Cornerstone_Plugin_Component {
   public function native_builder_setup( $type ) {
     $function = 'x_element_builder_setup_' . str_replace( '-', '_', $type );
     return is_callable( $function ) ? call_user_func( $function ) : array();
+  }
+
+  public function section_nextpage_support( $shortcode, $data, $content ) {
+
+    $data_string = json_encode( $data );
+
+    if ( false !== strpos( $data_string, '<!--nextpage-->' ) ) {
+      $shortcode .= '[/cs_content]<!--nextpage-->[cs_content]';
+    }
+
+    return $shortcode;
+
   }
 
 }

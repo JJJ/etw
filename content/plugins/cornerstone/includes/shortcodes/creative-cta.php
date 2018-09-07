@@ -45,7 +45,7 @@ function x_shortcode_creative_cta( $atts ) { // 1
     if ( $image != '' ) {
       $graphic = '<span class="graphic"><img style="margin: 0; width: ' . $image_width . ';" src="' . $image . '"></span>';
     } else if ( $icon != '' ) {
-      $graphic = '<span class="graphic"><i style="margin: 0; font-size: ' . $icon_size . ';" class="x-icon-' . $icon . '" data-x-icon="&#x' . fa_unicode( $icon ) . ';"></i></span>';
+      $graphic = '<span class="graphic"><i style="margin: 0; font-size: ' . $icon_size . ';" class="x-icon-' . $icon . '" ' . fa_data_icon( $icon ) . '></i></span>';
     }
   } else {
     $graphic = '';

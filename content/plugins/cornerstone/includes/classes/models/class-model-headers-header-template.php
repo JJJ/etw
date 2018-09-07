@@ -7,11 +7,15 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
 
   public function setup() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.create_from_template') ) {
+      return;
+    }
+
     $posts = get_posts( array(
       'post_type' => array( 'cs_template' ),
       'post_status' => array( 'tco-data', 'publish' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'meta_key' => '_cs_template_type',
       'meta_value' => 'header',
     ) );
@@ -49,6 +53,10 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
   }
 
   public function query( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.create_from_template') ) {
+      return $this->make_response( array() );
+    }
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {
@@ -126,6 +134,10 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
 
   public function create( $params ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.save_as_template') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! isset( $atts['title'] ) ) {
@@ -153,6 +165,10 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
 
 
   public function update( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.save_as_template') ) {
+      throw new Exception( 'Unauthorized' );
+    }
 
     $atts = $this->atts_from_request( $params );
 

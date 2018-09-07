@@ -29,14 +29,6 @@ $anchor_k_pre    = 'toggle';
 
 include( '_menu-css.php' );
 
-?>
-
-.$_el.x-menu > li > .sub-menu {
-  margin: $sub_menu_margin;
-}
-
-<?php
-
 $anchor_selector = '.x-menu > li > .x-anchor';
 $anchor_k_pre    = '';
 

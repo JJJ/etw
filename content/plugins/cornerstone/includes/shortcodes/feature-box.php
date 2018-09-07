@@ -162,7 +162,7 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
     $graphic = '<div' . $graphic_container_class_style . '>'
                . '<div' . $graphic_outer_class_style . '>'
                  . '<div' . $graphic_inner_class_style . '>'
-                   . '<i class="x-icon-' . $graphic_icon . ' ' . $graphic_shape . '" data-x-icon="&#x' . fa_unicode( $graphic_icon ) . ';"' . $graphic_style . '></i>'
+                   . '<i class="x-icon-' . $graphic_icon . ' ' . $graphic_shape . '" ' . fa_data_icon( $graphic_icon ) . ' ' . $graphic_style . '></i>'
                  . '</div>'
                . '</div>'
              . '</div>';

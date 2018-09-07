@@ -8,7 +8,7 @@ class Cornerstone_Element_Migrations  extends Cornerstone_Plugin_Component {
 	protected $orchestrator;
 
 	public function setup() {
-		$this->orchestrator = $this->plugin->loadComponent( 'Element_Orchestrator' );
+		$this->orchestrator = $this->plugin->component( 'Element_Orchestrator' );
 	}
 
 	public function migrate_classic( $elements, $version = 0 ) {

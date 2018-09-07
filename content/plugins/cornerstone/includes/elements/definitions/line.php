@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Line', '__x__' ),
-  'values' => array_merge(
-    x_values_line(),
-    x_values_omega()
-  ),
+  'values' => x_values_element_line(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_line() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_line(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_line(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_line(),
+    'controls_adv'       => x_controls_element_line( true ),
+    'control_groups'     => x_control_groups_element_line(),
+    'control_groups_adv' => x_control_groups_element_line( true ),
   );
 }
 

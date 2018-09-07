@@ -1,27 +1,6 @@
 <?php
 return array(
 
-	'custom_css' => array(
-		'type' => 'code-editor',
-		'options' => array(
-			'settings' => array(
-        'label' => __( 'Custom CSS', 'cornerstone' ),
-        'mode' => 'css'
-      )
-		)
-	),
-
-	'custom_js' => array(
-		'type' => 'code-editor',
-		'options' => array(
-			'settings' => array(
-        //'label' => __( 'Custom Javascript', 'cornerstone' ),
-        'mode' => 'javascript',
-        'lint' => true
-      )
-		)
-	),
-
 	'post_title'     => array(
 		'type' => 'text',
 		'ui' => array(
@@ -41,7 +20,10 @@ return array(
 		'options' => array(
 			'notLive' => 'settings-wp-changed',
 			'choices' => $definition->post_status_choices()
-		)
+		),
+    'condition' => array(
+      'user_can:{context}.publish' => true
+    )
 	),
 
 	'allow_comments' => array(

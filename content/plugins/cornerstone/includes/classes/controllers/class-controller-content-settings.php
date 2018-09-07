@@ -7,12 +7,12 @@ class Cornerstone_Controller_Content_Settings extends Cornerstone_Plugin_Compone
     global $post;
 
 		if ( ! isset( $data['post_id'] ) || ! $post = get_post( (int) $data['post_id'] ) ) {
-      return new WP_Error( 'cs-settings-controller', 'post_id not set' );
+      return array();
     }
 
     setup_postdata( $post );
 
-    $settings_manager = $this->plugin->loadComponent('Settings_Manager');
+    $settings_manager = $this->plugin->component('Settings_Manager');
 
     return array(
       'data' => $this->upgrade_settings_data( $settings_manager->get_data()),

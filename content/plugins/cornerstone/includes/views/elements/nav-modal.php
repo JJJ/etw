@@ -25,4 +25,4 @@ $data_modal    = array_merge( $data_modal, $modal_content );
 // ------
 
 x_get_view( 'partials', 'anchor', '', $data_toggle, true );
-x_set_view( 'x_before_site_end', 'partials', 'modal', '', $data_modal, 10 );
+x_set_view( 'x_before_site_end', 'partials', 'modal', '', $data_modal, 100 );

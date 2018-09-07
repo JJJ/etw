@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Alert', '__x__' ),
-  'values' => array_merge(
-    x_values_alert(),
-    x_values_omega()
-  ),
+  'values' => x_values_element_alert(),
 );
 
 
@@ -32,14 +29,17 @@ $data = array(
 
 function x_element_builder_setup_alert() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_alert(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_alert(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_alert(),
+    'controls_adv'       => x_controls_element_alert( true ),
+    'control_groups'     => x_control_groups_element_alert(),
+    'control_groups_adv' => x_control_groups_element_alert( true ),
+    'options' => array(
+      'inline' => array(
+        'alert_content' => array(
+          'selector' => '.x-alert-content'
+        )
+      )
+    )
   );
 }
 

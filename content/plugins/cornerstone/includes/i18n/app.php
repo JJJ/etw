@@ -2,7 +2,6 @@
 
 return array(
 
-  'title-tag'          => CS()->common()->properTitle(),
   'powered-by-themeco' => __( 'Powered by Themeco', 'cornerstone' ),
 
   // Messaging
@@ -27,7 +26,7 @@ return array(
   'add-label' => __( 'Add {{label}}', 'cornerstone' ),
 
   // Formatting
-  'formatting-colon' => __( '{{prefix}}: {{content}}', '__x__'),
+  'formatting-colon' => __( '{{prefix}}: {{content}}', 'cornerstone'),
 
   // Preview Sizer
   'preview-sizer-abbr-xl' => __( 'XL', 'cornerstone' ),
@@ -66,6 +65,11 @@ return array(
   'color-manager-short.title'    => __( 'Color', 'cornerstone' ),
   'element-manager-short.title'  => __( 'Element', 'cornerstone' ),
 
+  // Elements
+  'elements.search'            => __( 'Search Elements', 'cornerstone' ),
+  'elements.nothing-found'     => __( 'No Elements Found', 'cornerstone' ),
+  'elements.nothing-found-msg' => __( 'Try refining your search to locate your desired element.', 'cornerstone' ),
+
   // Inspector
   'inspector.na-title' => __( 'Nothing Selected', 'cornerstone' ),
   'inspector.search'   => __( 'Search Inspector...', 'cornerstone' ),
@@ -75,8 +79,14 @@ return array(
   'controls-previous-missing'                 => __( 'Previous Value Unavailable', 'cornerstone' ),
   'controls-font-family-select'               => __( '{{family}} ({{source}})', 'cornerstone' ),
   'controls-text-editor-click-to-edit'        => __( 'Click to Edit', 'cornerstone' ),
+  'controls-text-editor-edit-text'            => __( 'Edit Text', 'cornerstone' ),
   'controls-text-editor-html-mode-label'      => __( 'HTML', 'cornerstone' ),
   'controls-text-editor-rich-text-mode-label' => __( 'Rich Text', 'cornerstone' ),
+
+  'controls-tooltip-top' => __( 'Top', 'cornerstone' ),
+  'controls-tooltip-right' => __( 'Right', 'cornerstone' ),
+  'controls-tooltip-bottom' => __( 'Bottom', 'cornerstone' ),
+  'controls-tooltip-left' => __( 'Left', 'cornerstone' ),
 
   // Notifications
   'notification-notice'  => __( 'Hey!', 'cornerstone' ),
@@ -181,6 +191,10 @@ return array(
   'font-weight.900'       => __( '900 &ndash; Ultra Bold', 'cornerstone' ),
   'font-weight.900italic' => __( '900 &ndash; Ultra Bold (Italic)', 'cornerstone' ),
 
+  // Custom Code
+  'code-editors.custom_css_placeholder' => __( "/*\nNo need for style tags here;\nsimply get started by writing\nCSS! Watch as your changes\nare reflected live in the\npreview area. Have fun!\n*/\n\n", 'cornerstone' ),
+	'code-editors.custom_js_placeholder'  => __( "//\n// No need to add script tags\n// here; simply get started\n// by writing JavaScript!\n// Click \"Run\" to see your\n// changes applied :)\n//\n\n", 'cornerstone' ),
+
   // Choices
   'choices.menu-named'    => __('Menu: %s', 'cornerstone'),
   'choices.menu-location' => __('Location: %s', 'cornerstone'),
@@ -196,11 +210,14 @@ return array(
   'duplicate'     => __( 'Duplicate', 'cornerstone' ),
 	'delete'        => __( 'Delete', 'cornerstone' ),
 	'really-delete' => __( 'Really Delete?', 'cornerstone' ),
+  'erase'         => __( 'Erase', 'cornerstone' ),
+  'really-erase'  => __( 'Really Erase?', 'cornerstone' ),
+  'manage-layout' => __( 'Manage Layout', 'cornerstone' ),
 
   // Errors
   'preview-error.missing-zone.x_masthead' => __('No suitable preview area found. This is most common when you are using a "No Header" page template. Try changing the page template, or assigning this header to a context where the template allows the header output.', 'cornerstone'),
   'preview-error.missing-zone.x_colophon' => __('No suitable preview area found. This is most common when you are using a "No Footer" page template. Try changing the page template, or assigning this footer to a context where the template allows the footer output.', 'cornerstone'),
-  'preview-error.missing-zone.content'    => __('No suitable preview area found. This could happen when a third party plugin is overrinding the content area.', 'cornerstone'),
+  'preview-error.missing-zone.cs_content'    => __('No suitable preview area found. This could happen when a third party plugin is overrinding the content area.', 'cornerstone'),
 
   'preview-error.load.default'        => __('The preview could not load. This is most often related to a plugin conflict or aggressive page cacheing. Checking the developer console for errors could indicate what went wrong.', 'cornerstone'),
   'preview-error.load.https-mismatch' => __('The preview could not load due to a http/https mismatch. Please check that HTTPS is properly configured on your site.', 'cornerstone'),
@@ -209,4 +226,15 @@ return array(
   'preview-error.load.timeout'        => __('The preview was unresponsive after loading. This is most often related to a plugin conflict or aggressive page cacheing.', 'cornerstone'),
 
   'preview-error.loading.incomplete-html' => __('The preview HTML did not include a closing </html>; tag. It may fail to load or work properly.', 'cornerstone'),
+
+
+  // Preferences
+  'preferences.title'          => __('Preferences', 'cornerstone'),
+  'preferences.description'    => __('Configure how Cornerstone should look and behave. These settings are specific to your user account.', 'cornerstone'),
+  'preferences.wp-toolbar-on'  => __('The WordPress toolbar will be shown on next reload.', 'cornerstone'),
+  'preferences.wp-toolbar-off' => __('The WordPress toolbar will be hidden on next reload.', 'cornerstone'),
+
+  // Skeleton Mode
+  'skeleton-item-handle' => __("{{type}} - {{title}}", 'cornerstone')
+
 );

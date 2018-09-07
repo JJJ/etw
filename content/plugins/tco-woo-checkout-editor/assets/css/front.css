@@ -1,0 +1,5 @@
+/**Fix for conditinal fields **/
+.woocommerce form .form-row-wide{
+	display: inline-block;
+    width: 100%;
+}

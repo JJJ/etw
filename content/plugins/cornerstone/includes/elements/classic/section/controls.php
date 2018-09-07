@@ -126,6 +126,20 @@ return array(
     )
   ),
 
+  'separator_top_inset' => array(
+    'type' => 'text',
+    'ui'   => array(
+      'title'   => __( 'Top Separator Inset', 'cornerstone' ),
+      'tooltip' => __( 'Specify the inset value of your top separator if you notice any gaps with your settings.', 'cornerstone' ),
+    ),
+    'options' => array(
+      'expandable' => false
+    ),
+    'condition' => array(
+      'separator_top_type:not' => 'none'
+    )
+  ),
+
   'separator_top_angle_point' => array(
     'type' => 'text',
     'ui'   => array(
@@ -172,6 +186,20 @@ return array(
     )
   ),
 
+  'separator_bottom_inset' => array(
+    'type' => 'text',
+    'ui'   => array(
+      'title'   => __( 'Bottom Separator Inset', 'cornerstone' ),
+      'tooltip' => __( 'Specify the inset value of your bottom separator if you notice any gaps with your settings.', 'cornerstone' ),
+    ),
+    'options' => array(
+      'expandable' => false
+    ),
+    'condition' => array(
+      'separator_bottom_type:not' => 'none'
+    )
+  ),
+
   'separator_bottom_angle_point' => array(
     'type' => 'text',
     'ui'   => array(
@@ -187,16 +215,6 @@ return array(
   ),
 
   // INTERNAL - Layout Controls
-
-  '_help_text' => array(
-    'type' => 'info-box',
-    'key' => 'disabled',
-    'ui' => array(
-      'title' => __( 'Want to add content?', 'cornerstone' ),
-      'message' => __( 'Choose a layout, click the <strong class="glue">%%icon-nav-elements-solid%% Elements</strong> icon above, then drag elements into a column.', 'cornerstone' )
-    ),
-    'context' => '_layout'
-  ),
 
   'title' => array(
     'type' => 'title',

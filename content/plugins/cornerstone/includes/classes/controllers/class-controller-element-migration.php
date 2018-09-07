@@ -10,7 +10,7 @@ class Cornerstone_Controller_Element_Migration extends Cornerstone_Plugin_Compon
 
 		$version = isset( $data['version'] ) ? $data['version'] : 0;
 
-		$migrated = $this->plugin->loadComponent('Element_Migrations')->migrate_classic( $data['elements'], $version );
+		$migrated = $this->plugin->component('Element_Migrations')->migrate_classic( $data['elements'], $version );
 
 		if ( is_wp_error( $migrated ) ) {
       return $migrated;

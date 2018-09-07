@@ -32,6 +32,7 @@ class Cornerstone_Settings_Manager extends Cornerstone_Plugin_Component {
 		$this->register_sections();
 
 		global $post;
+
     $this->post_meta = get_post_meta( $post->ID );
     $this->post_type_object = get_post_type_object( $post->post_type );
 
@@ -262,50 +263,6 @@ class Cornerstone_Settings_Manager extends Cornerstone_Plugin_Component {
 			$this->add( $class_name, $name, null );
 
 		}
-
-	}
-
-	public function legacy_save( $data ) {
-		$section = $this->get( $data['name'] );
-		return $section->handler( $this->legacy_format( $data, $section ) );
-	}
-
-	private function legacy_format( $data, $section ) {
-
-		if ( !isset( $data['elements'] ) ) {
-			$data['elements'] = array();
-		}
-
-		$data = wp_parse_args( $data, $section->get_defaults() );
-
-		// Format data before rendering
-		foreach ($data as $key => $item) {
-
-			if ( is_array($item) && count($item) == 5 && ( $item[4] == 'linked' || $item[4] == 'unlinked' ) ) {
-				$data[$key . '_linked' ] = array_pop($item);
-				$data[$key] = array_map( 'esc_html', array( $item[0],$item[1],$item[2],$item[3] ) );
-				continue;
-			}
-
-			// Convert boolean to string
-			if ( $item === true ) {
-				$data[$key] = 'true';
-				continue;
-			}
-
-			if ( $item === false ) {
-				$data[$key] = 'false';
-				continue;
-			}
-
-			if ( is_string( $item ) && !current_user_can( 'unfiltered_html' ) ) {
-				$data[$key] = wp_kses( $item, wp_kses_allowed_html( 'post' ) );
-				continue;
-			}
-
-		}
-
-		return $data;
 
 	}
 

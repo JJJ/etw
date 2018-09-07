@@ -70,7 +70,7 @@ function x_shortcode_tab_nav_item( $atts ) {
   $attr_id            = 'id="x-legacy-tab-' . $toggleable_id . '"';
   $attr_aria_selected = ( $active == ' active' ) ? ' aria-selected="true"' : ' aria-selected="false"';
   $attr_aria_controls = ' aria-controls="x-legacy-panel-' . $toggleable_id . '"';
-  $attr_toggleable    = ' data-x-toggleable="' . $toggleable_id . '"';
+  $attr_toggleable    = ' data-x-toggleable="x-legacy-tab-' . $toggleable_id . '"';
   $attr_toggle_group  = ' data-x-toggle-group="' . $x_tabs_group_id . '"';
 
   $output = "<li {$id} class=\"{$class}{$active}\" {$style} role=\"presentation\">"
@@ -128,7 +128,7 @@ function x_shortcode_tab( $atts, $content = null ) {
   $attr_id              = 'id="x-legacy-panel-' . $toggleable_id . '"';
   $attr_aria_hidden     = ( $active == ' active' ) ? ' aria-hidden="false"' : ' aria-hidden="true"';
   $attr_aria_labelledby = ' aria-labelledby="x-legacy-tab-' . $toggleable_id . '"';
-  $attr_toggleable      = ' data-x-toggleable="' . $toggleable_id . '"';
+  $attr_toggleable      = ' data-x-toggleable="x-legacy-tab-' . $toggleable_id . '"';
 
   $output = "<div {$attr_id} class=\"{$class}{$active}\" {$style}{$attr_aria_hidden}{$attr_aria_labelledby} role=\"tabpanel\"{$attr_toggleable}>" . do_shortcode( $content ) . "</div>";
 

@@ -52,7 +52,7 @@ class Cornerstone_Content {
     $this->post_type = $post->post_type;
     $this->post_status = $post->post_status;
 
-    $wpml = CS()->loadComponent('Wpml');
+    $wpml = CS()->component('Wpml');
     $wpml->before_get_permalink();
     $this->permalink = apply_filters( 'wpml_permalink', get_permalink( $post ), apply_filters('cs_locate_wpml_language', null, $post ) );
     $wpml->after_get_permalink();
@@ -80,7 +80,7 @@ class Cornerstone_Content {
 
     if ( ! isset( $elements['data'] ) ) {
 
-      $migrations = CS()->loadComponent('Element_Migrations');
+      $migrations = CS()->component('Element_Migrations');
       $elements = array(
         'data' => $migrations->migrate_classic( $elements )
       );
@@ -97,7 +97,7 @@ class Cornerstone_Content {
   public function save() {
 
     $post_type_object = get_post_type_object( $this->post_type );
-		$caps = (array) $post_type_object->cap;
+    $caps = (array) $post_type_object->cap;
 
     $authorized = is_null( $this->id ) ? current_user_can( $caps['create_posts'] ) : current_user_can( $caps['edit_post'], $this->id );
 
@@ -144,6 +144,10 @@ class Cornerstone_Content {
 
   public function get_id() {
     return $this->id;
+  }
+
+  public function get_post() {
+    return get_post( $this->id );
   }
 
   public function get_title() {
@@ -210,11 +214,11 @@ class Cornerstone_Content {
 
   public function update_elements( $elements ) {
 
-    if ( ! $elements ) {
+    if ( ! is_array( $elements ) ) {
       return;
     }
 
-    CS()->loadComponent( 'Element_Orchestrator' )->load_elements();
+    CS()->component( 'Element_Orchestrator' )->load_elements();
 
     $output = $this->build_output( $elements );
 
@@ -231,14 +235,14 @@ class Cornerstone_Content {
 		delete_post_meta( $this->id, '_cornerstone_override' );
     delete_post_meta( $this->id, '_cs_generated_styles');
 
-		$post_content = '[cs_content]' . apply_filters( 'cornerstone_save_post_content', $output['content'] ) . '[/cs_content]';
+		$post_content = apply_filters( 'cornerstone_save_post_content', $output['content'] );
 
 		$id = wp_update_post( array(
 			'ID'           => $this->id,
       'title'        => $this->get_title(),
       'post_type'    => $this->post_type,
       'post_status'  => $this->post_status,
-      'post_content' => wp_slash( $post_content ),
+      'post_content' => wp_slash( '[cs_content]' . $post_content . '[/cs_content]' ),
 		) );
 
     if ( is_wp_error( $id ) ) {
@@ -252,7 +256,7 @@ class Cornerstone_Content {
 		$post_type = get_post_type( $this->id );
 
 		if ( false !== $post_type && post_type_supports( $post_type, 'excerpt' ) ) {
-			update_post_meta( $this->id, '_cornerstone_excerpt', cs_derive_excerpt( $post_content, true ) );
+			update_post_meta( $this->id, '_cornerstone_excerpt', cs_derive_excerpt( "[cs_content _p={$id} no_wrap=true]{$post_content}[/cs_content]" ) );
 		}
 
     do_action( 'cornerstone_after_save_content', $this->id );
@@ -266,7 +270,7 @@ class Cornerstone_Content {
     $buffer = '';
     $sanitized = array();
 
-    $elements = CS()->loadComponent('Regions')->populate_modules( $this->id, $elements, 'content');
+    $elements = CS()->component('Regions')->populate_modules( $this->id, $elements, 'content');
 
     foreach ( $elements as $element ) {
       $output = $this->build_element_output( $element );
@@ -298,25 +302,38 @@ class Cornerstone_Content {
     // Build V2 element
     //
 
+    $definition = CS()->component( 'Element_Manager' )->get_element( $element['_type'] );
+
     $buffer = '';
+    $atts = array();
 
     if ( isset( $element['_modules'] ) ) {
       $sanitized = array();
-      foreach ( $element['_modules'] as $child ) {
-        $output = $this->build_element_output( $child, $element );
-        if ( is_wp_error( $output ) ) {
-          return $output;
+      if ( $definition->render_children() ) {
+        $children = array();
+        foreach ( $element['_modules'] as $child ) {
+          $children[] = $child['_id'];
+          $sanitized[] = $child;
         }
-        $buffer .= $output['content'];
-        $sanitized[] = $output['data'];
+        $atts['_modules'] = implode(',', $children);
+      } else {
+        foreach ( $element['_modules'] as $child ) {
+          $output = $this->build_element_output( $child, $element );
+          if ( is_wp_error( $output ) ) {
+            return $output;
+          }
+          $buffer .= $output['content'];
+          $sanitized[] = $output['data'];
+        }
+
       }
+
       $element['_modules'] = $sanitized;
     }
 
-
     $content = '';
     if ( ! isset( $element['_active'] ) || $element['_active'] ) {
-      $content = CS()->loadComponent( 'Element_Manager' )->get_element( $element['_type'] )->save( $element, $buffer );
+      $content = $definition->save( $element, $buffer, $atts );
     }
 
     unset($element['_id']);
@@ -336,7 +353,7 @@ class Cornerstone_Content {
     $element = $definition->sanitize( $element );
 
     if ( 'mk1' === $definition->version() ) {
-      return CS()->loadComponent( 'Legacy_Renderer' )->save_element( $element );
+      return CS()->component( 'Legacy_Renderer' )->save_element( $element );
     }
 
     $flags = $definition->flags();
@@ -367,6 +384,18 @@ class Cornerstone_Content {
         $element['elements'] = $element['_modules'];
       }
       $content = $definition->build_shortcode( $element, $buffer, $parent );
+
+      // <!--nextpage--> support for classic sections
+      if ( 'section' === $element['_type'] ) {
+        // Move all <!--nextpage--> directives to outside their section.
+        $content = preg_replace( '#(?:<!--nextpage-->.*?)(\[\/cs_section\])#', '$0<!--nextpage-->', $content );
+
+        //Strip all <!--nextpage--> directives still within sections
+        $content = preg_replace( '#(?<!\[\/cs_section\])<!--nextpage-->#', '', $content );
+
+        $content = str_replace( '<!--more-->', '', $content );
+      }
+
       unset($element['elements']);
     }
 
@@ -383,38 +412,24 @@ class Cornerstone_Content {
 
   public function update_settings( $settings ) {
 
-    global $post;
-
-    $post = get_post( $this->id );
-    setup_postdata( $post );
-
-    CS()->loadComponent( 'Settings_Manager' )->load();
+    $setting_manager = CS()->component( 'Settings_Manager' );
+    $setting_manager->load();
 
 		foreach ( $settings as $section => $data ) {
 
-			$result = $this->save_setting( $section, $data );
-			if ( is_wp_error( $result ) ) {
-				return $result;
-			}
-		}
+  		if ( $section_manager = $setting_manager->get( $section ) ) {
 
-    wp_reset_postdata();
+        $result = $section_manager->save( $data, $this );
+
+        if ( is_wp_error( $result ) ) {
+  				return $result;
+  			}
+
+  		}
+
+		}
 
 		return true;
 	}
-
-	protected function save_setting( $section, $data ) {
-
-
-		$sectionManager = CS()->loadComponent( 'Settings_Manager' )->get( $section );
-
-		if ( is_null( $sectionManager ) ) {
-			return null;
-		}
-
-		return $sectionManager->save( $data, $this );
-
-	}
-
 
 }

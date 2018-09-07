@@ -31,7 +31,9 @@
   @unless $section_text_align?? {
     text-align: $section_text_align;
   }
-  background-color: $section_bg_color;
+  @if $section_bg_color !== 'transparent' {
+    background-color: $section_bg_color;
+  }
   @unless $section_box_shadow_dimensions?? {
     @if $section_box_shadow_color === 'transparent' {
       box-shadow: none;

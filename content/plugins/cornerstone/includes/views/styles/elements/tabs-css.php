@@ -11,6 +11,8 @@
 // -----------------------------------------------------------------------------
 //   01. Base
 //   02. Tablist
+//   03. Tabs
+//   04. Panels
 // =============================================================================
 
 // Base
@@ -60,15 +62,10 @@
 
 ?>
 
-.$_el .x-tablist {
+.$_el .x-tabs-list {
   @unless $tabs_tablist_margin?? {
     margin: $tabs_tablist_margin;
   }
-}
-
-.$_el .x-tablist ul {
-  -webkit-justify-content: $tabs_tabs_justify_content;
-          justify-content: $tabs_tabs_justify_content;
   @unless $tabs_tablist_border_width?? || $tabs_tablist_border_style?? {
     border-width: $tabs_tablist_border_width;
     border-style: $tabs_tablist_border_style;
@@ -76,9 +73,6 @@
   }
   @unless $tabs_tablist_border_radius?? {
     border-radius: $tabs_tablist_border_radius;
-  }
-  @unless $tabs_tablist_padding?? {
-    padding: $tabs_tablist_padding;
   }
   background-color: $tabs_tablist_bg_color;
   @unless $tabs_tablist_box_shadow_dimensions?? {
@@ -91,7 +85,14 @@
   }
 }
 
-.$_el .x-tablist li {
+.$_el .x-tabs-list ul {
+  justify-content: $tabs_tabs_justify_content;
+  @unless $tabs_tablist_padding?? {
+    padding: $tabs_tablist_padding;
+  }
+}
+
+.$_el .x-tabs-list li {
   @unless $tabs_tabs_min_width?? {
     min-width: $tabs_tabs_min_width;
   }
@@ -99,8 +100,7 @@
     max-width: $tabs_tabs_max_width;
   }
   @if $tabs_tabs_fill_space === true {
-    -webkit-flex: 1 0 0%;
-            flex: 1 0 0%;
+    flex: 1 0 0%;
   }
 }
 
@@ -113,7 +113,7 @@
 
 ?>
 
-.$_el .x-tablist button {
+.$_el .x-tabs-list button {
   @unless $tabs_tabs_margin?? {
     margin: $tabs_tabs_margin;
   }
@@ -159,8 +159,14 @@
   }
 }
 
-.$_el .x-tablist button:hover,
-.$_el .x-tablist button[class*="active"] {
+.$_el .x-tabs-list button span {
+  @unless $tabs_tabs_letter_spacing?? {
+    margin-right: calc($tabs_tabs_letter_spacing * -1);
+  }
+}
+
+.$_el .x-tabs-list button:hover,
+.$_el .x-tabs-list button[class*="active"] {
   color: $tabs_tabs_text_color_alt;
   @unless $tabs_tabs_border_width?? || $tabs_tabs_border_style?? {
     border-color: $tabs_tabs_border_color_alt;
@@ -193,7 +199,7 @@
 
 ?>
 
-.$_el .x-tab-panel {
+.$_el .x-tabs-panel {
   @unless $tabs_panels_margin?? {
     margin: $tabs_panels_margin;
   }
@@ -243,4 +249,13 @@
       box-shadow: $tabs_panels_box_shadow_dimensions $tabs_panels_box_shadow_color;
     }
   }
+}
+
+@if $tabs_panels_equal_height === true {
+  .$_el .x-tabs-panel.x-active {
+    display: flex;
+    flex-flow: column nowrap; 
+    justify-content: $tabs_panels_flex_justify;
+    align-items: $tabs_panels_flex_align;
+  } 
 }

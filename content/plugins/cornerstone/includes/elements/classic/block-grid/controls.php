@@ -13,9 +13,10 @@ return array(
       'tooltip' =>__( 'Add a new item to your Block Grid.', 'cornerstone' ),
     ),
 		'options' => array(
-			'element' => 'block-grid-item',
-			'newTitle' => __( 'Block Grid Item %s', 'cornerstone' ),
-			'floor'   => 2,
+      'add_label' => __( 'Item', 'cornerstone' ),
+			'element'   => 'block-grid-item',
+			'newTitle'  => __( 'Block Grid Item %s', 'cornerstone' ),
+			'floor'     => 2,
 		),
 		'context' => 'content',
 		'suggest' => array(

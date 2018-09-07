@@ -54,7 +54,7 @@ function x_shortcode_card( $atts ) {
   if ( $front_image != '' ) {
     $front_graphic = '<div class="x-face-graphic"><img style="margin: 0; width: ' . $front_image_width . ';" src="' . $front_image . '"></div>';
   } else if ( $front_icon != '' ) {
-    $front_graphic = '<div class="x-face-graphic"><i style="margin: 0; font-size: ' . $front_icon_size . '; color: ' . $front_icon_color . ';" class="x-icon-' . $front_icon . '" data-x-icon="&#x' . fa_unicode( $front_icon ) . ';"></i></div>';
+    $front_graphic = '<div class="x-face-graphic"><i style="margin: 0; font-size: ' . $front_icon_size . '; color: ' . $front_icon_color . ';" class="x-icon-' . $front_icon . '" ' . fa_data_icon( $front_icon ) . '></i></div>';
   } else {
     $front_graphic = '';
   }

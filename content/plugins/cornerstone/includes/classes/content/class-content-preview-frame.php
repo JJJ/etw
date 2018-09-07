@@ -68,6 +68,7 @@ class Cornerstone_Content_Preview_Frame extends Cornerstone_Plugin_Component {
     return array(
       'mode' => $state['mode'],
       'post_id' => $state['post_id'],
+      'post_type' => $state['post_type'],
       'responsive_text' => $state['responsive_text'],
       'dynamic_css_selector' => apply_filters('cs_dynamic_css_hook', null )
     );

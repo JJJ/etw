@@ -11,8 +11,6 @@
 
 $data_menu = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'menu' => '', 'anchor' => '', 'sub_anchor' => '' ) ) );
 
-// $_custom_data
-
 
 // Output
 // ------
@@ -30,7 +28,7 @@ if ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' ) {
   $data_off_canvas    = array_merge( $data_off_canvas, $off_canvas_content );
 
   x_get_view( 'partials', 'anchor', '', $data_toggle, true );
-  x_set_view( 'x_before_site_end', 'partials', 'off-canvas', '', $data_off_canvas, 10 );
+  x_set_view( 'x_before_site_end', 'partials', 'off-canvas', '', $data_off_canvas, 100 );
 
 } else {
 

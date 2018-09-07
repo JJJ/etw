@@ -8,11 +8,15 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
 
   public function load_all() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content.cs_global_block') ) {
+      return;
+    }
+
     $posts = get_posts( array(
-      'post_type' => $this->plugin->common()->getAllowedPostTypes(),
+      'post_type' => $this->plugin->component('App_Permissions')->get_user_post_types(),
       'post_status' => 'tco-data',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     foreach ($posts as $post) {
@@ -56,6 +60,11 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
   }
 
   public function make_record( $post ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content.cs_global_block') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     if ( is_int( $post ) ) {
       $post = get_post( $post );
     }
@@ -63,7 +72,7 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
     $record = $content->serialize();
     $record['modified'] = date_i18n( get_option( 'date_format' ), strtotime( $post->post_modified ) );
     $record['post-type'] = $post->post_type;
-    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    $record['language'] = $this->plugin->component('Wpml')->get_language_data_from_post( $post, true );
     return $record;
   }
 
@@ -116,6 +125,11 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
   }
 
   public function create( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content.cs_global_block.create') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
     $atts['post_type'] = 'cs_global_block';
     $atts['post_status'] = 'tco-data';
@@ -130,12 +144,17 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
     $record = $content->save();
     $post = get_post( $content->get_id() );
     $record['modified'] = date_i18n( get_option( 'date_format' ), strtotime( $post->post_modified ) );
-    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    $record['language'] = $this->plugin->component('Wpml')->get_language_data_from_post( $post, true );
 
     return $this->make_response( $this->to_resource( $record ) );
   }
 
   public function delete( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content.cs_global_block.delete') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -152,6 +171,10 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
 
   public function update( $params ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content.cs_global_block') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -160,7 +183,8 @@ class Cornerstone_Model_Global_Blocks_Content extends Cornerstone_Plugin_Compone
 
     $id = (int) $atts['id'];
 
-    if ( isset( $atts['title'] ) ) {
+
+    if ( isset( $atts['title'] ) && $this->plugin->component('App_Permissions')->user_can('content.cs_global_block.rename') ) {
       wp_update_post( array( 'ID' => $id, 'post_title' => $atts['title'] ) );
     }
 

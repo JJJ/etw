@@ -33,12 +33,12 @@ $data = array(
 
 function x_element_builder_setup_login_modal() {
   return array(
-    'control_groups' => array_merge(
+    'control_groups_adv' => array_merge(
       x_control_groups_toggle( x_bar_module_settings_anchor( 'toggle' ) ),
       x_control_groups_modal(),
       x_control_groups_omega()
     ),
-    'controls' => array_merge(
+    'controls_adv' => array_merge(
       x_controls_toggle( x_bar_module_settings_anchor( 'toggle' ) ),
       x_controls_modal(),
       x_controls_omega()

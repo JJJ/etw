@@ -8,12 +8,8 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
   public $modules_registered = false;
   public $counters = array();
 
-  public function setup() {
-    $this->register_post_types();
-  }
-
   public function get_content_elements( $id ) {
-    $this->plugin->loadComponent( 'Element_Manager' );
+    $this->plugin->component( 'Element_Manager' );
     $elements = cs_get_serialized_post_meta( $id, '_cornerstone_data', true );
 
     if ( ! $elements ) {
@@ -28,7 +24,7 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
   }
 
   public function load_element_style( $type ) {
-    return $this->plugin->loadComponent('Element_Manager')->get_element( $type )->get_style_template();
+    return $this->plugin->component('Element_Manager')->get_element( $type )->get_style_template();
   }
 
   public function get_fallback_header_data() {
@@ -49,7 +45,7 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
 
     $assignment = has_filter('cornerstone_header_preview_data') ?
                   apply_filters('cornerstone_header_preview_data', array() ) :
-                  $this->plugin->loadComponent('Header_Assignments')->locate_assignment( $fallback );
+                  $this->plugin->component('Header_Assignments')->locate_assignment( $fallback );
 
     if ( is_null( $assignment ) && ! $fallback ) {
       return null;
@@ -105,7 +101,7 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
 
     $assignment = has_filter('cornerstone_footer_preview_data') ?
                   apply_filters('cornerstone_footer_preview_data', array() ) :
-                  $this->plugin->loadComponent('Footer_Assignments')->locate_assignment( $fallback);
+                  $this->plugin->component('Footer_Assignments')->locate_assignment( $fallback);
 
     if ( is_null( $assignment ) && ! $fallback ) {
       return null;
@@ -165,7 +161,7 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
 
   public function sanitize_regions( $regions ) {
 
-    $element_manager = $this->plugin->loadComponent('Element_Manager');
+    $element_manager = $this->plugin->component('Element_Manager');
     $sanitized = array();
 
     foreach ($regions as $region_name => $bars) {
@@ -198,30 +194,6 @@ class Cornerstone_Regions extends Cornerstone_Plugin_Component {
     }
 
     return $modules;
-
-  }
-
-  public function register_post_types() {
-
-    register_post_type( 'cs_header', array(
-      'public'          => false,
-      'capability_type' => 'page',
-      'supports'        => false,
-      'labels'          => array(
-        'name'          => __( 'Pro Headers', '__x__' ),
-        'singular_name' => __( 'Pro Header', '__x__' ),
-      )
-    ) );
-
-    register_post_type( 'cs_footer', array(
-      'public'          => false,
-      'capability_type' => 'page',
-      'supports'        => false,
-      'labels'          => array(
-        'name'          => __( 'Pro Footers', '__x__' ),
-        'singular_name' => __( 'Pro Footer', '__x__' ),
-      )
-    ) );
 
   }
 

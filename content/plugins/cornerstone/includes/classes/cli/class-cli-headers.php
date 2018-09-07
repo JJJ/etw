@@ -40,7 +40,7 @@ class Cornerstone_CLI_Headers extends WP_CLI_Command {
       'post_type' => 'cs_header',
       'post_status' => 'any',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     $progress = \WP_CLI\Utils\make_progress_bar( 'Deleting headers', count( $posts ) );

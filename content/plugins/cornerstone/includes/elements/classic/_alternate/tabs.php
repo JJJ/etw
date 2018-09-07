@@ -25,10 +25,11 @@ class CS_Tabs extends Cornerstone_Element_Base {
         array( 'title' => __( 'Tab 2', 'cornerstone' ), 'content' => __( 'The content for your Tab goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pretium, nisi ut volutpat mollis, leo risus interdum arcu, eget facilisis quam felis id mauris. Ut convallis, lacus nec ornare volutpat, velit turpis scelerisque purus, quis mollis velit purus ac massa. Fusce quis urna metus. Donec et lacus et sem lacinia cursus.', 'cornerstone' ) )
       ),
       array(
-      	'element'  => 'tab',
-        'newTitle' => __( 'Tab %s', 'cornerstone' ),
-        'floor'    => 2,
-        'capacity' => 5
+        'add_label' => __( 'Tab', 'cornerstone' ),
+      	'element'   => 'tab',
+        'newTitle'  => __( 'Tab %s', 'cornerstone' ),
+        'floor'     => 2,
+        'capacity'  => 5
       )
     );
 

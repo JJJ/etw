@@ -35,7 +35,9 @@
   @unless $column_text_align?? {
     text-align: $column_text_align;
   }
-  background-color: $column_bg_color;
+  @if $column_bg_color !== 'transparent' {
+    background-color: $column_bg_color;
+  }
   @unless $column_box_shadow_dimensions?? {
     @if $column_box_shadow_color === 'transparent' {
       box-shadow: none;
@@ -44,4 +46,5 @@
       box-shadow: $column_box_shadow_dimensions $column_box_shadow_color;
     }
   }
+  z-index: $column_z_index;
 }

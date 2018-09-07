@@ -46,7 +46,9 @@
   @unless $row_text_align?? {
     text-align: $row_text_align;
   }
-  background-color: $row_bg_color;
+  @if $row_bg_color !== 'transparent' {
+    background-color: $row_bg_color;
+  }
   @unless $row_box_shadow_dimensions?? {
     @if $row_box_shadow_color === 'transparent' {
       box-shadow: none;

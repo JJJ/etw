@@ -30,15 +30,15 @@ if ( isset( $id ) && ! empty( $id ) ) {
 // Content
 // -------
 
-$map_content = '';
-
 switch ( $map_type ) {
 
   // Embed
   // -----
 
   case 'embed' :
-    $map_content = ( ! empty( $map_embed_code ) ) ? $map_embed_code : '<img style="object-fit: cover; width: 100%; height: 100%;" src="' . cornerstone_make_placeholder_image_uri( 1, 1, 'rgba(0, 0, 0, 0.35)' ) . '" width="1" height="1" alt="Placeholder">';
+
+    $map_embed_content = ( ! empty( $map_embed_code ) ) ? $map_embed_code : '<img style="object-fit: cover; width: 100%; height: 100%;" src="' . cornerstone_make_placeholder_image_uri( 1, 1, 'rgba(0, 0, 0, 0.35)' ) . '" width="1" height="1" alt="Placeholder">';
+
     break;
 
 
@@ -55,7 +55,9 @@ switch ( $map_type ) {
       $map_google_api_script = add_query_arg( array( 'key' => esc_attr( $map_google_api_key ) ), $map_google_api_script );
     }
 
-    wp_enqueue_script( 'x-google-map', $map_google_api_script );
+    if ( $map_google_api_key || ( ! did_action('cs_element_rendering') && ! $map_google_api_key ) ) {
+      wp_enqueue_script( 'x-google-map', $map_google_api_script );
+    }
 
     $map_google_data = array(
       'lat'       => $map_google_lat,
@@ -79,5 +81,25 @@ switch ( $map_type ) {
 ?>
 
 <div <?php echo x_atts( $atts ); ?>>
-  <?php echo do_shortcode( $map_content ); ?>
+  <?php
+
+  switch ( $map_type ) {
+
+    case 'embed' :
+      echo do_shortcode( $map_embed_content );
+      break;
+
+    case 'google' :
+
+      do_action( 'x_render_children', $_modules, array(), $_custom_data );
+
+      if ( did_action('cs_element_rendering') && ! $map_google_api_key ) {
+        echo '<img style="object-fit: cover; width: 100%; height: 100%;" src="' . cornerstone_make_placeholder_image_uri( 1, 1, 'rgba(0, 0, 0, 0.35)' ) . '" width="1" height="1" alt="Placeholder">';
+      }
+
+      break;
+
+  }
+
+  ?>
 </div>

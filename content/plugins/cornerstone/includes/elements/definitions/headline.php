@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Headline', '__x__' ),
-  'values' => array_merge(
-    x_values_text( array( 'type' => 'headline' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_headline(),
 );
 
 
@@ -32,14 +29,20 @@ $data = array(
 
 function x_element_builder_setup_headline() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_text( array( 'type' => 'headline' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_text( array( 'type' => 'headline' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_headline(),
+    'controls_adv'       => x_controls_element_headline( true ),
+    'control_groups'     => x_control_groups_element_headline(),
+    'control_groups_adv' => x_control_groups_element_headline( true ),
+    'options' => array(
+      'inline' => array(
+        'text_content' => array(
+          'selector' => '.x-text-content-text-primary'
+        ),
+        'text_subheadline_content' => array(
+          'selector' => '.x-text-content-text-subheadline'
+        ),
+      )
+    )
   );
 }
 

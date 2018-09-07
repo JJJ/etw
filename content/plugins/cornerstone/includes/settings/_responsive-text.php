@@ -29,16 +29,14 @@ class CS_Settings_Responsive_Text extends Cornerstone_Legacy_Setting_Section {
 
   }
 
-  public function handler( $atts ) {
+  public function handler( $post, $atts ) {
 
-    global $post;
     extract( $atts );
 
     $settings = CS()->common()->get_post_settings( $post->ID );
     $settings['responsive_text'] = $elements;
 
     cs_update_serialized_post_meta( $post->ID, '_cornerstone_settings', $settings );
-
 
   }
 

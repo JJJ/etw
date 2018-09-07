@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Button', '__x__' ),
-  'values' => array_merge(
-    x_values_anchor( x_bar_module_settings_anchor( 'button' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_button(),
 );
 
 
@@ -32,14 +29,17 @@ $data = array(
 
 function x_element_builder_setup_button() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'button' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_anchor( x_bar_module_settings_anchor( 'button' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_button(),
+    'controls_adv'       => x_controls_element_button( true ),
+    'control_groups'     => x_control_groups_element_button(),
+    'control_groups_adv' => x_control_groups_element_button( true ),
+    'options' => array(
+      'inline' => array(
+        'anchor_text_primary_content' => array(
+          'selector' => '.x-anchor-text-primary'
+        )
+      )
+    )
   );
 }
 

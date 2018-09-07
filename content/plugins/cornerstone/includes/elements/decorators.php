@@ -30,24 +30,25 @@
 //   19. Decorator: Nav (Dropdown)
 //   20. Decorator: Nav (Collapsed)
 //   21. Decorator: Nav (Modal)
-//   22. Decorator: Button
-//   23. Decorator: Social
-//   24. Decorator: Search (Inline)
-//   25. Decorator: Search (Dropdown)
-//   26. Decorator: Search (Modal)
-//   27. Decorator: Map
-//   28. Decorator: Audio
-//   29. Decorator: Video
-//   30. Decorator: Accordion
-//   31. Decorator: Tabs
-//   32. Decorator: Statbar
-//   33. Decorator: Quote
-//   34. Decorator: Login (Modal)
-//   35. Decorator: Third Party (bbPress: Dropdown)
-//   36. Decorator: Third Party (BuddyPress: Dropdown)
-//   37. Decorator: Third Party (WooCommerce Cart: Dropdown)
-//   38. Decorator: Third Party (WooCommerce Cart: Modal)
-//   39. Decorator: Third Party (WooCommerce Cart: Off Canvas)
+//   22. Decorator: Nav (Layered)
+//   23. Decorator: Button
+//   24. Decorator: Social
+//   25. Decorator: Search (Inline)
+//   26. Decorator: Search (Dropdown)
+//   27. Decorator: Search (Modal)
+//   28. Decorator: Map
+//   29. Decorator: Audio
+//   30. Decorator: Video
+//   31. Decorator: Accordion
+//   32. Decorator: Tabs
+//   33. Decorator: Statbar
+//   34. Decorator: Quote
+//   35. Decorator: Login (Modal)
+//   36. Decorator: Third Party (bbPress: Dropdown)
+//   37. Decorator: Third Party (BuddyPress: Dropdown)
+//   38. Decorator: Third Party (WooCommerce Cart: Dropdown)
+//   39. Decorator: Third Party (WooCommerce Cart: Modal)
+//   40. Decorator: Third Party (WooCommerce Cart: Off Canvas)
 // =============================================================================
 
 // Mixin: Base
@@ -217,8 +218,6 @@ function x_module_decorator_content_area_dropdown( $module ) {
     $module,
     x_module_decorator_mixin_aria( 'toggle_anchor', $aria_args, $id, $mod_id )
   );
-
-  // x_dump( $module );
 
   return $module;
 
@@ -502,6 +501,24 @@ function x_module_decorator_nav_modal( $module ) {
   return $module;
 
 }
+
+
+
+// Decorator: Nav (Layered)
+// =============================================================================
+
+// function x_module_decorator_nav_layered( $module ) {
+
+//   extract( $module );
+
+//   $module = array_merge(
+//     $module
+//     // x_module_decorator_mixin_aria( 'toggle_anchor', array( 'controls' => 'nav-collapsed' ), $id, $mod_id )
+//   );
+
+//   return $module;
+
+// }
 
 
 

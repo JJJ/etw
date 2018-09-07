@@ -104,7 +104,7 @@ function x_shortcode_video_player( $atts ) {
     if ( $is_vimeo ) {
       $mime  = array( 'type' => 'video/vimeo' );
       $vimeo = ' vimeo';
-      wp_enqueue_script( 'froogaloop' );
+      wp_enqueue_script( 'mediaelement-vimeo' );
     } else if ( $is_youtube ) {
       $mime    = array( 'type' => 'video/youtube' );
       $youtube = ' youtube';

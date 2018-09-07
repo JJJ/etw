@@ -6,6 +6,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
   public $target_post_id = null;
   protected $previous_target_stack = array();
   protected $ancestor_data = array();
+  protected $load_styles = false;
 
   public function setup() {
 
@@ -17,13 +18,14 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
   public function post_loaded() {
 
+    $this->load_styles = true;
     $this->load_element_data( get_the_ID() );
 
   }
 
   public function register_shortcodes() {
 
-    $elements = $this->plugin->loadComponent('Element_Manager')->get_element_names();
+    $elements = $this->plugin->component('Element_Manager')->get_element_names();
 
     add_shortcode( 'cs_context', array( $this, 'shortcode_output' ) );
     add_shortcode( 'cs_gb', array( $this, 'global_block_shortcode_output' ) );
@@ -39,7 +41,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
   public function load_element_data( $post_id ) {
 
-    $regions = $this->plugin->loadComponent('Regions');
+    $regions = $this->plugin->component('Regions');
 
     $elements = $regions->get_content_elements( (int) $post_id );
 
@@ -49,12 +51,14 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
       $this->element_data[$handle] = $regions->flatten_elements( $elements );
     }
 
-    $this->register_element_styles( $post_id, $elements );
+    if ( $this->load_styles ) {
+      $this->register_element_styles( $post_id, $elements );
+    }
 
   }
 
   public function register_element_styles( $id, $elements ) {
-    $styling = $this->plugin->loadComponent( 'Styling' );
+    $styling = $this->plugin->component( 'Styling' );
     if ( ! $styling->has_styles( $id ) ) {
       $styling->add_styles( $id, $this->get_generated_styles( $id, $elements ) );
     }
@@ -115,7 +119,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
       return '';
     }
 
-    if ( $definition->is_shadow() && is_array( $parent_atts ) ) {
+    if ( $definition->is_child() && is_array( $parent_atts ) ) {
 
       $parent_atts = x_module_decorate( $parent_atts );
 
@@ -137,7 +141,25 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
     $element['_p'] = $target_id;
 
     $this->ancestor_data[] = $element;
-    $element['_modules'] = ( isset( $content ) ) ? do_shortcode($content) : '';
+
+
+    if ( isset( $atts['_modules'] ) ) {
+
+      $modules = array();
+
+      $ids = explode(',', $atts['_modules']);
+
+      foreach ($ids as $id) {
+        $modules[] = $this->lookup_element_data( $id, $target_id );
+      }
+
+      $element['_modules'] = $modules;
+
+    } else {
+      $element['_modules'] = ( isset( $content ) ) ? do_shortcode($content) : '';
+    }
+
+
     array_pop($this->ancestor_data);
 
     ob_start();
@@ -197,7 +219,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
      $sorted = $this->sort_into_types( $elements );
      $element_css = array();
 
-     $coalescence = $this->plugin->loadComponent( 'Coalescence' )->start();
+     $coalescence = $this->plugin->component( 'Coalescence' )->start();
 
 
      foreach ($sorted as $type => $elements) {
@@ -228,6 +250,10 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
   public function expand_shadows( $elements, $parent_data = null ) {
 
+    if ( ! is_array($elements ) ) {
+      return $elements;
+    }
+
     foreach ($elements as $index => $element) {
       if ( isset( $elements[$index]['_modules'] ) && is_array($elements[$index]['_modules'] ) ) {
         $elements[$index]['_modules'] = $this->expand_shadows( $elements[$index]['_modules'], $elements[$index] );
@@ -237,7 +263,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
         $definition = $this->plugin->component('Element_Manager')->get_element( $elements[$index]['_type'] );
 
-        if ( $definition->is_shadow() ) {
+        if ( $definition->is_child() ) {
 
           // mod_id not required for styling because style data is never decorated
           // $elements[$index]['p_mod_id'] = $parent_data['mod_id'];
@@ -290,6 +316,10 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
   public function get_generated_styles( $id, $elements, $force = false ) {
 
+    if ( apply_filters('cs_disable_style_cache', false ) ) {
+      return $this->generate_styles( $id, $elements );
+    }
+
     $generated = get_post_meta( $id, '_cs_generated_styles', true );
 
     if ( ! $generated || $force ) {
@@ -297,14 +327,25 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
         return '';
       }
       $generated = $this->generate_styles( $id, $elements );
-      update_post_meta( $id, '_cs_generated_styles', $generated );
+      update_post_meta( $id, '_cs_generated_styles', wp_slash( $generated ) );
     }
 
     return $generated;
   }
 
+  public function start_load_styles() {
+    $this->prev_load_styles = $this->load_styles;
+    $this->load_styles = true;
+  }
+
+  public function stop_load_styles() {
+    $this->load_styles = $this->prev_load_styles;
+  }
+
   public function global_block_shortcode_output( $atts ) {
 
+
+    $this->load_styles = true;
     extract( shortcode_atts( array(
       'id'    => '',
       'class'    => '',

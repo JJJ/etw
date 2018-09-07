@@ -7,18 +7,22 @@ class Cornerstone_Model_Content_Template_Entry extends Cornerstone_Plugin_Compon
 
   public function load_all() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      return;
+    }
+
     $classic_templates = get_posts( array(
       'post_type'      => array( 'cs_user_templates' ),
       'post_status'    => array( 'tco-data', 'publish' ),
       'orderby'        => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
     ) );
 
     $templates = get_posts( array(
       'post_type' => array( 'cs_template' ),
       'post_status' => array( 'tco-data', 'publish' ),
       'orderby' => 'type',
-      'posts_per_page' => 2500,
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
       'meta_key' => '_cs_template_type',
       'meta_value' => 'content',
     ) );

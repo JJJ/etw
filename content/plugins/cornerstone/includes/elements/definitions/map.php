@@ -18,11 +18,12 @@
 // =============================================================================
 
 $data = array(
-  'title'  => __( 'Map', '__x__' ),
-  'values' => array_merge(
-    x_values_map(),
-    x_values_frame( array( 'frame_content_type' => 'map' ) ),
-    x_values_omega()
+  'title'   => __( 'Map', '__x__' ),
+  'values'  => x_values_element_map(),
+  'options' => array(
+    'cache'            => false,
+    'render_children'  => true,
+    'default_children' => array(),
   ),
 );
 
@@ -33,16 +34,10 @@ $data = array(
 
 function x_element_builder_setup_map() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_map(),
-      x_control_groups_frame( array( 'frame_content_type' => 'map' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_map(),
-      x_controls_frame( array( 'frame_content_type' => 'map' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_map(),
+    'controls_adv'       => x_controls_element_map( true ),
+    'control_groups'     => x_control_groups_element_map(),
+    'control_groups_adv' => x_control_groups_element_map( true ),
   );
 }
 

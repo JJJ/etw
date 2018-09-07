@@ -64,6 +64,8 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
    */
   public function respond_admin_ajax() {
 
+    do_action( 'cornerstone_before_admin_ajax' );
+
     $action = str_replace( 'wp_ajax_cs_', '', current_action() );
     $this->begin_response();
 
@@ -84,7 +86,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
       return cs_send_json_error( array( 'message' => "Registered Cornerstone route: `$action` could not be resolved." ) );
     }
 
-    $component = $this->plugin->loadComponent( $this->routes[ $action ][0] );
+    $component = $this->plugin->component( $this->routes[ $action ][0] );
 
     if ( false === $component ) {
       return cs_send_json_error( array( 'message' => "Registered Cornerstone route: `$action` does not have a valid component." ) );
@@ -546,7 +548,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
         $action_response_data['success'] = true;
         $action_response_data['data'] = $action_response;
 
-        if ( function_exists('gzcompress') ) {
+        if ( $this->gzip() ) {
           $action_response_data['gzip'] = true;
           $action_response_data['data'] = base64_encode( gzcompress( json_encode( $action_response_data['data'] ), 9 ) );
         }
@@ -570,7 +572,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
       }
 
       $component_name = 'Controller_' . cs_to_component_name( $controller_method[0] );
-      $controller = $this->plugin->loadComponent( $component_name );
+      $controller = $this->plugin->component( $component_name );
 
       if ( ! $controller ) {
         throw new Exception( "Requested controller '$component_name' is not registered." );
@@ -626,5 +628,9 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 
     return $response;
 
+  }
+
+  public function gzip() {
+    return ( ! defined('CS_DISABLE_GZIP') || ! CS_DISABLE_GZIP ) && function_exists('gzcompress') && function_exists('gzdecode');
   }
 }

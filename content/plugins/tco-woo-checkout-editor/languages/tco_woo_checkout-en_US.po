@@ -1,0 +1,298 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2016-12-01 13:36+0300\n"
+"PO-Revision-Date: 2016-12-01 13:37+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: tco_woo_checkout-woocommerce-checkout-manager.php\n"
+"X-Poedit-SearchPath-1: templates/fields.php\n"
+"X-Poedit-SearchPath-2: includes/tco_woo_checkout.data.php\n"
+"X-Poedit-SearchPath-3: includes/tco_woo_checkout.woo.checkout.admin.php\n"
+"X-Poedit-SearchPath-4: includes/tco_woo_checkout.woo.functions.php\n"
+"X-Poedit-SearchPath-5: includes/tco_woo_checkout.woo.hooks.php\n"
+
+#: includes/tco_woo_checkout.data.php:8
+msgid "Text"
+msgstr "Text"
+
+#: includes/tco_woo_checkout.data.php:9
+msgid "Password"
+msgstr "Password"
+
+#: includes/tco_woo_checkout.data.php:10 includes/tco_woo_checkout.data.php:42
+msgid "Phone"
+msgstr "Phone"
+
+#: includes/tco_woo_checkout.data.php:11
+msgid "Textarea"
+msgstr "Textarea"
+
+#: includes/tco_woo_checkout.data.php:12
+msgid "Checkbox"
+msgstr "Checkbox"
+
+#: includes/tco_woo_checkout.data.php:13
+msgid "File"
+msgstr "File"
+
+#: includes/tco_woo_checkout.data.php:14
+msgid "Radio"
+msgstr "Radio"
+
+#: includes/tco_woo_checkout.data.php:15
+msgid "Select"
+msgstr "Select"
+
+#: includes/tco_woo_checkout.data.php:16
+msgid "Multi Select"
+msgstr "Multi Select"
+
+#: includes/tco_woo_checkout.data.php:40
+msgid "No validation"
+msgstr "No validation"
+
+#: includes/tco_woo_checkout.data.php:41
+msgid "PostCode"
+msgstr "PostCode"
+
+#: includes/tco_woo_checkout.data.php:43
+msgid "Email"
+msgstr "Email"
+
+#: includes/tco_woo_checkout.data.php:44
+msgid "State"
+msgstr "State"
+
+#: includes/tco_woo_checkout.data.php:45
+msgid "Custom"
+msgstr "Custom"
+
+#: includes/tco_woo_checkout.data.php:50
+msgid "Cart Contains"
+msgstr "Cart Contains"
+
+#: includes/tco_woo_checkout.data.php:51
+msgid "Cart Not Contains"
+msgstr "Cart Not Contains"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:53
+#: includes/tco_woo_checkout.woo.checkout.admin.php:63
+msgid "Checkout Manager"
+msgstr "Checkout Manager"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:69
+msgid "Billing Fields"
+msgstr "Billing Fields"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:70
+msgid "Shipping Fields"
+msgstr "Shipping Fields"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:71
+#: includes/tco_woo_checkout.woo.checkout.admin.php:124
+msgid "Extra Fields"
+msgstr "Extra Fields"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:88
+#, php-format
+msgid "%1$s Settings Updated"
+msgstr "%1$s Settings Updated"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:97
+#, php-format
+msgid "%1$s Settings Reset"
+msgstr "%1$s Settings Reset"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:111
+msgid "Billing Settings"
+msgstr "Billing Settings"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:118
+msgid "Shipping Settings"
+msgstr "Shipping Settings"
+
+#: includes/tco_woo_checkout.woo.checkout.admin.php:146
+msgid "Update Options"
+msgstr "Update Options"
+
+#: includes/tco_woo_checkout.woo.functions.php:56
+msgid "Order notes"
+msgstr "Order notes"
+
+#: includes/tco_woo_checkout.woo.hooks.php:348
+msgid "Upload Files"
+msgstr "Upload Files"
+
+#: includes/tco_woo_checkout.woo.hooks.php:534
+msgid "The value you have entered seems to be wrong. Please, check it."
+msgstr "The value you have entered seems to be wrong. Please, check it."
+
+#: templates/fields.php:17 templates/fields.php:123
+msgid "Add Checkout Field"
+msgstr "Add Checkout Field"
+
+#: templates/fields.php:17 templates/fields.php:123
+msgid "Save Options"
+msgstr "Save Options"
+
+#: templates/fields.php:17 templates/fields.php:123
+msgid "Reset Options"
+msgstr "Reset Options"
+
+#: templates/fields.php:23 templates/fields.php:38
+msgid "Name"
+msgstr "Name"
+
+#: templates/fields.php:24 templates/fields.php:39
+msgid "Label"
+msgstr "Label"
+
+#: templates/fields.php:25 templates/fields.php:40
+msgid "Place Holder"
+msgstr "Place Holder"
+
+#: templates/fields.php:26 templates/fields.php:41
+msgid "Type"
+msgstr "Type"
+
+#: templates/fields.php:27 templates/fields.php:42
+msgid "Class"
+msgstr "Class"
+
+#: templates/fields.php:28 templates/fields.php:43
+msgid "Settings"
+msgstr "Settings"
+
+#: templates/fields.php:29 templates/fields.php:44
+msgid "Mandatory"
+msgstr "Mandatory"
+
+#: templates/fields.php:30 templates/fields.php:45
+msgid "Enabled"
+msgstr "Enabled"
+
+#: templates/fields.php:98 templates/fields.php:167
+msgid "Options"
+msgstr "Options"
+
+#: templates/fields.php:102 templates/fields.php:108 templates/fields.php:171
+#: templates/fields.php:177
+msgid "No"
+msgstr "No"
+
+#: templates/fields.php:103 templates/fields.php:109 templates/fields.php:172
+#: templates/fields.php:178
+msgid "Yes"
+msgstr "Yes"
+
+#: templates/fields.php:138
+msgid "Manage Options"
+msgstr "Manage Options"
+
+#: templates/fields.php:181
+msgid "Remove"
+msgstr "Remove"
+
+#: templates/fields.php:190
+msgid "Validation"
+msgstr "Validation"
+
+#: templates/fields.php:191
+msgid "Conditional"
+msgstr "Conditional"
+
+#: templates/fields.php:194
+msgid "Validation Settings"
+msgstr "Validation Settings"
+
+#: templates/fields.php:208
+msgid "Enter the parent field to validate against"
+msgstr "Enter the parent field to validate against"
+
+#: templates/fields.php:218
+msgid "Regex String"
+msgstr "Regex String"
+
+#: templates/fields.php:226
+msgid "Conditional Settings"
+msgstr "Conditional Settings"
+
+#: templates/fields.php:229
+msgid "Disable"
+msgstr "Disable"
+
+#: templates/fields.php:230
+msgid "Enable"
+msgstr "Enable"
+
+#: templates/fields.php:233
+msgid "Show field only if"
+msgstr "Show field only if"
+
+#: templates/fields.php:238
+msgid "The text"
+msgstr "The text"
+
+#: templates/fields.php:242
+msgid "is in"
+msgstr "is in"
+
+#: templates/fields.php:256
+msgid "Or"
+msgstr "Or"
+
+#: templates/fields.php:271 templates/fields.php:308
+msgid "Select Products"
+msgstr "Select Products"
+
+#: templates/fields.php:286
+msgid "OR"
+msgstr "OR"
+
+#: templates/fields.php:290
+msgid "AND"
+msgstr "AND"
+
+#: templates/fields.php:328
+msgid "Update Settings"
+msgstr "Update Settings"
+
+#: templates/fields.php:336
+msgid "Seperate options with pipes (|)"
+msgstr "Seperate options with pipes (|)"
+
+#: templates/fields.php:339
+msgid "Update options"
+msgstr "Update options"
+
+#: tco_woo_checkout-woocommerce-checkout-manager.php:155
+msgid ""
+"TcoWooCheckout WooCommerce Checkout Manager requires WooCommerce in order to work."
+msgstr ""
+"TcoWooCheckout WooCommerce Checkout Manager requires WooCommerce in order to work."
+
+#: tco_woo_checkout-woocommerce-checkout-manager.php:172
+msgid ""
+"Another plugin already using the class name Tco_Woo_Checkout exists. "
+"The TcoWooCheckout WooCommerce Checkout Manager plugin will not work as expected"
+msgstr ""
+"Another plugin already using the class name Tco_Woo_Checkout exists. "
+"The TcoWooCheckout WooCommerce Checkout Manager plugin will not work as expected"
+
+#~ msgid "Validate"
+#~ msgstr "Validate"
+
+#~ msgid "Edit Validation Regex"
+#~ msgstr "Edit Validation Regex"
+
+#~ msgid "Update Regex"
+#~ msgstr "Update Regex"

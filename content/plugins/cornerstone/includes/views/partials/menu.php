@@ -10,12 +10,16 @@ $mod_id           = ( isset( $mod_id )       ) ? $mod_id       : '';
 $menu_type        = ( isset( $menu_type )    ) ? $menu_type    : 'inline';
 $menu_data_walker = ( isset( $_custom_data ) ) ? $_custom_data : array();
 
-$menu_is_collapsed         = $menu_type === 'collapsed';
+$menu_is_collapsed = $menu_type === 'collapsed';
+$menu_is_dropdown  = $menu_type === 'dropdown';
+$menu_is_inline    = $menu_type === 'inline';
+$menu_is_modal     = $menu_type === 'modal';
+$menu_is_layered   = $menu_type === 'layered';
+
 $menu_is_collapsed_tbf     = $menu_is_collapsed && ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' );
 $menu_is_collapsed_not_tbf = $menu_is_collapsed && ! ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' );
-$menu_is_dropdown          = $menu_type === 'dropdown';
-$menu_is_inline            = $menu_type === 'inline';
-$menu_is_modal             = $menu_type === 'modal';
+$menu_is_layered_tbf       = $menu_is_layered && ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' );
+$menu_is_layered_not_tbf   = $menu_is_layered && ! ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' );
 
 
 // Atts
@@ -24,7 +28,7 @@ $menu_is_modal             = $menu_type === 'modal';
 $atts = array();
 
 if ( isset( $id ) && ! empty( $id ) ) {
-  if ( $menu_is_collapsed_not_tbf || $menu_is_inline ) {
+  if ( $menu_is_collapsed_not_tbf || $menu_is_layered_not_tbf || $menu_is_inline ) {
     $atts['id'] = $id;
   } else if ( $menu_is_dropdown ) {
     $atts['id'] = $id . '-dropdown';
@@ -70,14 +74,34 @@ if ( $menu_is_dropdown ) {
 }
 
 
+// Notes: "data-x-toggle-layered-root" Attribute
+// -------------------------------------------------
+// Defines the root level element for `data-x-toggle="layered"` elements so
+// that their toggling mechanism can work properly.
+
+if ( $menu_is_modal || $menu_is_layered ) {
+  $atts['data-x-toggle-layered-root'] = true;
+}
+
+
 // Prepare Arg Values
 // ------------------
 
-if ( $menu_is_collapsed_tbf || $menu_is_modal ) {
+if ( $menu_is_collapsed_tbf || $menu_is_layered_tbf || $menu_is_modal ) {
   $class = '';
 }
 
-$classes    = x_attr_class( array( $mod_id, 'x-menu', 'x-menu-' . $menu_type, $class ) );
+$classes = array( $mod_id, 'x-menu', 'x-menu-' . $menu_type, $class );
+
+if ( $menu_is_modal ) {
+  $classes[] = 'x-menu-layered';
+}
+
+if ( $menu_is_modal || $menu_is_layered ) {
+  $classes[] = 'x-current-layer';
+}
+
+$classes    = x_attr_class( $classes );
 $items_wrap = '<ul ' . x_atts( $atts ) . '>%3$s</ul>';
 $walker     = new X_Walker_Nav_Menu( $menu_data_walker );
 
@@ -103,10 +127,6 @@ if ( 0 === strpos( $menu, 'menu:' ) ) {
 
 if ( 0 === strpos( $menu, 'location:' ) ) {
   $args['theme_location'] = str_replace( 'location:', '', $menu );
-}
-
-if ( $menu_is_modal ) {
-  $args['depth'] = 1;
 }
 
 

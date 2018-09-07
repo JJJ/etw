@@ -19,14 +19,7 @@
 
 $data = array(
   'title'  => __( 'Navigation Collapsed', '__x__' ),
-  'values' => array_merge(
-    x_values_menu( x_bar_module_settings_menu( 'collapsed' ) ),
-    x_values_anchor( x_bar_module_settings_anchor( 'toggle', array( 'tbf_only' => true ) ) ),
-    x_values_off_canvas( array( 'tbf_only' => true ) ),
-    x_values_anchor( x_bar_module_settings_anchor( 'menu-item-collapsed-top' ) ),
-    x_values_anchor( x_bar_module_settings_anchor( 'menu-item-collapsed-sub' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_nav_collapsed(),
 );
 
 
@@ -36,22 +29,10 @@ $data = array(
 
 function x_element_builder_setup_nav_collapsed() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_menu( x_bar_module_settings_menu( 'collapsed' ) ),
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'toggle', array( 'tbf_only' => true ) ) ),
-      x_control_groups_off_canvas( array( 'tbf_only' => true ) ),
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'menu-item-collapsed-top' ) ),
-      x_control_groups_anchor( x_bar_module_settings_anchor( 'menu-item-collapsed-sub' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_menu( x_bar_module_settings_menu( 'collapsed' ) ),
-      x_controls_anchor( x_bar_module_settings_anchor( 'toggle', array( 'tbf_only' => true ) ) ),
-      x_controls_off_canvas( array( 'tbf_only' => true ) ),
-      x_controls_anchor( x_bar_module_settings_anchor( 'menu-item-collapsed-top' ) ),
-      x_controls_anchor( x_bar_module_settings_anchor( 'menu-item-collapsed-sub' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_nav_collapsed(),
+    'controls_adv'       => x_controls_element_nav_collapsed( true ),
+    'control_groups'     => x_control_groups_element_nav_collapsed(),
+    'control_groups_adv' => x_control_groups_element_nav_collapsed( true ),
   );
 }
 

@@ -14,12 +14,16 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
     add_filter( 'cornerstone_option_model_save_cornerstone_font_config', array( $this, 'config_save_transform' ) );
     add_filter( 'cornerstone_option_model_load_cornerstone_font_items', array( $this, 'items_load_transform' ) );
     add_filter( 'cornerstone_option_model_save_cornerstone_font_items', array( $this, 'items_save_transform' ) );
+    add_filter( 'cornerstone_option_model_permissions_cornerstone_font_items', array( $this, 'item_permissions' ), 10, 2 );
+    add_filter( 'cornerstone_option_model_permissions_cornerstone_font_config', array( $this, 'config_permissions' ), 10, 2 );
 
     add_filter('cornerstone_css_post_process_font-family', array( $this, 'css_post_process_font_family') );
     add_filter('cornerstone_css_post_process_font-weight', array( $this, 'css_post_process_font_weight') );
 
     add_action( 'cornerstone_head_css', array( $this, 'output_typekit_loading_styles' ) );
     add_action( 'x_head_css', array( $this, 'output_typekit_loading_styles' ) );
+
+
   }
 
   public function set_previewing() {
@@ -88,14 +92,14 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
 
   protected function get_font_items() {
     if ( ! $this->font_items ) {
-      $this->font_items = $this->plugin->loadComponent('Model_Option')->lookup('cornerstone_font_items');
+      $this->font_items = $this->plugin->component('Model_Option')->lookup('cornerstone_font_items');
     }
     return $this->font_items;
   }
 
   protected function get_font_config() {
     if ( ! $this->font_config ) {
-      $this->font_config = $this->plugin->loadComponent('Model_Option')->lookup('cornerstone_font_config');
+      $this->font_config = $this->plugin->component('Model_Option')->lookup('cornerstone_font_config');
     }
     return $this->font_config;
   }
@@ -115,12 +119,18 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
     );
   }
 
-  protected function queue_font( $font ) {
-    if ( 'system' === $font['source'] || isset( $this->queue[$font['stack']] ) ) {
+  public function queue_font( $font ) {
+
+    if ( 'system' === $font['source'] ) {
       return;
     }
 
-    $this->queue[$font['stack']] = $font;
+    if ( isset( $this->queue[$font['stack']] ) ) {
+      $this->queue[$font['stack']]['weights'] = array_merge( $this->queue[$font['stack']]['weights'], $font['weights'] );
+    } else {
+      $this->queue[$font['stack']] = $font;
+    }
+
     if ( ! isset( $this->queue[$font['stack']]['weights'] ) ) {
       $this->queue[$font['stack']]['weights'] = array();
     }
@@ -145,8 +155,8 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
 
   protected function queue_font_weight( $font, $weight ) {
     $this->queue_font( $font );
-    $this->queue[$font['stack']]['queued_weights'][] = $weight;
-    $this->queue[$font['stack']]['queued_weights'][] = $weight . 'i';
+    $this->queue[$font['stack']]['weights'][] = $weight;
+    $this->queue[$font['stack']]['weights'][] = $weight . 'i';
   }
 
   public function css_post_process_font_family( $value ) {
@@ -187,7 +197,7 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
       }
       $sources[$font['source']][] = array(
         'family' => $font['family'],
-        'weights' => array_intersect($font['weights'], $font['queued_weights'])
+        'weights' => $font['weights']
       );
     }
 
@@ -222,30 +232,34 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
 
   public function load_fonts_google( $fonts ) {
 
+    if ( ! apply_filters('cs_load_google_fonts', '__return_true' ) ) {
+      return;
+    }
+
     $in_footer = 'wp_footer' === current_action();
 
-    $config = $this->get_font_config();
-    $additional_subsets = is_array( $config['googleSubsets'] ) ? $config['googleSubsets'] : array();
-    $subsets = array_merge( array('latin', 'latin-ext'), $additional_subsets );
+    $config = apply_filters( 'cs_google_font_config', wp_parse_args($this->get_font_config(), array(
+      'googleSubsets' => array()
+    ) ) );
+
+    $subsets = array_merge( array('latin', 'latin-ext'), $config['googleSubsets'] );
+    $subsets = array_unique($subsets);
 
     $family_strings = array();
 
     foreach ($fonts as $font) {
-      $family_strings[] = str_replace(' ', '+', $font['family'] ) . ':' . implode(',', $font['weights'] );
+      $weights = array_unique( $font['weights'] );
+      $family_strings[] = str_replace(' ', '+', $font['family'] ) . ':' . implode(',', $weights );
     }
 
     $request = add_query_arg( array(
       'family' => implode('|', $family_strings),
       'subset' => implode(',', $subsets )
-    ), '//fonts.googleapis.com/css' );
-
-    $url = add_query_arg( array(
-      'ver' => $this->plugin->version(),
-    ), esc_url( $request ) );
+    ), apply_filters('cs_google_fonts_uri', '//fonts.googleapis.com/css' ) );
 
     $atts = cs_atts( array(
       'rel'   => 'stylesheet',
-      'href'  => $url,
+      'href'  => esc_url( $request ),
       'type'  => 'text/css',
       'media' => 'all',
       'data-x-google-fonts' => null,
@@ -306,6 +320,34 @@ class Cornerstone_Font_Manager extends Cornerstone_Plugin_Component {
     }
 
     echo '.wf-loading a, .wf-loading p, .wf-loading ul, .wf-loading ol, .wf-loading dl, .wf-loading h1, .wf-loading h2, .wf-loading h3, .wf-loading h4, .wf-loading h5, .wf-loading h6, .wf-loading em, .wf-loading pre, .wf-loading cite, .wf-loading span, .wf-loading table, .wf-loading strong, .wf-loading blockquote { visibility: hidden !important; }';
+
+  }
+
+  public function item_permissions( $value, $operation ) {
+
+    $permissions = $this->plugin->component('App_Permissions');
+
+    if ( 'update' === $operation ) {
+      return $permissions->user_can('fonts.create') || $permissions->user_can('fonts.change') || $permissions->user_can('fonts.rename');
+    }
+
+    if ( 'delete' === $operation ) {
+      return $permissions->user_can('fonts.delete');
+    }
+
+    return true;
+
+  }
+
+  public function config_permissions( $value, $operation ) {
+
+    $permissions = $this->plugin->component('App_Permissions');
+
+    if ( 'update' === $operation ) {
+      return $permissions->user_can('fonts.manage-google') || $permissions->user_can('fonts.manage-typekit');
+    }
+
+    return 'delete' !== $operation;
 
   }
 

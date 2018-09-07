@@ -24,9 +24,9 @@ function x_shortcode_author( $atts ) {
   $twitter      = get_the_author_meta( 'twitter', $author_id );
   $googleplus   = get_the_author_meta( 'googleplus', $author_id );
 
-  $facebook_output   = ( $facebook )   ? "<a href=\"{$facebook}\" class=\"x-author-social\" title=\"Visit the Facebook Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-facebook-square\" data-x-icon=\"&#xf082;\"></i> Facebook</a>" : '';
-  $twitter_output    = ( $twitter )    ? "<a href=\"{$twitter}\" class=\"x-author-social\" title=\"Visit the Twitter Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-twitter-square\" data-x-icon=\"&#xf081;\"></i> Twitter</a>" : '';
-  $googleplus_output = ( $googleplus ) ? "<a href=\"{$googleplus}\" class=\"x-author-social\" title=\"Visit the Google+ Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-google-plus-square\" data-x-icon=\"&#xf0d4;\"></i> Google+</a>" : '';
+  $facebook_output   = ( $facebook )   ? "<a href=\"{$facebook}\" class=\"x-author-social\" title=\"Visit the Facebook Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-facebook-square\" " . fa_data_icon('facebook') . "></i> Facebook</a>" : '';
+  $twitter_output    = ( $twitter )    ? "<a href=\"{$twitter}\" class=\"x-author-social\" title=\"Visit the Twitter Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-twitter-square\" " . fa_data_icon('twitter-square') . "></i> Twitter</a>" : '';
+  $googleplus_output = ( $googleplus ) ? "<a href=\"{$googleplus}\" class=\"x-author-social\" title=\"Visit the Google+ Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-google-plus-square\" " . fa_data_icon('google-plus-square') . "></i> Google+</a>" : '';
 
   $output = "<div {$id} class=\"{$class}\" {$style}>"
             . "<h6 class=\"h-about-the-author\">{$title}</h6>"

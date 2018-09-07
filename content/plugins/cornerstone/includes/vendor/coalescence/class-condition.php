@@ -16,10 +16,6 @@ class TCO_Coalescence_Condition {
    */
   public function __construct( $statement, $content = '') {
 
-    if ( is_null( $statement ) ) {
-      return;
-    }
-    // var_dump($statement);die();
     $this->content = $content;
     $this->negate = '@unless' === $statement;
     $this->id = uniqid();

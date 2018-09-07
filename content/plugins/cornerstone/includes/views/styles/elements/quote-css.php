@@ -99,17 +99,12 @@
 @if $quote_cite_content !== '' {
 
   .$_el .x-quote-cite {
-    -webkit-flex-direction: $quote_cite_flex_direction;
-            flex-direction: $quote_cite_flex_direction;
-    -webkit-justify-content: $quote_cite_flex_justify;
-            justify-content: $quote_cite_flex_justify;
-    -webkit-align-items: $quote_cite_flex_align;
-            align-items: $quote_cite_flex_align;
+    flex-direction: $quote_cite_flex_direction;
+    justify-content: $quote_cite_flex_justify;
+    align-items: $quote_cite_flex_align;
     @if $quote_cite_flex_wrap === true {
-      -webkit-flex-wrap: wrap;
-              flex-wrap: wrap;
-      -webkit-align-content: $quote_cite_flex_align;
-              align-content: $quote_cite_flex_align;
+      flex-wrap: wrap;
+      align-content: $quote_cite_flex_align;
     }
     margin: $quote_cite_margin;
     border-width: $quote_cite_border_width;
@@ -178,8 +173,7 @@
 
   @if $quote_cite_position === 'before' {
     .$_el .x-quote-content {
-      -webkit-flex-direction: column-reverse;
-              flex-direction: column-reverse;
+      flex-direction: column-reverse;
     }
   }
 
@@ -196,16 +190,14 @@
 
 @if $quote_marks_opening_graphic === true || $quote_marks_closing_graphic === true {
   .$_el.x-quote {
-    -webkit-flex-direction: $quote_marks_graphic_direction;
-            flex-direction: $quote_marks_graphic_direction;
+    flex-direction: $quote_marks_graphic_direction;
   }
 }
 
 @if $quote_marks_opening_graphic === true {
 
   .$_el .x-quote-mark-opening {
-    -webkit-align-self: $quote_marks_graphic_opening_align;
-            align-self: $quote_marks_graphic_opening_align;
+    align-self: $quote_marks_graphic_opening_align;
   }
 
   <?php
@@ -223,8 +215,7 @@
 @if $quote_marks_closing_graphic === true {
 
   .$_el .x-quote-mark-closing {
-    -webkit-align-self: $quote_marks_graphic_closing_align;
-            align-self: $quote_marks_graphic_closing_align;
+    align-self: $quote_marks_graphic_closing_align;
   }
 
   <?php

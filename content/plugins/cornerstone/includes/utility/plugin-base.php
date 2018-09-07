@@ -188,7 +188,7 @@ abstract class Cornerstone_Plugin_Base {
     }
 
     foreach ( $components as $component ) {
-      $this->loadComponent( $component );
+      $this->component( $component );
     }
 
   }
@@ -214,20 +214,20 @@ abstract class Cornerstone_Plugin_Base {
 
     try {
 
-      $class = $this->name . '_' . $name;
-      $exists = false;
-
-      try {
-        $exists = class_exists( $class );
-      } catch ( Exception $e ) {
-        trigger_error( 'Exception: ' . $e->getMessage() . "\n" );
-      }
-
-      if ( ! $exists ) {
-        return false;
-      }
-
       if ( ! isset( $this->components[ $name ] ) ) {
+
+        $class = $this->name . '_' . $name;
+        $exists = false;
+
+        try {
+          $exists = class_exists( $class );
+        } catch ( Exception $e ) {
+          trigger_error( 'Exception: ' . $e->getMessage() . "\n" );
+        }
+
+        if ( ! $exists ) {
+          return false;
+        }
 
         $name = $this->componentConditions( $name );
 
@@ -241,7 +241,7 @@ abstract class Cornerstone_Plugin_Base {
 
         if ( is_array( $instance->dependencies ) ) {
           foreach ( $instance->dependencies as $component ) {
-            $this->loadComponent( $component );
+            $this->component( $component );
           }
         }
 
@@ -260,7 +260,7 @@ abstract class Cornerstone_Plugin_Base {
   }
 
   public function controller( $name ) {
-    return $this->loadComponent( "Controller_$name" );
+    return $this->component( "Controller_$name" );
   }
 
   public function componentConditions( $name ) {
@@ -287,7 +287,7 @@ abstract class Cornerstone_Plugin_Base {
    * @return object Component instance
    */
   public function component( $handle ) {
-    return ( isset( $this->components[ $handle ] ) ) ? $this->components[ $handle ] : null;
+    return $this->loadComponent( $handle );
   }
 
   /**
@@ -573,18 +573,34 @@ abstract class Cornerstone_Plugin_Base {
    * @param  boolean $namespace Should we prepend a namespace to the keys?
    * @return array              Localized strings
    */
-  public function i18n_group( $group, $namespace = true ) {
+  public function i18n_group( $group, $namespace = true, $filter = '' ) {
 
     $strings = $this->config_group( $group, 'i18n', $this->i18n_path, true );
 
-    if ( !$namespace ) {
+    if ( $filter ) {
+
+      $filtered = array();
+
+      foreach ($strings as $key => $value) {
+        if ( 0 === strpos($key,"$filter.") ) {
+          $k = substr($key, strlen($filter) + 1);
+          $filtered[$k] = $value;
+        }
+      }
+
+      $strings = $filtered;
+
+    }
+
+    if ( ! $namespace ) {
       return $strings;
     }
 
     $namespaced = array();
+    $namespace = $filter ? $filter : $group;
 
     foreach ( $strings as $key => $value ) {
-      $namespaced["$group.$key"] = $value;
+      $namespaced["$namespace.$key"] = $value;
     }
 
     return $namespaced;
@@ -719,7 +735,7 @@ abstract class Cornerstone_Plugin_Component {
    * @return object Component instance
    */
   public function component( $handle ) {
-    return ( isset( $this->components[ $handle ] ) ) ? $this->components[ $handle ] : null;
+    return $this->plugin->component($handle);
   }
 
   /**
@@ -789,8 +805,8 @@ abstract class Cornerstone_Plugin_Component {
 
   }
 
-  public function i18n_group( $group, $namespace = true ) {
-    return $this->plugin->i18n_group( $group, $namespace );
+  public function i18n_group( $group, $namespace = true, $filter = '' ) {
+    return $this->plugin->i18n_group( $group, $namespace, $filter );
   }
 
   public function config_group( $group, $namespace = true, $path = '' ) {

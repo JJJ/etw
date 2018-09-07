@@ -8,11 +8,15 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
   public function load_all() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers') ) {
+      return;
+    }
+
     $posts = get_posts( array(
       'post_type' => 'cs_header',
       'post_status' => 'any',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     $records = array();
@@ -60,13 +64,18 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
   }
 
   public function make_record( $post ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     if ( is_int( $post ) ) {
       $post = get_post( $post );
     }
     $header = new Cornerstone_Header( $post );
     $record = $header->serialize();
     $record['post-type'] = $post->post_type;
-    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    $record['language'] = $this->plugin->component('Wpml')->get_language_data_from_post( $post, true );
     return $record;
   }
 
@@ -105,10 +114,14 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
   public function create( $params ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.create') && ! $this->plugin->component('App_Permissions')->user_can('headers.create_from_template') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( isset( $atts['regions'] ) ) {
-      $atts['regions'] = $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] );
+      $atts['regions'] = $this->plugin->component('Regions')->sanitize_regions( $atts['regions'] );
     }
 
     $header = new Cornerstone_Header( $atts );
@@ -118,7 +131,7 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
     }
 
     $saved = $header->save();
-    $this->plugin->loadComponent('Regions')->reset_region_styles( 'header', $header );
+    $this->plugin->component('Regions')->reset_region_styles( 'header', $header );
 
     return $this->make_response( $this->to_resource( $saved ) );
 
@@ -140,6 +153,11 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
   }
 
   public function delete( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.delete') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -156,6 +174,10 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
   public function update( $params ) {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('headers') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
@@ -166,12 +188,12 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
 
     $header = new Cornerstone_Header( $id );
 
-    if ( isset( $atts['title'] ) ) {
+    if ( isset( $atts['title'] ) && $this->plugin->component('App_Permissions')->user_can('headers.rename') ) {
       $header->set_title( $atts['title'] );
     }
 
     if ( isset( $atts['regions'] ) ) {
-      $header->set_regions( $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] ) );
+      $header->set_regions( $this->plugin->component('Regions')->sanitize_regions( $atts['regions'] ) );
     }
 
     if ( isset( $atts['settings'] ) ) {
@@ -179,7 +201,7 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
     }
 
     $saved = $header->save();
-    $this->plugin->loadComponent('Regions')->reset_region_styles( 'header', $header );
+    $this->plugin->component('Regions')->reset_region_styles( 'header', $header );
 
     return $this->make_response( $this->to_resource( $saved ) );
   }

@@ -1,7 +1,7 @@
 <?php
 
 // =============================================================================
-// CORNERSTONE/INCLUDES/ELEMENTS/DEFINITIONS/X-SECTION.PHP
+// CORNERSTONE/INCLUDES/ELEMENTS/DEFINITIONS/SECTION.PHP
 // -----------------------------------------------------------------------------
 // V2 element definitions.
 // =============================================================================
@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Section', '__x__' ),
-  'values' => array_merge(
-    x_values_section(),
-    x_values_omega( array( 'add_style' => true ) )
-  ),
+  'values' => x_values_element_section(),
 );
 
 
@@ -32,19 +29,15 @@ $data = array(
 
 function x_element_builder_setup_section() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_section(),
-      x_control_groups_omega( array( 'add_style' => true ) )
-    ),
-    'controls' => array_merge(
-      x_controls_section(),
-      x_controls_omega( array( 'add_style' => true ) )
-    ),
-    'options' => array(
+    'controls'           => x_controls_element_section(),
+    'controls_adv'       => x_controls_element_section( true ),
+    'control_groups'     => x_control_groups_element_section(),
+    'control_groups_adv' => x_control_groups_element_section( true ),
+    'options'            => array(
       'default_children' => array(
-        array( '_type' => 'row' )
-      )
-    )
+        array( '_type' => 'row' ),
+      ),
+    ),
   );
 }
 

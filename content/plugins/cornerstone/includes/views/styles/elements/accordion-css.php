@@ -42,7 +42,9 @@
     padding: $accordion_padding;
   }
   font-size: $accordion_base_font_size;
-  background-color: $accordion_bg_color;
+  @unless $accordion_bg_color?? {
+    background-color: $accordion_bg_color;
+  }
   @unless $accordion_box_shadow_dimensions?? {
     @if $accordion_box_shadow_color === 'transparent' {
       box-shadow: none;
@@ -77,7 +79,9 @@
   @unless $accordion_item_padding?? {
     padding: $accordion_item_padding;
   }
-  background-color: $accordion_item_bg_color;
+  @unless $accordion_item_bg_color?? {
+    background-color: $accordion_item_bg_color;
+  }
   @unless $accordion_item_box_shadow_dimensions?? {
     @if $accordion_item_box_shadow_color === 'transparent' {
       box-shadow: none;
@@ -139,7 +143,9 @@
     }
   }
   color: $accordion_header_text_color;
-  background-color: $accordion_header_bg_color;
+  @unless $accordion_header_bg_color?? {
+    background-color: $accordion_header_bg_color;
+  }
   @unless $accordion_header_box_shadow_dimensions?? {
     @if $accordion_header_box_shadow_color === 'transparent' {
       box-shadow: none;
@@ -164,7 +170,9 @@
     }
   }
   color: $accordion_header_text_color_alt;
-  background-color: $accordion_header_bg_color_alt;
+  @unless $accordion_header_bg_color_alt?? {
+    background-color: $accordion_header_bg_color_alt;
+  }
   @unless $accordion_header_box_shadow_dimensions?? {
     @if $accordion_header_box_shadow_color_alt === 'transparent' {
       box-shadow: none;
@@ -185,8 +193,7 @@
 
 .$_el.x-acc .x-acc-header-content {
   @if $accordion_header_content_reverse === true {
-    -webkit-flex-direction: row-reverse;
-            flex-direction: row-reverse;
+    flex-direction: row-reverse;
   }
 }
 
@@ -297,7 +304,6 @@
     }
   }
   color: $accordion_content_text_color;
-  background-color: $accordion_content_bg_color;
   @unless $accordion_content_box_shadow_dimensions?? {
     @if $accordion_content_box_shadow_color === 'transparent' {
       box-shadow: none;
@@ -307,5 +313,7 @@
     }
   }
   font-size: $accordion_content_font_size;
-  background-color: $accordion_content_bg_color;
+  @unless $accordion_content_bg_color?? {
+    background-color: $accordion_content_bg_color;
+  }
 }

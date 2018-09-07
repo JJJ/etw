@@ -16,6 +16,7 @@
 //   05. Module Decorate
 //   06. Get Partial Data
 //   07. Module Conditions
+//   08. Inject Conditions
 //   08. Return Bar Mixin Values
 //   09. Custom Menu Item Output
 //   10. Generated Navigation
@@ -100,8 +101,10 @@ function x_module_decorate( $module, $parent = null ) {
 
     // Allow shadow elements to get parent keys
     // This only applies in direct content rendering like headers/footers
-    if ( ! is_null( $parent ) && $definition->is_shadow() ) {
+    if ( ! is_null( $parent ) && $definition->is_child() ) {
+
       $module['p_mod_id'] = $parent['mod_id'];
+
       foreach ($parent as $key => $value) {
         if ( ! isset( $module[$key] ) ) {
           $module[$key] = $value;
@@ -136,7 +139,7 @@ function x_get_partial_data( $_custom_data, $args = array() ) {
   //     the new beginning so it can be passed on to the partial template.
 
   $defaults = array(
-    'pass_on'   => array( '_region', '_id', 'mod_id', 'id', 'class' ),
+    'pass_on'   => array( '_region', '_id', '_type', '_transient', '_modules', 'mod_id', 'id', 'class' ),
     'add_in'    => array(),
     'keep_out'  => array(),
     'find_data' => array(),
@@ -146,7 +149,9 @@ function x_get_partial_data( $_custom_data, $args = array() ) {
   $partial_data = array();
 
   foreach ( $args['pass_on'] as $key ) {
-    $partial_data[$key] = $_custom_data[$key]; // 01
+    if ( isset( $_custom_data[$key]) ) {
+      $partial_data[$key] = $_custom_data[$key]; // 01
+    }
   }
 
   foreach ( $args['add_in'] as $key => $value ) {
@@ -182,8 +187,7 @@ function x_get_partial_data( $_custom_data, $args = array() ) {
 // Module Conditions
 // =============================================================================
 // Replaced array_keys( $condition, array() ) with array_keys( $condition ) as
-// it was wrapping an extra array too many times. Will need to check this with
-// all elements to ensure that it hasn't adversely affected anything.
+// it was wrapping an extra array too many times.
 
 function x_module_conditions( $condition ) {
 
@@ -191,6 +195,32 @@ function x_module_conditions( $condition ) {
   $condition = ( count( array_keys( $condition, array() ) ) > 0 ) ? $condition : array( $condition ); // 01
 
   return $condition;
+
+}
+
+
+
+// Inject Conditions
+// =============================================================================
+
+function x_controls_inject_std_design_controls_condition( $control ) {
+
+  if ( isset($control['group']) && 'std:design' === $control['group'] ) {
+
+    if ( isset( $control['condition'] ) ) {
+      $control['conditions'] = array( $control['condition'] );
+      unset($control['condition']);
+    }
+
+    if ( ! isset( $control['conditions'] ) ) {
+      $control['conditions'] = array();
+    }
+
+    array_push( $control['conditions'], array( 'user_can:{context}.design_controls' => true ));
+
+  }
+
+  return $control;
 
 }
 
@@ -223,10 +253,21 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
 
   public $x_menu_data;
   public $x_menu_type;
+  public $x_menu_item_count;
 
   public function __construct( $x_menu_data = array() ) {
-    $this->x_menu_data = $x_menu_data;
-    $this->x_menu_type = ( isset( $x_menu_data['menu_type'] ) ) ? $x_menu_data['menu_type'] : 'inline';
+    $this->x_menu_data       = $x_menu_data;
+    $this->x_menu_type       = ( isset( $x_menu_data['menu_type'] ) ) ? $x_menu_data['menu_type'] : 'inline';
+    $this->x_menu_item_count = 0;
+  }
+
+  public function x_get_unique_id( $count = NULL, $id = NULL, $delim = NULL ) {
+
+    $id    = ( ! empty( $id )    ) ? $id    : $this->x_menu_data['mod_id'];
+    $delim = ( ! empty( $delim ) ) ? $delim : '-';
+    $count = ( ! empty( $count ) ) ? $count : $this->x_menu_item_count;
+
+    return $id . $delim . $count;
   }
 
 
@@ -238,6 +279,10 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     $ul_atts = array(
       'class' => 'sub-menu'
     );
+
+
+    // Inline and Dropdown
+    // -------------------
 
     if ( in_array( $this->x_menu_type, array( 'inline', 'dropdown' ), true ) ) {
 
@@ -278,41 +323,86 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
 
     }
 
+
+    // Collapsed
+    // ---------
+
+    if ( $this->x_menu_type === 'collapsed' ) {
+
+      $ul_atts['id']                     = 'x-menu-collapsed-list-' . $this->x_get_unique_id();
+      $ul_atts['class']                 .= ' x-collapsed';
+      $ul_atts['aria-hidden']            = 'true';
+      $ul_atts['aria-labelledby']        = 'x-menu-collapsed-anchor-' . $this->x_get_unique_id();
+      $ul_atts['data-x-toggleable']      = $this->x_get_unique_id();
+      $ul_atts['data-x-toggle-collapse'] = true;
+
+    }
+
+
+    // Layered
+    // -------
+
+    if ( $this->x_menu_type === 'modal' || $this->x_menu_type === 'layered' ) {
+
+      $ul_atts['id']                    = 'x-menu-layered-list-' . $this->x_get_unique_id();
+      $ul_atts['aria-hidden']           = 'true';
+      $ul_atts['aria-labelledby']       = 'x-menu-layered-anchor-' . $this->x_get_unique_id();
+      $ul_atts['data-x-toggleable']     = $this->x_get_unique_id();
+      $ul_atts['data-x-toggle-layered'] = true;
+
+    }
+
+
+    // Increment `x_menu_item_count`
+    // -----------------------------
+    // 01. Always increment `x_menu_item_count` to be utilized as an internal
+    //     counter when needed.
+
     $output .= '<ul ' . x_atts( $ul_atts ) . '>';
+
+    if ( $this->x_menu_type === 'modal' || $this->x_menu_type === 'layered' ) {
+
+      $layered_back_atts = array(
+        'class'             => 'x-anchor x-anchor-layered-back',
+        'aria-label'        => __( 'Go Back One Level', '__x__' ),
+        'data-x-toggle'     => 'layered',
+        'data-x-toggleable' => $this->x_get_unique_id(),
+      );
+
+      $output .= '<li>'
+                 . '<a ' . x_atts( $layered_back_atts ) . '>'
+                   . '<span class="x-anchor-content">'
+                     . '<span class="x-anchor-text">'
+                       . '<span class="x-anchor-text-primary">' . $this->x_menu_data['menu_layered_back_label'] . '</span>'
+                     . '</span>'
+                   . '</span>'
+                 . '</a>'
+               . '</li>';
+
+    }
+
+    $this->x_menu_item_count++; // 01
 
   }
 
 
   // start_el()
   // ----------
+  // Section outputting $attributes was removed in favor of merging $atts
+  // into our own x_atts() function.
+  //
+  // 01. Utilize x_atts() to include <li> attributes.
 
   public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-
-    // Begin WP Formatting
-    // -------------------
-    // Section outputting $attributes was removed in favor of merging $atts
-    // into our own x_atts() function.
 
     $classes = empty( $item->classes ) ? array() : (array) $item->classes;
     $classes[] = 'menu-item-' . $item->ID;
     $args = apply_filters( 'nav_menu_item_args', $args, $item, $depth );
     $li_classes = apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args, $depth );
-
-    // To be removed when Modal navigation supports multiple levels
-    if ( 'modal' === $this->x_menu_type ) {
-      $has_children_class = array_search('menu-item-has-children', $li_classes);
-      if (false !== $has_children_class) {
-          unset($li_classes[$has_children_class]);
-      }
-    }
-
     $li_atts = array( 'class' => join( ' ', $li_classes ) );
     $id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args, $depth );
     if ( $id ) { $li_atts['id'] = $id; }
-    if ( 'collapsed' === $this->x_menu_type && in_array( 'menu-item-has-children', $item->classes ) ) {
-      $li_atts['data-x-collapse'] = 'closed';
-    }
-    $output .= '<li ' . x_atts( $li_atts ) .'>';
+    $output .= '<li ' . x_atts( $li_atts ) . '>'; // 01
     $atts = array();
     $atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
     $atts['target'] = ! empty( $item->target )     ? $item->target     : '';
@@ -323,43 +413,124 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     $title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
 
 
-    // Begin X Formatting
-    // ------------------
-    // 01. Merge meta from the WP menu system into our main data to complete
-    //     the whole picture.
-    // 02. Sub anchors with unique styling need to have their keys cleaned as
-    //     well as ensuring $x_menu_meta_data still persists.
+    // Get Item Meta
+    // -------------
 
-    if ( isset( $item->meta) ) {
+    if ( isset( $item->meta ) ) {
       $x_item_meta = array();
-      foreach ($item->meta as $key => $value) {
-        $x_item_meta["menu-item-$key"] = array( $value );
+      foreach ( $item->meta as $key => $value ) {
+        $x_item_meta['menu-item-' . $key] = array( $value );
       }
     } else {
       $x_item_meta = get_post_meta( $item->ID, '', true );
     }
 
-    $x_anchor_graphic_icon          = ( isset( $x_item_meta['menu-item-anchor_graphic_icon'] )          ) ? $x_item_meta['menu-item-anchor_graphic_icon'][0] : '';
-    $x_anchor_graphic_icon_alt      = ( isset( $x_item_meta['menu-item-anchor_graphic_icon_alt'] )      ) ? $x_item_meta['menu-item-anchor_graphic_icon_alt'][0] : '';
-    $x_anchor_graphic_image_src     = ( isset( $x_item_meta['menu-item-anchor_graphic_image_src'] )     ) ? $x_item_meta['menu-item-anchor_graphic_image_src'][0] : '';
-    $x_anchor_graphic_image_src_alt = ( isset( $x_item_meta['menu-item-anchor_graphic_image_src_alt'] ) ) ? $x_item_meta['menu-item-anchor_graphic_image_src_alt'][0] : '';
-    $x_anchor_graphic_image_width   = ( isset( $x_item_meta['menu-item-anchor_graphic_image_width'] )   ) ? $x_item_meta['menu-item-anchor_graphic_image_width'][0] : '';
-    $x_anchor_graphic_image_height  = ( isset( $x_item_meta['menu-item-anchor_graphic_image_height'] )  ) ? $x_item_meta['menu-item-anchor_graphic_image_height'][0] : '';
+
+    // Assign Item Meta
+    // ----------------
+
+    $x_anchor_graphic_icon              = ( isset( $x_item_meta['menu-item-anchor_graphic_icon'] )              ) ? $x_item_meta['menu-item-anchor_graphic_icon'][0]              : '';
+    $x_anchor_graphic_icon_alt          = ( isset( $x_item_meta['menu-item-anchor_graphic_icon_alt'] )          ) ? $x_item_meta['menu-item-anchor_graphic_icon_alt'][0]          : '';
+    $x_anchor_graphic_image_src         = ( isset( $x_item_meta['menu-item-anchor_graphic_image_src'] )         ) ? $x_item_meta['menu-item-anchor_graphic_image_src'][0]         : '';
+    $x_anchor_graphic_image_src_alt     = ( isset( $x_item_meta['menu-item-anchor_graphic_image_src_alt'] )     ) ? $x_item_meta['menu-item-anchor_graphic_image_src_alt'][0]     : '';
+    $x_anchor_graphic_image_width       = ( isset( $x_item_meta['menu-item-anchor_graphic_image_width'] )       ) ? $x_item_meta['menu-item-anchor_graphic_image_width'][0]       : '';
+    $x_anchor_graphic_image_height      = ( isset( $x_item_meta['menu-item-anchor_graphic_image_height'] )      ) ? $x_item_meta['menu-item-anchor_graphic_image_height'][0]      : '';
+    $x_anchor_graphic_menu_item_display = ( isset( $x_item_meta['menu-item-anchor_graphic_menu_item_display'] ) ) ? $x_item_meta['menu-item-anchor_graphic_menu_item_display'][0] : '';
 
     $x_menu_meta_data = array(
-      'anchor_text_primary_content'   => $title,
-      'anchor_text_secondary_content' => $item->description,
-      'anchor_graphic_icon'           => $x_anchor_graphic_icon,
-      'anchor_graphic_icon_alt'       => $x_anchor_graphic_icon_alt,
-      'anchor_graphic_image_src'      => $x_anchor_graphic_image_src,
-      'anchor_graphic_image_src_alt'  => $x_anchor_graphic_image_src_alt,
-      'anchor_graphic_image_width'    => $x_anchor_graphic_image_width,
-      'anchor_graphic_image_height'   => $x_anchor_graphic_image_height,
-      'atts'                          => array_filter( $atts ),
+      'anchor_text_primary_content'      => $title,
+      'anchor_text_secondary_content'    => $item->description,
+      'anchor_graphic_icon'              => $x_anchor_graphic_icon,
+      'anchor_graphic_icon_alt'          => $x_anchor_graphic_icon_alt,
+      'anchor_graphic_image_src'         => $x_anchor_graphic_image_src,
+      'anchor_graphic_image_src_alt'     => $x_anchor_graphic_image_src_alt,
+      'anchor_graphic_image_width'       => $x_anchor_graphic_image_width,
+      'anchor_graphic_image_height'      => $x_anchor_graphic_image_height,
+      'anchor_graphic_menu_item_display' => $x_anchor_graphic_menu_item_display,
+      'atts'                             => array_filter( $atts ),
     );
+
+
+    // Collapsed
+    // ---------
+    // 01. Allows the collapsed nav's sub menus to be triggered either by
+    //     clicking on the anchor as a whole (which does not allow navigation
+    //     to that link but affords a larger click area), or the sub indicator,
+    //     (which allows navigation to the main link but has a smaller click
+    //     area that users must target).
+
+    if ( $this->x_menu_type === 'collapsed' && in_array( 'menu-item-has-children', $item->classes ) ) {
+
+      $x_menu_meta_data['atts']['id']                       = 'x-menu-collapsed-anchor-' . $this->x_get_unique_id();
+      $x_menu_meta_data['anchor_aria_label']                = __( 'Toggle Collapsed Sub Menu', '__x__' );
+      $x_menu_meta_data['anchor_aria_haspopup']             = 'true';
+      $x_menu_meta_data['anchor_aria_expanded']             = 'false';
+      $x_menu_meta_data['anchor_aria_controls']             = 'x-menu-collapsed-list-' . $this->x_get_unique_id();
+      $x_menu_meta_data['atts']['data-x-toggle']            = 'collapse';
+      $x_menu_meta_data['atts']['data-x-toggleable']        = $this->x_get_unique_id();
+      $x_menu_meta_data['anchor_sub_menu_trigger_location'] = $this->x_menu_data['menu_sub_menu_trigger_location']; // 01
+
+    }
+
+
+    // Layered
+    // -------
+    // 01. Allows the layered nav's sub menus to be triggered either by
+    //     clicking on the anchor as a whole (which does not allow navigation
+    //     to that link but affords a larger click area), or the sub indicator,
+    //     (which allows navigation to the main link but has a smaller click
+    //     area that users must target).
+
+    if ( ( $this->x_menu_type === 'modal' || $this->x_menu_type === 'layered' ) && in_array( 'menu-item-has-children', $item->classes ) ) {
+
+      $x_menu_meta_data['atts']['id']                       = 'x-menu-layered-anchor-' . $this->x_get_unique_id();
+      $x_menu_meta_data['anchor_aria_label']                = __( 'Toggle Layered Sub Menu', '__x__' );
+      $x_menu_meta_data['anchor_aria_haspopup']             = 'true';
+      $x_menu_meta_data['anchor_aria_expanded']             = 'false';
+      $x_menu_meta_data['anchor_aria_controls']             = 'x-menu-layered-list-' . $this->x_get_unique_id();
+      $x_menu_meta_data['atts']['data-x-toggle']            = 'layered';
+      $x_menu_meta_data['atts']['data-x-toggleable']        = $this->x_get_unique_id();
+      $x_menu_meta_data['anchor_sub_menu_trigger_location'] = $this->x_menu_data['menu_sub_menu_trigger_location']; // 01
+
+    }
+
+
+    // Setup "Active" Links
+    // --------------------
+    // 01. Current menu item highlighting.
+    // 02. Ancestor menu item highlighting.
+    // 03. Pass on graphic and particle status for active links.
+
+    if ( array_keys( $classes, 'current-menu-item' ) ) { // 01
+      if ( $this->x_menu_data['menu_active_links_highlight_current'] === true ) {
+        $x_menu_meta_data['anchor_is_active'] = true;
+        $x_menu_meta_data['class']            = 'x-always-active';
+      }
+    }
+
+    if ( array_keys( $classes, 'current-menu-ancestor' ) ) { // 02
+      if ( $this->x_menu_data['menu_active_links_highlight_ancestors'] === true ) {
+        $x_menu_meta_data['anchor_is_active'] = true;
+        $x_menu_meta_data['class']            = 'x-always-active';
+      }
+    }
+
+    $x_menu_meta_data['anchor_graphic_always_active']            = $this->x_menu_data['menu_active_links_show_graphic']; // 03
+    $x_menu_meta_data['anchor_primary_particle_always_active']   = $this->x_menu_data['menu_active_links_show_primary_particle']; // 03
+    $x_menu_meta_data['anchor_secondary_particle_always_active'] = $this->x_menu_data['menu_active_links_show_secondary_particle']; // 03
+
+
+    // Get Sub Link Options
+    // --------------------
 
     $x_has_unique_sub_styles = in_array( $this->x_menu_type, array( 'inline', 'collapsed' ), true ) && $depth !== 0;
     $k_pre                   = ( $x_has_unique_sub_styles ) ? 'sub_' : '';
+
+
+    // Menu Item Text Output
+    // ---------------------
+    // 01. Merge meta from the WP menu system into our main data to complete
+    //     the whole picture.
 
     if ( $this->x_menu_data[$k_pre . 'anchor_text_primary_content'] !== 'on' ) {
       $x_menu_meta_data['anchor_text_primary_content'] = '';
@@ -374,6 +545,12 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     unset( $x_anchor_data['sub_anchor_text_primary_content'] );
     unset( $x_anchor_data['sub_anchor_text_secondary_content'] );
 
+
+    // Merge Sub Link Options
+    // ----------------------
+    // 01. Sub anchors with unique styling need to have their keys cleaned as
+    //     well as ensuring $x_menu_meta_data still persists.
+
     if ( $x_has_unique_sub_styles ) {
 
       $x_data_args = array(
@@ -381,7 +558,7 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
         'find_data' => array( 'sub_anchor' => 'anchor' ),
       );
 
-      $x_anchor_data = x_get_partial_data( $x_anchor_data, $x_data_args ); // 02
+      $x_anchor_data = x_get_partial_data( $x_anchor_data, $x_data_args ); // 01
 
     }
 
@@ -395,7 +572,6 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     if ( isset( $args->after ) ) {
       $item_output .= $args->after;
     }
-
 
 
     // Final Output

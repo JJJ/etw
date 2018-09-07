@@ -11,6 +11,7 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
   public function load() {
 
     $settings = $this->plugin->settings();
+    $preferences = $this->plugin->component('App_Preferences')->get_user_preferences();
 
     add_filter( 'template_include', '__return_empty_string', 999999 );
 
@@ -26,7 +27,7 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
     $wp_styles = new WP_Styles();
     $wp_scripts = new WP_Scripts();
 
-    if ( (bool) $settings['show_wp_toolbar'] ) {
+    if ( (bool) $preferences['show_wp_toolbar'] ) {
       add_action( 'add_admin_bar_menus', array( $this, 'update_admin_bar' ) );
 
       if ( !class_exists('WP_Admin_Bar') ) {
@@ -39,7 +40,6 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
       add_filter( 'show_admin_bar', '__return_false' );
     }
 
-    Cornerstone_Code_Editor::instance(false)->register();
     Cornerstone_Huebert::instance(false)->register();
     $this->enqueue_styles( $settings );
     $this->enqueue_scripts( $settings );
@@ -49,7 +49,11 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
 
   }
 
-  public function register_font_styles() {
+  public function enqueue_font_styles() {
+
+    if ( ! apply_filters('cs_load_google_fonts', '__return_true' ) ) {
+      return;
+    }
 
     $subsets = 'latin,latin-ext';
 
@@ -68,20 +72,26 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
       $subsets .= ',vietnamese';
     }
 
-    wp_register_style( 'cs-open-sans', "https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=$subsets" );
-    wp_register_style( 'cs-lato', "https://fonts.googleapis.com/css?family=Lato:400,700&subset=$subsets" );
+    $google_fonts_uri = apply_filters('cs_google_fonts_uri', 'https://fonts.googleapis.com/css' );
+
+    wp_enqueue_style( 'cs-open-sans', "$google_fonts_uri?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=$subsets" );
+    wp_enqueue_style( 'cs-lato', "$google_fonts_uri?family=Lato:400,700&subset=$subsets" );
   }
 
   public function enqueue_styles( $settings ) {
 
-    $this->register_font_styles();
+    $this->enqueue_font_styles();
 
     wp_register_style( 'cs-dashicons', '/wp-includes/css/dashicons.min.css' );
     wp_register_style( 'cs-editor-buttons', '/wp-includes/css/editor.min.css' );
-    wp_enqueue_style( 'cs-app-style', $this->plugin->css( 'cs', true ), array( 'cs-open-sans', 'cs-lato', 'cs-dashicons', 'cs-editor-buttons' ), $this->plugin->version() );
-    wp_enqueue_style( 'cs-huebert-style' );
-    wp_enqueue_style( 'cs-code-editor-style' );
-    wp_enqueue_style( 'wp-auth-check' );
+
+    wp_enqueue_style( 'cs-app-style', $this->plugin->css( 'cs', true ), array(
+      'cs-dashicons',
+      'cs-editor-buttons',
+      'code-editor',
+      'cs-huebert-style',
+      'wp-auth-check'
+    ), $this->plugin->version() );
 
   }
 
@@ -108,50 +118,74 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
       $worker_queue_size = 2;
     }
 
-    $wpml = $this->plugin->loadComponent('Wpml');
+    $wpml = $this->plugin->component('Wpml');
 
     wp_localize_script( 'cs-app', 'csAppData', cs_booleanize( array(
-      'rootURL'                => '/' . trim( $this->plugin->common()->get_app_slug(), '/\\' ) . '/',
-      'validPermalinks'        => $router->is_permalink_structure_valid(),
-      'initialRoute'           => $boot->get_initial_route(),
-      'ajaxUrl'                => $router->get_ajax_url(),
-      'fallbackAjaxUrl'        => $router->get_fallback_ajax_url(),
-      'dashboardUrl'           => admin_url(),
-      'useLegacyAjax'          => $router->use_legacy_ajax(),
-      'debug'                  => ( $this->plugin->common()->isDebug() ),
-      'date_format'            => get_option( 'date_format' ),
-      'isRTL'                  => is_rtl(),
-      'canGzip'                => function_exists('gzdecode'),
-      'common_i18n'            => $this->plugin->i18n_group( 'common' ),
-      'app_i18n'               => $this->plugin->i18n_group( 'app' ),
-      '_cs_nonce'              => $router->create_nonce(),
-      'permissions'            => $this->permissions(),
-      'funMode'                => (bool) $settings['visual_enhancements'],
-      'fontAwesome'            => $this->plugin->common()->getFontIcons(),
-      'iconMaps'               => $icon_maps,
-      'isPreview'              => $isPreview,
-      'previewData'            => $this->plugin->component( 'Preview_Frame_Loader' )->data(),
-      'font_data'              => $this->font_data(),
-      'fallbackFont'           => $this->plugin->loadComponent( 'Font_Manager' )->get_fallback_font(),
-      'keybindings'            => apply_filters('cornerstone_keybindings', $this->plugin->config_group( 'builder/keybindings' ) ),
-      'home_url'               => home_url(),
-      'helpTextEnabled'        => (bool) $settings['help_text'],
-      'today'                  => date_i18n( get_option( 'date_format' ), time() ),
-      'contentBuilderElements' => $settings['content_builder_elements'],
-      'css_class_map'          => $this->plugin->config_group( 'common/class-map' ),
-      'devTools'               => defined('CS_APP_DEV_TOOLS') && CS_APP_DEV_TOOLS,
-      'workerURL'              => add_query_arg( array( 'v' => $v), $this->url( "assets/dist/js/admin/worker.js" ) ),
-      'workerQueueSize'        => $worker_queue_size,
-      'wpmlLanguages'          => $wpml->get_languages(),
-      'wpmlDefault'            => $wpml->get_default_language(),
-      'wpmlTranslateableTypes' => $wpml->get_translateable_post_types(),
-      'env'                    => $this->get_env_data(),
-      'featureFlags'           => apply_filters('cs_feature_flags', array() ),
-      'designCloudApiUrl'      => 'https://theme.co/api/design-cloud',
-      'designCloudSubmitUrl'   => 'https://theme.co/apex/api-v2/design-cloud/submit-beta',
-      'validationUrl'          => apply_filters('_cs_validation_url', admin_url( 'admin.php?page=cornerstone-home' ) ),
-      'siteUrl'                => esc_attr( trailingslashit( network_home_url() ) )
+      'rootURL'                   => '/' . trim( $this->plugin->common()->get_app_slug(), '/\\' ) . '/',
+      'validPermalinks'           => $router->is_permalink_structure_valid(),
+      'initialRoute'              => $boot->get_initial_route(),
+      'ajaxUrl'                   => $router->get_ajax_url(),
+      'fallbackAjaxUrl'           => $router->get_fallback_ajax_url(),
+      'canGzip'                   => $router->gzip(),
+      '_cs_nonce'                 => $router->create_nonce(),
+      'useLegacyAjax'             => $router->use_legacy_ajax(),
+      'dashboardUrl'              => admin_url(),
+      'debug'                     => $this->plugin->common()->isDebug(),
+      'date_format'               => get_option( 'date_format' ),
+      'isRTL'                     => is_rtl(),
+      'common_i18n'               => $this->plugin->i18n_group( 'common' ),
+      'app_i18n'                  => $this->plugin->i18n_group( 'app' ),
+      'permissions'               => $this->plugin->component('App_Permissions')->get_user_permissions(),
+      'fontAwesome'               => $this->plugin->common()->getFontIconsData(),
+      'iconMaps'                  => $icon_maps,
+      'isPreview'                 => $isPreview,
+      'previewData'               => $this->plugin->component( 'Preview_Frame_Loader' )->data(),
+      'font_data'                 => $this->font_data(),
+      'fallbackFont'              => $this->plugin->component( 'Font_Manager' )->get_fallback_font(),
+      'keybindings'               => apply_filters('cornerstone_keybindings', $this->plugin->config_group( 'builder/keybindings' ) ),
+      'home_url'                  => home_url(),
+      'today'                     => date_i18n( get_option( 'date_format' ), time() ),
+      'css_class_map'             => $this->plugin->config_group( 'common/class-map' ),
+      'devTools'                  => defined('CS_APP_DEV_TOOLS') && CS_APP_DEV_TOOLS,
+      'workerURL'                 => add_query_arg( array( 'v' => $v), $this->url( "assets/dist/js/admin/worker.js" ) ),
+      'workerQueueSize'           => $worker_queue_size,
+      'wpmlLanguages'             => $wpml->get_languages(),
+      'wpmlDefault'               => $wpml->get_default_language(),
+      'wpmlTranslateableTypes'    => $wpml->get_translateable_post_types(),
+      'coalescenceSelectorPrefix' => apply_filters('cs_coalescence_selector_prefix', '#cs-content '),
+      'env'                       => $this->plugin->common()->get_env_data(),
+      'featureFlags'              => apply_filters('cs_feature_flags', array() ),
+      'designCloudApiUrl'         => 'https://theme.co/api/design-cloud',
+      'designCloudSubmitUrl'      => 'https://theme.co/apex/api-v2/design-cloud/submit-beta',
+      'validationUrl'             => apply_filters('_cs_validation_url', admin_url( 'admin.php?page=cornerstone-home' ) ),
+      'siteUrl'                   => esc_attr( trailingslashit( network_home_url() ) ),
+      'postStatuses'              => get_post_statuses(),
+      'current_user'              => get_current_user_id(),
+      'preferenceControls'        => $this->plugin->component( 'App_Preferences' )->get_preference_controls(),
+      'preload'                   => $this->get_preload_models(),
+      'load_google_fonts'         => apply_filters('cs_load_google_fonts', true )
     ) ) );
+
+  }
+
+  public function get_preload_models() {
+
+    $this->plugin->component('Font_Manager');
+    $this->plugin->component('Color_Manager');
+
+    $preload = array(
+      'elements'    => $this->plugin->component('Model_Element_Definition')->query(array()),
+      'preferences' => $this->plugin->component('Model_Preference')->query( array('query' => array( 'id' => get_current_user_id() ) ) ),
+      'fontItems'   => $this->plugin->component('Model_Option')->query( array('query' => array( 'id' => 'cornerstone_font_items' ) ) ),
+      'fontConfig'  => $this->plugin->component('Model_Option')->query( array('query' => array( 'id' => 'cornerstone_font_config' ) ) ),
+      'colorItems'  => $this->plugin->component('Model_Option')->query( array('query' => array( 'id' => 'cornerstone_color_items' ) ) )
+    );
+
+    if ( function_exists('gzcompress') ) {
+      $preload = base64_encode( gzcompress( json_encode( $preload ), 9 ) );
+    }
+
+    return $preload;
 
   }
 
@@ -163,9 +197,8 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
     wp_enqueue_script( 'cs-app' );
 
     // Dependencies
-    wp_enqueue_script( 'backbone' );
     wp_enqueue_script( 'cs-huebert' );
-    wp_enqueue_script( 'cs-code-editor' );
+    wp_enqueue_script( 'code-editor' );
     wp_enqueue_script( 'heartbeat' );
     wp_enqueue_media();
   }
@@ -276,36 +309,9 @@ class Cornerstone_App extends Cornerstone_Plugin_Component {
     return $init;
   }
 
-  public function permissions() {
-
-    $manage_options = current_user_can( 'manage_options' );
-    $allowed_post_types = $this->plugin->common()->getAllowedPostTypes();
-
-    return array(
-      'canManageOptions' => $manage_options,
-      'canUseRegions'    => $manage_options && current_theme_supports( 'cornerstone_regions' ),
-      'canUseBuilder'    => ! empty( $allowed_post_types ),
-      'allowedPostTypes' => $allowed_post_types,
-      'useUnfilteredHTML' => current_user_can( 'unfiltered_html' )
-    );
-
-  }
-
   public function font_data() {
     $font_data = $this->plugin->config_group( 'common/font-data' );
     return apply_filters( 'cs_font_data', $font_data );
-  }
-
-  public function font_awesome() {
-    return $this->plugin->common()->getFontIcons();
-  }
-
-  public function get_env_data() {
-    return apply_filters('_cornerstone_app_env', array(
-      'product' => 'cornerstone',
-      'version' => CS()->version(),
-      'productKey' => esc_attr( get_option( 'cs_product_validation_key', '' ) )
-    ));
   }
 
 }

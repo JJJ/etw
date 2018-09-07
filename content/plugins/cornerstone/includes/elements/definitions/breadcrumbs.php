@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Breadcrumbs', '__x__' ),
-  'values' => array_merge(
-    x_values_breadcrumbs(),
-    x_values_omega()
-  ),
+  'values' => x_values_element_breadcrumbs(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_breadcrumbs() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_breadcrumbs(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_breadcrumbs(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_breadcrumbs(),
+    'controls_adv'       => x_controls_element_breadcrumbs( true ),
+    'control_groups'     => x_control_groups_element_breadcrumbs(),
+    'control_groups_adv' => x_control_groups_element_breadcrumbs( true ),
   );
 }
 

@@ -16,7 +16,7 @@ class Cornerstone_Template {
 
   public function __construct( $post ) {
 
-    $this->manager = CS()->loadComponent('Template_Manager');
+    $this->manager = CS()->component('Template_Manager');
 
     if ( is_array( $post ) ) {
       if ( isset( $post['id'] ) ) {
@@ -105,7 +105,7 @@ class Cornerstone_Template {
     }
 
     if ( $should_migrate ) {
-      $elements = CS()->loadComponent( 'Element_Migrations' )->migrate_classic( $elements );
+      $elements = CS()->component( 'Element_Migrations' )->migrate_classic( $elements );
     }
 
     $this->meta = array( 'legacy' => true, 'elements' => $elements );
@@ -119,10 +119,6 @@ class Cornerstone_Template {
   }
 
   public function save() {
-
-    if ( ! current_user_can( 'manage_options' ) ) {
-      throw new Exception( 'Unauthorized' );
-    }
 
     $args = array(
       'post_title'   => sanitize_text_field( $this->get_title() ),
@@ -246,10 +242,6 @@ class Cornerstone_Template {
   }
 
   public function delete() {
-
-    if ( ! current_user_can( 'manage_options' ) ) {
-      throw new Exception( 'Unauthorized' );
-    }
 
     do_action('cornerstone_delete_template', $this->id, $this->type );
 

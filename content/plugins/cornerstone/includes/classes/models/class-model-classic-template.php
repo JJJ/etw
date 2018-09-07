@@ -7,7 +7,11 @@ class Cornerstone_Model_Classic_Template extends Cornerstone_Plugin_Component {
 
   public function setup() {
 
-    $records = $this->plugin->loadComponent('Layout_Manager')->get_all();
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      return;
+    }
+
+    $records = $this->plugin->component('Layout_Manager')->get_all();
 
     foreach ($records as $record) {
       $this->resources[] = $this->to_resource( $record );
@@ -94,11 +98,11 @@ class Cornerstone_Model_Classic_Template extends Cornerstone_Plugin_Component {
 
   public function create( $params ) {
 
-    $atts = $this->atts_from_request( $params );
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      throw new Exception( 'Unauthorized' );
+    }
 
-    if ( ! current_user_can( 'edit_pages' ) ) {
-      throw new Exception( 'Capability mismatch.' );
-		}
+    $atts = $this->atts_from_request( $params );
 
     if ( ! isset( $atts['elements'] ) ) {
       throw new Exception( 'Missing element data.' );
@@ -151,21 +155,22 @@ class Cornerstone_Model_Classic_Template extends Cornerstone_Plugin_Component {
   }
 
   public function delete( $params ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('content') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     $atts = $this->atts_from_request( $params );
 
     if ( ! $atts['id'] ) {
       throw new Exception( 'Attempting to delete Classic Template without specifying a slug.' );
     }
 
-    if ( ! current_user_can( 'edit_pages' ) ) {
-      throw new Exception( 'Capability mismatch.' );
-		}
-
 		$query = new WP_Query( array(
 			'post_type'  => 'cs_user_templates',
 			'meta_key'   => 'cs_template_slug',
 			'meta_value' => $atts['id'],
-			'posts_per_page' => 999,
+			'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
 			'post_status' => 'any'
 		) );
 

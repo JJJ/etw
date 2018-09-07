@@ -7,7 +7,7 @@ class Cornerstone_Legacy_Renderer extends Cornerstone_Plugin_Component {
 	private $manager;
 
 	public function setup() {
-		$this->manager = CS()->loadComponent( 'Element_Orchestrator' );
+		$this->manager = CS()->component( 'Element_Orchestrator' );
 	}
 
 	/**

@@ -18,17 +18,14 @@
 // =============================================================================
 
 $data = array(
-  'title'  => __( 'Accordion', '__x__' ),
-  'values' => array_merge(
-    x_values_accordion(),
-    x_values_omega()
-  ),
+  'title'   => __( 'Accordion', '__x__' ),
+  'values'  => x_values_element_accordion(),
   'options' => array(
     'default_children' => array(
-      array( '_type' => 'accordion-item' ),
-      array( '_type' => 'accordion-item' )
-    )
-  )
+      array( '_type' => 'accordion-item', 'accordion_item_header_content' => __( 'Accordion Item 1', '__x__' ) ),
+      array( '_type' => 'accordion-item', 'accordion_item_header_content' => __( 'Accordion Item 2', '__x__' ) ),
+    ),
+  ),
 );
 
 
@@ -38,14 +35,10 @@ $data = array(
 
 function x_element_builder_setup_accordion() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_accordion(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_accordion(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_accordion(),
+    'controls_adv'       => x_controls_element_accordion( true ),
+    'control_groups'     => x_control_groups_element_accordion(),
+    'control_groups_adv' => x_control_groups_element_accordion( true ),
   );
 }
 

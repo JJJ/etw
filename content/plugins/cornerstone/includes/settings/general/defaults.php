@@ -2,9 +2,8 @@
 
 return array(
 
-	'custom_css' => __( "/*\nNo need for style tags here;\nsimply get started by writing\nCSS! Watch as your changes\nare reflected live in the\npreview area. Have fun!\n*/\n\n", 'cornerstone' ),
-	'custom_js'  => __( "//\n// No need to add script tags\n// here; simply get started\n// by writing JavaScript!\n// Remember to save your\n// changes to see them :)\n//\n\n", 'cornerstone' ),
-
+	'custom_css' => '',
+	'custom_js'  => '',
 	'post_title'     => 'Cornerstone Draft',
 	'post_status'    => 'draft',
 	'allow_comments' => false,

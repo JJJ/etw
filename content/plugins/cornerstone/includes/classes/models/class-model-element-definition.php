@@ -7,7 +7,7 @@ class Cornerstone_Model_Element_Definition extends Cornerstone_Plugin_Component 
 
   public function setup() {
 
-    $records = $this->plugin->loadComponent( 'Element_Manager' )->get_elements();
+    $records = $this->plugin->component( 'Element_Manager' )->get_elements();
     //$records = include('precompiled/elements.php');
 
     foreach ($records as $record) {
@@ -98,13 +98,6 @@ class Cornerstone_Model_Element_Definition extends Cornerstone_Plugin_Component 
       'type' => $this->name,
       'relationships' => array()
     );
-
-    $record['control-groups'] = array();
-
-    if ( isset( $record['control_groups'] ) ) {
-      $record['control-groups'] = $record['control_groups'];
-      unset( $record['control_groups'] );
-    }
 
     if ( isset( $record['presets'] ) ) {
       $resource['relationships']['presets'] = array( 'data' => array() );

@@ -14,7 +14,7 @@ $separator_is_top = $separator_location === 'top';
 
 $atts = array(
   'class'       => 'x-separator-' . $separator_location . '-' . $separator_type,
-  'style'       => 'height: ' . $separator_height . '; color: ' . cornerstone_post_process_color( $separator_color ) . ';',
+  'style'       => $separator_location . ': ' . $separator_inset . '; ' . 'height: ' . $separator_height . '; color: ' . cornerstone_post_process_color( $separator_color ) . ';',
   'aria-hidden' => 'true',
 );
 
@@ -25,7 +25,7 @@ $atts = array(
 switch ( $separator_type ) {
   case 'angle-out' :
     $separator_content = ( $separator_is_top ) ? '<svg class="angle-top-out" style="fill: currentColor;" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon points="' . $separator_angle_point . ',0 100,100 0,100"/></svg>'
-                                               : '<svg class="angle-bottom-out" style="fill: currentColor;" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon points="' . $separator_angle_point . ',100 100,0 0,0"></svg>';
+                                               : '<svg class="angle-bottom-out" style="fill: currentColor;" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon points="' . $separator_angle_point . ',100 100,0 0,0"/></svg>';
     break;
   case 'angle-in' :
     $separator_content = ( $separator_is_top ) ? '<svg class="angle-top-in" style="fill: currentColor;" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100" preserveAspectRatio="none"><polygon points="0,100 ' . $separator_angle_point . ',100 0,0"/><polygon points="' . $separator_angle_point . ',100 100,100 100,0"/></svg>'

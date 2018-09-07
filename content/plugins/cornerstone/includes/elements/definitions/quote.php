@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Quote', '__x__' ),
-  'values' => array_merge(
-    x_values_quote(),
-    x_values_omega()
-  ),
+  'values' => x_values_element_quote(),
 );
 
 
@@ -32,14 +29,20 @@ $data = array(
 
 function x_element_builder_setup_quote() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_quote(),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_quote(),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_quote(),
+    'controls_adv'       => x_controls_element_quote( true ),
+    'control_groups'     => x_control_groups_element_quote(),
+    'control_groups_adv' => x_control_groups_element_quote( true ),
+    'options' => array(
+      'inline' => array(
+        'quote_content' => array(
+          'selector' => '.x-quote-text'
+        ),
+        'quote_cite_content' => array(
+          'selector' => '.x-quote-cite-text'
+        )
+      )
+    )
   );
 }
 

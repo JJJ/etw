@@ -30,8 +30,6 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 
   public function enqueue( ) {
 
-	$this->plugin->component( 'Core_Scripts' )->register_scripts();
-
     wp_enqueue_style( 'cs-generator-css' , CS()->css( 'admin/generator' ), array(), CS()->version() );
 
     wp_register_script( 'cs-generator', CS()->js( 'admin/generator' ), array( 'backbone', 'jquery-ui-core', 'jquery-ui-accordion' ), CS()->version(), true );
@@ -1032,7 +1030,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 		        'heading'     => __( 'Type', 'cornerstone' ),
 		        'description' => __( 'Select your icon.', 'cornerstone' ),
 		        'type'        => 'dropdown',
-		        'value'       => array_keys( fa_all_unicode() )
+		        'value'       => cs_fa_all()
 		      ),
 		      self::map_default_id(),
 		      self::map_default_class(),
@@ -1901,7 +1899,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 		        'description' => __( 'Optionally enter the button icon.', 'cornerstone' ),
 		        'type'        => 'dropdown',
 
-		        'value'       => array_keys( fa_all_unicode() )
+		        'value'       => cs_fa_all()
 		      ),
 		      array(
 		        'param_name'  => 'circle',
@@ -2061,7 +2059,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 		        'description' => __( 'Optionally enter the button icon.', 'cornerstone' ),
 		        'type'        => 'dropdown',
 
-		        'value'       => array_keys( fa_all_unicode() )
+		        'value'       => cs_fa_all()
 		      ),
 		      array(
 		        'param_name'  => 'circle',
@@ -2419,7 +2417,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 		        'description' => __( 'Select the icon to use with your feature headline.', 'cornerstone' ),
 		        'type'        => 'dropdown',
 
-		        'value'       => array_keys( fa_all_unicode() )
+		        'value'       => cs_fa_all()
 		      ),
 		      self::map_default_id(),
 		      self::map_default_class(),

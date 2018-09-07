@@ -13,10 +13,11 @@ return array(
       'tooltip' =>__( 'Add your pricing table columns here.', 'cornerstone' ),
     ),
 		'options' => array(
-			'element' => 'pricing-table-column',
-			'newTitle' => __( 'Column %s', 'cornerstone' ),
-			'floor'   => 1,
-      'capacity' => 5
+      'add_label' => __( 'Column', 'cornerstone' ),
+			'element'   => 'pricing-table-column',
+			'newTitle'  => __( 'Column %s', 'cornerstone' ),
+			'floor'     => 1,
+      'capacity'  => 5
 		),
 		'context' => 'content',
 		'suggest' => array(

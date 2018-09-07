@@ -62,10 +62,10 @@ add_shortcode( 'x_google_map', 'x_shortcode_google_map' );
 
 function x_shortcode_google_map_marker( $atts ) {
   extract( shortcode_atts( array(
-    'lat'   => '',
-    'lng'   => '',
-    'info'  => '',
-    'image' => '',
+    'lat'        => '',
+    'lng'        => '',
+    'info'       => '',
+    'image'      => '',
     'start_open' => 'false',
   ), $atts, 'x_google_map_marker' ) );
 
@@ -73,7 +73,7 @@ function x_shortcode_google_map_marker( $atts ) {
     'lat'        => ( $lat   != '' ) ? $lat : '40.7056308',
     'lng'        => ( $lng   != '' ) ? $lng : '-73.9780035',
     'markerInfo' => ( $info  != '' ) ? cs_decode_shortcode_attribute( $info ) : '',
-    'startOpen' => ( 'true' == $start_open )
+    'startOpen'  => ( 'true' == $start_open )
   );
 
   if ( is_numeric( $image ) ) {

@@ -49,8 +49,8 @@ function x_shortcode_feature_headline( $atts, $content = null ) {
       $icon_style = " style=\"{$icon_style}\" ";
     }
 
-    $unicode = fa_unicode( $icon );
-    $icon    = "<i class=\"x-icon-{$icon}\" data-x-icon=\"&#x{$unicode};\"{$icon_style}></i>";
+    $data_icon = fa_data_icon( $icon );
+    $icon    = "<i class=\"x-icon-{$icon}\" $data_icon {$icon_style}></i>";
 
   }
 

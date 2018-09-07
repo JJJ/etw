@@ -6,6 +6,7 @@ class Cornerstone_App_Boot extends Cornerstone_Plugin_Component {
 
   public function setup() {
     add_action( 'parse_request', array( $this, 'detect_load' ) );
+    add_action( 'template_redirect', array( $this, 'classic_redirect' ), 0 );
   }
 
   public function detect_load( $wp ) {
@@ -43,6 +44,7 @@ class Cornerstone_App_Boot extends Cornerstone_Plugin_Component {
 
     // Bail if we're not loading
     if ( !$ugly && !$nice ) {
+      add_action( 'template_redirect', array( $this, 'classic_redirect' ), 0 );
       return;
     }
 
@@ -93,6 +95,15 @@ class Cornerstone_App_Boot extends Cornerstone_Plugin_Component {
 
   public function get_initial_route() {
     return $this->initial_route;
+  }
+
+  public function classic_redirect() {
+
+    if ( ( isset($_REQUEST['cornerstone']) && $_REQUEST['cornerstone'] == 1 ) && is_singular() && $this->plugin->component('App_Permissions')->user_can_access_post_type() && $post = $this->plugin->common()->locate_post() ) {
+      wp_safe_redirect( $this->plugin->common()->get_app_route_url( 'content', $post->ID, 'builder' ) );
+      exit;
+    }
+
   }
 
 }

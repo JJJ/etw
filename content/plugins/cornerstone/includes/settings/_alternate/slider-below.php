@@ -130,12 +130,11 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
 
   }
 
-  public function handler( $atts ) {
+  public function handler( $post, $atts ) {
 
-  	global $post;
-
-    if ( $post->post_type != 'page' )
-    	return;
+  	if ( 'page' !== $post->post_type ) {
+      return;
+    }
 
   	extract( $atts );
 
@@ -146,7 +145,6 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
     update_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_alignment', $x_slider_below_scroll_bottom_anchor_alignment );
     update_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_color', $x_slider_below_scroll_bottom_anchor_color );
     update_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_color_hover', $x_slider_below_scroll_bottom_anchor_color_hover );
-
 
   }
 

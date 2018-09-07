@@ -34,7 +34,7 @@ class Cornerstone_Model_Fragment extends Cornerstone_Plugin_Component {
     $component_name = cs_to_component_name( $path[0] );
 
     try {
-      $component = $this->plugin->loadComponent( $component_name );
+      $component = $this->plugin->component( $component_name );
     } catch( Exception $e  ) {
       throw $e;
     }

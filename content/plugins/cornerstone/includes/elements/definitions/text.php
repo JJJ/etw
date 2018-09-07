@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Text', '__x__' ),
-  'values' => array_merge(
-    x_values_text( array( 'type' => 'standard' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_text(),
 );
 
 
@@ -32,14 +29,17 @@ $data = array(
 
 function x_element_builder_setup_text() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_text( array( 'type' => 'standard' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_text( array( 'type' => 'standard' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_text(),
+    'controls_adv'       => x_controls_element_text( true ),
+    'control_groups'     => x_control_groups_element_text(),
+    'control_groups_adv' => x_control_groups_element_text( true ),
+    'options' => array(
+      'inline' => array(
+        'text_content' => array(
+          'selector' => 'root'
+        ),
+      )
+    )
   );
 }
 

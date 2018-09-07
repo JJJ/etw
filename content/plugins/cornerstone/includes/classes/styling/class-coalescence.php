@@ -18,7 +18,7 @@ class Cornerstone_Coalescence extends Cornerstone_Plugin_Component {
   }
 
   public function start() {
-    $coalescence = new TCO_Coalescence();
+    $coalescence = new TCO_Coalescence( apply_filters('cs_coalescence_selector_prefix', '#cs-content ') );
     return $coalescence;
   }
 

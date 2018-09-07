@@ -8,11 +8,15 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
 
   public function load_all() {
 
+    if ( ! $this->plugin->component('App_Permissions')->user_can('footers') ) {
+      return;
+    }
+
     $posts = get_posts( array(
       'post_type' => 'cs_footer',
       'post_status' => 'any',
       'orderby' => 'type',
-      'posts_per_page' => 2500
+      'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
     $records = array();
@@ -52,13 +56,18 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
   }
 
   public function make_record( $post ) {
+
+    if ( ! $this->plugin->component('App_Permissions')->user_can('footers') ) {
+      throw new Exception( 'Unauthorized' );
+    }
+
     if ( is_int( $post ) ) {
       $post = get_post( $post );
     }
     $footer = new Cornerstone_Footer( $post );
     $record = $footer->serialize();
     $record['post-type'] = $post->post_type;
-    $record['language'] = $this->plugin->loadComponent('Wpml')->get_language_data_from_post( $post, true );
+    $record['language'] = $this->plugin->component('Wpml')->get_language_data_from_post( $post, true );
     return $record;
   }
 
@@ -99,7 +108,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
     $atts = $this->atts_from_request( $params );
 
     if ( isset( $atts['regions'] ) ) {
-      $atts['regions'] = $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] );
+      $atts['regions'] = $this->plugin->component('Regions')->sanitize_regions( $atts['regions'] );
     }
 
     $footer = new Cornerstone_Footer( $atts );
@@ -109,7 +118,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
     }
 
     $saved = $footer->save();
-    $this->plugin->loadComponent('Regions')->reset_region_styles( 'footer', $footer );
+    $this->plugin->component('Regions')->reset_region_styles( 'footer', $footer );
 
     return $this->make_response( $this->to_resource( $saved ) );
 
@@ -162,7 +171,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
     }
 
     if ( isset( $atts['regions'] ) ) {
-      $footer->set_regions( $this->plugin->loadComponent('Regions')->sanitize_regions( $atts['regions'] ) );
+      $footer->set_regions( $this->plugin->component('Regions')->sanitize_regions( $atts['regions'] ) );
     }
 
     if ( isset( $atts['settings'] ) ) {
@@ -170,7 +179,7 @@ class Cornerstone_Model_Footers_Footer extends Cornerstone_Plugin_Component {
     }
 
     $saved = $footer->save();
-    $this->plugin->loadComponent('Regions')->reset_region_styles( 'footer', $footer );
+    $this->plugin->component('Regions')->reset_region_styles( 'footer', $footer );
 
     return $this->make_response( $this->to_resource( $saved ) );
   }

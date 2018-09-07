@@ -27,9 +27,11 @@ $classes = x_attr_class( array( 'x-icon', $class ) );
 
 $atts = array_merge( array(
   'class'       => $classes,
-  'data-x-icon' => '&#x' . fa_unicode( $icon ) . ';',
   'aria-hidden' => 'true',
 ), $atts );
+
+$icon_data = fa_get_attr( $icon );
+$atts[$icon_data['attr']] = $icon_data['entity'];
 
 if ( isset( $id ) && ! empty( $id ) ) {
   $atts['id'] = $id;

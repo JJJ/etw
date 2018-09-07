@@ -19,10 +19,7 @@
 
 $data = array(
   'title'  => __( 'Search Inline', '__x__' ),
-  'values' => array_merge(
-    x_values_search( x_bar_module_settings_search( 'inline' ) ),
-    x_values_omega()
-  ),
+  'values' => x_values_element_search_inline(),
 );
 
 
@@ -32,14 +29,10 @@ $data = array(
 
 function x_element_builder_setup_search_inline() {
   return array(
-    'control_groups' => array_merge(
-      x_control_groups_search( x_bar_module_settings_search( 'inline' ) ),
-      x_control_groups_omega()
-    ),
-    'controls' => array_merge(
-      x_controls_search( x_bar_module_settings_search( 'inline' ) ),
-      x_controls_omega()
-    ),
+    'controls'           => x_controls_element_search_inline(),
+    'controls_adv'       => x_controls_element_search_inline( true ),
+    'control_groups'     => x_control_groups_element_search_inline(),
+    'control_groups_adv' => x_control_groups_element_search_inline( true ),
   );
 }
 

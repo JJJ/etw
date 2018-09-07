@@ -6,6 +6,7 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
   public $styles = array();
   public $minify = array();
   public $count = 0;
+  public $debug = false;
   public $late_styles = array();
 
   public function has_styles( $handle ) {
@@ -18,11 +19,17 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
       return;
     }
 
+    if ( ! $this->validate_style( $css ) ) {
+      trigger_error("Invalid CSS [$handle] not output: $css");
+      $css = "/* Invalid CSS for $handle found. You may be missing a closing bracket. */";
+      $minify = false;
+    }
+
     $this->minify[$handle] = $minify;
 
     do_action( 'cs_styling_add_styles', $handle, $css, $minify );
 
-    if ( did_action( 'wp_head' ) ) {
+    if ( did_action( apply_filters('cs_late_styling_hook', 'wp_head' ) ) ) {
 
       /**
        * To avoid FOUC we output the style tag asap by default. This results in
@@ -69,24 +76,23 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
       return '';
     }
 
-    $styles = '/* ';
+    $styles = '';
+
+    if ( $this->debug) { $styles = '/* '; }
 
     $this->before_post_process();
 
     foreach ($source as $key => $style) {
-      $styles .= ++$this->count ." start: $key*/";
+      if ( $this->debug) { $styles .= ++$this->count ." start: $key*/"; }
       $styles .= $this->post_process( $style, $this->minify[$key] );
-      $styles .= "/*end:$key|";
+      if ( $this->debug) { $styles .= "/*end:$key|"; }
     }
 
-    $styles .= '*/';
+    if ( $this->debug) { $styles = '*/'; }
+
     $this->after_post_process();
 
     return $styles;
-  }
-
-  public function get_generated_styles_clean() {
-    return $this->clean_css($this->get_generated_styles());
   }
 
   //
@@ -111,7 +117,7 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
         break;
     }
 
-    echo '/*' . $title . str_replace('/*', '/\*', str_replace('*/', '*\/', $errstr ) ) . '*/';
+    echo '/*' . $title . str_replace('/*', '/\*', str_replace('*/', '*\/', "$errstr | $errfile | $errline" ) ) . '*/';
     return true;
   }
 
@@ -131,11 +137,14 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
   }
 
   protected function post_process( $css, $minify = true ) {
-    $output = preg_replace_callback('/%%post ([\w-:]+?)%%(.*?)%%\/post%%/', array( $this, 'post_process_replacer' ), $css );
+    $output = preg_replace_callback('/%%post ([\w-:]+?)%%([\s\S]*?)%%\/post%%/', array( $this, 'post_process_replacer' ), $css );
     return ( $minify ) ? $this->clean_css( $output ) : $output;
   }
 
 	public function post_process_replacer( $matches ) {
+    if ( 'raw' === $matches[1] ) {
+      return $matches[2];
+    }
     return apply_filters('cornerstone_css_post_process_' . $matches[1], $matches[2]);
 	}
 
@@ -150,16 +159,27 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
 	  return preg_replace( '/\s\s+(.*)/', '$1', $css );        // 3
   }
 
-  public function get_generated_late_styles_clean() {
-    return $this->clean_css( $this->get_generated_late_styles() );
-  }
-
   public function output_late_style( $id, $style ) {
     if ( $style ) {
       $handle = esc_attr( $id );
       echo "<script type=\"text/late-css\" data-cs-late-style=\"$handle\">$style</script>";
       echo "<script>window.csGlobal.lateCSS(\"$handle\")</script>";
     }
+  }
+
+  public function validate_style( $css ) {
+
+    if ( ! apply_filters('cs_validate_syles', false ) ) {
+      return true;
+    }
+
+    // Remove anything inside a string
+    $css = preg_replace('/".*?"/', '""', $css );
+    $css = preg_replace("/'.*?'/", "''", $css );
+
+    // If counted occurances of brackets dont match, get outa there
+    return substr_count( $css, '{' ) === substr_count( $css, '}' );
+
   }
 
 }

@@ -1,0 +1,82 @@
+.tco_woo_checkout_fields .widefat td, .tco_woo_checkout_fields .widefat th {
+    padding: 7px 4px;
+}
+
+.tco_woo_checkout_fields .handle{
+    line-height: 150%;
+    cursor:pointer;
+}
+
+
+.tco_woo_checkout_fields .tabs li {
+    list-style:none;
+    display:inline;
+}
+
+.tco_woo_checkout_fields .tabs a {
+    padding:5px 10px;
+    display:inline-block;
+    background:#fff;
+    color:#000;
+    text-decoration:none;
+}
+
+.tco_woo_checkout_fields .tabs a.active {
+    background:#666;
+    color:#fff;
+}
+
+.tco_woo_checkout-toggle-now {
+     list-style-type:none;
+     margin:1px 0 0 0;
+     padding:0;
+}
+
+.tco_woo_checkout-toggle-now li {
+    float:left;
+    margin:0 5px 0 0;
+    width:50px;
+    height:27px;
+    position:relative;
+}
+
+
+.tco_woo_checkout_fields_modal {
+  max-width: 800px !important;
+
+}
+.tco_woo_checkout-toggle-now label, .tco_woo_checkout-toggle-now input {
+    display:block;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+
+.tco_woo_checkout-toggle-now input[type="radio"] {
+    opacity:0.011;
+    z-index:100;
+}
+
+.tco_woo_checkout-toggle-now input[type="radio"]:checked + label {
+    background:#00F;
+    color: #fff;
+}
+
+.tco_woo_checkout-toggle-now label {
+     padding:5px;
+     padding-top: 2px;
+     border:1px solid #CCC; 
+     cursor:pointer;
+     z-index:90;
+}
+
+.tco_woo_checkout-toggle-now label:hover {
+     background:#DDD;
+}
+
+.tco_woo_checkout-add-icon {
+    cursor: pointer;
+    margin-top: 5px;
+}

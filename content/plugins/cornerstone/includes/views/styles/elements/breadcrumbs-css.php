@@ -66,11 +66,9 @@
 
 .$_el .x-crumbs-list {
   @if $breadcrumbs_reverse === true {
-    -webkit-flex-direction: row-reverse;
-            flex-direction: row-reverse;
+    flex-direction: row-reverse;
   }
-  -webkit-justify-content: $breadcrumbs_flex_justify;
-          justify-content: $breadcrumbs_flex_justify;
+  justify-content: $breadcrumbs_flex_justify;
   @if $breadcrumbs_delimiter === true {
     @if $breadcrumbs_reverse === true {
       margin-right: -$breadcrumbs_delimiter_spacing !important;
