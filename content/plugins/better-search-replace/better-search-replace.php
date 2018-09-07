@@ -53,7 +53,7 @@ if ( ! defined( 'WPINC' ) ) {
 function run_better_search_replace() {
 
 	// Allows for overriding the capability required to run the plugin.
-	$cap = apply_filters( 'bsr_capability', 'manage_options' );
+	$cap = apply_filters( 'bsr_capability', 'install_plugins' );
 
 	// Only load for admins.
 	if ( current_user_can( $cap ) ) {
@@ -81,4 +81,4 @@ function run_better_search_replace() {
 	}
 
 }
-add_action( 'after_theme_setup', 'run_better_search_replace' );
+add_action( 'after_setup_theme', 'run_better_search_replace' );
