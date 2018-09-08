@@ -6,9 +6,9 @@
 // Fullwidth page output for Icon.
 // =============================================================================
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-main full x-container" role="main">
 

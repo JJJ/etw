@@ -6,9 +6,9 @@
 // BuddyPress output for Icon.
 // =============================================================================
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-main full" role="main">
 

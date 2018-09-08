@@ -8,9 +8,9 @@
 
 $is_filterable_index = is_home() && x_get_option( 'x_ethos_filterable_index_enable' ) == '1';
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-container max width main">
 

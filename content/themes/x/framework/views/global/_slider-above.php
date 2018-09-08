@@ -35,19 +35,8 @@ if ( X_REVOLUTION_SLIDER_IS_ACTIVE || X_LAYERSLIDER_IS_ACTIVE ) :
         </style>
 
         <a href="#" class="x-slider-scroll-bottom above <?php echo $anchor_alignment; ?>">
-          <i class="x-icon-angle-down" data-x-icon="&#xf107;" aria-hidden="true"></i>
+          <i class="x-icon-angle-down" data-x-icon-s="&#xf107;" aria-hidden="true"></i>
         </a>
-
-        <script>
-          jQuery(function($) {
-            $('.x-slider-container.above .x-slider-scroll-bottom').on('touchstart click', function(e) {
-              e.preventDefault();
-              $('html, body').animate({
-                scrollTop: $('.x-slider-container.above').outerHeight()
-              }, 850, 'xEaseInOutExpo');
-            });
-          });
-        </script>
 
       <?php endif; ?>
 

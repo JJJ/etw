@@ -13,6 +13,4 @@
 // appropriate output.
 // =============================================================================
 
-?>
-
-<?php x_get_view( x_get_stack(), 'wp', 'index' ); ?>
+x_get_view( x_get_stack(), 'wp', 'index' );

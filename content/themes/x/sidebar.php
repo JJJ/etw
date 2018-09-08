@@ -12,6 +12,4 @@
 // the appropriate output.
 // =============================================================================
 
-?>
-
-<?php x_get_view( x_get_stack(), 'wp', 'sidebar' ); ?>
+x_get_view( x_get_stack(), 'wp', 'sidebar' );

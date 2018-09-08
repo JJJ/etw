@@ -10,6 +10,6 @@
 
 <?php if ( has_tag() ) : ?>
   <footer class="entry-footer cf">
-    <?php echo get_the_tag_list( '<p><i class="x-icon-tags" data-x-icon="&#xf02c;"></i>'. __( 'Tags:', '__x__'), ', ', '</p>' ); ?>
+    <?php echo get_the_tag_list( '<p><i class="x-icon-tags" data-x-icon-s="&#xf02c;"></i>'. __( 'Tags:', '__x__'), ', ', '</p>' ); ?>
   </footer>
 <?php endif; ?>

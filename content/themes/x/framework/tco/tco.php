@@ -64,11 +64,11 @@ if ( ! class_exists( 'TCO_1_0' ) ) :
 
     public function admin_enqueue_scripts() {
 
-      wp_register_style( $this->handle( 'admin-css' ), $this->url( 'css/dist/tco.css' ), array(), self::VERSION ); // 01
+      wp_register_style( $this->handle( 'admin-css' ), $this->url( 'dist/css/tco.css' ), array(), self::VERSION ); // 01
 
       $handle = $this->handle( 'admin-js' );
 
-      wp_register_script( $handle, $this->url( 'js/dist/admin/tco.js' ), array( 'jquery', 'wp-util' ), self::VERSION, true ); // 02
+      wp_register_script( $handle, $this->url( 'dist/js/tco.js' ), array( 'jquery', 'wp-util' ), self::VERSION, true ); // 02
 
       // Localization will be handled by products, but this will setup fallbacks.
       wp_localize_script( $handle, 'tcoCommon', array(

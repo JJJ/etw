@@ -8,10 +8,10 @@
 
 $fullwidth = get_post_meta( get_the_ID(), '_x_post_layout', true );
 
+get_header();
+
 ?>
 
-<?php get_header(); ?>
-  
   <div class="x-container max width main">
     <div class="offset cf">
       <div class="<?php x_main_content_class(); ?>" role="main">

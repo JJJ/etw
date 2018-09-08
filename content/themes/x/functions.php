@@ -9,109 +9,237 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Define Path / URL Constants
-//   02. Set Paths
-//   03. Preboot
-//   04. Set Asset Revision Constant
-//   05. Require Files
+//   01. Boot Registry
+//   02. Bootstrap Class
+//   03. Content Width
+//   04. Localization
 // =============================================================================
 
-function x_boot() {
+// Boot Registry
+// =============================================================================
 
-  // Define Path / URL Constants
-  // ---------------------------
+function x_boot_registry() {
+  return array(
+    'preinit' => array(
+      'functions/helpers',
+      'functions/thumbnails',
+      'functions/setup',
 
-  define( 'X_TEMPLATE_PATH', get_template_directory() );
-  define( 'X_TEMPLATE_URL', get_template_directory_uri() );
+      'tco/tco',
+      'legacy/setup',
+      'functions/fonts',
+      'functions/custom-sidebars',
+
+      'functions/portfolio',
+      'functions/plugins/setup',
+      'functions/updates/class-theme-updater',
+      'functions/updates/class-plugin-updater'
+    ),
+
+    'init' => array(),
+
+    'front_end' => array(
+      'functions/frontend/view-routing',
+      'functions/frontend/styles',
+      'functions/frontend/scripts',
+      'functions/frontend/content',
+      'functions/frontend/classes',
+      'functions/frontend/meta',
+      'functions/frontend/integrity',
+      'functions/frontend/renew',
+      'functions/frontend/icon',
+      'functions/frontend/ethos',
+      'functions/frontend/social',
+      'functions/frontend/breadcrumbs',
+      'functions/frontend/pagination',
+      'functions/frontend/featured',
+      'functions/frontend/conditionals',
+    ),
+
+    'logged_in' => array(
+
+    ),
+
+    'admin' => array(
+      'functions/admin/class-validation',
+      'functions/admin/class-validation-updates',
+      'functions/admin/class-validation-theme-options-manager',
+      'functions/admin/class-validation-extensions',
+      'functions/admin/setup',
+      'functions/admin/customizer',
+      'functions/admin/meta-boxes',
+      'functions/admin/meta-entries',
+      'functions/admin/taxonomies'
+    ),
+
+    'app_init' => array(
+      'functions/theme-options',
+    ),
+
+    'ajax' => array()
+
+  );
+}
 
 
-  // Set Paths
-  // ---------
 
-  $load_path = X_TEMPLATE_PATH . '/framework/load';
-  $func_path = X_TEMPLATE_PATH . '/framework/functions';
-  $glob_path = X_TEMPLATE_PATH . '/framework/functions/global';
-  $admn_path = X_TEMPLATE_PATH . '/framework/functions/global/admin';
-  $lgcy_path = X_TEMPLATE_PATH . '/framework/legacy';
-  $eque_path = X_TEMPLATE_PATH . '/framework/functions/global/enqueue';
-  $plgn_path = X_TEMPLATE_PATH . '/framework/functions/global/plugins';
+// Bootstrap Class
+// =============================================================================
+
+class X_Bootstrap {
+
+  private static $instance;
+  protected $registry = array();
+  protected $theme_option_defaults = array();
+
+  public function boot() {
+
+    // Define Path / URL Constants
+    // ---------------------------
+
+    define( 'X_TEMPLATE_PATH', get_template_directory() );
+    define( 'X_TEMPLATE_URL', get_template_directory_uri() );
+
+    // Preboot
+    // -------
+
+    $x_boot_files = glob( X_TEMPLATE_PATH . '/framework/load/*.php' );
+
+    sort( $x_boot_files );
+
+    foreach ( $x_boot_files as $filename ) {
+      $file = basename( $filename, '.php' );
+      if ( file_exists( $filename ) && apply_filters( "x_pre_boot_$file", '__return_true' ) ) {
+        require_once( $filename );
+      }
+    }
 
 
-  // Preboot
-  // -------
+    // Set Asset Revision Constant (For Cache Busting)
+    // -----------------------------------------------
 
-  $x_boot_files = glob( "$load_path/*.php" );
+    define( 'X_ASSET_REV', X_VERSION );
 
-  sort( $x_boot_files );
+    // Preinit
+    // --------
 
-  foreach ( $x_boot_files as $filename ) {
-    $file = basename( $filename, '.php' );
-    if ( file_exists( $filename ) && apply_filters( "x_pre_boot_$file", '__return_true' ) ) {
-      require_once( $filename );
+    $this->registry = x_boot_registry();
+    $this->boot_context('preinit');
+
+    // Theme Option Defaults
+    // ---------------------
+    $this->theme_option_defaults = include X_TEMPLATE_PATH . '/framework/data/option-defaults.php';
+
+    if ( is_admin() ) {
+      $this->boot_context('admin');
+    }
+
+    add_action( 'init',                               array( $this, 'init' ) );
+    add_action( 'admin_init',                         array( $this, 'ajax_init' ) );
+    add_action( 'cornerstone_before_boot_app',        array( $this, 'app_init' ) );
+    add_action( 'cornerstone_before_custom_endpoint', array( $this, 'app_init' ) );
+    add_action( 'cornerstone_before_admin_ajax',      array( $this, 'app_init' ) );
+    add_action( 'cornerstone_before_admin_ajax',      array( $this, 'ajax_init' ) );
+    add_action( 'cornerstone_before_custom_endpoint', array( $this, 'ajax_init' ) );
+
+
+
+  }
+
+  public function init() {
+
+    $this->boot_context('init');
+
+    if ( ! is_admin() ) {
+      $this->boot_context('front_end');
+    }
+
+    if ( is_user_logged_in() ) {
+      $this->boot_context('logged_in');
+    }
+
+  }
+
+  public function admin_init() {
+    $this->boot_context('admin_init');
+  }
+
+  public function app_init() {
+    $this->boot_context('app_init');
+  }
+
+  public function ajax_init() {
+    if ( defined( 'DOING_AJAX' ) ) {
+      $this->boot_context('ajax');
     }
   }
 
+  public function boot_context( $context ) {
 
-  // Set Asset Revision Constant (For Cache Busting)
-  // -----------------------------------------------
-
-  define( 'X_ASSET_REV', X_VERSION );
-
-
-  // Require Files
-  // -------------
-
-  $require_files = apply_filters( 'x_boot_files', array(
-
-    $glob_path . '/debug.php',
-    $glob_path . '/conditionals.php',
-    $glob_path . '/helpers.php',
-    $glob_path . '/stack-data.php',
-    $glob_path . '/tco-setup.php',
-
-    $admn_path . '/thumbnails/setup.php',
-    $admn_path . '/setup.php',
-    $admn_path . '/meta/setup.php',
-    $admn_path . '/sidebars.php',
-    $admn_path . '/widgets.php',
-    $admn_path . '/custom-post-types.php',
-    $admn_path . '/cs-options/setup.php',
-    $admn_path . '/menus/setup.php',
-    $admn_path . '/customizer/setup.php',
-    $admn_path . '/addons/setup.php',
-
-    $lgcy_path . '/setup.php',
-
-    $eque_path . '/styles.php',
-    $eque_path . '/scripts.php',
-
-    $glob_path . '/view-routing.php',
-    $glob_path . '/action-defer.php',
-    $glob_path . '/meta.php',
-    $glob_path . '/featured.php',
-    $glob_path . '/pagination.php',
-    $glob_path . '/breadcrumbs.php',
-    $glob_path . '/classes.php',
-    $glob_path . '/portfolio.php',
-    $glob_path . '/social.php',
-    $glob_path . '/content.php',
-    $glob_path . '/remove.php',
-
-    $func_path . '/integrity.php',
-    $func_path . '/renew.php',
-    $func_path . '/icon.php',
-    $func_path . '/ethos.php',
-
-    $plgn_path . '/setup.php'
-
-  ));
-
-  foreach ( $require_files as $filename ) {
-    if ( file_exists( $filename ) ) {
-      require_once( $filename );
+    if ( ! isset( $this->registry[$context] ) ) {
+      return;
     }
+
+    foreach ( $this->registry[$context] as $file ) {
+      require_once( X_TEMPLATE_PATH . "/framework/$file.php" );
+    }
+
+    do_action( 'x_boot_' . $context );
+
+  }
+
+  public static function instance() {
+    if ( ! isset( self::$instance ) ) {
+      self::$instance = new X_Bootstrap();
+    }
+    return self::$instance;
+  }
+
+  public function get_theme_option_defaults() {
+    return $this->theme_option_defaults;
+  }
+
+  public function get_theme_option_default( $key ) {
+    return isset( $this->theme_option_defaults[$key]) ? $this->theme_option_defaults[$key] : false;
   }
 
 }
 
-x_boot();
+function x_bootstrap() {
+  return X_Bootstrap::instance();
+}
+
+x_bootstrap()->boot();
+
+
+
+// Content Width
+// =============================================================================
+
+if ( ! isset( $content_width ) ) :
+
+  $stack = x_get_stack();
+
+  switch ( $stack ) {
+    case 'integrity' :
+      $content_width = x_post_thumbnail_width() - 120;
+      break;
+    case 'renew' :
+      $content_width = x_post_thumbnail_width();
+      break;
+    case 'icon' :
+      $content_width = x_post_thumbnail_width();
+      break;
+    case 'ethos' :
+      $content_width = x_post_thumbnail_width();
+      break;
+  }
+
+endif;
+
+
+
+// Localization
+// =============================================================================
+
+load_theme_textdomain( '__x__', X_TEMPLATE_PATH . '/framework/lang' );

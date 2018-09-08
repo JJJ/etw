@@ -108,7 +108,6 @@ if ( ! function_exists( 'x_get_navbar_positioning' ) ) :
     return $output;
 
   }
-  add_action( 'customize_save', 'x_get_navbar_positioning' );
 endif;
 
 
@@ -167,7 +166,7 @@ if ( ! function_exists( 'x_navbar_search_navigation_item' ) ) :
       if ( $args->theme_location == 'primary' ) {
         $items .= '<li class="menu-item x-menu-item x-menu-item-search">'
                   . '<a href="#" class="x-btn-navbar-search">'
-                    . '<span><i class="x-icon-search" data-x-icon="&#xf002;" aria-hidden="true"></i><span class="x-hidden-desktop"> ' . __( 'Search', '__x__' ) . '</span></span>'
+                    . '<span><i class="x-icon-search" data-x-icon-s="&#xf002;" aria-hidden="true"></i><span class="x-hidden-desktop"> ' . __( 'Search', '__x__' ) . '</span></span>'
                   . '</a>'
                 . '</li>';
       }
@@ -178,3 +177,4 @@ if ( ! function_exists( 'x_navbar_search_navigation_item' ) ) :
   }
   add_filter( 'wp_nav_menu_items', 'x_navbar_search_navigation_item', 9998, 2 );
 endif;
+

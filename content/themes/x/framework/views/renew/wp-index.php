@@ -6,9 +6,9 @@
 // Index page output for Renew.
 // =============================================================================
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-container max width offset">
     <div class="<?php x_main_content_class(); ?>" role="main">

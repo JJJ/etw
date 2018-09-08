@@ -6,10 +6,10 @@
 // Single portfolio post output for Renew.
 // =============================================================================
 
+get_header();
+
 ?>
 
-<?php get_header(); ?>
-  
   <div class="x-container max width offset">
     <div class="x-main full" role="main">
 

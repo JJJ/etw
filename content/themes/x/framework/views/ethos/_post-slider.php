@@ -87,8 +87,6 @@ if ( $is_blog || $is_archive ) :
             <?php endwhile; ?>
           <?php endif; ?>
 
-          <?php wp_reset_query(); ?>
-
         </ul>
       </div>
 
@@ -97,8 +95,8 @@ if ( $is_blog || $is_archive ) :
           jQuery('.x-post-slider').flexslider({
             controlNav   : false,
             selector     : '.x-slides > li',
-            prevText     : '<i class="x-icon-chevron-left" data-x-icon="&#xf053;"></i>',
-            nextText     : '<i class="x-icon-chevron-right" data-x-icon="&#xf054;"></i>',
+            prevText     : '<i class="x-icon-chevron-left" data-x-icon-s="&#xf053;"></i>',
+            nextText     : '<i class="x-icon-chevron-right" data-x-icon-s="&#xf054;"></i>',
             animation    : 'fade',
             smoothHeight : true,
             slideshow    : true
@@ -107,6 +105,8 @@ if ( $is_blog || $is_archive ) :
       </script>
 
     <?php endif; ?>
+
+    <?php wp_reset_query(); ?>
 
   <?php endif; ?>
 

@@ -6,9 +6,9 @@
 // Sidebar left, content right page output for Integrity.
 // =============================================================================
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-container max width offset">
     <div class="<?php x_main_content_class(); ?>" role="main">

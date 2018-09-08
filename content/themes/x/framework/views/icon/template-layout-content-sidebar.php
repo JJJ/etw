@@ -6,9 +6,9 @@
 // Content left, sidebar right page output for Icon (not active in this Stack).
 // =============================================================================
 
-?>
+x_get_view( 'global', '_header' );
 
-<?php x_get_view( 'global', '_header' ); ?>
+?>
 
   <div class="x-main full" role="main">
     <article id="post-0" class="post-0 page type-page status-publish hentry">

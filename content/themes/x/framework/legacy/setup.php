@@ -31,10 +31,12 @@ function x_legacy_modes() {
 
   if ( $cranium_headers ) {
     require_once( $lgcy_path . '/cranium/headers/setup.php' );
+    do_action( 'x_classic_headers' );
   }
 
   if ( $cranium_footers ) {
     require_once( $lgcy_path . '/cranium/footers/setup.php' );
+    do_action( 'x_classic_footers' );
   }
 
 }
@@ -85,6 +87,7 @@ if ( ! function_exists( 'x_legacy_widgets_init' ) ) :
   }
   add_action( 'widgets_init', 'x_legacy_widgets_init' );
 endif;
+
 
 
 // Fonts

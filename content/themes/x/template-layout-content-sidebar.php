@@ -12,6 +12,4 @@
 // you'll be able to find the appropriate output.
 // =============================================================================
 
-?>
-
-<?php x_get_view( x_get_stack(), 'template', 'layout-content-sidebar' ); ?>
+x_get_view( x_get_stack(), 'template', 'layout-content-sidebar' );

@@ -12,6 +12,4 @@
 // able to find the appropriate output.
 // =============================================================================
 
-?>
-
-<?php x_get_view( x_get_stack(), 'template', 'layout-full-width' ); ?>
+x_get_view( x_get_stack(), 'template', 'layout-full-width' );

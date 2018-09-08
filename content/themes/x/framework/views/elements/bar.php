@@ -6,16 +6,23 @@
 // Bar element.
 // =============================================================================
 
+$bar_region_is_lr  = $_region === 'left' || $_region === 'right';
+$bar_region_is_tbf = $_region === 'top' || $_region === 'bottom' || $_region === 'footer';
+$bar_is_sticky     = $_region === 'top' && $bar_sticky === true;
+
+
 // Prepare Classes
 // ---------------
 
 $class_region_specific = 'x-bar-' . $_region;
-$class_region_general  = ( ( $_region === 'left' || $_region === 'right' ) ? 'x-bar-v' : 'x-bar-h' );
+$class_region_general  = ( $bar_region_is_lr ) ? 'x-bar-v' : 'x-bar-h';
 $class_position        = 'x-bar-' . $bar_position;
+$class_sticky          = ( $bar_is_sticky ) ? 'x-bar-is-sticky' : '';
+$class_hide_initially  = ( $bar_is_sticky && $bar_sticky_hide_initially ) ? 'x-bar-is-initially-hidden' : '';
 
-$classes = array( $mod_id, 'x-bar', $class_region_specific, $class_region_general, $class_position, $class );
+$classes = array( $mod_id, 'x-bar', $class_region_specific, $class_region_general, $class_position, $class_sticky, $class_hide_initially, $class );
 
-if ( $bar_scroll == false ) {
+if ( $bar_scroll === false ) {
   $classes[] = 'x-bar-outer-spacers';
 }
 
@@ -28,16 +35,15 @@ $bar_data = array(
   'region' => $_region,
 );
 
-if ( $_region === 'left' || $_region === 'right' ) {
+if ( $bar_region_is_lr ) {
   $bar_data['width'] = $bar_width;
 }
 
-if ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' ) {
+if ( $bar_region_is_tbf ) {
   $bar_data['height'] = $bar_height;
 }
 
-if ( $_region == 'top' && $bar_sticky == true ) {
-  $bar_data['sticky']          = true;
+if ( $bar_is_sticky ) {
   $bar_data['keepMargin']      = $bar_sticky_keep_margin;
   $bar_data['hideInitially']   = $bar_sticky_hide_initially;
   $bar_data['zStack']          = $bar_sticky_z_stack;
@@ -59,13 +65,6 @@ if ( isset( $id ) && ! empty( $id ) ) {
   $atts_bar['id'] = $id;
 }
 
-if ( $bar_sticky_hide_initially ) {
-  if ( ! isset( $atts_bar['style'] ) ) {
-    $atts_bar['style'] = '';
-  }
-  $atts_bar['style'] = $atts_bar['style'] . 'visibility:hidden;';
-}
-
 
 // Atts: Bar Scroll
 // ----------------
@@ -73,9 +72,9 @@ if ( $bar_sticky_hide_initially ) {
 $bar_scroll_begin = '';
 $bar_scroll_end   = '';
 
-if ( $bar_scroll == true && $bar_height !== 'auto' ) {
+if ( $bar_scroll === true && $bar_height !== 'auto' ) {
 
-  $suppress_scroll      = ( $_region === 'top' || $_region === 'bottom' || $_region === 'footer' ) ? 'suppressScrollY' : 'suppressScrollX';
+  $suppress_scroll      = ( $bar_region_is_tbf ) ? 'suppressScrollY' : 'suppressScrollX';
   $atts_bar_scroll_data = array( $suppress_scroll => true );
   $atts_bar_scroll      = array( 'class' => x_attr_class( array( $mod_id, 'x-bar-scroll', 'x-bar-outer-spacers' ) ), 'data-x-scrollbar' => x_attr_json( $atts_bar_scroll_data ) );
 
@@ -96,18 +95,25 @@ if ( $bar_scroll == true && $bar_height !== 'auto' ) {
 // Runs concurrently with code from the bar setup functions to allow for
 // proper output of spaces to hooks.
 //
-// 01. Does not run on the frontend as output has already occurred, but is
-//     utilized by the preview system.
-// 02. Output for both the frontend and preview system from this template.
+// 01. Always tie bottom bars into the footer
+// 02. If we are previewing, attach the hooks for left and right bars
+//     Right bars have a different action in the preview.
 
-$bar_space_actions = array(
-  'left'   => 'x_before_site_begin',    // 01
-  'right'  => 'x_before_site_begin',    // 01
-  'bottom' => 'x_before_site_end'       // 02
-);
+if ( $bar_position === 'fixed' ) {
 
-if ( isset( $bar_space_actions[$_region] ) && $bar_position === 'fixed' ) {
-  x_set_view( $bar_space_actions[$_region], 'elements', 'bar', 'space', $_custom_data );
+  if ( 'bottom' === $_region ) { // 01
+    x_set_view( 'x_before_site_end', 'elements', 'bar', 'space', $_custom_data );
+  }
+
+  $preview_bar_space_actions = array(
+    'left'   => 'x_before_site_begin',
+    'right'  => 'x_after_site_end', // 02
+  );
+
+  if ( did_action( 'cs_element_rendering' ) && isset( $preview_bar_space_actions[$_region] ) ) { // 02
+    x_set_view( $preview_bar_space_actions[$_region], 'elements', 'bar', 'space', $_custom_data );
+  }
+
 }
 
 
@@ -123,14 +129,20 @@ if ( $bar_bg_advanced == true ) {
 // Output
 // ------
 
-if ( $_region === 'top' && $bar_position_top === 'relative' && $bar_sticky === true && $bar_sticky_hide_initially === false ) {
+if ( $bar_position_top === 'relative' && $bar_is_sticky && ! $bar_sticky_hide_initially ) {
+  ob_start();
   x_get_view( 'elements', 'bar', 'space', $_custom_data );
+  $top_bar_space = ob_get_clean();
+  if ( ! did_action( 'cs_element_rendering' ) ) {
+    echo $top_bar_space;
+  }
 }
 
 ?>
 
 <div <?php echo x_atts( $atts_bar ); ?>>
 
+  <?php if ( isset( $top_bar_space ) && did_action( 'cs_element_rendering' ) ) { echo $top_bar_space; } ?>
   <?php if ( isset( $bar_bg ) ) { echo $bar_bg; } ?>
 
   <?php echo $bar_scroll_begin; ?>

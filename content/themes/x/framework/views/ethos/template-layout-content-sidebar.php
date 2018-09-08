@@ -6,9 +6,9 @@
 // Content left, sidebar right page output for Ethos.
 // =============================================================================
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-container max width main">
     <div class="offset cf">

@@ -12,7 +12,7 @@
 <form action="<?php bp_activity_post_form_action(); ?>" method="post" id="whats-new-form" class="cf" name="whats-new-form" role="complementary">
 
 	<?php do_action( 'bp_before_activity_post_form' ); ?>
-	
+
 	<p class="activity-greeting cfc-h-tx"><?php if ( bp_is_group() )
 		printf( __( "What's new in %s, %s?", '__x__' ), bp_get_group_name(), bp_get_user_firstname() );
 	else
@@ -27,7 +27,7 @@
 		<div id="whats-new-options">
 			<div id="x-whats-new-options-inner" class="cf">
 				<div id="whats-new-submit">
-					<input type="submit" name="aw-whats-new-submit" id="aw-whats-new-submit" value="<?php ( x_is_buddypress_activity_directory() ) ? esc_attr_e( 'Post In', '__x__' ) : esc_attr_e( 'Post', '__x__' ); ?>" />
+					<input type="submit" name="aw-whats-new-submit" id="aw-whats-new-submit" value="<?php bp_is_activity_directory() ? esc_attr_e( 'Post In', '__x__' ) : esc_attr_e( 'Post', '__x__' ); ?>" />
 				</div>
 
 				<?php if ( bp_is_active( 'groups' ) && !bp_is_my_profile() && !bp_is_group() ) : ?>

@@ -6,10 +6,6 @@
 // A blank page for creating unique layouts.
 // =============================================================================
 
-?>
-
-<?php
-
 if ( apply_filters( 'x_legacy_cranium_headers', true ) ) {
   x_get_view( 'global', '_header' );
 } else {

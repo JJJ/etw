@@ -245,7 +245,7 @@ function x_version_migration() {
 
 }
 
-add_action( 'admin_init', 'x_version_migration' );
+add_action( 'init', 'x_version_migration' );
 
 
 

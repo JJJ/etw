@@ -14,7 +14,7 @@ if ( $related_products && x_get_option( 'x_woocommerce_product_related_enable' )
 
   <section class="related products cols-<?php echo x_get_option( 'x_woocommerce_product_related_columns' ); ?>">
 
-    <h2><?php esc_html_e( 'Related products', '__x__' ); ?></h2>
+    <h2><?php esc_html_e( 'Related Products', '__x__' ); ?></h2>
 
     <?php woocommerce_product_loop_start(); ?>
 

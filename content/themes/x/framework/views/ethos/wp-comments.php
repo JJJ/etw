@@ -8,15 +8,8 @@
 // x_comment().
 // =============================================================================
 
-$commenter     = wp_get_current_commenter();
 $req           = get_option( 'require_name_email' );
-$asterisk      = ( $req ? '*' : '' );
-$asterisk_html = ( $req ? '<span class="required">*</span>' : '' );
 $aria_req      = ( $req ? " aria-required='true' required='required'" : '' );
-
-?>
-
-<?php
 
 //
 // 1. If the current post is protected by a password and the visitor has not
@@ -64,23 +57,6 @@ if ( post_password_required() )
     'id_submit'            => 'entry-comment-submit',
     'label_submit'         => __( 'Submit' , '__x__' ),
     'title_reply'          => '<span>' . __( 'Leave a Comment</span>' , '__x__' ) . '</span>',
-    'fields'               => array(
-      'author' =>
-        '<p class="comment-form-author">' .
-          '<label for="author">' . __( 'Name', '__x__' ) . ' ' . $asterisk_html . '</label> ' .
-          '<input id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" placeholder="' . __( 'Your Name', '__x__' ) . ' ' . $asterisk . '" size="30"' . $aria_req . ' />' .
-        '</p>',
-      'email'  =>
-        '<p class="comment-form-email">' .
-          '<label for="email">' . __( 'Email', '__x__' ) . ' ' . $asterisk_html . '</label> ' .
-          '<input id="email" name="email" type="text" value="' . esc_attr( $commenter['comment_author_email'] ) . '" placeholder="' . __( 'Your Email', '__x__' ) . ' ' . $asterisk . '" size="30"' . $aria_req . ' />' .
-        '</p>',
-      'url'    =>
-        '<p class="comment-form-url">' .
-          '<label for="url">' . __( 'Website', '__x__' ) . '</label>' .
-          '<input id="url" name="url" type="text" value="' . esc_attr( $commenter['comment_author_url'] ) . '" placeholder="' . __( 'Your Website', '__x__' ) . '" size="30" />' .
-        '</p>'
-    ),
     'comment_field' => '<p class="comment-form-comment">' .
                          '<label for="comment">' . _x( 'Comment', 'noun', '__x__' ) . '</label>' .
                          '<textarea id="comment" name="comment" cols="45" rows="8" placeholder="' . _x( 'Your Comment *', 'noun', '__x__' ) . '"' . $aria_req . '></textarea>' .

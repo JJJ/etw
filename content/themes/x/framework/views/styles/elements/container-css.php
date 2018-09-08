@@ -20,35 +20,24 @@
 
 .$_el.x-bar-container {
   @if $_region === 'left' || $_region === 'right' {
-    -webkit-flex-direction: $container_col_flex_direction;
-            flex-direction: $container_col_flex_direction;
-    -webkit-justify-content: $container_col_flex_justify;
-            justify-content: $container_col_flex_justify;
-    -webkit-align-items: $container_col_flex_align;
-            align-items: $container_col_flex_align;
+    flex-direction: $container_col_flex_direction;
+    justify-content: $container_col_flex_justify;
+    align-items: $container_col_flex_align;
     @if $container_col_flex_wrap === true {
-      -webkit-flex-wrap: wrap;
-              flex-wrap: wrap;
-      -webkit-align-content: $container_col_flex_align;
-              align-content: $container_col_flex_align;
+      flex-wrap: wrap;
+      align-content: $container_col_flex_align;
     }
   }
   @if $_region === 'top' || $_region === 'bottom' || $_region === 'footer' {
-    -webkit-flex-direction: $container_row_flex_direction;
-            flex-direction: $container_row_flex_direction;
-    -webkit-justify-content: $container_row_flex_justify;
-            justify-content: $container_row_flex_justify;
-    -webkit-align-items: $container_row_flex_align;
-            align-items: $container_row_flex_align;
+    flex-direction: $container_row_flex_direction;
+    justify-content: $container_row_flex_justify;
+    align-items: $container_row_flex_align;
     @if $container_row_flex_wrap === true {
-      -webkit-flex-wrap: wrap;
-              flex-wrap: wrap;
-      -webkit-align-content: $container_row_flex_align;
-              align-content: $container_row_flex_align;
+      flex-wrap: wrap;
+      align-content: $container_row_flex_align;
     }
   }
-  -webkit-flex: $container_flex;
-          flex: $container_flex;
+  flex: $container_flex;
   @unless $container_max_height?? {
     max-height: $container_max_height;
   }

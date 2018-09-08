@@ -6,9 +6,9 @@
 // Index page output for Icon.
 // =============================================================================
 
-?>
+get_header();
 
-<?php get_header(); ?>
+?>
 
   <div class="x-main full" role="main">
     <div class="x-container offset-bottom">

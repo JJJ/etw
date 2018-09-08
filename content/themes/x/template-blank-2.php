@@ -12,6 +12,4 @@
 // find the appropriate output.
 // =============================================================================
 
-?>
-
-<?php x_get_view( x_get_stack(), 'template', 'blank-2' ); ?>
+x_get_view( x_get_stack(), 'template', 'blank-2' );

@@ -35,8 +35,10 @@
   @if $_region === 'top' || $_region === 'bottom' || $_region === 'footer' {
     height: $bar_height;
   }
-  @unless $bar_padding?? {
-    padding: $bar_padding;
+  @if $bar_height === 'auto' {
+    @unless $bar_padding?? {
+      padding: $bar_padding;
+    }
   }
   @unless $bar_border_width?? || $bar_border_style?? {
     border-width: $bar_border_width;
@@ -55,55 +57,52 @@
 
 .$_el.x-bar-content {
   @if $_region === 'left' || $_region === 'right' {
-    -webkit-flex-direction: $bar_col_flex_direction;
-            flex-direction: $bar_col_flex_direction;
-    -webkit-justify-content: $bar_col_flex_justify;
-            justify-content: $bar_col_flex_justify;
-    -webkit-align-items: $bar_col_flex_align;
-            align-items: $bar_col_flex_align;
+    flex-direction: $bar_col_flex_direction;
+    justify-content: $bar_col_flex_justify;
+    align-items: $bar_col_flex_align;
+
     @if $bar_col_flex_wrap === true {
-      -webkit-flex-wrap: wrap;
-              flex-wrap: wrap;
-      -webkit-align-content: $bar_col_flex_align;
-              align-content: $bar_col_flex_align;
+      flex-wrap: wrap;
+      align-content: $bar_col_flex_align;
     }
   }
+
   @if $_region === 'top' || $_region === 'bottom' || $_region === 'footer' {
-    -webkit-flex-direction: $bar_row_flex_direction;
-            flex-direction: $bar_row_flex_direction;
-    -webkit-justify-content: $bar_row_flex_justify;
-            justify-content: $bar_row_flex_justify;
-    -webkit-align-items: $bar_row_flex_align;
-            align-items: $bar_row_flex_align;
+    flex-direction: $bar_row_flex_direction;
+    justify-content: $bar_row_flex_justify;
+    align-items: $bar_row_flex_align;
+
     @if $bar_row_flex_wrap === true {
-      -webkit-flex-wrap: wrap;
-              flex-wrap: wrap;
-      -webkit-align-content: $bar_row_flex_align;
-              align-content: $bar_row_flex_align;
+      flex-wrap: wrap;
+      align-content: $bar_row_flex_align;
     }
   }
+
   @if $bar_content_length !== 'auto' {
-    -webkit-flex: 0 1 $bar_content_length;
-            flex: 0 1 $bar_content_length;
+    flex: 0 1 $bar_content_length;
   }
+
   @if $_region === 'left' || $_region === 'right' {
     width: $bar_width;
+
     @unless $bar_content_max_length?? {
       max-height: $bar_content_max_length;
     }
   }
+
   @if $_region === 'top' || $_region === 'bottom' || $_region === 'footer' {
     height: $bar_height;
+
     @unless $bar_content_max_length?? {
       max-width: $bar_content_max_length;
     }
   }
+
 }
 
 .$_el.x-bar-outer-spacers:before,
 .$_el.x-bar-outer-spacers:after {
-  -webkit-flex-basis: $bar_outer_spacing;
-          flex-basis: $bar_outer_spacing;
+  flex-basis: $bar_outer_spacing;
   width: $bar_outer_spacing;
   height: $bar_outer_spacing;
 }
@@ -123,7 +122,7 @@
     height: $bar_height;
   }
   @if $_region === 'left' || $_region === 'right' {
-    -webkit-flex-basis: $bar_width;
-            flex-basis: $bar_width;
+    width: $bar_width;
+    flex-basis: $bar_width;
   }
 }

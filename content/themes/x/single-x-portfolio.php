@@ -12,6 +12,4 @@
 // to find the appropriate output.
 // =============================================================================
 
-?>
-
-<?php x_get_view( x_get_stack(), 'wp', 'single-x-portfolio' ); ?>
+x_get_view( x_get_stack(), 'wp', 'single-x-portfolio' );

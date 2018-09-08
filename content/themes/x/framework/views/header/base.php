@@ -11,7 +11,6 @@ $x_root_atts = x_atts( apply_filters( 'x_root_atts', array( 'id' => 'x-root', 'c
 $x_site_atts = x_atts( apply_filters( 'x_site_atts', array( 'id' => 'x-site', 'class' => 'x-site site' ) ) );
 
 ?>
-
 <!DOCTYPE html>
 
 <html class="no-js" <?php language_attributes(); ?>>

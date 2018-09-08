@@ -61,12 +61,10 @@ switch ( $display ) {
         <?php endwhile; ?>
       <?php endif; ?>
 
-      <?php wp_reset_query(); ?>
-
       <script>
 
       jQuery(document).ready(function() {
-        jQuery('.x-post-carousel').slick({
+        jQuery('.x-post-carousel').xSlick({
           speed          : 500,
           slide          : 'li',
           slidesToShow   : <?php echo x_get_option( 'x_ethos_post_carousel_display_count_extra_large' ); ?>,
@@ -86,5 +84,7 @@ switch ( $display ) {
     </ul>
 
   <?php endif; ?>
+
+  <?php wp_reset_query(); ?>
 
 <?php endif; ?>

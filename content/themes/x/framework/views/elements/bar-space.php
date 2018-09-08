@@ -31,8 +31,6 @@ $atts = array(
   'class' => x_attr_class( $classes )
 );
 
-// x_dump( $bar_position_top );
-
 if ( $_region === 'top' ) {
   $atts['style'] = 'display: none;';
 }
