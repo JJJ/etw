@@ -10,7 +10,7 @@
 /**
  * The WordPress Query class.
  *
- * @link https://codex.wordpress.org/Function_Reference/WP_Query Codex page.
+ * @link https://developer.wordpress.org/reference/classes/wp_query/
  *
  * @since 1.5.0
  * @since 4.5.0 Removed the `$comments_popup` property.
@@ -326,6 +326,14 @@ class WP_Query {
 	public $is_home = false;
 
 	/**
+	 * Signifies whether the current query is for the Privacy Policy page.
+	 *
+	 * @since 5.2.0
+	 * @var bool
+	 */
+	public $is_privacy_policy = false;
+
+	/**
 	 * Signifies whether the current query couldn't find anything.
 	 *
 	 * @since 1.5.0
@@ -463,6 +471,7 @@ class WP_Query {
 		$this->is_comment_feed      = false;
 		$this->is_trackback         = false;
 		$this->is_home              = false;
+		$this->is_privacy_policy    = false;
 		$this->is_404               = false;
 		$this->is_paged             = false;
 		$this->is_admin             = false;
@@ -513,7 +522,7 @@ class WP_Query {
 	 * Fills in the query variables, which do not exist within the parameter.
 	 *
 	 * @since 2.1.0
-	 * @since 4.4.0 Removed the `comments_popup` public query variable.
+	 * @since 4.5.0 Removed the `comments_popup` public query variable.
 	 *
 	 * @param array $array Defined query variables.
 	 * @return array Complete query variables with undefined ones filled in empty.
@@ -529,7 +538,6 @@ class WP_Query {
 			'attachment',
 			'attachment_id',
 			'name',
-			'static',
 			'pagename',
 			'page_id',
 			'second',
@@ -604,7 +612,8 @@ class WP_Query {
 	 *              Introduced `RAND(x)` syntax for `$orderby`, which allows an integer seed value to random sorts.
 	 * @since 4.6.0 Added 'post_name__in' support for `$orderby`. Introduced the `$lazy_load_term_meta` argument.
 	 * @since 4.9.0 Introduced the `$comment_count` parameter.
-	 * @since 5.0.0 Introduced the `$meta_compare_key` parameter.
+	 * @since 5.1.0 Introduced the `$meta_compare_key` parameter.
+	 * @since 5.3.0 Introduced the `$meta_type_key` parameter.
 	 *
 	 * @param string|array $query {
 	 *     Optional. Array or string of Query parameters.
@@ -646,6 +655,7 @@ class WP_Query {
 	 *     @type array        $meta_query              An associative array of WP_Meta_Query arguments. See WP_Meta_Query.
 	 *     @type string       $meta_value              Custom field value.
 	 *     @type int          $meta_value_num          Custom field value number.
+	 *     @type string       $meta_type_key           Cast for 'meta_key'. See WP_Meta_Query::construct().
 	 *     @type int          $menu_order              The menu order of the posts.
 	 *     @type int          $monthnum                The two-digit month. Default empty. Accepts numbers 1-12.
 	 *     @type string       $name                    Post slug.
@@ -722,7 +732,8 @@ class WP_Query {
 	public function parse_query( $query = '' ) {
 		if ( ! empty( $query ) ) {
 			$this->init();
-			$this->query = $this->query_vars = wp_parse_args( $query );
+			$this->query      = wp_parse_args( $query );
+			$this->query_vars = $this->query;
 		} elseif ( ! isset( $this->query ) ) {
 			$this->query = $this->query_vars;
 		}
@@ -793,7 +804,7 @@ class WP_Query {
 			// If year, month, day, hour, minute, and second are set, a single
 			// post is being queried.
 			$this->is_single = true;
-		} elseif ( '' != $qv['static'] || '' != $qv['pagename'] || ! empty( $qv['page_id'] ) ) {
+		} elseif ( '' != $qv['pagename'] || ! empty( $qv['page_id'] ) ) {
 			$this->is_page   = true;
 			$this->is_single = false;
 		} else {
@@ -998,6 +1009,10 @@ class WP_Query {
 				$this->is_home       = true;
 				$this->is_posts_page = true;
 			}
+
+			if ( isset( $this->queried_object_id ) && $this->queried_object_id == get_option( 'wp_page_for_privacy_policy' ) ) {
+				$this->is_privacy_policy = true;
+			}
 		}
 
 		if ( $qv['page_id'] ) {
@@ -1005,6 +1020,10 @@ class WP_Query {
 				$this->is_page       = false;
 				$this->is_home       = true;
 				$this->is_posts_page = true;
+			}
+
+			if ( $qv['page_id'] == get_option( 'wp_page_for_privacy_policy' ) ) {
+				$this->is_privacy_policy = true;
 			}
 		}
 
@@ -1123,7 +1142,8 @@ class WP_Query {
 
 		// Category stuff
 		if ( ! empty( $q['cat'] ) && ! $this->is_singular ) {
-			$cat_in = $cat_not_in = array();
+			$cat_in     = array();
+			$cat_not_in = array();
 
 			$cat_array = preg_split( '/[,\s]+/', urldecode( $q['cat'] ) );
 			$cat_array = array_map( 'intval', $cat_array );
@@ -1425,7 +1445,8 @@ class WP_Query {
 			return $this->stopwords;
 		}
 
-		/* translators: This is a comma-separated list of very common words that should be excluded from a search,
+		/*
+		 * translators: This is a comma-separated list of very common words that should be excluded from a search,
 		 * like a, an, and the. These are usually called "stopwords". You should not simply translate these individual
 		 * words into your language. Instead, look for and provide commonly accepted stopwords in your language.
 		 */
@@ -1546,6 +1567,9 @@ class WP_Query {
 			'menu_order',
 			'comment_count',
 			'rand',
+			'post__in',
+			'post_parent__in',
+			'post_name__in',
 		);
 
 		$primary_meta_key   = '';
@@ -1576,6 +1600,8 @@ class WP_Query {
 			return false;
 		}
 
+		$orderby_clause = '';
+
 		switch ( $orderby ) {
 			case 'post_name':
 			case 'post_author':
@@ -1602,6 +1628,23 @@ class WP_Query {
 				break;
 			case 'meta_value_num':
 				$orderby_clause = "{$primary_meta_query['alias']}.meta_value+0";
+				break;
+			case 'post__in':
+				if ( ! empty( $this->query_vars['post__in'] ) ) {
+					$orderby_clause = "FIELD({$wpdb->posts}.ID," . implode( ',', array_map( 'absint', $this->query_vars['post__in'] ) ) . ')';
+				}
+				break;
+			case 'post_parent__in':
+				if ( ! empty( $this->query_vars['post_parent__in'] ) ) {
+					$orderby_clause = "FIELD( {$wpdb->posts}.post_parent," . implode( ', ', array_map( 'absint', $this->query_vars['post_parent__in'] ) ) . ' )';
+				}
+				break;
+			case 'post_name__in':
+				if ( ! empty( $this->query_vars['post_name__in'] ) ) {
+					$post_name__in        = array_map( 'sanitize_title_for_query', $this->query_vars['post_name__in'] );
+					$post_name__in_string = "'" . implode( "','", $post_name__in ) . "'";
+					$orderby_clause       = "FIELD( {$wpdb->posts}.post_name," . $post_name__in_string . ' )';
+				}
 				break;
 			default:
 				if ( array_key_exists( $orderby, $meta_clauses ) ) {
@@ -1747,8 +1790,8 @@ class WP_Query {
 			_deprecated_argument(
 				'WP_Query',
 				'3.1.0',
-				/* translators: 1: caller_get_posts, 2: ignore_sticky_posts */
 				sprintf(
+					/* translators: 1: caller_get_posts, 2: ignore_sticky_posts */
 					__( '%1$s is deprecated. Use %2$s instead.' ),
 					'<code>caller_get_posts</code>',
 					'<code>ignore_sticky_posts</code>'
@@ -1995,7 +2038,8 @@ class WP_Query {
 				$reqpage_obj   = get_post( $reqpage );
 				if ( is_object( $reqpage_obj ) && 'attachment' == $reqpage_obj->post_type ) {
 					$this->is_attachment = true;
-					$post_type           = $q['post_type'] = 'attachment';
+					$post_type           = 'attachment';
+					$q['post_type']      = 'attachment';
 					$this->is_page       = true;
 					$q['attachment_id']  = $reqpage;
 				}
@@ -2239,6 +2283,12 @@ class WP_Query {
 			$q['order'] = $rand ? '' : $this->parse_order( $q['order'] );
 		}
 
+		// These values of orderby should ignore the 'order' parameter.
+		$force_asc = array( 'post__in', 'post_name__in', 'post_parent__in' );
+		if ( isset( $q['orderby'] ) && in_array( $q['orderby'], $force_asc, true ) ) {
+			$q['order'] = '';
+		}
+
 		// Order by.
 		if ( empty( $q['orderby'] ) ) {
 			/*
@@ -2252,12 +2302,6 @@ class WP_Query {
 			}
 		} elseif ( 'none' == $q['orderby'] ) {
 			$orderby = '';
-		} elseif ( $q['orderby'] == 'post__in' && ! empty( $post__in ) ) {
-			$orderby = "FIELD( {$wpdb->posts}.ID, $post__in )";
-		} elseif ( $q['orderby'] == 'post_parent__in' && ! empty( $post_parent__in ) ) {
-			$orderby = "FIELD( {$wpdb->posts}.post_parent, $post_parent__in )";
-		} elseif ( $q['orderby'] == 'post_name__in' && ! empty( $post_name__in ) ) {
-			$orderby = "FIELD( {$wpdb->posts}.post_name, $post_name__in )";
 		} else {
 			$orderby_array = array();
 			if ( is_array( $q['orderby'] ) ) {
@@ -2587,8 +2631,10 @@ class WP_Query {
 				 */
 				$climits = apply_filters_ref_array( 'comment_feed_limits', array( 'LIMIT ' . get_option( 'posts_per_rss' ), &$this ) );
 			}
+
 			$cgroupby = ( ! empty( $cgroupby ) ) ? 'GROUP BY ' . $cgroupby : '';
 			$corderby = ( ! empty( $corderby ) ) ? 'ORDER BY ' . $corderby : '';
+			$climits  = ( ! empty( $climits ) ) ? $climits : '';
 
 			$comments = (array) $wpdb->get_results( "SELECT $distinct {$wpdb->comments}.* FROM {$wpdb->comments} $cjoin $cwhere $cgroupby $corderby $climits" );
 			// Convert to WP_Comment
@@ -2849,7 +2895,8 @@ class WP_Query {
 			$found_rows = 'SQL_CALC_FOUND_ROWS';
 		}
 
-		$this->request = $old_request = "SELECT $found_rows $distinct $fields FROM {$wpdb->posts} $join WHERE 1=1 $where $groupby $orderby $limits";
+		$old_request   = "SELECT $found_rows $distinct $fields FROM {$wpdb->posts} $join WHERE 1=1 $where $groupby $orderby $limits";
+		$this->request = $old_request;
 
 		if ( ! $q['suppress_filters'] ) {
 			/**
@@ -3214,7 +3261,7 @@ class WP_Query {
 	 *
 	 * @since 1.5.0
 	 *
-	 * @global WP_Post $post
+	 * @global WP_Post $post Global post object.
 	 */
 	public function the_post() {
 		global $post;
@@ -3303,7 +3350,7 @@ class WP_Query {
 	 * Sets up the current comment.
 	 *
 	 * @since 2.2.0
-	 * @global WP_Comment $comment Current comment.
+	 * @global WP_Comment $comment Global comment object.
 	 */
 	public function the_comment() {
 		global $comment;
@@ -3361,7 +3408,8 @@ class WP_Query {
 	 */
 	public function query( $query ) {
 		$this->init();
-		$this->query = $this->query_vars = wp_parse_args( $query );
+		$this->query      = wp_parse_args( $query );
+		$this->query_vars = $this->query;
 		return $this->get_posts();
 	}
 
@@ -3514,7 +3562,7 @@ class WP_Query {
 	 */
 	public function __call( $name, $arguments ) {
 		if ( in_array( $name, $this->compat_methods ) ) {
-			return call_user_func_array( array( $this, $name ), $arguments );
+			return $this->$name( ...$arguments );
 		}
 		return false;
 	}
@@ -3856,6 +3904,27 @@ class WP_Query {
 	}
 
 	/**
+	 * Is the query for the Privacy Policy page?
+	 *
+	 * This is the page which shows the Privacy Policy content of your site.
+	 *
+	 * Depends on the site's "Change your Privacy Policy page" Privacy Settings 'wp_page_for_privacy_policy'.
+	 *
+	 * This function will return true only on the page you set as the "Privacy Policy page".
+	 *
+	 * @since 5.2.0
+	 *
+	 * @return bool True, if Privacy Policy page.
+	 */
+	public function is_privacy_policy() {
+		if ( get_option( 'wp_page_for_privacy_policy' ) && $this->is_page( get_option( 'wp_page_for_privacy_policy' ) ) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Is the query for an existing month archive?
 	 *
 	 * @since 3.1.0
@@ -4094,7 +4163,7 @@ class WP_Query {
 	 *
 	 * @since 3.3.0
 	 *
-	 * @global WP_Query $wp_query Global WP_Query instance.
+	 * @global WP_Query $wp_query WordPress Query object.
 	 *
 	 * @return bool
 	 */
@@ -4109,15 +4178,15 @@ class WP_Query {
 	 * @since 4.1.0
 	 * @since 4.4.0 Added the ability to pass a post ID to `$post`.
 	 *
-	 * @global int             $id
-	 * @global WP_User         $authordata
-	 * @global string|int|bool $currentday
-	 * @global string|int|bool $currentmonth
-	 * @global int             $page
-	 * @global array           $pages
-	 * @global int             $multipage
-	 * @global int             $more
-	 * @global int             $numpages
+	 * @global int     $id
+	 * @global WP_User $authordata
+	 * @global string  $currentday
+	 * @global string  $currentmonth
+	 * @global int     $page
+	 * @global array   $pages
+	 * @global int     $multipage
+	 * @global int     $more
+	 * @global int     $numpages
 	 *
 	 * @param WP_Post|object|int $post WP_Post instance or Post ID/object.
 	 * @return true True when finished.
@@ -4131,6 +4200,53 @@ class WP_Query {
 
 		if ( ! $post ) {
 			return;
+		}
+
+		$elements = $this->generate_postdata( $post );
+		if ( false === $elements ) {
+			return;
+		}
+
+		$id           = $elements['id'];
+		$authordata   = $elements['authordata'];
+		$currentday   = $elements['currentday'];
+		$currentmonth = $elements['currentmonth'];
+		$page         = $elements['page'];
+		$pages        = $elements['pages'];
+		$multipage    = $elements['multipage'];
+		$more         = $elements['more'];
+		$numpages     = $elements['numpages'];
+
+		/**
+		 * Fires once the post data has been setup.
+		 *
+		 * @since 2.8.0
+		 * @since 4.1.0 Introduced `$this` parameter.
+		 *
+		 * @param WP_Post  $post The Post object (passed by reference).
+		 * @param WP_Query $this The current Query object (passed by reference).
+		 */
+		do_action_ref_array( 'the_post', array( &$post, &$this ) );
+
+		return true;
+	}
+
+	/**
+	 * Generate post data.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param WP_Post|object|int $post WP_Post instance or Post ID/object.
+	 * @return array|bool $elements Elements of post or false on failure.
+	 */
+	public function generate_postdata( $post ) {
+
+		if ( ! ( $post instanceof WP_Post ) ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post ) {
+			return false;
 		}
 
 		$id = (int) $post->ID;
@@ -4163,6 +4279,10 @@ class WP_Query {
 			$content = str_replace( "\n<!--nextpage-->\n", '<!--nextpage-->', $content );
 			$content = str_replace( "\n<!--nextpage-->", '<!--nextpage-->', $content );
 			$content = str_replace( "<!--nextpage-->\n", '<!--nextpage-->', $content );
+
+			// Remove the nextpage block delimiters, to avoid invalid block structures in the split content.
+			$content = str_replace( '<!-- wp:nextpage -->', '', $content );
+			$content = str_replace( '<!-- /wp:nextpage -->', '', $content );
 
 			// Ignore nextpage at the beginning of the content.
 			if ( 0 === strpos( $content, '<!--nextpage-->' ) ) {
@@ -4198,18 +4318,9 @@ class WP_Query {
 			$multipage = 0;
 		}
 
-		/**
-		 * Fires once the post data has been setup.
-		 *
-		 * @since 2.8.0
-		 * @since 4.1.0 Introduced `$this` parameter.
-		 *
-		 * @param WP_Post  $post The Post object (passed by reference).
-		 * @param WP_Query $this The current Query object (passed by reference).
-		 */
-		do_action_ref_array( 'the_post', array( &$post, &$this ) );
+		$elements = compact( 'id', 'authordata', 'currentday', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages' );
 
-		return true;
+		return $elements;
 	}
 	/**
 	 * After looping through a nested query, this function
@@ -4217,7 +4328,7 @@ class WP_Query {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global WP_Post $post
+	 * @global WP_Post $post Global post object.
 	 */
 	public function reset_postdata() {
 		if ( ! empty( $this->post ) ) {

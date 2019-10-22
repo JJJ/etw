@@ -130,7 +130,7 @@ final class WP_Taxonomy {
 	/**
 	 * The callback function for sanitizing taxonomy data saved from a meta box.
 	 *
-	 * @since 5.0.0
+	 * @since 5.1.0
 	 * @var callable
 	 */
 	public $meta_box_sanitize_cb = null;
@@ -217,7 +217,7 @@ final class WP_Taxonomy {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @global WP $wp WP instance.
+	 * @global WP $wp Current WordPress environment instance.
 	 *
 	 * @param string       $taxonomy    Taxonomy key, must not exceed 32 characters.
 	 * @param array|string $object_type Name of the object type for the taxonomy object.

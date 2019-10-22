@@ -14,9 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @global string       $post_type
  * @global WP_Post_Type $post_type_object
- * @global WP_Post      $post
+ * @global WP_Post      $post             Global post object.
  */
 global $post_type, $post_type_object, $post;
+
+// Flag that we're not loading the block editor.
+$current_screen = get_current_screen();
+$current_screen->is_block_editor( false );
 
 if ( is_multisite() ) {
 	add_action( 'admin_footer', '_admin_notice_post_locked' );
@@ -36,7 +40,9 @@ if ( is_multisite() ) {
 }
 
 wp_enqueue_script( 'post' );
-$_wp_editor_expand = $_content_editor_dfw = false;
+
+$_wp_editor_expand   = false;
+$_content_editor_dfw = false;
 
 /**
  * Filters whether to enable the 'expand' functionality in the post editor.
@@ -102,8 +108,13 @@ if ( ! $permalink ) {
 
 $messages = array();
 
-$preview_post_link_html = $scheduled_post_link_html = $view_post_link_html = '';
-$preview_page_link_html = $scheduled_page_link_html = $view_page_link_html = '';
+$preview_post_link_html   = '';
+$scheduled_post_link_html = '';
+$view_post_link_html      = '';
+
+$preview_page_link_html   = '';
+$scheduled_page_link_html = '';
+$view_page_link_html      = '';
 
 $preview_url = get_preview_post_link( $post );
 
@@ -155,8 +166,14 @@ if ( $viewable ) {
 
 }
 
-/* translators: Publish box date format, see https://secure.php.net/date */
-$scheduled_date = date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_date ) );
+$scheduled_date = sprintf(
+	/* translators: Publish box date string. 1: Date, 2: Time. */
+	__( '%1$s at %2$s' ),
+	/* translators: Publish box date format, see https://secure.php.net/date */
+	date_i18n( _x( 'M j, Y', 'publish box date format' ), strtotime( $post->post_date ) ),
+	/* translators: Publish box time format, see https://secure.php.net/date */
+	date_i18n( _x( 'H:i', 'publish box time format' ), strtotime( $post->post_date ) )
+);
 
 $messages['post']       = array(
 	0  => '', // Unused. Messages start at index 1.
@@ -164,11 +181,12 @@ $messages['post']       = array(
 	2  => __( 'Custom field updated.' ),
 	3  => __( 'Custom field deleted.' ),
 	4  => __( 'Post updated.' ),
-	/* translators: %s: date and time of the revision */
+	/* translators: %s: Date and time of the revision. */
 	5  => isset( $_GET['revision'] ) ? sprintf( __( 'Post restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
 	6  => __( 'Post published.' ) . $view_post_link_html,
 	7  => __( 'Post saved.' ),
 	8  => __( 'Post submitted.' ) . $preview_post_link_html,
+	/* translators: %s: Scheduled date for the post. */
 	9  => sprintf( __( 'Post scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_post_link_html,
 	10 => __( 'Post draft updated.' ) . $preview_post_link_html,
 );
@@ -178,11 +196,12 @@ $messages['page']       = array(
 	2  => __( 'Custom field updated.' ),
 	3  => __( 'Custom field deleted.' ),
 	4  => __( 'Page updated.' ),
-	/* translators: %s: date and time of the revision */
+	/* translators: %s: Date and time of the revision. */
 	5  => isset( $_GET['revision'] ) ? sprintf( __( 'Page restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
 	6  => __( 'Page published.' ) . $view_page_link_html,
 	7  => __( 'Page saved.' ),
 	8  => __( 'Page submitted.' ) . $preview_page_link_html,
+	/* translators: %s: Scheduled date for the page. */
 	9  => sprintf( __( 'Page scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_page_link_html,
 	10 => __( 'Page draft updated.' ) . $preview_page_link_html,
 );
@@ -227,7 +246,11 @@ $form_extra  .= "<input type='hidden' id='post_ID' name='post_ID' value='" . esc
 if ( $autosave && mysql2date( 'U', $autosave->post_modified_gmt, false ) > mysql2date( 'U', $post->post_modified_gmt, false ) ) {
 	foreach ( _wp_post_revision_fields( $post ) as $autosave_field => $_autosave_field ) {
 		if ( normalize_whitespace( $autosave->$autosave_field ) != normalize_whitespace( $post->$autosave_field ) ) {
-			$notice = sprintf( __( 'There is an autosave of this post that is more recent than the version below. <a href="%s">View the autosave</a>' ), get_edit_post_link( $autosave->ID ) );
+			$notice = sprintf(
+				/* translators: %s: URL to view the autosave. */
+				__( 'There is an autosave of this post that is more recent than the version below. <a href="%s">View the autosave</a>' ),
+				get_edit_post_link( $autosave->ID )
+			);
 			break;
 		}
 	}
@@ -243,155 +266,7 @@ $post_type_object = get_post_type_object( $post_type );
 // All meta boxes should be defined and added before the first do_meta_boxes() call (or potentially during the do_meta_boxes action).
 require_once( ABSPATH . 'wp-admin/includes/meta-boxes.php' );
 
-
-$publish_callback_args = null;
-if ( post_type_supports( $post_type, 'revisions' ) && 'auto-draft' != $post->post_status ) {
-	$revisions = wp_get_post_revisions( $post_ID );
-
-	// We should aim to show the revisions meta box only when there are revisions.
-	if ( count( $revisions ) > 1 ) {
-		reset( $revisions ); // Reset pointer for key()
-		$publish_callback_args = array(
-			'revisions_count' => count( $revisions ),
-			'revision_id'     => key( $revisions ),
-		);
-		add_meta_box( 'revisionsdiv', __( 'Revisions' ), 'post_revisions_meta_box', null, 'normal', 'core' );
-	}
-}
-
-if ( 'attachment' == $post_type ) {
-	wp_enqueue_script( 'image-edit' );
-	wp_enqueue_style( 'imgareaselect' );
-	add_meta_box( 'submitdiv', __( 'Save' ), 'attachment_submit_meta_box', null, 'side', 'core' );
-	add_action( 'edit_form_after_title', 'edit_form_image_editor' );
-
-	if ( wp_attachment_is( 'audio', $post ) ) {
-		add_meta_box( 'attachment-id3', __( 'Metadata' ), 'attachment_id3_data_meta_box', null, 'normal', 'core' );
-	}
-} else {
-	add_meta_box( 'submitdiv', __( 'Publish' ), 'post_submit_meta_box', null, 'side', 'core', $publish_callback_args );
-}
-
-if ( current_theme_supports( 'post-formats' ) && post_type_supports( $post_type, 'post-formats' ) ) {
-	add_meta_box( 'formatdiv', _x( 'Format', 'post format' ), 'post_format_meta_box', null, 'side', 'core' );
-}
-
-// all taxonomies
-foreach ( get_object_taxonomies( $post ) as $tax_name ) {
-	$taxonomy = get_taxonomy( $tax_name );
-	if ( ! $taxonomy->show_ui || false === $taxonomy->meta_box_cb ) {
-		continue;
-	}
-
-	$label = $taxonomy->labels->name;
-
-	if ( ! is_taxonomy_hierarchical( $tax_name ) ) {
-		$tax_meta_box_id = 'tagsdiv-' . $tax_name;
-	} else {
-		$tax_meta_box_id = $tax_name . 'div';
-	}
-
-	add_meta_box( $tax_meta_box_id, $label, $taxonomy->meta_box_cb, null, 'side', 'core', array( 'taxonomy' => $tax_name ) );
-}
-
-if ( post_type_supports( $post_type, 'page-attributes' ) || count( get_page_templates( $post ) ) > 0 ) {
-	add_meta_box( 'pageparentdiv', $post_type_object->labels->attributes, 'page_attributes_meta_box', null, 'side', 'core' );
-}
-
-if ( $thumbnail_support && current_user_can( 'upload_files' ) ) {
-	add_meta_box( 'postimagediv', esc_html( $post_type_object->labels->featured_image ), 'post_thumbnail_meta_box', null, 'side', 'low' );
-}
-
-if ( post_type_supports( $post_type, 'excerpt' ) ) {
-	add_meta_box( 'postexcerpt', __( 'Excerpt' ), 'post_excerpt_meta_box', null, 'normal', 'core' );
-}
-
-if ( post_type_supports( $post_type, 'trackbacks' ) ) {
-	add_meta_box( 'trackbacksdiv', __( 'Send Trackbacks' ), 'post_trackback_meta_box', null, 'normal', 'core' );
-}
-
-if ( post_type_supports( $post_type, 'custom-fields' ) ) {
-	add_meta_box( 'postcustom', __( 'Custom Fields' ), 'post_custom_meta_box', null, 'normal', 'core' );
-}
-
-/**
- * Fires in the middle of built-in meta box registration.
- *
- * @since 2.1.0
- * @deprecated 3.7.0 Use 'add_meta_boxes' instead.
- *
- * @param WP_Post $post Post object.
- */
-do_action( 'dbx_post_advanced', $post );
-
-// Allow the Discussion meta box to show up if the post type supports comments,
-// or if comments or pings are open.
-if ( comments_open( $post ) || pings_open( $post ) || post_type_supports( $post_type, 'comments' ) ) {
-	add_meta_box( 'commentstatusdiv', __( 'Discussion' ), 'post_comment_status_meta_box', null, 'normal', 'core' );
-}
-
-$stati = get_post_stati( array( 'public' => true ) );
-if ( empty( $stati ) ) {
-	$stati = array( 'publish' );
-}
-$stati[] = 'private';
-
-if ( in_array( get_post_status( $post ), $stati ) ) {
-	// If the post type support comments, or the post has comments, allow the
-	// Comments meta box.
-	if ( comments_open( $post ) || pings_open( $post ) || $post->comment_count > 0 || post_type_supports( $post_type, 'comments' ) ) {
-		add_meta_box( 'commentsdiv', __( 'Comments' ), 'post_comment_meta_box', null, 'normal', 'core' );
-	}
-}
-
-if ( ! ( 'pending' == get_post_status( $post ) && ! current_user_can( $post_type_object->cap->publish_posts ) ) ) {
-	add_meta_box( 'slugdiv', __( 'Slug' ), 'post_slug_meta_box', null, 'normal', 'core' );
-}
-
-if ( post_type_supports( $post_type, 'author' ) && current_user_can( $post_type_object->cap->edit_others_posts ) ) {
-	add_meta_box( 'authordiv', __( 'Author' ), 'post_author_meta_box', null, 'normal', 'core' );
-}
-
-/**
- * Fires after all built-in meta boxes have been added.
- *
- * @since 3.0.0
- *
- * @param string                    $post_type Post type for posts, 'comment' for comments,
- *                                             'link' for links.
- * @param WP_Post|WP_Comment|object $post      Post, comment, or link object.
- */
-do_action( 'add_meta_boxes', $post_type, $post );
-
-/**
- * Fires after all built-in meta boxes have been added, contextually for the given post type.
- *
- * The dynamic portion of the hook, `$post_type`, refers to the post type of the post.
- *
- * @since 3.0.0
- *
- * @param WP_Post $post Post object.
- */
-do_action( "add_meta_boxes_{$post_type}", $post );
-
-/**
- * Fires after meta boxes have been added.
- *
- * Fires once for each of the default meta box contexts: normal, advanced, and side.
- *
- * @since 3.0.0
- *
- * @param string                $post_type Post type for posts, 'dashboard' for dashboard widgets,
- *                                         'link' for links.
- * @param string                $context   Meta box context. Accepts 'normal', 'advanced', 'side'.
- * @param WP_Post|string|object $post      Post object for posts, empty string for dashboard widgets,
- *                                         link object for links.
- */
-do_action( 'do_meta_boxes', $post_type, 'normal', $post );
-/** This action is documented in wp-admin/edit-form-advanced.php */
-do_action( 'do_meta_boxes', $post_type, 'advanced', $post );
-/** This action is documented in wp-admin/edit-form-advanced.php */
-do_action( 'do_meta_boxes', $post_type, 'side', $post );
+register_and_do_post_meta_boxes( $post );
 
 add_screen_option(
 	'layout_columns',
@@ -429,10 +304,14 @@ if ( 'post' == $post_type ) {
 	);
 
 	get_current_screen()->set_help_sidebar(
-		'<p>' . sprintf( __( 'You can also create posts with the <a href="%s">Press This bookmarklet</a>.' ), 'tools.php' ) . '</p>' .
+		'<p>' . sprintf(
+			/* translators: %s: URL to Press This bookmarklet. */
+			__( 'You can also create posts with the <a href="%s">Press This bookmarklet</a>.' ),
+			'tools.php'
+		) . '</p>' .
 			'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-			'<p>' . __( '<a href="https://codex.wordpress.org/Posts_Add_New_Screen">Documentation on Writing and Editing Posts</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+			'<p>' . __( '<a href="https://wordpress.org/support/article/wordpress-editor/">Documentation on Writing and Editing Posts</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
 	);
 } elseif ( 'page' == $post_type ) {
 	$about_pages = '<p>' . __( 'Pages are similar to posts in that they have a title, body text, and associated metadata, but they are different in that they are not part of the chronological blog stream, kind of like permanent posts. Pages are not categorized or tagged, but can have a hierarchy. You can nest pages under other pages by making one the &#8220;Parent&#8221; of the other, creating a group of pages.' ) . '</p>' .
@@ -448,9 +327,9 @@ if ( 'post' == $post_type ) {
 
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-			'<p>' . __( '<a href="https://codex.wordpress.org/Pages_Add_New_Screen">Documentation on Adding New Pages</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://codex.wordpress.org/Pages_Screen#Editing_Individual_Pages">Documentation on Editing Pages</a>' ) . '</p>' .
-			'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+			'<p>' . __( '<a href="https://wordpress.org/support/article/pages-add-new-screen/">Documentation on Adding New Pages</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/article/pages-screen/">Documentation on Editing Pages</a>' ) . '</p>' .
+			'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
 	);
 } elseif ( 'attachment' == $post_type ) {
 	get_current_screen()->add_help_tab(
@@ -458,7 +337,7 @@ if ( 'post' == $post_type ) {
 			'id'      => 'overview',
 			'title'   => __( 'Overview' ),
 			'content' =>
-				'<p>' . __( 'This screen allows you to edit four fields for metadata in a file within the media library.' ) . '</p>' .
+				'<p>' . __( 'This screen allows you to edit fields for metadata in a file within the media library.' ) . '</p>' .
 				'<p>' . __( 'For images only, you can click on Edit Image under the thumbnail to expand out an inline image editor with icons for cropping, rotating, or flipping the image as well as for undoing and redoing. The boxes on the right give you more options for scaling the image, for cropping it, and for cropping the thumbnail in a different way than you crop the original image. You can click on Help in those boxes to get more information.' ) . '</p>' .
 				'<p>' . __( 'Note that you crop the image by clicking on it (the Crop icon is already selected) and dragging the cropping frame to select the desired part. Then click Save to retain the cropping.' ) . '</p>' .
 				'<p>' . __( 'Remember to click Update Media to save metadata entered or changed.' ) . '</p>',
@@ -467,14 +346,14 @@ if ( 'post' == $post_type ) {
 
 	get_current_screen()->set_help_sidebar(
 		'<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
-		'<p>' . __( '<a href="https://codex.wordpress.org/Media_Add_New_Screen#Edit_Media">Documentation on Edit Media</a>' ) . '</p>' .
-		'<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>'
+		'<p>' . __( '<a href="https://wordpress.org/support/article/edit-media/">Documentation on Edit Media</a>' ) . '</p>' .
+		'<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>'
 	);
 }
 
 if ( 'post' == $post_type || 'page' == $post_type ) {
 	$inserting_media  = '<p>' . __( 'You can upload and insert media (images, audio, documents, etc.) by clicking the Add Media button. You can select from the images and files already uploaded to the Media Library, or upload new media to add to your page or post. To create an image gallery, select the images to add and click the &#8220;Create a new gallery&#8221; button.' ) . '</p>';
-	$inserting_media .= '<p>' . __( 'You can also embed media from many popular websites including Twitter, YouTube, Flickr and others by pasting the media URL on its own line into the content of your post/page. Please refer to the Codex to <a href="https://codex.wordpress.org/Embeds">learn more about embeds</a>.' ) . '</p>';
+	$inserting_media .= '<p>' . __( 'You can also embed media from many popular websites including Twitter, YouTube, Flickr and others by pasting the media URL on its own line into the content of your post/page. <a href="https://wordpress.org/support/article/embeds/">Learn more about embeds</a>.' ) . '</p>';
 
 	get_current_screen()->add_help_tab(
 		array(
@@ -492,12 +371,15 @@ if ( 'post' == $post_type ) {
 	'</li>';
 
 	if ( current_theme_supports( 'post-formats' ) && post_type_supports( 'post', 'post-formats' ) ) {
-		$publish_box .= '<li>' . __( '<strong>Format</strong> &mdash; Post Formats designate how your theme will display a specific post. For example, you could have a <em>standard</em> blog post with a title and paragraphs, or a short <em>aside</em> that omits the title and contains a short text blurb. Please refer to the Codex for <a href="https://codex.wordpress.org/Post_Formats#Supported_Formats">descriptions of each post format</a>. Your theme could enable all or some of 10 possible formats.' ) . '</li>';
+		$publish_box .= '<li>' . __( '<strong>Format</strong> &mdash; Post Formats designate how your theme will display a specific post. For example, you could have a <em>standard</em> blog post with a title and paragraphs, or a short <em>aside</em> that omits the title and contains a short text blurb. Your theme could enable all or some of 10 possible formats. <a href="https://wordpress.org/support/article/post-formats/#supported-formats">Learn more about each post format</a>.' ) . '</li>';
 	}
 
 	if ( current_theme_supports( 'post-thumbnails' ) && post_type_supports( 'post', 'thumbnail' ) ) {
-		/* translators: %s: Featured Image */
-		$publish_box .= '<li>' . sprintf( __( '<strong>%s</strong> &mdash; This allows you to associate an image with your post without inserting it. This is usually useful only if your theme makes use of the image as a post thumbnail on the home page, a custom header, etc.' ), esc_html( $post_type_object->labels->featured_image ) ) . '</li>';
+		$publish_box .= '<li>' . sprintf(
+			/* translators: %s: Featured Image. */
+			__( '<strong>%s</strong> &mdash; This allows you to associate an image with your post without inserting it. This is usually useful only if your theme makes use of the image as a post thumbnail on the home page, a custom header, etc.' ),
+			esc_html( $post_type_object->labels->featured_image )
+		) . '</li>';
 	}
 
 	$publish_box .= '</ul>';
@@ -625,10 +507,10 @@ do_action( 'edit_form_top', $post );
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string  $text Placeholder text. Default 'Enter title here'.
+	 * @param string  $text Placeholder text. Default 'Add title'.
 	 * @param WP_Post $post Post object.
 	 */
-	$title_placeholder = apply_filters( 'enter_title_here', __( 'Enter title here' ), $post );
+	$title_placeholder = apply_filters( 'enter_title_here', __( 'Add title' ), $post );
 	?>
 	<label class="screen-reader-text" id="title-prompt-text" for="title"><?php echo $title_placeholder; ?></label>
 	<input type="text" name="post_title" size="30" value="<?php echo esc_attr( $post->post_title ); ?>" id="title" spellcheck="true" autocomplete="off" />
@@ -714,17 +596,26 @@ if ( post_type_supports( $post_type, 'editor' ) ) {
 	);
 	?>
 <table id="post-status-info"><tbody><tr>
-	<td id="wp-word-count" class="hide-if-no-js"><?php printf( __( 'Word count: %s' ), '<span class="word-count">0</span>' ); ?></td>
+	<td id="wp-word-count" class="hide-if-no-js">
+	<?php
+	printf(
+		/* translators: %s: Number of words. */
+		__( 'Word count: %s' ),
+		'<span class="word-count">0</span>'
+	);
+	?>
+	</td>
 	<td class="autosave-info">
 	<span class="autosave-message">&nbsp;</span>
 	<?php
 	if ( 'auto-draft' != $post->post_status ) {
 		echo '<span id="last-edit">';
-		if ( $last_user = get_userdata( get_post_meta( $post_ID, '_edit_last', true ) ) ) {
-			/* translators: 1: Name of most recent post author, 2: Post edited date, 3: Post edited time */
+		$last_user = get_userdata( get_post_meta( $post_ID, '_edit_last', true ) );
+		if ( $last_user ) {
+			/* translators: 1: Name of most recent post author, 2: Post edited date, 3: Post edited time. */
 			printf( __( 'Last edited by %1$s on %2$s at %3$s' ), esc_html( $last_user->display_name ), mysql2date( __( 'F j, Y' ), $post->post_modified ), mysql2date( __( 'g:i a' ), $post->post_modified ) );
 		} else {
-			/* translators: 1: Post edited date, 2: Post edited time */
+			/* translators: 1: Post edited date, 2: Post edited time. */
 			printf( __( 'Last edited on %1$s at %2$s' ), mysql2date( __( 'F j, Y' ), $post->post_modified ), mysql2date( __( 'g:i a' ), $post->post_modified ) );
 		}
 		echo '</span>';

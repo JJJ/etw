@@ -30,12 +30,7 @@ do_action( 'rss_tag_pre', 'atom' );
 	<title type="text"><?php wp_title_rss(); ?></title>
 	<subtitle type="text"><?php bloginfo_rss( 'description' ); ?></subtitle>
 
-	<updated>
-	<?php
-		$date = get_lastpostmodified( 'GMT' );
-		echo $date ? mysql2date( 'Y-m-d\TH:i:s\Z', $date, false ) : date( 'Y-m-d\TH:i:s\Z' );
-	?>
-	</updated>
+	<updated><?php echo get_feed_build_date( 'Y-m-d\TH:i:s\Z' ); ?></updated>
 
 	<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php bloginfo_rss( 'url' ); ?>" />
 	<id><?php bloginfo( 'atom_url' ); ?></id>
@@ -66,7 +61,7 @@ do_action( 'rss_tag_pre', 'atom' );
 			 * @since 3.2.0
 			 */
 			do_action( 'atom_author' );
-?>
+			?>
 		</author>
 		<title type="<?php html_type_rss(); ?>"><![CDATA[<?php the_title_rss(); ?>]]></title>
 		<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php the_permalink_rss(); ?>" />

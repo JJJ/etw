@@ -51,7 +51,7 @@ $theme_field_defaults = array(
 );
 
 /**
- * Retrieve list of WordPress theme features (aka theme tags)
+ * Retrieve list of WordPress theme features (aka theme tags).
  *
  * @since 2.8.0
  *
@@ -62,7 +62,8 @@ $theme_field_defaults = array(
 function install_themes_feature_list() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_theme_feature_list()' );
 
-	if ( ! $cache = get_transient( 'wporg_theme_feature_list' ) ) {
+	$cache = get_transient( 'wporg_theme_feature_list' );
+	if ( ! $cache ) {
 		set_transient( 'wporg_theme_feature_list', array(), 3 * HOUR_IN_SECONDS );
 	}
 

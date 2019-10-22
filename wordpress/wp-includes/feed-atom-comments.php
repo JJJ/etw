@@ -30,25 +30,20 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 	<title type="text">
 	<?php
 	if ( is_singular() ) {
-		/* translators: Comments feed title. %s: Post title */
+		/* translators: Comments feed title. %s: Post title. */
 		printf( ent2ncr( __( 'Comments on %s' ) ), get_the_title_rss() );
 	} elseif ( is_search() ) {
-		/* translators: Comments feed title. 1: Site name, 2: Search query */
+		/* translators: Comments feed title. 1: Site title, 2: Search query. */
 		printf( ent2ncr( __( 'Comments for %1$s searching on %2$s' ) ), get_bloginfo_rss( 'name' ), get_search_query() );
 	} else {
-		/* translators: Comments feed title. %s: Site name */
+		/* translators: Comments feed title. %s: Site title. */
 		printf( ent2ncr( __( 'Comments for %s' ) ), get_wp_title_rss() );
 	}
 	?>
 	</title>
 	<subtitle type="text"><?php bloginfo_rss( 'description' ); ?></subtitle>
 
-	<updated>
-	<?php
-		$date = get_lastcommentmodified( 'GMT' );
-		echo $date ? mysql2date( 'Y-m-d\TH:i:s\Z', $date, false ) : date( 'Y-m-d\TH:i:s\Z' );
-	?>
-	</updated>
+	<updated><?php echo get_feed_build_date( 'Y-m-d\TH:i:s\Z' ); ?></updated>
 
 <?php if ( is_singular() ) { ?>
 	<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php comments_link_feed(); ?>" />
@@ -75,7 +70,8 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 if ( have_comments() ) :
 	while ( have_comments() ) :
 		the_comment();
-		$comment_post = $GLOBALS['post'] = get_post( $comment->comment_post_ID );
+		$comment_post    = get_post( $comment->comment_post_ID );
+		$GLOBALS['post'] = $comment_post;
 		?>
 	<entry>
 		<title>
@@ -84,10 +80,10 @@ if ( have_comments() ) :
 			$title = get_the_title( $comment_post->ID );
 			/** This filter is documented in wp-includes/feed.php */
 			$title = apply_filters( 'the_title_rss', $title );
-			/* translators: Individual comment title. 1: Post title, 2: Comment author name */
+			/* translators: Individual comment title. 1: Post title, 2: Comment author name. */
 			printf( ent2ncr( __( 'Comment on %1$s by %2$s' ) ), $title, get_comment_author_rss() );
 		} else {
-			/* translators: Comment author title. %s: Comment author name */
+			/* translators: Comment author title. %s: Comment author name. */
 			printf( ent2ncr( __( 'By: %s' ) ), get_comment_author_rss() );
 		}
 		?>
@@ -110,13 +106,13 @@ if ( have_comments() ) :
 		<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php echo get_the_password_form(); ?>]]></content>
 	<?php else : // post pass ?>
 		<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php comment_text(); ?>]]></content>
-	<?php
+		<?php
 	endif; // post pass
 	// Return comment threading information (https://www.ietf.org/rfc/rfc4685.txt)
-if ( $comment->comment_parent == 0 ) : // This comment is top level
-	?>
+	if ( $comment->comment_parent == 0 ) : // This comment is top level
+		?>
 	<thr:in-reply-to ref="<?php the_guid(); ?>" href="<?php the_permalink_rss(); ?>" type="<?php bloginfo_rss( 'html_type' ); ?>" />
-	<?php
+		<?php
 	else : // This comment is in reply to another comment
 		$parent_comment = get_comment( $comment->comment_parent );
 		// The rel attribute below and the id tag above should be GUIDs, but WP doesn't create them for comments (unlike posts). Either way, it's more important that they both use the same system

@@ -23,7 +23,19 @@
  * @return bool Whether the post has an image attached.
  */
 function has_post_thumbnail( $post = null ) {
-	return (bool) get_post_thumbnail_id( $post );
+	$thumbnail_id  = get_post_thumbnail_id( $post );
+	$has_thumbnail = (bool) $thumbnail_id;
+
+	/**
+	 * Filters whether a post has a post thumbnail.
+	 *
+	 * @since 5.1.0
+	 *
+	 * @param bool             $has_thumbnail true if the post has a post thumbnail, otherwise false.
+	 * @param int|WP_Post|null $post          Post ID or WP_Post object. Default is global `$post`.
+	 * @param int|string       $thumbnail_id  Post thumbnail ID or empty string.
+	 */
+	return (bool) apply_filters( 'has_post_thumbnail', $has_thumbnail, $post, $thumbnail_id );
 }
 
 /**
@@ -71,7 +83,7 @@ function the_post_thumbnail( $size = 'post-thumbnail', $attr = '' ) {
  *
  * @since 3.2.0
  *
- * @global WP_Query $wp_query
+ * @global WP_Query $wp_query WordPress Query object.
  *
  * @param WP_Query $wp_query Optional. A WP_Query instance. Defaults to the $wp_query global.
  */
@@ -86,7 +98,8 @@ function update_post_thumbnail_cache( $wp_query = null ) {
 
 	$thumb_ids = array();
 	foreach ( $wp_query->posts as $post ) {
-		if ( $id = get_post_thumbnail_id( $post->ID ) ) {
+		$id = get_post_thumbnail_id( $post->ID );
+		if ( $id ) {
 			$thumb_ids[] = $id;
 		}
 	}

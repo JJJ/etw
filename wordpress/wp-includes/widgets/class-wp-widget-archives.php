@@ -58,7 +58,7 @@ class WP_Widget_Archives extends WP_Widget {
 			$dropdown_id = "{$this->id_base}-dropdown-{$this->number}";
 			?>
 		<label class="screen-reader-text" for="<?php echo esc_attr( $dropdown_id ); ?>"><?php echo $title; ?></label>
-		<select id="<?php echo esc_attr( $dropdown_id ); ?>" name="archive-dropdown" onchange='document.location.href=this.options[this.selectedIndex].value;'>
+		<select id="<?php echo esc_attr( $dropdown_id ); ?>" name="archive-dropdown">
 			<?php
 			/**
 			 * Filters the arguments for the Archives widget drop-down.
@@ -98,12 +98,29 @@ class WP_Widget_Archives extends WP_Widget {
 					$label = __( 'Select Post' );
 					break;
 			}
+
+			$type_attr = current_theme_supports( 'html5', 'script' ) ? '' : ' type="text/javascript"';
 			?>
 
 			<option value=""><?php echo esc_attr( $label ); ?></option>
 			<?php wp_get_archives( $dropdown_args ); ?>
 
 		</select>
+
+<script<?php echo $type_attr; ?>>
+/* <![CDATA[ */
+(function() {
+	var dropdown = document.getElementById( "<?php echo esc_js( $dropdown_id ); ?>" );
+	function onSelectChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value !== '' ) {
+			document.location.href = this.options[ this.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onSelectChange;
+})();
+/* ]]> */
+</script>
+
 		<?php } else { ?>
 		<ul>
 			<?php
@@ -131,7 +148,7 @@ class WP_Widget_Archives extends WP_Widget {
 			?>
 		</ul>
 			<?php
-}
+		}
 
 		echo $args['after_widget'];
 	}
@@ -179,9 +196,8 @@ class WP_Widget_Archives extends WP_Widget {
 				'dropdown' => '',
 			)
 		);
-		$title    = sanitize_text_field( $instance['title'] );
 		?>
-		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" /></p>
+		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $instance['title'] ); ?>" /></p>
 		<p>
 			<input class="checkbox" type="checkbox"<?php checked( $instance['dropdown'] ); ?> id="<?php echo $this->get_field_id( 'dropdown' ); ?>" name="<?php echo $this->get_field_name( 'dropdown' ); ?>" /> <label for="<?php echo $this->get_field_id( 'dropdown' ); ?>"><?php _e( 'Display as dropdown' ); ?></label>
 			<br/>

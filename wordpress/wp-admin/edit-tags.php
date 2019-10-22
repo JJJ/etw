@@ -201,7 +201,7 @@ switch ( $wp_list_table->current_action() ) {
 		check_admin_referer( 'bulk-tags' );
 		$tags = (array) $_REQUEST['delete_tags'];
 		/** This action is documented in wp-admin/edit-comments.php */
-		$location = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $location, $wp_list_table->current_action(), $tags );
+		$location = apply_filters( 'handle_bulk_actions-' . get_current_screen()->id, $location, $wp_list_table->current_action(), $tags );  // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 		break;
 }
 
@@ -242,7 +242,11 @@ if ( current_user_can( $tax->cap->edit_terms ) ) {
 if ( 'category' == $taxonomy || 'link_category' == $taxonomy || 'post_tag' == $taxonomy ) {
 	$help = '';
 	if ( 'category' == $taxonomy ) {
-		$help = '<p>' . sprintf( __( 'You can use categories to define sections of your site and group related posts. The default category is &#8220;Uncategorized&#8221; until you change it in your <a href="%s">writing settings</a>.' ), 'options-writing.php' ) . '</p>';
+		$help = '<p>' . sprintf(
+			/* translators: %s: URL to Writing Settings screen. */
+			__( 'You can use categories to define sections of your site and group related posts. The default category is &#8220;Uncategorized&#8221; until you change it in your <a href="%s">writing settings</a>.' ),
+			'options-writing.php'
+		) . '</p>';
 	} elseif ( 'link_category' == $taxonomy ) {
 		$help = '<p>' . __( 'You can create groups of links by using Link Categories. Link Category names must be unique and Link Categories are separate from the categories you use for posts.' ) . '</p>';
 	} else {
@@ -297,14 +301,14 @@ if ( 'category' == $taxonomy || 'link_category' == $taxonomy || 'post_tag' == $t
 	$help = '<p><strong>' . __( 'For more information:' ) . '</strong></p>';
 
 	if ( 'category' == $taxonomy ) {
-		$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Posts_Categories_Screen">Documentation on Categories</a>' ) . '</p>';
+		$help .= '<p>' . __( '<a href="https://wordpress.org/support/article/posts-categories-screen/">Documentation on Categories</a>' ) . '</p>';
 	} elseif ( 'link_category' == $taxonomy ) {
 		$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Links_Link_Categories_Screen">Documentation on Link Categories</a>' ) . '</p>';
 	} else {
-		$help .= '<p>' . __( '<a href="https://codex.wordpress.org/Posts_Tags_Screen">Documentation on Tags</a>' ) . '</p>';
+		$help .= '<p>' . __( '<a href="https://wordpress.org/support/article/posts-tags-screen/">Documentation on Tags</a>' ) . '</p>';
 	}
 
-	$help .= '<p>' . __( '<a href="https://wordpress.org/support/">Support Forums</a>' ) . '</p>';
+	$help .= '<p>' . __( '<a href="https://wordpress.org/support/">Support</a>' ) . '</p>';
 
 	get_current_screen()->set_help_sidebar( $help );
 
@@ -331,7 +335,7 @@ if ( is_plugin_active( 'wpcat2tag-importer/wpcat2tag-importer.php' ) ) {
 
 <?php
 if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
-	/* translators: %s: search keywords */
+	/* translators: %s: Search query. */
 	printf( '<span class="subtitle">' . __( 'Search results for &#8220;%s&#8221;' ) . '</span>', esc_html( wp_unslash( $_REQUEST['s'] ) ) );
 }
 ?>
@@ -354,14 +358,17 @@ endif;
 
 </form>
 
+<?php
+$can_edit_terms = current_user_can( $tax->cap->edit_terms );
+
+if ( $can_edit_terms ) {
+	?>
 <div id="col-container" class="wp-clearfix">
 
 <div id="col-left">
 <div class="col-wrap">
 
-<?php
-
-if ( current_user_can( $tax->cap->edit_terms ) ) {
+	<?php
 	if ( 'category' == $taxonomy ) {
 		/**
 		 * Fires before the Add Category form.
@@ -512,9 +519,12 @@ if ( current_user_can( $tax->cap->edit_terms ) ) {
 	 * @param string $taxonomy The taxonomy slug.
 	 */
 	do_action( "{$taxonomy}_add_form_fields", $taxonomy );
-
-	submit_button( $tax->labels->add_new_item );
-
+	?>
+	<p class="submit">
+		<?php submit_button( $tax->labels->add_new_item, 'primary', 'submit', false ); ?>
+		<span class="spinner"></span>
+	</p>
+	<?php
 	if ( 'category' == $taxonomy ) {
 		/**
 		 * Fires at the end of the Edit Category form.
@@ -559,13 +569,12 @@ if ( current_user_can( $tax->cap->edit_terms ) ) {
 	do_action( "{$taxonomy}_add_form", $taxonomy );
 	?>
 </form></div>
-<?php } ?>
-
 </div>
 </div><!-- /col-left -->
 
 <div id="col-right">
 <div class="col-wrap">
+<?php } ?>
 
 <?php $wp_list_table->views(); ?>
 
@@ -581,22 +590,37 @@ if ( current_user_can( $tax->cap->edit_terms ) ) {
 <div class="form-wrap edit-term-notes">
 <p>
 	<?php
-	echo '<strong>' . __( 'Note:' ) . '</strong><br />';
 	printf(
-		/* translators: %s: default category */
-		__( 'Deleting a category does not delete the posts in that category. Instead, posts that were only assigned to the deleted category are set to the category %s.' ),
+		/* translators: %s: Default category. */
+		__( 'Deleting a category does not delete the posts in that category. Instead, posts that were only assigned to the deleted category are set to the default category %s. The default category cannot be deleted.' ),
 		/** This filter is documented in wp-includes/category-template.php */
 		'<strong>' . apply_filters( 'the_category', get_cat_name( get_option( 'default_category' ) ), '', '' ) . '</strong>'
 	);
 	?>
 </p>
 	<?php if ( current_user_can( 'import' ) ) : ?>
-<p><?php printf( __( 'Categories can be selectively converted to tags using the <a href="%s">category to tag converter</a>.' ), esc_url( $import_link ) ); ?></p>
+	<p>
+		<?php
+		printf(
+			/* translators: %s: URL to Categories to Tags Converter tool. */
+			__( 'Categories can be selectively converted to tags using the <a href="%s">category to tag converter</a>.' ),
+			esc_url( $import_link )
+		);
+		?>
+	</p>
 	<?php endif; ?>
 </div>
 <?php elseif ( 'post_tag' == $taxonomy && current_user_can( 'import' ) ) : ?>
 <div class="form-wrap edit-term-notes">
-<p><?php printf( __( 'Tags can be selectively converted to categories using the <a href="%s">tag to category converter</a>.' ), esc_url( $import_link ) ); ?></p>
+<p>
+	<?php
+	printf(
+		/* translators: %s: URL to Categories to Tags Converter tool. */
+		__( 'Tags can be selectively converted to categories using the <a href="%s">tag to category converter</a>.' ),
+		esc_url( $import_link )
+	);
+	?>
+	</p>
 </div>
 	<?php
 endif;
@@ -610,13 +634,16 @@ endif;
  *
  * @param string $taxonomy The taxonomy name.
  */
-do_action( "after-{$taxonomy}-table", $taxonomy );
-?>
+do_action( "after-{$taxonomy}-table", $taxonomy );  // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
+if ( $can_edit_terms ) {
+	?>
 </div>
 </div><!-- /col-right -->
 
 </div><!-- /col-container -->
+<?php } ?>
+
 </div><!-- /wrap -->
 
 <?php if ( ! wp_is_mobile() ) : ?>

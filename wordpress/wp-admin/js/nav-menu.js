@@ -208,7 +208,8 @@
 						// Add the items
 						api.addItemToMenu(menuItems, processMethod, function(){
 							// Deselect the items and hide the ajax spinner
-							checkboxes.removeAttr('checked');
+							checkboxes.prop( 'checked', false );
+							t.find( '.button-controls .select-all' ).prop( 'checked', false );
 							t.find( '.button-controls .spinner' ).removeClass( 'is-active' );
 						});
 					});
@@ -835,6 +836,20 @@
 					}
 				}
 			});
+
+			$( '#menu-name' ).on( 'input', _.debounce( function () {
+				var menuName = $( document.getElementById( 'menu-name' ) ),
+					menuNameVal = menuName.val();
+
+				if ( ! menuNameVal || ! menuNameVal.replace( /\s+/, '' ) ) {
+					// Add warning for invalid menu name.
+					menuName.parent().addClass( 'form-invalid' );
+				} else {
+					// Remove warning for valid menu name.
+					menuName.parent().removeClass( 'form-invalid' );
+				}
+			}, 500 ) );
+
 			$('#add-custom-links input[type="text"]').keypress(function(e){
 				$('#customlinkdiv').removeClass('form-invalid');
 
@@ -873,26 +888,14 @@
 		},
 
 		attachQuickSearchListeners : function() {
-			var searchTimer,
-				inputEvent;
+			var searchTimer;
 
 			// Prevent form submission.
 			$( '#nav-menu-meta' ).on( 'submit', function( event ) {
 				event.preventDefault();
 			});
 
-			/*
-			 * Use feature detection to determine whether inputs should use
-			 * the `keyup` or `input` event. Input is preferred but lacks support
-			 * in legacy browsers. See changeset 34078, see also ticket #26600#comment:59
-			 */
-			if ( 'oninput' in document.createElement( 'input' ) ) {
-				inputEvent = 'input';
-			} else {
-				inputEvent = 'keyup';
-			}
-
-			$( '#nav-menu-meta' ).on( inputEvent, '.quick-search', function() {
+			$( '#nav-menu-meta' ).on( 'input', '.quick-search', function() {
 				var $this = $( this );
 
 				$this.attr( 'autocomplete', 'off' );
@@ -942,12 +945,12 @@
 		},
 
 		addCustomLink : function( processMethod ) {
-			var url = $('#custom-menu-item-url').val(),
+			var url = $('#custom-menu-item-url').val().trim(),
 				label = $('#custom-menu-item-name').val();
 
 			processMethod = processMethod || api.addMenuItemToBottom;
 
-			if ( '' === url || 'http://' == url ) {
+			if ( '' === url || 'https://' == url || 'http://' == url ) {
 				$('#customlinkdiv').addClass('form-invalid');
 				return false;
 			}
@@ -959,7 +962,7 @@
 				$( '.customlinkdiv .spinner' ).removeClass( 'is-active' );
 				// Set custom link form back to defaults
 				$('#custom-menu-item-name').val('').blur();
-				$('#custom-menu-item-url').val('http://');
+				$( '#custom-menu-item-url' ).val( '' ).attr( 'placeholder', 'https://' );
 			});
 		},
 
@@ -1059,7 +1062,7 @@
 
 		attachTabsPanelListeners : function() {
 			$('#menu-settings-column').bind('click', function(e) {
-				var selectAreaMatch, panelId, wrapper, items,
+				var selectAreaMatch, selectAll, panelId, wrapper, items,
 					target = $(e.target);
 
 				if ( target.hasClass('nav-tab-link') ) {
@@ -1069,7 +1072,7 @@
 					wrapper = target.parents('.accordion-section-content').first();
 
 					// upon changing tabs, we want to uncheck all checkboxes
-					$('input', wrapper).removeAttr('checked');
+					$( 'input', wrapper ).prop( 'checked', false );
 
 					$('.tabs-panel-active', wrapper).removeClass('tabs-panel-active').addClass('tabs-panel-inactive');
 					$('#' + panelId, wrapper).removeClass('tabs-panel-inactive').addClass('tabs-panel-active');
@@ -1088,15 +1091,28 @@
 					}
 
 					e.preventDefault();
-				} else if ( target.hasClass('select-all') ) {
-					selectAreaMatch = /#(.*)$/.exec(e.target.href);
-					if ( selectAreaMatch && selectAreaMatch[1] ) {
-						items = $('#' + selectAreaMatch[1] + ' .tabs-panel-active .menu-item-title input');
-						if( items.length === items.filter(':checked').length )
-							items.removeAttr('checked');
-						else
-							items.prop('checked', true);
-						return false;
+				} else if ( target.hasClass( 'select-all' ) ) {
+					selectAreaMatch = target.closest( '.button-controls' ).data( 'items-type' );
+					if ( selectAreaMatch ) {
+						items = $( '#' + selectAreaMatch + ' .tabs-panel-active .menu-item-title input' );
+
+						if ( items.length === items.filter( ':checked' ).length && ! target.is( ':checked' ) ) {
+							items.prop( 'checked', false );
+						} else if ( target.is( ':checked' ) ) {
+							items.prop( 'checked', true );
+						}
+					}
+				} else if ( target.hasClass( 'menu-item-checkbox' ) ) {
+					selectAreaMatch = target.closest( '.tabs-panel-active' ).parent().attr( 'id' );
+					if ( selectAreaMatch ) {
+						items     = $( '#' + selectAreaMatch + ' .tabs-panel-active .menu-item-title input' );
+						selectAll = $( '.button-controls[data-items-type="' + selectAreaMatch + '"] .select-all' );
+
+						if ( items.length === items.filter( ':checked' ).length && ! selectAll.is( ':checked' ) ) {
+							selectAll.prop( 'checked', true );
+						} else if ( selectAll.is( ':checked' ) ) {
+							selectAll.prop( 'checked', false );
+						}
 					}
 				} else if ( target.hasClass('submit-add-to-menu') ) {
 					api.registerChange();
@@ -1178,8 +1194,8 @@
 			menuName = $('#menu-name'),
 			menuNameVal = menuName.val();
 			// Cancel and warn if invalid menu name
-			if( !menuNameVal || menuNameVal == menuName.attr('title') || !menuNameVal.replace(/\s+/, '') ) {
-				menuName.parent().addClass('form-invalid');
+			if ( ! menuNameVal || ! menuNameVal.replace( /\s+/, '' ) ) {
+				menuName.parent().addClass( 'form-invalid' );
 				return false;
 			}
 			// Copy menu theme locations
@@ -1224,6 +1240,7 @@
 			pattern = /menu-item[(\[^]\]*/,
 			$items = $('<div>').html(resp).find('li'),
 			wrapper = panel.closest( '.accordion-section-content' ),
+			selectAll = wrapper.find( '.button-controls .select-all' ),
 			$item;
 
 			if( ! $items.length ) {
@@ -1258,6 +1275,10 @@
 			$('.categorychecklist', panel).html( $items );
 			$( '.spinner', panel ).removeClass( 'is-active' );
 			wrapper.removeClass( 'has-no-menu-item' );
+
+			if ( selectAll.is( ':checked' ) ) {
+				selectAll.prop( 'checked', false );
+			}
 		},
 
 		/**

@@ -45,7 +45,7 @@ if ( 'category' == $taxonomy ) {
 }
 
 /**
- * Use with caution, see https://codex.wordpress.org/Function_Reference/wp_reset_vars
+ * Use with caution, see https://developer.wordpress.org/reference/functions/wp_reset_vars/
  */
 wp_reset_vars( array( 'wp_http_referer' ) );
 
@@ -70,18 +70,22 @@ do_action( "{$taxonomy}_pre_edit_form", $tag, $taxonomy ); ?>
 <div class="wrap">
 <h1><?php echo $tax->labels->edit_item; ?></h1>
 
-<?php if ( $message ) : ?>
-<div id="message" class="updated">
+<?php
+$class = ( isset( $msg ) && 5 === $msg ) ? 'error' : 'success';
+
+if ( $message ) {
+	?>
+<div id="message" class="notice notice-<?php echo $class; ?>">
 	<p><strong><?php echo $message; ?></strong></p>
 	<?php if ( $wp_http_referer ) { ?>
 	<p><a href="<?php echo esc_url( wp_validate_redirect( esc_url_raw( $wp_http_referer ), admin_url( 'term.php?taxonomy=' . $taxonomy ) ) ); ?>">
-							<?php
-							echo esc_html( $tax->labels->back_to_items );
-							?>
+		<?php echo esc_html( $tax->labels->back_to_items ); ?>
 	</a></p>
 	<?php } ?>
 </div>
-<?php endif; ?>
+	<?php
+}
+?>
 
 <div id="ajax-response"></div>
 
@@ -123,7 +127,7 @@ if ( isset( $tag->name ) ) {
 	$tag_name_value = esc_attr( $tag->name );
 }
 ?>
-	<table class="form-table">
+	<table class="form-table" role="presentation">
 		<tr class="form-field form-required term-name-wrap">
 			<th scope="row"><label for="name"><?php _ex( 'Name', 'term name' ); ?></label></th>
 			<td><input name="name" id="name" type="text" value="<?php echo $tag_name_value; ?>" size="40" aria-required="true" />

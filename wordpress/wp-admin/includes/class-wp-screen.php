@@ -179,6 +179,14 @@ final class WP_Screen {
 	private $_screen_settings;
 
 	/**
+	 * Whether the screen is using the block editor.
+	 *
+	 * @since 5.0.0
+	 * @var bool
+	 */
+	public $is_block_editor = false;
+
+	/**
 	 * Fetches a screen object.
 	 *
 	 * @since 3.3.0
@@ -194,9 +202,11 @@ final class WP_Screen {
 			return $hook_name;
 		}
 
-		$post_type = $taxonomy = null;
-		$in_admin  = false;
-		$action    = '';
+		$post_type       = null;
+		$taxonomy        = null;
+		$in_admin        = false;
+		$action          = '';
+		$is_block_editor = false;
 
 		if ( $hook_name ) {
 			$id = $hook_name;
@@ -272,7 +282,9 @@ final class WP_Screen {
 
 			switch ( $base ) {
 				case 'post':
-					if ( isset( $_GET['post'] ) ) {
+					if ( isset( $_GET['post'] ) && isset( $_POST['post_ID'] ) && (int) $_GET['post'] !== (int) $_POST['post_ID'] ) {
+						wp_die( __( 'A post ID mismatch has been detected.' ), __( 'Sorry, you are not allowed to edit this item.' ), 400 );
+					} elseif ( isset( $_GET['post'] ) ) {
 						$post_id = (int) $_GET['post'];
 					} elseif ( isset( $_POST['post_ID'] ) ) {
 						$post_id = (int) $_POST['post_ID'];
@@ -284,6 +296,13 @@ final class WP_Screen {
 						$post = get_post( $post_id );
 						if ( $post ) {
 							$post_type = $post->post_type;
+
+							/** This filter is documented in wp-admin/post.php */
+							$replace_editor = apply_filters( 'replace_editor', false, $post );
+
+							if ( ! $replace_editor ) {
+								$is_block_editor = use_block_editor_for_post( $post );
+							}
 						}
 					}
 					break;
@@ -304,6 +323,12 @@ final class WP_Screen {
 				if ( null === $post_type ) {
 					$post_type = 'post';
 				}
+
+				// When creating a new post, use the default block editor support value for the post type.
+				if ( empty( $post_id ) ) {
+					$is_block_editor = use_block_editor_for_post_type( $post_type );
+				}
+
 				$id = $post_type;
 				break;
 			case 'edit':
@@ -347,13 +372,14 @@ final class WP_Screen {
 			$screen->id = $id;
 		}
 
-		$screen->base       = $base;
-		$screen->action     = $action;
-		$screen->post_type  = (string) $post_type;
-		$screen->taxonomy   = (string) $taxonomy;
-		$screen->is_user    = ( 'user' == $in_admin );
-		$screen->is_network = ( 'network' == $in_admin );
-		$screen->in_admin   = $in_admin;
+		$screen->base            = $base;
+		$screen->action          = $action;
+		$screen->post_type       = (string) $post_type;
+		$screen->taxonomy        = (string) $taxonomy;
+		$screen->is_user         = ( 'user' == $in_admin );
+		$screen->is_network      = ( 'network' == $in_admin );
+		$screen->in_admin        = $in_admin;
+		$screen->is_block_editor = $is_block_editor;
 
 		self::$_registry[ $id ] = $screen;
 
@@ -366,7 +392,7 @@ final class WP_Screen {
 	 * @see set_current_screen()
 	 * @since 3.3.0
 	 *
-	 * @global WP_Screen $current_screen
+	 * @global WP_Screen $current_screen WordPress current screen object.
 	 * @global string    $taxnow
 	 * @global string    $typenow
 	 */
@@ -408,6 +434,22 @@ final class WP_Screen {
 		}
 
 		return ( $admin == $this->in_admin );
+	}
+
+	/**
+	 * Sets or returns whether the block editor is loading on the current screen.
+	 *
+	 * @since 5.0.0
+	 *
+	 * @param bool $set Optional. Sets whether the block editor is loading on the current screen or not.
+	 * @return bool True if the block editor is being loaded, false otherwise.
+	 */
+	public function is_block_editor( $set = null ) {
+		if ( $set !== null ) {
+			$this->is_block_editor = (bool) $set;
+		}
+
+		return $this->is_block_editor;
 	}
 
 	/**
@@ -886,16 +928,16 @@ final class WP_Screen {
 		}
 		?>
 		<div id="screen-meta-links">
-		<?php if ( $this->get_help_tabs() ) : ?>
-			<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
-			<button type="button" id="contextual-help-link" class="button show-settings" aria-controls="contextual-help-wrap" aria-expanded="false"><?php _e( 'Help' ); ?></button>
+		<?php if ( $this->show_screen_options() ) : ?>
+			<div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
+			<button type="button" id="show-settings-link" class="button show-settings" aria-controls="screen-options-wrap" aria-expanded="false"><?php _e( 'Screen Options' ); ?></button>
 			</div>
 			<?php
 		endif;
-if ( $this->show_screen_options() ) :
-	?>
-			<div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
-			<button type="button" id="show-settings-link" class="button show-settings" aria-controls="screen-options-wrap" aria-expanded="false"><?php _e( 'Screen Options' ); ?></button>
+		if ( $this->get_help_tabs() ) :
+			?>
+			<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
+			<button type="button" id="contextual-help-link" class="button show-settings" aria-controls="contextual-help-wrap" aria-expanded="false"><?php _e( 'Help' ); ?></button>
 			</div>
 		<?php endif; ?>
 		</div>
@@ -974,7 +1016,10 @@ if ( $this->show_screen_options() ) :
 			)
 		);
 
-		$wrapper_start = $wrapper_end = $form_start = $form_end = '';
+		$wrapper_start = '';
+		$wrapper_end   = '';
+		$form_start    = '';
+		$form_end      = '';
 
 		// Output optional wrapper.
 		if ( $options['wrap'] ) {
@@ -1117,17 +1162,18 @@ if ( $this->show_screen_options() ) :
 		?>
 		<fieldset class='columns-prefs'>
 		<legend class="screen-layout"><?php _e( 'Layout' ); ?></legend>
-												<?php
-												for ( $i = 1; $i <= $num; ++$i ) :
-													?>
-													<label class="columns-prefs-<?php echo $i; ?>">
-				<input type='radio' name='screen_columns' value='<?php echo esc_attr( $i ); ?>'
-													<?php checked( $screen_layout_columns, $i ); ?> />
-													<?php printf( _n( '%s column', '%s columns', $i ), number_format_i18n( $i ) ); ?>
-				</label>
-													<?php
-			endfor;
-												?>
+		<?php for ( $i = 1; $i <= $num; ++$i ) : ?>
+			<label class="columns-prefs-<?php echo $i; ?>">
+			<input type='radio' name='screen_columns' value='<?php echo esc_attr( $i ); ?>' <?php checked( $screen_layout_columns, $i ); ?> />
+			<?php
+				printf(
+					/* translators: %s: Number of columns on the page. */
+					_n( '%s column', '%s columns', $i ),
+					number_format_i18n( $i )
+				);
+			?>
+			</label>
+		<?php endfor; ?>
 		</fieldset>
 		<?php
 	}
