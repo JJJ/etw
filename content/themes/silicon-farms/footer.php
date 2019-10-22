@@ -13,7 +13,7 @@
 		?>
 
 		<div id="site-generator">
-			<a href="http://easttroyweb.com/" title="<?php esc_attr_e( 'Free web hosting for qualifying East Troy busineses' ); ?>"><?php printf( __( 'Hosted by %s', 'twentyeleven' ), 'East Troy Web' ); ?></a>
+			A <a href="http://publicious.org">Publicious</a> Site
 		</div>
 	</footer><!-- #colophon -->
 </div><!-- #page -->
