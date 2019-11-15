@@ -180,8 +180,6 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
 					}
 				}
 			}
-		} elseif ( WC()->cart && WC()->cart->needs_shipping() ) {
-			$needs_shipping = true;
 		}
 
 		$needs_shipping = apply_filters( 'woocommerce_cart_needs_shipping', $needs_shipping );
@@ -193,7 +191,6 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
 
 		// Only apply if all packages are being shipped via chosen method, or order is virtual.
 		if ( ! empty( $this->enable_for_methods ) && $needs_shipping ) {
-			$canonical_rate_ids              = array();
 			$order_shipping_items            = is_object( $order ) ? $order->get_shipping_methods() : false;
 			$chosen_shipping_methods_session = WC()->session->get( 'chosen_shipping_methods' );
 
@@ -240,7 +237,7 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
 	 */
 	private function get_canonical_package_rate_ids( $chosen_package_rate_ids ) {
 
-		$shipping_packages  = WC()->shipping->get_packages();
+		$shipping_packages  = WC()->shipping()->get_packages();
 		$canonical_rate_ids = array();
 
 		if ( ! empty( $chosen_package_rate_ids ) && is_array( $chosen_package_rate_ids ) ) {
@@ -283,9 +280,6 @@ class WC_Gateway_COD extends WC_Payment_Gateway {
 		} else {
 			$order->payment_complete();
 		}
-
-		// Reduce stock levels.
-		wc_reduce_stock_levels( $order_id );
 
 		// Remove cart.
 		WC()->cart->empty_cart();

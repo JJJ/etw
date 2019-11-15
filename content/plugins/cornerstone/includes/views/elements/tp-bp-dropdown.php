@@ -58,9 +58,9 @@ if ( X_BUDDYPRESS_IS_ACTIVE ) {
       $submenu_items .= '<li><a href="' . bp_get_signup_page() . '"><span>' . x_get_option( 'x_buddypress_register_title' ) . '</span></a></li>';
       $submenu_items .= '<li><a href="' . bp_get_activation_page() . '"><span>' . x_get_option( 'x_buddypress_activate_title' ) . '</span></a></li>';
     }
-    $submenu_items .= '<li><a href="' . wp_login_url() . '"><span>' . __( 'Log in', '__x__' ) . '</span></a></li>';
+    $submenu_items .= '<li><a href="' . wp_login_url() . '"><span>' . __( 'Log in', 'cornerstone' ) . '</span></a></li>';
   } else {
-    $submenu_items .= '<li><a href="' . bp_loggedin_user_domain() . '"><span>' . __( 'Profile', '__x__' ) . '</span></a></li>';
+    $submenu_items .= '<li><a href="' . bp_loggedin_user_domain() . '"><span>' . __( 'Profile', 'cornerstone' ) . '</span></a></li>';
   }
 
 } else {
@@ -75,8 +75,8 @@ $dropdown_content = ob_get_clean();
 // Data: Partials
 // --------------
 
-$data_toggle   = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'toggle_anchor' => 'anchor', 'toggle' => '' ) ) );
-$data_dropdown = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'dropdown' => '' ) ) );
+$data_toggle   = cs_extract( $_view_data, array( 'toggle_anchor' => 'anchor', 'toggle' => '' ) );
+$data_dropdown = cs_extract( $_view_data, array( 'dropdown' => '' ) );
 
 
 // Set Dropdown Content
@@ -92,6 +92,6 @@ $data_dropdown    = array_merge( $data_dropdown, $dropdown_content );
 ?>
 
 <div <?php echo x_atts( $atts ); ?>>
-  <?php x_get_view( 'partials', 'anchor', '', $data_toggle, true ); ?>
-  <?php x_get_view( 'partials', 'dropdown', '', $data_dropdown, true ); ?>
+  <?php echo cs_get_partial_view( 'anchor', $data_toggle ); ?>
+  <?php echo cs_get_partial_view( 'dropdown', $data_dropdown ); ?>
 </div>

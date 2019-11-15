@@ -73,9 +73,9 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'id',
       'text',
       __( 'ID', 'cornerstone' ),
-      __( 'Add an ID to this element so you can target it with your own customizations.', 'cornerstone' ),
       '',
-      array( 'monospace' => true, 'advanced' => true )
+      '',
+      array( 'monospace' => true, 'advanced' => true, 'dynamic' => false )
     );
 
   }
@@ -86,9 +86,9 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'class',
       'text',
       __( 'Class', 'cornerstone' ),
-      __( 'Add custom classes to this element. Multiple classes should be seperated by spaces. They will be added at the root level element.', 'cornerstone' ),
       '',
-      array( 'monospace' => true, 'advanced' => true )
+      '',
+      array( 'monospace' => true, 'advanced' => true, 'dynamic' => false )
     );
 
   }
@@ -99,9 +99,9 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'style',
       'text',
       __( 'Style', 'cornerstone' ),
-      __( 'Add an inline style to this element. This only contain valid CSS rules with no selectors or braces.', 'cornerstone' ),
       '',
-      array( 'monospace' => true, 'advanced' => true )
+      '',
+      array( 'monospace' => true, 'advanced' => true, 'dynamic' => false )
     );
 
   }
@@ -112,7 +112,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'padding',
       'dimensions',
       __( 'Padding', 'cornerstone' ),
-      __( 'Specify a custom padding for each side of this element. Can accept CSS units like px, ems, and % (default unit is px).', 'cornerstone' ),
+      '',
       array( '0px', '0px', '0px', '0px', 'unlinked' )
     );
 
@@ -123,8 +123,8 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     $this->addControl(
       'border_style',
       'select',
-      __( 'Border', 'cornerstone' ),
-      __( 'Specify a custom border for this element by selecting a style, choosing a color, and inputting your dimensions.', 'cornerstone' ),
+      __( 'Border Style', 'cornerstone' ),
+      '',
       'none',
       array(
         'choices' => array(
@@ -144,8 +144,8 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     $this->addControl(
       'border_color',
       'color',
-      null,
-      null,
+      __( 'Border Color', 'cornerstone' ),
+      '',
       '',
       array(
         'condition' => array(
@@ -157,8 +157,8 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     $this->addControl(
       'border',
       'dimensions',
-      null,
-      null,
+      __( 'Border Dimensions', 'cornerstone' ),
+      '',
       array( '1px', '1px', '1px', '1px', 'linked' ),
       array(
         'condition' => array(
@@ -175,7 +175,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'href',
       'text',
       __( 'Href', 'cornerstone' ),
-      __( 'Enter in the URL you want to link to.', 'cornerstone' ),
+      '',
       '#'
     );
 
@@ -183,7 +183,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'href_title',
       'text',
       __( 'Link Title Attribute', 'cornerstone' ),
-      __( 'Enter in the title attribute you want for your link.', 'cornerstone' ),
+      '',
       ''
     );
 
@@ -191,7 +191,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'href_target',
       'toggle',
       __( 'Open Link in New Window', 'cornerstone' ),
-      __( 'Select to open your link in a new window.', 'cornerstone' ),
+      '',
       false
     );
 
@@ -201,18 +201,18 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
 
     $this->addControl(
       'visibility',
-      'multi-choose',
+      'bp-hide',
       __( 'Hide based on screen width', 'cornerstone' ),
-      __( 'Hide this element at different screen widths. Keep in mind that the &ldquo;Extra Large&rdquo; toggle is 1200px+, so you may not see your element disappear if your preview window is not large enough.', 'cornerstone' ),
+      '',
       array(),
       array(
         'columns' => '5',
         'choices' => array(
-          array( 'value' => 'xl', 'icon' => fa_entity( 'desktop' ), 'tooltip' => __( 'XL', 'cornerstone' ) ),
-          array( 'value' => 'lg', 'icon' => fa_entity( 'laptop' ),  'tooltip' => __( 'LG', 'cornerstone' ) ),
-          array( 'value' => 'md', 'icon' => fa_entity( 'tablet' ),  'tooltip' => __( 'MD', 'cornerstone' ) ),
-          array( 'value' => 'sm', 'icon' => fa_entity( 'tablet' ),  'tooltip' => __( 'SM', 'cornerstone' ) ),
-          array( 'value' => 'xs', 'icon' => fa_entity( 'mobile' ),  'tooltip' => __( 'XS', 'cornerstone' ) ),
+          array( 'value' => 'xl', 'tooltip' => __( 'XL', 'cornerstone' ) ),
+          array( 'value' => 'lg', 'tooltip' => __( 'LG', 'cornerstone' ) ),
+          array( 'value' => 'md', 'tooltip' => __( 'MD', 'cornerstone' ) ),
+          array( 'value' => 'sm', 'tooltip' => __( 'SM', 'cornerstone' ) ),
+          array( 'value' => 'xs', 'tooltip' => __( 'XS', 'cornerstone' ) ),
         )
       )
     );
@@ -225,7 +225,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'text_align',
       'choose',
       __( 'Text Align', 'cornerstone' ),
-      __( 'Set a text alignment, or deselect to inherit from parent elements.', 'cornerstone' ),
+      '',
       'none',
       array(
         'columns' => '4',
@@ -247,7 +247,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'animation',
       'select',
       __( 'Animation', 'cornerstone' ),
-      __( 'Optionally add animation to your element as users scroll down the page.', 'cornerstone' ),
+      '',
       'none',
       array(
         'choices' => self::animationChoices()
@@ -258,7 +258,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'animation_offset',
       'text',
       __( 'Animation Offset (%)', 'cornerstone' ),
-      __( 'Specify a percentage value where the element should appear on screen for the animation to take place.', 'cornerstone' ),
+      '',
       '50',
       array(
         'condition' => array(
@@ -271,7 +271,7 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
       'animation_delay',
       'text',
       __( 'Animation Delay (ms)', 'cornerstone' ),
-      __( 'Specify an amount of time before the graphic animation starts in milliseconds.', 'cornerstone' ),
+      '',
       '0',
       array(
         'condition' => array(
@@ -519,9 +519,8 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'text',
     		'ui' => array(
     			'title' => __( 'ID', 'cornerstone' ),
-    			'tooltip' => __( 'Add an ID to this element so you can target it with your own customizations.', 'cornerstone' ),
     		),
-    		'options' => array( 'monospace' => true )
+    		'options' => array( 'monospace' => true, 'dynamic' => false )
     	),
 
     	//
@@ -532,9 +531,8 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'text',
     		'ui' => array(
     			'title' => __( 'Class', 'cornerstone' ),
-    			'tooltip' => __( 'Add custom classes to this element. Multiple classes should be seperated by spaces. They will be added at the root level element.', 'cornerstone' ),
     		),
-    		'options' => array( 'monospace' => true )
+    		'options' => array( 'monospace' => true, 'dynamic' => false )
     	),
 
       //
@@ -545,9 +543,8 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'text',
     		'ui' => array(
     			'title' => __( 'Style', 'cornerstone' ),
-    			'tooltip' => __( 'Add an inline style to this element. This only contain valid CSS rules with no selectors or braces.', 'cornerstone' ),
     		),
-    		'options' => array( 'monospace' => true )
+    		'options' => array( 'monospace' => true, 'dynamic' => false )
     	),
 
       //
@@ -558,7 +555,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'dimensions',
     		'ui' => array(
     			'title' => __( 'Margin', 'cornerstone' ),
-    			'tooltip' =>__( 'Specify a custom margin for each side of this element. Can accept CSS units like px, ems, and % (default unit is px).', 'cornerstone' ),
     		)
     	),
 
@@ -570,7 +566,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'dimensions',
     		'ui' => array(
     			'title' => __( 'Padding', 'cornerstone' ),
-    			'tooltip' =>__( 'Specify a custom padding for each side of this element. Can accept CSS units like px, ems, and % (default unit is px).', 'cornerstone' ),
     		)
     	),
 
@@ -582,7 +577,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'choose',
     		'ui' => array(
     			'title' => __( 'Text Align', 'cornerstone' ),
-    			'tooltip' =>__( 'Set a text alignment, or deselect to inherit from parent elements.', 'cornerstone' ),
     		),
     		'options' => array(
     			'columns' => '4',
@@ -601,21 +595,10 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     	//
 
     	'visibility' => array(
-    		'type' => 'multi-choose',
+    		'type' => 'bp-hide',
     		'ui' => array(
     			'title' => __( 'Hide based on screen width', 'cornerstone' ),
-    			'toolip' => __( 'Hide this element at different screen widths. Keep in mind that the &ldquo;Extra Large&rdquo; toggle is 1200px+, so you may not see your element disappear if your preview window is not large enough.', 'cornerstone' )
     		),
-    		'options' => array(
-    			'columns' => '5',
-    			'choices' => array(
-    				array( 'value' => 'xl', 'icon' => fa_entity( 'desktop' ), 'tooltip' => __( 'XL', 'cornerstone' ) ),
-    				array( 'value' => 'lg', 'icon' => fa_entity( 'laptop' ),  'tooltip' => __( 'LG', 'cornerstone' ) ),
-    				array( 'value' => 'md', 'icon' => fa_entity( 'tablet' ),  'tooltip' => __( 'MD', 'cornerstone' ) ),
-    				array( 'value' => 'sm', 'icon' => fa_entity( 'tablet' ),  'tooltip' => __( 'SM', 'cornerstone' ) ),
-    				array( 'value' => 'xs', 'icon' => fa_entity( 'mobile' ),  'tooltip' => __( 'XS', 'cornerstone' ) ),
-    			)
-    		)
     	),
 
     	//
@@ -634,7 +617,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     			'type' => 'select',
     			'ui' => array(
     				'title' => __( 'Border', 'cornerstone' ),
-    				'tooltip' => __( 'Specify a custom border for this element by selecting a style, choosing a color, and inputting your dimensions.', 'cornerstone' ),
     			),
     			'options' => array(
     				'choices' => array(
@@ -702,7 +684,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     			'type' => 'text',
     			'ui' => array(
     				'title' => __( 'Link Title Attribute', 'cornerstone' ),
-    				'tooltip' => __( 'Enter in the title attribute you want for your link. This often appears in a browser tooltip when hovering.', 'cornerstone' ),
     			),
     		),
 
@@ -714,7 +695,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     			'type' => 'toggle',
     			'ui' => array(
     				'title' => __( 'Open Link in New Tab', 'cornerstone' ),
-    				'tooltip' => __( 'Select to open your link in a new tab, or a new window in older browsers.', 'cornerstone' ),
     			),
     		)
     	),
@@ -734,7 +714,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     			'type' => 'select',
     			'ui' => array(
     				'title' => __( 'Animation', 'cornerstone' ),
-    				'tooltip' => __( 'Optionally add animation to your element as users scroll down the page.', 'cornerstone' ),
     			),
     			'options' => array(
     				'choices' => Cornerstone_Control_Mixins::animationChoices()
@@ -749,7 +728,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     			'type' => 'text',
     			'ui' => array(
     				'title' => __( 'Animation Offset (%)', 'cornerstone' ),
-    				'tooltip' => __( 'Specify a percentage value where the element should appear on screen for the animation to take place.', 'cornerstone' ),
     			),
     			'condition' => array(
     				'group::flavor:not' => 'none'
@@ -764,7 +742,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     			'type' => 'text',
     			'ui' => array(
     				'title' => __( 'Animation Delay (ms)', 'cornerstone' ),
-    				'tooltip' => __( 'Specify an amount of time before the graphic animation starts in milliseconds.', 'cornerstone' ),
     			),
     			'condition' => array(
     				'group::flavor:not' => 'none'
@@ -780,7 +757,6 @@ class Cornerstone_Control_Mixins extends Cornerstone_Plugin_Component {
     		'type' => 'color',
     		'ui' => array(
     			'title' => __( 'Background Color', 'cornerstone' ),
-          'tooltip' => __( 'Select the background color for this element.', 'cornerstone' ),
     		)
     	),
 

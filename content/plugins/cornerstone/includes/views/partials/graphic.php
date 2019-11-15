@@ -77,30 +77,32 @@ if ( isset( $id ) && ! empty( $id ) ) {
         $add_in['atts'] = array( 'data-x-single-anim' => $graphic_interaction ); // 03
       }
 
-      $icon_args = array(
-        'add_in'    => $add_in,
-        'keep_out'  => array( 'graphic_icon_alt' ),
-        'find_data' => array( 'graphic_icon' => 'icon' )
-      );
-
-
-      // Icon Args: Alt
-      // --------------
-
-      $icon_alt_args = array(
-        'add_in'    => array( 'class' => x_attr_class( array( 'x-graphic-icon', 'x-graphic-secondary', $interaction_class, $always_active_class ) ) ),
-        'keep_out'  => array( 'graphic_icon' ),
-        'find_data' => array( 'graphic_icon' => 'icon' )
-      );
-
 
       // Output
       // ------
 
-      x_get_view( 'partials', 'icon', '', x_get_partial_data( $_custom_data, $icon_args ), true );
+      echo cs_get_partial_view(
+        'icon',
+        array_merge(
+          cs_extract(
+            cs_without( $_view_data, array( 'mod_id', 'graphic_icon_alt' ) ),
+            array( 'graphic_icon' => 'icon' )
+          ),
+          $add_in
+        )
+      );
 
       if ( $this_has_alt ) {
-        x_get_view( 'partials', 'icon', '', x_get_partial_data( $_custom_data, $icon_alt_args ), true );
+        echo cs_get_partial_view(
+          'icon',
+          array_merge(
+            cs_extract(
+              cs_without( $_view_data, array( 'mod_id', 'graphic_icon' ) ),
+              array( 'graphic_icon' => 'icon' )
+            ),
+            array( 'class' => x_attr_class( array( 'x-graphic-icon', 'x-graphic-secondary', $interaction_class, $always_active_class ) ) )
+          )
+        );
       }
 
       break;
@@ -134,30 +136,31 @@ if ( isset( $id ) && ! empty( $id ) ) {
         $add_in['atts'] = array( 'data-x-single-anim' => $graphic_interaction ); // 03
       }
 
-      $image_args = array(
-        'add_in'    => $add_in,
-        'keep_out'  => array( 'graphic_image_src_alt' ),
-        'find_data' => array( 'graphic_image' => 'image' )
-      );
-
-
-      // Image Args: Alt
-      // ---------------
-
-      $image_alt_args = array(
-        'add_in'    => array( 'class' => x_attr_class( array( 'x-graphic-image', 'x-graphic-secondary', $interaction_class, $always_active_class ) ) ),
-        'keep_out'  => array( 'graphic_image_src' ),
-        'find_data' => array( 'graphic_image' => 'image' )
-      );
-
-
       // Image Output
       // ------------
-      
-      x_get_view( 'partials', 'image', '', x_get_partial_data( $_custom_data, $image_args ), true );
+
+      echo cs_get_partial_view(
+        'image',
+        array_merge(
+          cs_extract(
+            cs_without( $_view_data, array( 'graphic_image_src_alt', 'graphic_image_alt_alt' ) ),
+            array( 'graphic_image' => 'image' )
+          ),
+          $add_in
+        )
+      );
 
       if ( $this_has_alt ) {
-        x_get_view( 'partials', 'image', '', x_get_partial_data( $_custom_data, $image_alt_args ), true );
+        echo cs_get_partial_view(
+          'image',
+          array_merge(
+            cs_extract(
+              cs_without( $_view_data, array( 'graphic_image_src', 'graphic_image_alt' ) ),
+              array( 'graphic_image' => 'image' )
+            ),
+            array( 'class' => x_attr_class( array( 'x-graphic-image', 'x-graphic-secondary', $interaction_class, $always_active_class ) ) )
+          )
+        );
       }
 
       break;
@@ -168,16 +171,17 @@ if ( isset( $id ) && ! empty( $id ) ) {
 
     case 'toggle' :
 
-      $toggle_args = array(
-        'add_in'    => array( 'class' => 'x-graphic-toggle' ),
-        'find_data' => array( 'toggle' => '' )
-      );
-
 
       // Toggle Output
       // -------------
 
-      x_get_view( 'partials', 'toggle', '', x_get_partial_data( $_custom_data, $toggle_args ), true );
+      echo cs_get_partial_view(
+        'toggle',
+        array_merge(
+          cs_extract( $_view_data, array( 'toggle' => '' ) ),
+          array( 'class' => 'x-graphic-toggle' )
+        )
+      );
 
       break;
 

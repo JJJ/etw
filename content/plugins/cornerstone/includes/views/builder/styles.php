@@ -18,8 +18,8 @@ body.x-renew .cs-empty-element {
   margin-bottom: 1.5em;
 }
 
-body.x-icon .cs-indicator,
-body.x-icon .cs-empty-element {
+body.x-stack-icon .cs-indicator,
+body.x-stack-icon .cs-empty-element {
   margin-bottom: 1.313em;
 }
 

@@ -15,14 +15,16 @@
 // Include Partial CSS
 // =============================================================================
 
-$anchor_selector = '.x-anchor-toggle';
-$anchor_k_pre    = 'toggle';
 
-include( '_anchor-css.php' );
-include( '_modal-css.php' );
-include( '_menu-css.php' );
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => '.x-anchor-toggle',
+  'key_prefix'    => 'toggle'
+) );
 
-$anchor_selector = '.x-menu .x-anchor';
-$anchor_k_pre    = '';
+echo cs_get_partial_style( 'modal' );
+echo cs_get_partial_style( 'menu' );
 
-include( '_anchor-css.php' );
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => '.x-menu .x-anchor',
+  'key_prefix'    => ''
+) );

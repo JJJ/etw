@@ -3,7 +3,7 @@
 // =============================================================================
 // WOOCOMMERCE/NOTICES/NOTICE.PHP
 // -----------------------------------------------------------------------------
-// @version 1.6.4
+// @version 3.5.0
 // =============================================================================
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,6 +16,6 @@ if ( ! $messages ) return;
 
 <?php foreach ( $messages as $message ) : ?>
   <div class="woocommerce-info x-alert x-alert-info x-alert-block">
-    <?php echo wp_kses_post( $message ); ?>
+    <?php echo wc_kses_notice( $message ); ?>
   </div>
 <?php endforeach; ?>

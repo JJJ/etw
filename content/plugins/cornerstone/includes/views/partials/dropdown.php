@@ -34,7 +34,17 @@ if ( isset( $_region ) && $_region === 'left' ) {
 }
 
 if ( isset( $_region ) && $_region === 'right' ) {
-  $atts['data-x-stem-top'] = 'rh'; 
+  $atts['data-x-stem-top'] = 'rh';
+}
+
+// Dynamic Rendering
+// -----------------
+
+$output_dropdown_content = do_shortcode($dropdown_content);
+
+if (isset($dropdown_content_dynamic_rendering) && $dropdown_content_dynamic_rendering) {
+  $output_dropdown_content = apply_filters( 'cs_dynamic_rendering', $output_dropdown_content );
+  $output_dropdown_content = "<div data-x-toggleable-content=\"$mod_id\"><script type=\"text/cs-toggle-template\">$output_dropdown_content</script></div>";
 }
 
 
@@ -44,5 +54,5 @@ if ( isset( $_region ) && $_region === 'right' ) {
 ?>
 
 <<?php echo $tag ?> <?php echo x_atts( $atts ); ?>>
-  <?php echo do_shortcode( $dropdown_content ); ?>
+  <?php echo $output_dropdown_content; ?>
 </<?php echo $tag ?>>

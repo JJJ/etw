@@ -21,6 +21,8 @@ $x_site_atts = x_atts( apply_filters( 'x_site_atts', array( 'id' => 'x-site', 'c
 
 <body <?php body_class(); ?>>
 
+  <?php do_action( 'x_after_body_begin' ); ?>
+
   <div <?php echo $x_root_atts; ?>>
 
     <?php do_action( 'x_before_site_begin' ); ?>

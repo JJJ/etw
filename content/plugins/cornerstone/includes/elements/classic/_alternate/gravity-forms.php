@@ -14,7 +14,6 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
         'title' => __( 'Display issues?', 'cornerstone' ),
         'message' => __( '<strong>Gravity Forms</strong> uses its own dynamic process to render forms, which could result in visual differences in the preview area. Be sure to test by viewing the true front end of this page.', 'cornerstone' ),
       ),
-			'supports'    => array( 'id', 'class', 'style' ),
 			'empty'       => array( 'form_id' => 'none' ),
       'undefined_message' => __('This element can not render because Gravity Forms is not active.', 'cornerstone' ),
       'protected_keys' => array( 'form_id' )
@@ -81,6 +80,17 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 			'1'
 		);
 
+		$this->addControl(
+			'field_values',
+			'text',
+			__( 'Default Values', 'cornerstone' ),
+			'',
+			'',
+			array(
+				'placeholder'=> 'field=value'
+			)
+		);
+
 	}
 
 	public function is_active() {
@@ -94,9 +104,20 @@ class CS_Gravity_Forms extends Cornerstone_Element_Base {
 		if ( 'none' === $form_id )
 			return '';
 
-		$shortcode = "[gravityform id=\"{$form_id}\" title=\"{$show_title}\" description=\"{$show_description}\" ajax=\"{$enable_ajax}\" tabindex=\"{$tabindex_id}\"]";
+		$atts = array(
+			'id'          => $form_id,
+			'title'       => $show_title,
+			'description' => $show_description,
+			'ajax'        => $enable_ajax,
+			'tabindex'    => $tabindex_id
+		);
 
-		return $shortcode;
+		if ($field_values) {
+			$atts['field_values'] = $field_values;
+		}
+
+		return cs_build_shortcode('gravityform', $atts );
+
 
 	}
 

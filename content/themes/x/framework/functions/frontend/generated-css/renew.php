@@ -14,7 +14,7 @@
 //   03. Custom Fonts
 //   04. Custom Fonts - Colors
 //   05. Responsive Styling
-//   06. Adminbar Styling
+//   06. Gutenberg
 // =============================================================================
 
 $x_renew_entry_icon_color               = x_post_css_value( x_get_option( 'x_renew_entry_icon_color' ), 'color' );
@@ -231,6 +231,61 @@ li.bypostauthor > article.comment {
       line-height: 70px;
       border-radius: 100em;
     }
+  }
+
+<?php endif; ?>
+
+
+
+/* Gutenberg
+// ========================================================================== */
+
+<?php if ( $x_layout_site == 'boxed' ) : ?>
+
+  <?php
+
+  $w_wide         = $x_layout_site_max_width * 0.92;
+  $w_full         = $x_layout_site_max_width * 1;
+  $w_current      = $x_layout_site_max_width * ($x_layout_site_width / 100);
+
+  $val_wide_w     = 'calc((' . $w_wide . ' / ' . $w_current . ') * 100%)';
+  $val_wide_max_w = $val_wide_w;
+  $val_wide_m_l   = 'calc((((' . $w_wide . ' / ' . $w_current . ') * 100%) - 100%) / -2)';
+
+  $val_full_w     = 'calc((' . $w_full . ' / ' . $w_current . ') * 100%)';
+  $val_full_max_w = $val_full_w;
+  $val_full_m_l   = 'calc((((' . $w_full . ' / ' . $w_current . ') * 100%) - 100%) / -2)';
+
+  ?>
+
+  @media (max-width: 979px) {
+    .x-content-sidebar-active .alignwide,
+    .x-sidebar-content-active .alignwide {
+      width: <?php echo $val_wide_w; ?>;
+      max-width: <?php echo $val_wide_max_w; ?>;
+      margin-left: <?php echo $val_wide_m_l; ?>;
+    }
+  }
+
+  @media (max-width: 979px) {
+    .x-content-sidebar-active .alignfull,
+    .x-sidebar-content-active .alignfull {
+      width: <?php echo $val_full_w; ?>;
+      max-width: <?php echo $val_full_max_w; ?>;
+      margin-left: <?php echo $val_full_m_l; ?>;
+    }
+  }
+
+  .x-full-width-active .alignwide {
+    width: <?php echo $val_wide_w; ?>;
+    max-width: <?php echo $val_wide_max_w; ?>;
+    margin-left: <?php echo $val_wide_m_l; ?>;
+  }
+
+  .x-full-width-active .alignfull {
+    width: <?php echo $val_full_w; ?>;
+    max-width: <?php echo $val_full_max_w; ?>;
+    margin-left: <?php echo $val_full_m_l; ?>;
   }
 
 <?php endif; ?>

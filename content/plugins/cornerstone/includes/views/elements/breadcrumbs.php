@@ -26,7 +26,7 @@ $breadcrumbs_list_atts = array(
   'class'      => 'x-crumbs-list',
   'itemscope'  => '',
   'itemtype'   => 'http://schema.org/BreadcrumbList',
-  'aria-label' => 'Breadcrumb Navigation',
+  'aria-label' => __( 'Breadcrumb Navigation', 'cornerstone' )
 );
 
 
@@ -36,9 +36,9 @@ $breadcrumbs_list_atts = array(
 $delimiter_ltr = ( $breadcrumbs_delimiter === true ) ? ${"breadcrumbs_delimiter_ltr_" . $breadcrumbs_delimiter_type} : '';
 $delimiter_rtl = ( $breadcrumbs_delimiter === true ) ? ${"breadcrumbs_delimiter_rtl_" . $breadcrumbs_delimiter_type} : '';
 
-if ( $breadcrumbs_delimiter_type === 'icon' ) {
-  $delimiter_ltr = x_get_view( 'partials', 'icon', '', x_get_partial_data( $_custom_data, array( 'add_in' => array( 'icon' => $delimiter_ltr ) ) ), false );
-  $delimiter_rtl = x_get_view( 'partials', 'icon', '', x_get_partial_data( $_custom_data, array( 'add_in' => array( 'icon' => $delimiter_rtl ) ) ), false );
+if ( $breadcrumbs_delimiter === true && $breadcrumbs_delimiter_type === 'icon' ) {
+  $delimiter_ltr = cs_get_partial_view( 'icon', array_merge( $_view_data, array( 'icon' => $delimiter_ltr ) ) );
+  $delimiter_rtl = cs_get_partial_view( 'icon', array_merge( $_view_data, array( 'icon' => $delimiter_rtl ) ) );
 }
 
 $args_items = array(
@@ -50,10 +50,10 @@ $args_items = array(
 // Prepare $args_data
 // ------------------
 
-$home_label = ${"breadcrumbs_home_label_" . $breadcrumbs_home_label_type};
+$home_label = $breadcrumbs_home_label_text;
 
 if ( $breadcrumbs_home_label_type === 'icon' ) {
-  $home_label = x_get_view( 'partials', 'icon', '', x_get_partial_data( $_custom_data, array( 'add_in' => array( 'icon' => $home_label ) ) ), false );
+  $home_label = cs_get_partial_view( 'icon', array_merge( $_view_data, array( 'icon' => $breadcrumbs_home_label_icon ) ) )  . '<span class="visually-hidden">' . $breadcrumbs_home_label_text . '</span>';
 }
 
 $args_data = array(

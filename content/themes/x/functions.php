@@ -28,17 +28,17 @@ function x_boot_registry() {
       'tco/tco',
       'legacy/setup',
       'functions/fonts',
-      'functions/custom-sidebars',
-
-      'functions/portfolio',
       'functions/plugins/setup',
-      'functions/updates/class-theme-updater',
-      'functions/updates/class-plugin-updater'
+      'functions/updates/class-x-tgmpa-integration',
+      'functions/updates/class-tgm-plugin-activation'
     ),
 
-    'init' => array(),
+    'init' => array(
+      'functions/frontend/conditionals',
+    ),
 
     'front_end' => array(
+      'functions/frontend/portfolio',
       'functions/frontend/view-routing',
       'functions/frontend/styles',
       'functions/frontend/scripts',
@@ -52,8 +52,7 @@ function x_boot_registry() {
       'functions/frontend/social',
       'functions/frontend/breadcrumbs',
       'functions/frontend/pagination',
-      'functions/frontend/featured',
-      'functions/frontend/conditionals',
+      'functions/frontend/featured'
     ),
 
     'logged_in' => array(
@@ -62,6 +61,8 @@ function x_boot_registry() {
 
     'admin' => array(
       'functions/admin/class-validation',
+      'functions/updates/class-theme-updater',
+      'functions/updates/class-plugin-updater',
       'functions/admin/class-validation-updates',
       'functions/admin/class-validation-theme-options-manager',
       'functions/admin/class-validation-extensions',

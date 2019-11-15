@@ -66,12 +66,12 @@ function x_output_js() {
       $bg_images = array_values($page_bg_images);
 
       $fade = get_post_meta( $entry_id, '_x_entry_bg_image_full_fade', true );
-      $fade = ( $fade ) ? $fade : '750';
+      $fade = ( $fade ) || $fade == "0" ? $fade : '750';
 
       $duration = get_post_meta( $entry_id, '_x_entry_bg_image_full_duration', true );
       $duration = ( $duration ) ? $duration : '7500';
 
-      $params = array( 'fade'     => $fade, 'duration' => $duration );
+      $params = array( 'fade'     => (int)$fade, 'duration' => (int)$duration );
 
     }
 

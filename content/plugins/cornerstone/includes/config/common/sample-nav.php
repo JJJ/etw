@@ -83,7 +83,28 @@ $image_contact_alt = cornerstone_make_placeholder_image_uri( 48, 48, 'rgba(156, 
 $image_w           = 48;
 $image_h           = 48;
 
-
+$labels = array(
+  'home'                  => __( 'Home', 'cornerstone' ),
+  'blog'                  => __( 'Blog', 'cornerstone' ),
+  'work'                  => __( 'Work', 'cornerstone' ),
+  'project-1'             => __( 'Project 1', 'cornerstone' ),
+  'project-2'             => __( 'Project 2', 'cornerstone' ),
+  'about'                 => __( 'About', 'cornerstone' ),
+  'the-end'               => __( 'The End', 'cornerstone' ),
+  'project-3'             => __( 'Project 3', 'cornerstone' ),
+  'shop'                  => __( 'Shop', 'cornerstone' ),
+  'contact'               => __( 'Contact', 'cornerstone' ),
+  'start-here'            => __( 'Start Here', 'cornerstone' ),
+  'see-projects'          => __( 'See Projects', 'cornerstone' ),
+  'an-illustrative-blurb' => __( 'An Illustrative Blurb', 'cornerstone' ),
+  'a-descriptive-line'    => __( 'A Descriptive Line', 'cornerstone' ),
+  'learn-more'            => __( 'Learn More', 'cornerstone' ),
+  'no-more-to-see-here'   => __( 'No More to See Here', 'cornerstone' ),
+  'more-expressive-text'  => __( 'More Expressive Text', 'cornerstone' ),
+  'buy-stuff'             => __( 'Buy Stuff', 'cornerstone' ),
+  'reach-out'             => __( 'Reach Out', 'cornerstone' ),
+  'read-things'           => __( 'Read Things', 'cornerstone' ),
+);
 
 // Navs
 // =============================================================================
@@ -92,8 +113,8 @@ return array(
 
   'default' => array(
     array(
-      'title'       => 'Home',
-      'description' => 'Start Here',
+      'title'       => $labels['home'],
+      'description' => $labels['start-here'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_home,
         'anchor_graphic_icon_alt'      => $icon_home_alt,
@@ -104,8 +125,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Work',
-      'description' => 'See Projects',
+      'title'       => $labels['work'],
+      'description' => $labels['see-projects'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_work,
         'anchor_graphic_icon_alt'      => $icon_work_alt,
@@ -116,8 +137,8 @@ return array(
       ),
       'children' => array(
         array(
-          'title'       => 'Project 1',
-          'description' => 'An Illustrative Blurb',
+          'title'       => $labels['project-1'],
+          'description' => $labels['an-illustrative-blurb'],
           'meta'        => array(
             'anchor_graphic_icon'          => $icon_project,
             'anchor_graphic_icon_alt'      => $icon_project_1_alt,
@@ -128,8 +149,8 @@ return array(
           ),
         ),
         array(
-          'title'       => 'Project 2',
-          'description' => 'A Descriptive Line',
+          'title'       => $labels['project-2'],
+          'description' => $labels['a-descriptive-line'],
           'meta'        => array(
             'anchor_graphic_icon'          => $icon_project,
             'anchor_graphic_icon_alt'      => $icon_project_2_alt,
@@ -140,8 +161,8 @@ return array(
           ),
           'children' => array(
             array(
-              'title'       => 'About',
-              'description' => 'Learn More',
+              'title'       => $labels['about'],
+              'description' => $labels['learn-more'],
               'meta'        => array(
                 'anchor_graphic_icon'          => $icon_project,
                 'anchor_graphic_icon_alt'      => $icon_project_2_1_alt,
@@ -152,8 +173,8 @@ return array(
               ),
             ),
             array(
-              'title'       => 'The End',
-              'description' => 'No More to See Here',
+              'title'       => $labels['the-end'],
+              'description' => $labels['no-more-to-see-here'],
               'meta'        => array(
                 'anchor_graphic_icon'          => $icon_project,
                 'anchor_graphic_icon_alt'      => $icon_project_2_2_alt,
@@ -166,8 +187,8 @@ return array(
           ),
         ),
         array(
-          'title'       => 'Project 3',
-          'description' => 'More Expressive Text',
+          'title'       => $labels['project-3'],
+          'description' => $labels['more-expressive-text'],
           'meta'        => array(
             'anchor_graphic_icon'          => $icon_project,
             'anchor_graphic_icon_alt'      => $icon_project_3_alt,
@@ -180,8 +201,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Shop',
-      'description' => 'Buy Stuff',
+      'title'       => $labels['shop'],
+      'description' => $labels['buy-stuff'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_shop,
         'anchor_graphic_icon_alt'      => $icon_shop_alt,
@@ -192,8 +213,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'About',
-      'description' => 'Learn More',
+      'title'       => $labels['about'],
+      'description' => $labels['learn-more'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_about,
         'anchor_graphic_icon_alt'      => $icon_about_alt,
@@ -204,8 +225,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Contact',
-      'description' => 'Reach Out',
+      'title'       => $labels['contact'],
+      'description' => $labels['reach-out'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_contact,
         'anchor_graphic_icon_alt'      => $icon_contact_alt,
@@ -219,8 +240,8 @@ return array(
 
   'default_no_dropdowns' => array(
     array(
-      'title'       => 'Home',
-      'description' => 'Start Here',
+      'title'       => $labels['home'],
+      'description' => $labels['start-here'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_home,
         'anchor_graphic_icon_alt'      => $icon_home_alt,
@@ -231,8 +252,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Work',
-      'description' => 'See Projects',
+      'title'       => $labels['work'],
+      'description' => $labels['see-projects'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_work,
         'anchor_graphic_icon_alt'      => $icon_work_alt,
@@ -243,8 +264,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Shop',
-      'description' => 'Buy Stuff',
+      'title'       => $labels['shop'],
+      'description' => $labels['buy-stuff'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_shop,
         'anchor_graphic_icon_alt'      => $icon_shop_alt,
@@ -255,8 +276,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'About',
-      'description' => 'Learn More',
+      'title'       => $labels['about'],
+      'description' => $labels['learn-more'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_about,
         'anchor_graphic_icon_alt'      => $icon_about_alt,
@@ -267,8 +288,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Contact',
-      'description' => 'Reach Out',
+      'title'       => $labels['contact'],
+      'description' => $labels['reach-out'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_contact,
         'anchor_graphic_icon_alt'      => $icon_contact_alt,
@@ -282,8 +303,8 @@ return array(
 
   'default_split_1' => array(
     array(
-      'title'       => 'Home',
-      'description' => 'Start Here',
+      'title'       => $labels['home'],
+      'description' => $labels['start-here'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_home,
         'anchor_graphic_icon_alt'      => $icon_home_alt,
@@ -294,8 +315,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Work',
-      'description' => 'See Projects',
+      'title'       => $labels['work'],
+      'description' => $labels['see-projects'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_work,
         'anchor_graphic_icon_alt'      => $icon_work_alt,
@@ -306,8 +327,8 @@ return array(
       ),
       'children' => array(
         array(
-          'title'       => 'Project 1',
-          'description' => 'An Illustrative Blurb',
+          'title'       => $labels['project-1'],
+          'description' => $labels['an-illustrative-blurb'],
           'meta'        => array(
             'anchor_graphic_icon'          => $icon_project,
             'anchor_graphic_icon_alt'      => $icon_project_1_alt,
@@ -318,8 +339,8 @@ return array(
           ),
         ),
         array(
-          'title'       => 'Project 2',
-          'description' => 'A Descriptive Line',
+          'title'       => $labels['project-2'],
+          'description' => $labels['a-descriptive-line'],
           'meta'        => array(
             'anchor_graphic_icon'          => $icon_project,
             'anchor_graphic_icon_alt'      => $icon_project_2_alt,
@@ -330,8 +351,8 @@ return array(
           ),
           'children' => array(
             array(
-              'title'       => 'About',
-              'description' => 'Learn More',
+              'title'       => $labels['about'],
+              'description' => $labels['learn-more'],
               'meta'        => array(
                 'anchor_graphic_icon'          => $icon_project,
                 'anchor_graphic_icon_alt'      => $icon_project_2_1_alt,
@@ -342,8 +363,8 @@ return array(
               ),
             ),
             array(
-              'title'       => 'The End',
-              'description' => 'No More to See Here',
+              'title'       => $labels['the-end'],
+              'description' => $labels['no-more-to-see-here'],
               'meta'        => array(
                 'anchor_graphic_icon'          => $icon_project,
                 'anchor_graphic_icon_alt'      => $icon_project_2_2_alt,
@@ -356,8 +377,8 @@ return array(
           ),
         ),
         array(
-          'title'       => 'Project 3',
-          'description' => 'More Expressive Text',
+          'title'       => $labels['project-3'],
+          'description' => $labels['more-expressive-text'],
           'meta'        => array(
             'anchor_graphic_icon'          => $icon_project,
             'anchor_graphic_icon_alt'      => $icon_project_3_alt,
@@ -370,8 +391,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Shop',
-      'description' => 'Buy Stuff',
+      'title'       => $labels['shop'],
+      'description' => $labels['buy-stuff'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_shop,
         'anchor_graphic_icon_alt'      => $icon_shop_alt,
@@ -385,8 +406,8 @@ return array(
 
   'default_split_2' => array(
     array(
-      'title'       => 'Blog',
-      'description' => 'Read Things',
+      'title'       => $labels['blog'],
+      'description' => $labels['read-things'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_blog,
         'anchor_graphic_icon_alt'      => $icon_blog_alt,
@@ -397,8 +418,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'About',
-      'description' => 'Learn More',
+      'title'       => $labels['about'],
+      'description' => $labels['learn-more'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_about,
         'anchor_graphic_icon_alt'      => $icon_about_alt,
@@ -409,8 +430,8 @@ return array(
       ),
     ),
     array(
-      'title'       => 'Contact',
-      'description' => 'Reach Out',
+      'title'       => $labels['contact'],
+      'description' => $labels['reach-out'],
       'meta'        => array(
         'anchor_graphic_icon'          => $icon_contact,
         'anchor_graphic_icon_alt'      => $icon_contact_alt,

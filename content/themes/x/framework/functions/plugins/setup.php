@@ -33,7 +33,8 @@ define( 'X_UBERMENU_IS_ACTIVE', class_exists( 'UberMenu' ) );
 define( 'X_THE_GRID_IS_ACTIVE', class_exists( 'The_Grid_Plugin' ) );
 define( 'X_EP_PAYMENT_FORM_IS_ACTIVE', class_exists( 'LFB_Core' ) );
 define( 'X_MEC_IS_ACTIVE', class_exists( 'MEC' ) );
-
+define( 'X_ACF_PRO_IS_ACTIVE', class_exists( 'acf_pro' ) );
+define( 'X_HUBSPOT_IS_ACTIVE', (class_exists( 'WPLeadInAdmin' ) || class_exists( 'LeadinAdmin' )) ? true : false);
 
 
 // Require Files
@@ -42,6 +43,10 @@ define( 'X_MEC_IS_ACTIVE', class_exists( 'MEC' ) );
 $plgn_path = X_TEMPLATE_PATH . '/framework/functions/plugins';
 
 require_once( $plgn_path . '/cornerstone.php' );
+
+if ( X_ACF_PRO_IS_ACTIVE ) {
+  require_once( $plgn_path . '/acf-pro.php' );
+}
 
 if ( X_BBPRESS_IS_ACTIVE ) {
   require_once( $plgn_path . '/bbpress.php' );
@@ -109,4 +114,8 @@ if ( X_EP_PAYMENT_FORM_IS_ACTIVE ) {
 
 if ( X_MEC_IS_ACTIVE ) {
   require_once( $plgn_path . '/modern-events-calendar.php');
+}
+
+if ( X_HUBSPOT_IS_ACTIVE ) {
+  require_once( $plgn_path . '/hubspot.php');
 }

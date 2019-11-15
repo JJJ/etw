@@ -4,7 +4,7 @@ return array(
 
 	'custom_css' => '',
 	'custom_js'  => '',
-	'post_title'     => 'Cornerstone Draft',
+	'post_title'     => __( 'Content Draft', 'cornerstone'),
 	'post_status'    => 'draft',
 	'allow_comments' => false,
 	'post_parent'    => '0',

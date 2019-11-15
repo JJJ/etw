@@ -12,8 +12,6 @@
 //   01. Add Thumbnail Sizes
 //   02. Standard Entry Thumbnail Width
 //   03. Fullwidth Entry Thumbnail Width
-//   04. Cropped Entry Thumbnail Height
-//   05. Fullwidth Cropped Entry Thumbnail Height
 // =============================================================================
 
 // Add Thumbnail Sizes
@@ -23,10 +21,17 @@ function x_setup_thumbnails() {
 
   add_theme_support( 'post-thumbnails' );
   set_post_thumbnail_size( 100, 9999 );
-  add_image_size( 'entry',                   x_post_thumbnail_width(),      9999,                                   false );
-  add_image_size( 'entry-cropped',           x_post_thumbnail_width(),      x_post_thumbnail_cropped_height(),      true  );
-  add_image_size( 'entry-fullwidth',         x_post_thumbnail_width_full(), 9999,                                   false );
-  add_image_size( 'entry-cropped-fullwidth', x_post_thumbnail_width_full(), x_post_thumbnail_cropped_height_full(), true  );
+
+  $width = x_post_thumbnail_width();
+  $width_full = x_post_thumbnail_width_full();
+
+  $height_cropped = intval( round( x_post_thumbnail_width() * 0.558823529 ) );
+  $height_cropped_full = intval( round( x_post_thumbnail_width_full() * 0.558823529 ) );
+
+  add_image_size( 'entry',                   $width,      9999,                 false );
+  add_image_size( 'entry-cropped',           $width,      $height_cropped,      true  );
+  add_image_size( 'entry-fullwidth',         $width_full, 9999,                 false );
+  add_image_size( 'entry-cropped-fullwidth', $width_full, $height_cropped_full, true  );
 
 }
 
@@ -201,67 +206,6 @@ if ( ! function_exists( 'x_post_thumbnail_width_full' ) ) :
       $output = $site_max_width - $p;
     } elseif ( $site_layout == 'boxed' ) {
       $output = $site_max_width * $site_width - $p;
-    }
-
-    return intval( $output );
-
-  }
-  add_action( 'cs_theme_options_after_save', 'x_post_thumbnail_width_full' );
-endif;
-
-
-
-// Cropped Entry Thumbnail Height
-// =============================================================================
-
-if ( ! function_exists( 'x_post_thumbnail_cropped_height' ) ) :
-  function x_post_thumbnail_cropped_height() {
-
-    $stack = x_get_stack();
-
-    switch ( $stack ) {
-      case 'integrity' :
-        $output = round( x_post_thumbnail_width() * 0.558823529 );
-        break;
-      case 'renew' :
-        $output = round( x_post_thumbnail_width() * 0.558823529 );
-        break;
-      case 'icon' :
-        $output = round( x_post_thumbnail_width() * 0.558823529 );
-        break;
-      case 'ethos' :
-        $output = round( x_post_thumbnail_width() * 0.558823529 );
-        break;
-    }
-
-    return intval( $output );
-
-  }
-endif;
-
-
-
-// Fullwidth Cropped Entry Thumbnail Height
-// =============================================================================
-
-if ( ! function_exists( 'x_post_thumbnail_cropped_height_full' ) ) :
-  function x_post_thumbnail_cropped_height_full() {
-
-    $stack = x_get_stack();
-
-    switch ( $stack ) {
-      case 'integrity' :
-        $output = round( x_post_thumbnail_width_full() * 0.558823529 );
-        break;
-      case 'renew' :
-        $output = round( x_post_thumbnail_width_full() * 0.558823529 );
-        break;
-      case 'icon' :
-        $output = round( x_post_thumbnail_width_full() * 0.558823529 );
-        break;
-      case 'ethos' :
-        $output = round( x_post_thumbnail_width_full() * 0.558823529 );
-        break;
     }
 
     return intval( $output );

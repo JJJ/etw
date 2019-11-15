@@ -6,90 +6,103 @@ class X_Validation_Cornerstone {
 
   public function __construct() {
 
-    x_validation()->add_script_data( 'x-auto-configure-cornerstone', array( $this, 'script_data_auto_configure_cornerstone' ) );
-    add_action( 'wp_ajax_x_extensions_installer', array( $this, 'ajax_install_plugin' ) );
 
-    add_action( 'wp_ajax_x_auto_install_cornerstone', array( $this, 'ajax_auto_install_cornerstone' ) );
-    add_action( 'wp_ajax_x_auto_activate_cornerstone', array( $this, 'ajax_auto_activate_cornerstone' ) );
-    add_action( 'x_addons_before_home', array( $this, 'auto_install_cornerstone' ) );
+    add_action( 'admin_notices', array( $this, 'maybe_show_notices' ), 0 );
 
-    $this->cs_install_error  = sprintf( __( 'We attempted to installed Cornerstone (required by X) automatically, but were unable to. You may need to <a target="_blank" href="%s">install Cornerstone manually</a>. <a data-tco-error-details href="#">Error Details.</a>', '__x__' ), 'https://theme.co/apex/kb/manual-plugin-installation/' );
-    $this->cs_activate_error = sprintf( __( 'Cornerstone has been installed, but could not be automatically activated. Please activate from the <a href="%s">plugins page</a>. <a data-tco-error-details href="#">Error Details.</a>', '__x__' ), admin_url( 'plugins.php' ) );
+    add_action( 'admin_init', array( $this, 'maybe_install_or_activate' ) );
+
+
   }
 
-  public function script_data_auto_configure_cornerstone() {
-    return array(
-      'errors' => array(
-        'install'  => $this->cs_install_error,
-        'activate' => $this->cs_activate_error
-      )
-    );
-  }
+  public function maybe_install_or_activate() {
 
-  public function auto_install_cornerstone() {
 
-    if ( self::cornerstone_installed() ) {
-      $state = ( self::cornerstone_activated() ) ? 'ready' : 'activate';
-    } else {
-      $state = 'install';
+    if ( isset( $_REQUEST['_cs_install_nonce'] ) && wp_verify_nonce( $_REQUEST['_cs_install_nonce'], 'install_cornerstone' ) && ! $this->is_cornerstone_installed() && current_user_can( 'install_plugins' ) ) {
+      // Install Cornerstone via TGMPA
+      $this->install_error = X_TGMPA_Integration::instance()->install_plugin( 'cornerstone', true );
+
+      $this->activate_cornerstone();
+
+      remove_action( 'admin_notices', array( $this, 'maybe_show_notices' ), 0 );
+      add_action( 'admin_notices', array( $this, 'install_notice' ), 0 );
     }
 
-    echo '<div data-tco-module="x-auto-configure-cornerstone" data-tco-module-state="'. $state . '"></div>';
+    if ( isset( $_REQUEST['_cs_activate_nonce'] ) && wp_verify_nonce( $_REQUEST['_cs_activate_nonce'], 'activate_cornerstone' ) && ! TGM_Plugin_Activation::get_instance()->is_plugin_active( 'cornerstone' ) && current_user_can( 'activate_plugins' ) ) {
+      $this->activate_cornerstone();
+      remove_action( 'admin_notices', array( $this, 'maybe_show_notices' ), 0 );
+      add_action( 'admin_notices', array( $this, 'activate_notice' ), 0 );
+    }
+
 
   }
 
-  public function ajax_auto_install_cornerstone() {
+  public function maybe_show_notices() {
 
-    x_tco()->check_ajax_referer();
+    // Give users link to install Cornerstone
+    if ( ! $this->is_cornerstone_installed() && current_user_can( 'install_plugins' ) ) {
+      $install_url = add_query_arg( array(
+        '_cs_install_nonce' => wp_create_nonce( 'install_cornerstone' )
+      ), x_addons_get_link_home() );
 
-    if ( self::cornerstone_installed() || ! current_user_can( 'install_plugins' ) ) {
-      wp_send_json_error();
+      x_tco()->admin_notice( array(
+        'message' => sprintf( __( 'You&apos;re almost ready to start using X. Please <a href="%s">click here to install and activate</a> the required <strong>Cornerstone</strong> plugin. ', '__x__' ), $install_url ),
+        'dismissible' => false,
+      ) );
+      return;
     }
 
-    $extensions = X_Validation_Extensions::instance();
-    $install = $extensions->install_plugin( array(
-      'plugin'   => 'cornerstone/cornerstone.php',
-      'package'  => X_TEMPLATE_PATH . '/framework/cornerstone.zip',
+    // Give users link to activate Cornerstone if it is not installed
+    if ( ! TGM_Plugin_Activation::get_instance()->is_plugin_active( 'cornerstone' ) && current_user_can( 'activate_plugins' )) {
+      $activate_url = add_query_arg( array(
+        '_cs_activate_nonce' => wp_create_nonce( 'activate_cornerstone' )
+      ), x_addons_get_link_home() );
+
+      x_tco()->admin_notice( array(
+        'message' => sprintf( __( 'You&apos;re almost ready to start using X. Please <a href="%s">click here to activate</a> the required <strong>Cornerstone</strong> plugin. ', '__x__' ), $activate_url ),
+        'dismissible' => false,
+      ) );
+    }
+
+  }
+
+  public function activate_notice() {
+
+    x_tco()->admin_notice( array(
+      'message' => __( 'Cornerstone activated!', '__x__' ),
+      'dismissible' => true,
     ) );
 
-    if ( is_wp_error( $install ) ) {
-      wp_send_json_error( array(
-        'message' => $this->cs_install_error,
-        'errorDetails' => $install->get_error_message(),
+  }
+
+  public function install_notice() {
+
+    if ( is_wp_error( $this->install_error ) ) {
+      x_tco()->admin_notice( array(
+        'message' => sprintf( __( 'Unable to install Cornerstone. %s', '__x__' ), $this->install_error->get_error_message() ),
+        'dismissible' => false
       ) );
     } else {
-      wp_send_json_success( array(
-        'message' => __( 'Cornerstone (required by X) has been automatically installed.', '__x__' )
-      ));
-    }
-
-  }
-
-  public function ajax_auto_activate_cornerstone() {
-
-    x_tco()->check_ajax_referer();
-
-    $activate = activate_plugin( 'cornerstone/cornerstone.php', '', false, true );
-
-    if ( is_wp_error( $activate ) ) {
-      wp_send_json_error( array(
-        'message' => $this->cs_activate_error,
-        'errorDetails' => $activate->get_error_message(),
-      ) );
-    } else {
-      wp_send_json_success( array(
-        'message' => __( 'We noticed Cornerstone was installed but not activated. By visiting the X Addons page, Cornerstone has been activated automatically.', '__x__' )
+      x_tco()->admin_notice( array(
+        'message' => __( 'Cornerstone successfully installed!', '__x__' ),
+        'dismissible' => true,
       ) );
     }
+  }
+
+  // Only called if user clicks link in admin notice
+  public function activate_cornerstone() {
+
+    if ( ! function_exists( 'activate_plugin' ) ) {
+      include_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+    }
+
+    activate_plugin( 'cornerstone/cornerstone.php' );
 
   }
 
-  public static function cornerstone_installed() {
-    return X_Validation_Extensions::plugin_installed( 'cornerstone/cornerstone.php' );
-  }
-
-  public static function cornerstone_activated() {
-    return is_plugin_active( 'cornerstone/cornerstone.php' );
+  // Direct file check if cornerstone is installed. Faster than TGM polling the WordPress plugin list
+  public function is_cornerstone_installed() {
+    return file_exists( WP_PLUGIN_DIR . '/cornerstone/cornerstone.php' );
   }
 
   public static function instance() {

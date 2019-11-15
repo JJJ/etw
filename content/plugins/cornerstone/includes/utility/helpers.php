@@ -96,11 +96,13 @@ function wp_script_data_function( $handle, $function_name, $data ) {
  */
 function cs_get_raw_excerpt() {
 
+	// Swap wp_trim_excerpt for cs_trim_raw_excerpt
 	add_filter( 'get_the_excerpt', 'cs_trim_raw_excerpt' );
 	remove_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
 
 	$excerpt = get_the_excerpt();
 
+	// Restore original WordPress behavior
 	add_filter( 'get_the_excerpt', 'wp_trim_excerpt' );
 	remove_filter( 'get_the_excerpt', 'cs_trim_raw_excerpt' );
 
@@ -209,8 +211,8 @@ function cs_generate_data_attributes_extra( $type, $trigger, $placement, $title 
 		'type'      => ( 'tooltip' === $type ) ? 'tooltip' : 'popover',
 		'trigger'   => $trigger,
 		'placement' => $placement,
-		'title'     => htmlspecialchars_decode( $title ), // to avoid double encoding.
-		'content'   => htmlspecialchars_decode( $content ),
+		'title'     => wp_specialchars_decode( $title ), // to avoid double encoding.
+		'content'   => wp_specialchars_decode( $content ),
 	);
 
 	return cs_generate_data_attributes( 'extra', $js_params );
@@ -309,13 +311,13 @@ function cs_atts( $atts, $echo = false ) {
 }
 
 
-function cs_deep_array_merge ( array &$defaults, array $data, $max_depth = -1 ) {
+function cs_deep_array_merge ( array $defaults, array $data, $max_depth = -1 ) {
 
 	if ( 1 === $max_depth-- ) {
 		return $defaults;
 	}
 
-	foreach ( $defaults as $key => &$value ) {
+	foreach ( $defaults as $key => $value ) {
 		if ( isset( $data[ $key ] ) && is_array( $value ) && is_array( $data[ $key ] ) ) {
 			$data[ $key ] = cs_deep_array_merge( $value, $data[ $key ], $max_depth );
 			continue;
@@ -667,4 +669,137 @@ function cs_set_curl_timeout_begin( $timeout ) {
 
 function cs_set_curl_timeout_end() {
   CS()->component('Networking')->set_curl_timeout_end();
+}
+
+
+/**
+ * Add 'noopener noreferrer' to a string if it doesn't exist yet
+ */
+function cs_targeted_link_rel( $rel = '', $is_target_blank = true ) {
+
+	if ( $is_target_blank && apply_filters( 'tco_targeted_link_rel', ! is_ssl() ) ) {
+
+		$more = apply_filters( 'tco_targeted_link_rel', array( 'noopener', 'noreferrer' ) );
+
+		foreach ($more as $str ) {
+			if ( false === strpos($rel, $str ) ) {
+				$rel .= " $str";
+			}
+		}
+
+	}
+
+	return ltrim($rel);
+
+}
+
+
+function cs_atts_for_social_sharing( $atts, $type, $title ) {
+	return CS()->component('Social')->setup_atts( $atts, $type, $title );
+}
+
+/**
+ * Maybe add rel att
+ */
+function cs_atts_with_targeted_link_rel( $atts = array(), $is_target_blank = true ) {
+
+	$rel = cs_targeted_link_rel( isset($atts['rel']) ? $atts['rel'] : '', $is_target_blank );
+
+	if ( $rel ) {
+		$atts['rel'] = $rel;
+	}
+
+	return $atts;
+}
+
+function cs_output_target_blank($echo = true) {
+	$output = 'target="_blank" rel="' . cs_targeted_link_rel() .'"';
+	if ($echo) {
+		echo $output;
+	}
+	return $output;
+}
+
+function cs_get_countdown_labels( $plural = true, $compact = false ) {
+	if ($compact) {
+		return array(
+			'd' => __( 'D', 'cornerstone' ),
+			'h' => __( 'H', 'cornerstone' ),
+			'm' => __( 'M', 'cornerstone' ),
+			's' => __( 'S', 'cornerstone' )
+		);
+	}
+
+	return array(
+    'd' => _n( 'Day', 'Days', $plural ? 2 : 1, 'cornerstone' ),
+    'h' => _n( 'Hour', 'Hours', $plural ? 2 : 1, 'cornerstone' ),
+    'm' => _n( 'Minute', 'Minutes', $plural ? 2 : 1, 'cornerstone' ),
+    's' => _n( 'Second', 'Seconds', $plural ? 2 : 1, 'cornerstone' )
+	);
+}
+
+function cs_polyfill_dependencies( $deps ) {
+
+	$polyfills = array(
+		'lodash',
+		'moment',
+		'react-dom',
+		'react',
+		'wp-polyfill-element-closest',
+		'wp-polyfill-fetch',
+		'wp-polyfill-formdata',
+		'wp-polyfill-node-contains',
+		'wp-polyfill'
+	);
+
+	foreach ($deps as $dep => $index) {
+		if ( in_array( $dep, $polyfills, true ) && ! wp_script_is( $dep, 'registered' ) ) {
+			$polyfill = "cs-$dep";
+			if ( ! wp_script_is( $polyfill, 'registered' )) {
+				wp_register_script( $polyfill, $this->url( "assets/wp-compat/$polyfill.min.js" ), array(), CS()->version(), false );
+			}
+			$deps[$index] = $polyfill;
+		}
+	}
+
+	return $deps;
+
+}
+
+function cs_anchor_text_content( $_cd, $type = 'main' ) {
+
+  $p_atts = array( 'class' => 'x-anchor-text-primary'   );
+  $s_atts = array( 'class' => 'x-anchor-text-secondary' );
+
+  if ( $_cd['anchor_text_interaction'] != 'none' ) {
+    $the_interaction              = str_replace( 'anchor-', '', $_cd['anchor_text_interaction'] );
+    $p_atts['data-x-single-anim'] = $the_interaction;
+    $s_atts['data-x-single-anim'] = $the_interaction;
+  }
+
+  $p_text     = ( $type == 'main' ) ? $_cd['anchor_text_primary_content']   : $_cd['anchor_interactive_content_text_primary_content'];
+  $s_text     = ( $type == 'main' ) ? $_cd['anchor_text_secondary_content'] : $_cd['anchor_interactive_content_text_secondary_content'];
+	$tag = ( $type == 'main' ) ? 'span' : 'div';
+	$p_markup   = ( ! empty( $p_text ) ) ? '<' . $tag . ' ' . x_atts( $p_atts ) . '>' . $p_text . '</' . $tag . '>' : '';
+  $s_markup   = ( ! empty( $s_text ) ) ? '<' . $tag . ' ' . x_atts( $s_atts ) . '>' . $s_text . '</' . $tag . '>' : '';
+  $the_order  = ( $_cd['anchor_text_reverse'] == true ) ? $s_markup . $p_markup : $p_markup . $s_markup;
+  $the_markup = ( ! empty( $p_markup ) || ! empty( $s_markup ) ) ? '<div class="x-anchor-text">' . $the_order . '</div>' : '';
+
+  return $the_markup;
+
+}
+
+function cs_anchor_graphic_content( $_cd, $type = 'main' ) {
+
+  $graphic_is_active      = $_cd['anchor_is_active'] && isset( $_cd['anchor_graphic_always_active'] ) && $_cd['anchor_graphic_always_active'] === true;
+  $find_data              = ( $type == 'main' ) ? array( 'anchor_graphic' => 'graphic', 'toggle' => '' ) : array( 'anchor_graphic' => 'graphic', 'anchor_interactive_content_graphic' => 'graphic', 'toggle' => '' );
+
+  return cs_get_partial_view(
+		'graphic',
+		array_merge(
+			cs_extract( $_cd, $find_data ),
+			array( 'id' => '', 'class' => '', 'graphic_is_active' => $graphic_is_active )
+		)
+	);
+
 }

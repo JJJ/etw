@@ -7,7 +7,7 @@ class X_Validation {
 
   public function setup() {
 
-    $this->add_script_data( 'x-validation', array( $this, 'script_data_verification' ) );
+    $this->add_script_data( 'x-validation', array( $this, 'script_data' ) );
     $this->add_script_data( 'x-validation-revoke', array( $this, 'script_data_revoke' ) );
 
     add_action( 'wp_ajax_x_validation', array( $this, 'ajax_validation' ) );
@@ -199,8 +199,9 @@ class X_Validation {
 
   public function preview_unlock( $box_class, $text = 'Setup Now' ) {
 
+    $text = $text ? $text : __( 'Setup Now', '__x__' );
     ?>
-      <a class="tco-btn tco-btn-nope" href="#" data-tco-toggle="<?php echo $box_class; ?> .tco-overlay"><?php _e( $text, '__x__' ); ?></a>
+      <a class="tco-btn tco-btn-nope" href="#" data-tco-toggle="<?php echo $box_class; ?> .tco-overlay"><?php echo $text; ?></a>
     <?php
 
   }

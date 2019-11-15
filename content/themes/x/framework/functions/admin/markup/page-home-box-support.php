@@ -54,7 +54,7 @@
           <a class="tco-btn" href="https://theme.co/apex/kb/" target="_blank"><?php _e( 'Knowledge Base', '__x__' ); ?></a><a class="tco-btn" href="https://theme.co/apex/support/" target="_blank"><?php _e( 'Support', '__x__' ); ?></a>
         </div>
       <?php else : ?>
-        <?php x_validation()->preview_unlock( '.tco-box-support', 'Get World-Class Support' ); ?>
+        <?php x_validation()->preview_unlock( '.tco-box-support', __( 'Get World-Class Support', '__x__' )); ?>
       <?php endif; ?>
     </div>
 

@@ -775,7 +775,7 @@ function x_theme_options_register() {
       'sections' => array(
         'root-font-size' => array(
           'title'       => __( 'Root Font Size', '__x__' ),
-          'description' => __( 'Select the method for outputting your site\'s root font size, then adjust the settings to suit your design. "Stepped" mode allows you to set a font size at each of your site\'s breakpoints, whereas "Scaling" will dymaically scale between a range of minimum and maximum font sizes and breakpoints that you specify.', '__x__' ),
+          'description' => __( 'Select the method for outputting your site\'s root font size, then adjust the settings to suit your design. "Stepped" mode allows you to set a font size at each of your site\'s breakpoints, whereas "Scaling" will dynamically scale between a range of minimum and maximum font sizes and breakpoints that you specify.', '__x__' ),
           'controls'    => array(
             'x_root_font_size_mode' => array(
               'type'    => 'select',
@@ -1222,9 +1222,13 @@ function x_theme_options_register() {
         ),
         'logo-text' => array(
           'title'       => __( 'Logo &ndash; Text', '__x__' ),
-          'description' => __( 'Your logo will show up as text by default. Alternately, if you would like to use an image, upload it under the "Logo &ndash; Image" section below, which will automatically switch over. Logo alignment can also be adjusted under the "Logo &ndash; Alignment" section.', '__x__' ),
+          'description' => __( 'Your logo will show up as the site title by default, but can be overwritten below (it is also used as the alt text should you choose to use an image). Alternately, if you would like to use an image, upload it under the "Logo &ndash; Image" section below, which will automatically switch over. Logo alignment can also be adjusted under the "Logo &ndash; Alignment" section.', '__x__' ),
           'condition'   => array( 'virtual:classic_headers' => true ),
           'controls'    => array(
+            'x_logo_text' => array(
+              'type'  => 'text',
+              'title' => __( 'Logo Text', '__x__' ),
+            ),
             'x_logo_font_family_selection' => array(
               'type'      => 'font-family',
               'title'     => __( 'Logo Font', '__x__' ),
@@ -1282,6 +1286,10 @@ function x_theme_options_register() {
             'x_logo_uppercase_enable' => array(
               'type'  => 'toggle',
               'title' => __( 'Uppercase', '__x__' ),
+            ),
+            'x_logo_visually_hidden_h1' => array(
+              'type'  => 'toggle',
+              'title' => __( 'Output Logo Text in Hidden &lt;h1&gt;', '__x__' ),
             ),
           ),
         ),
@@ -1973,6 +1981,14 @@ function x_theme_options_register() {
           'title'     => __( 'Navbar Menu', '__x__' ),
           'condition' => array( 'virtual:classic_headers' => true ),
         ),
+        'x_woocommerce_header_hide_empty_cart' => array(
+          'type'      => 'toggle',
+          'title'     => __( 'Hide Empty Cart', '__x__' ),
+          'conditions' => array(
+            array( 'virtual:classic_headers' => true ),
+            array( 'x_woocommerce_header_menu_enable' => true ),
+          ),
+        ),
         'x_woocommerce_header_cart_info' => array(
           'type'       => 'select',
           'title'      => __( 'Cart Information', '__x__' ),
@@ -2111,7 +2127,7 @@ function x_theme_options_register() {
         ),
         'single-product' => array(
           'title'       => __( 'Single Product', '__x__' ),
-          'description' => __( 'All options available in this section pertain to the layout of your individual product pages. Eenable or disable the sections you want to use to achieve the layout you want.', '__x__' ),
+          'description' => __( 'All options available in this section pertain to the layout of your individual product pages. Enable or disable the sections you want to use to achieve the layout you want.', '__x__' ),
           'controls'    => array(
             'x_woocommerce_product_tabs_enable' => array(
               'type'  => 'toggle',
@@ -2256,24 +2272,3 @@ function x_theme_options_preview_setup() {
 
 add_action('cs_options_preview_setup', 'x_theme_options_preview_setup' );
 
-
-//
-// Before Theme Options Save
-//
-
-function x_theme_options_set_transients_before_save() {
-  set_transient( 'x_portfolio_slug_before', x_get_option( 'x_custom_portfolio_slug' ), 60 );
-}
-
-add_action( 'cs_theme_options_before_save', 'x_theme_options_set_transients_before_save' );
-
-
-//
-// After Theme Options Save
-//
-
-function x_theme_options_set_transients_after_save() {
-  set_transient( 'x_portfolio_slug_after', x_get_option( 'x_custom_portfolio_slug' ), 60 );
-}
-
-add_action( 'cs_theme_options_after_save', 'x_theme_options_set_transients_after_save' );

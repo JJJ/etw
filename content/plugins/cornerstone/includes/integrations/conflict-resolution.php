@@ -9,7 +9,7 @@ class Cornerstone_Integration_Conflict_Resolution {
     add_action( 'cornerstone_before_ajax', array( $this, 'before_render' ) );
     add_action( 'cornerstone_before_load_preview', array( $this, 'before_load_preview' ) );
     add_action( 'cs_preview_frame_load', array( $this, 'before_load_preview' ) );
-
+    
   }
 
   public static function pre_init() {
@@ -34,6 +34,10 @@ class Cornerstone_Integration_Conflict_Resolution {
 
     if ( class_exists( 'WPSEO_Frontend' ) ) {
       remove_action( 'template_redirect', array( WPSEO_Frontend::get_instance(), 'clean_permalink' ), 1 );
+    }
+
+    if( class_exists( 'BuddyPress' ) ){
+      remove_action( 'bp_template_redirect', 'bp_screens', 6 );
     }
 
   }
@@ -64,6 +68,18 @@ class Cornerstone_Integration_Conflict_Resolution {
       add_filter( 'pre_option_wpcss_hidetrigger', '__return_true' );
     }
 
+    add_action('wp_enqueue_scripts', array($this, 'preview_enqueue'), 100 );
+
+  }
+
+  public function preview_enqueue() {
+    if ( wp_script_is('babel-polyfill', 'enqueued') ) {
+			wp_dequeue_script('babel-polyfill');
+    }
+    
+    if ( wp_script_is('wc-geolocation', 'enqueued') ) {
+			wp_dequeue_script( 'wc-geolocation' );
+    }
   }
 
 }

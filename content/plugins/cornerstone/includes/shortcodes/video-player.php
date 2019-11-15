@@ -70,6 +70,7 @@ function x_shortcode_video_player( $atts ) {
   }
 
   $is_bg             = ( strpos( $class, 'bg' ) !== false ) ? true : false;
+  $inner_bg_class    = ( $is_bg ) ? ' transparent' : '';
   $bg_template_start = ( $is_bg ) ? '<script type="text/template">' : '';
   $bg_template_end   = ( $is_bg ) ? '</script>' : '';
   $poster_attr       = ( $poster != '' ) ? ' poster="' . $poster . '"' : '';
@@ -154,7 +155,7 @@ function x_shortcode_video_player( $atts ) {
 
   $output = "<div {$id} class=\"{$class}{$hide_controls}{$autoplay}{$loop}{$muted}{$no_container}{$vimeo}{$youtube}\" {$data} {$style}>"
             . $bg_template_start
-              . "<div class=\"x-video-inner{$type}\">{$video}</div>"
+              . "<div class=\"x-video-inner{$type}{$inner_bg_class}\">{$video}</div>"
             . $bg_template_end
           . '</div>';
 

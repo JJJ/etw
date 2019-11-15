@@ -59,7 +59,7 @@ class Cornerstone_Model_Content_Template_Entry extends Cornerstone_Plugin_Compon
 
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     $this->load_all();
 

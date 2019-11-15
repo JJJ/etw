@@ -91,7 +91,7 @@ switch ( $map_type ) {
 
     case 'google' :
 
-      do_action( 'x_render_children', $_modules, array(), $_custom_data );
+      do_action( 'x_render_children', $_modules, $_view_data );
 
       if ( did_action('cs_element_rendering') && ! $map_google_api_key ) {
         echo '<img style="object-fit: cover; width: 100%; height: 100%;" src="' . cornerstone_make_placeholder_image_uri( 1, 1, 'rgba(0, 0, 0, 0.35)' ) . '" width="1" height="1" alt="Placeholder">';

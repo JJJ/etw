@@ -52,7 +52,7 @@ class Cornerstone_Model_Footers_Footer_Template extends Cornerstone_Plugin_Compo
 
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {

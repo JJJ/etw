@@ -183,7 +183,7 @@ if ( ! function_exists( 'x_renew_comment' ) ) :
         $comment_avatar = get_avatar( $comment, 120 );
       }
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review" <?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="comment" itemscope itemtype="https://schema.org/Comment" <?php comment_class(); ?>>
       <article id="comment-<?php comment_ID(); ?>" class="comment">
         <?php
         printf( '<div class="x-comment-img">%s</div>',

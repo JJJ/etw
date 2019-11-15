@@ -71,8 +71,8 @@ if ( $column_fade ) {
 $column_bg = NULL;
 
 if ( $column_bg_advanced === true ) {
-  $data_bg   = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'bg' => '' ) ) );
-  $column_bg = x_get_view( 'partials', 'bg', '', $data_bg, false );
+  $data_bg   = cs_extract( $_view_data, array( 'bg' => '' ) );
+  $column_bg = cs_get_partial_view( 'bg', $data_bg );
 }
 
 

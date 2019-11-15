@@ -75,7 +75,7 @@
   }
 
   .widget_pages .h-widget:before {
-    font-family: "FontAwesomeOutline";
+    font-family: "FontAwesomeRegular";
     content: "\f15c";
     top: -0.065em;
     font-size: 0.85em;
@@ -242,7 +242,7 @@
   }
 
   .widget_pages .h-widget:after {
-    font-family: "FontAwesomeOutline";
+    font-family: "FontAwesomeRegular";
     content: "\f15c";
     top: -0.065em;
     font-size: 0.85em;

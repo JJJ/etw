@@ -100,6 +100,10 @@ function x_output_generated_styles() {
 
   do_action('x_before_head_css');
 
+  // Note to reviewer: This has been part of X since the first version
+  // We can't convert this to wp_add_inline_style because it would change
+  // the order that styles are added in the <head> and break custom styling on existing customer sites
+
   echo '<style id="x-generated-css">';
   do_action( 'x_head_css' );
   echo '</style>';
@@ -127,63 +131,3 @@ function x_register_custom_styles() {
 
 add_action( 'x_before_head_css', 'x_register_custom_styles' );
 
-
-
-// // Caching
-// // =============================================================================
-
-// //
-// // Cache Customizer CSS.
-// //
-
-// function x_customizer_cache_css() {
-
-//   $cached_css = get_option( 'x_cache_customizer_css', false );
-
-//   if ( $cached_css == false ) {
-
-//     $cached_css = x_get_generated_css();
-
-//     update_option( 'x_cache_customizer_css', $cached_css );
-
-//   }
-
-//   return $cached_css;
-
-// }
-
-
-// //
-// // Cache bust.
-// //
-
-// function x_customizer_bust_css_cache() {
-
-//   delete_option( 'x_cache_customizer_css' );
-
-// }
-
-// add_action( 'customize_save_after', 'x_customizer_bust_css_cache' );
-
-
-// //
-// // Bust Customizer CSS cache when certain plugins are activated.
-// //
-
-// function x_customizer_bust_css_cache_on_plugin_change( $plugin, $network_activation ) {
-
-//   $plugins = array(
-//     'bbpress/bbpress.php',
-//     'buddypress/bp-loader.php',
-//     'woocommerce/woocommerce.php',
-//     'gravityforms/gravityforms.php'
-//   );
-
-//   if ( in_array( $plugin, $plugins ) ) {
-//     x_customizer_bust_css_cache();
-//   }
-
-// }
-
-// add_action( 'activated_plugin', 'x_customizer_bust_css_cache_on_plugin_change', 10, 2 );
-// add_action( 'deactivated_plugin', 'x_customizer_bust_css_cache_on_plugin_change', 10, 2 );

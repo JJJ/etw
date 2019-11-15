@@ -29,24 +29,6 @@ class Cornerstone_Element_Migrations  extends Cornerstone_Plugin_Component {
 
 	public function migrate_classic_element( $element, $version ) {
 
-		$element = $this->common_classic_migrations( $element, $version );
-
-		$definition = $this->orchestrator->get( $element['_type'] );
-
-		if ( isset( $element['elements'] ) ) {
-      $element['_modules'] = array();
-			foreach ( $element['elements'] as $index => $child ) {
-				$element['_modules'][$index] = $this->migrate_classic_element( $child , $version );
-			}
-      unset($element['elements']);
-		}
-
-		return $definition->migrate( $element, $version );
-
-	}
-
-	public function common_classic_migrations( $element, $version ) {
-
 		if ( version_compare( $version, '1.1.1', '<' ) ) {
 
 			// Ensure '_type' is set
@@ -79,7 +61,6 @@ class Cornerstone_Element_Migrations  extends Cornerstone_Plugin_Component {
 
 			// Some quick inline layout migrations instead of checking the version for every individual element
 			if ( 'classic:row' == $element['_type'] && isset( $element['columnLayout'] ) ) {
-				$element['_column_layout'] = $element['columnLayout'];
 				unset($element['columnLayout']);
 			}
 
@@ -115,6 +96,14 @@ class Cornerstone_Element_Migrations  extends Cornerstone_Plugin_Component {
 			if ( isset( $ta_migrate[ $element['text_align'] ] ) ) {
 				$element['text_align'] = $ta_migrate[ $element['text_align'] ];
 			}
+		}
+
+		if ( isset( $element['elements'] ) ) {
+      $element['_modules'] = array();
+			foreach ( $element['elements'] as $index => $child ) {
+				$element['_modules'][$index] = $this->migrate_classic_element( $child , $version );
+			}
+      unset($element['elements']);
 		}
 
 		return $element;

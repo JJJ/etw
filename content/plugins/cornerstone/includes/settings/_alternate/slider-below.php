@@ -44,11 +44,11 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below',
       'select',
       __( 'Slider', 'cornerstone' ),
-      __( 'To activate your slider, select an option from the dropdown. To deactivate your slider, set the dropdown back to "Deactivated."', 'cornerstone' ),
+      '',
       $default_slider,
       array(
         'choices' => $choices,
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -56,10 +56,10 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below_bg_video',
       'text',
       __( 'Optional Background Video', 'cornerstone' ),
-      __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv).', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_slider_below_bg_video', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -67,10 +67,10 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below_bg_video_poster',
       'text',
       __( 'Video Poster Image (For Mobile)', 'cornerstone' ),
-      __( 'Click the button to upload your video poster image to show on mobile devices, or enter it in manually using the text field above. Only select one image for this field. To clear, delete the image URL from the text field and save your page.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_slider_below_bg_video_poster', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -78,10 +78,10 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below_scroll_bottom_anchor_enable',
       'toggle',
       __( 'Enable Scroll Bottom Anchor', 'cornerstone' ),
-      __( 'Select to enable the scroll bottom anchor for your slider.', 'cornerstone' ),
+      '',
       ( 'on' == get_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_enable', true ) ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -98,11 +98,11 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below_scroll_bottom_anchor_alignment',
       'select',
       __( 'Scroll Bottom Anchor Alignment', 'cornerstone' ),
-      __( 'Select the alignment of the scroll bottom anchor for your slider.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_alignment', true ),
       array(
         'choices' => $alignments,
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -110,10 +110,10 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below_scroll_bottom_anchor_color',
       'text',
       __( 'Scroll Bottom Anchor Color', 'cornerstone' ),
-      __( 'Select the color of the scroll bottom anchor for your slider.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_color', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -121,10 +121,10 @@ class CS_Settings_Slider_Below extends Cornerstone_Legacy_Setting_Section {
       'x_slider_below_scroll_bottom_anchor_color_hover',
       'text',
       __( 'Scroll Bottom Anchor Color Hover', 'cornerstone' ),
-      __( 'Select the hover color of the scroll bottom anchor for your slider.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_slider_below_scroll_bottom_anchor_color_hover', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 

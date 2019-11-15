@@ -9,17 +9,90 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Define Element
-//   02. Builder Setup
-//   03. Register Element
+//   01. Controls
+//   02. Control Groups
+//   03. Values
+//   04. Define Element
+//   05. Builder Setup
+//   06. Register Element
 // =============================================================================
+
+// Values
+// =============================================================================
+
+$values = cs_compose_values(
+  'toggle-cart',
+  'modal',
+  'cart',
+  'cart-button',
+  'omega',
+  'omega:toggle-hash'
+);
+
+
+
+// Style
+// =============================================================================
+
+function x_element_style_tp_wc_cart_modal() {
+
+  $style = cs_get_partial_style( 'anchor', array(
+    'selector' => '.x-anchor-toggle',
+    'key_prefix'    => 'toggle'
+  ) );
+
+  $style .= cs_get_partial_style( 'modal' );
+  $style .= cs_get_partial_style( 'mini-cart' );
+
+  $style .= cs_get_partial_style( 'anchor', array(
+    'selector' => ' .buttons .x-anchor',
+    'key_prefix'    => 'cart'
+  ) );
+
+  return $style;
+
+}
+
+
+
+
+// Render
+// =============================================================================
+
+function x_element_render_tp_wc_cart_modal( $data ) {
+
+  $data = array_merge(
+    $data,
+    cs_make_aria_atts( 'toggle_anchor', array(
+      'controls' => 'modal',
+      'haspopup' => 'true',
+      'expanded' => 'false',
+      'label'    => __( 'Toggle Modal Content', '__x__' ),
+    ), $data['id'], $data['mod_id'] )
+  );
+
+  cs_defer_partial( 'modal', array_merge(
+    cs_extract( $data, array( 'modal' => '' ) ),
+    array( 'modal_content' => cs_get_partial_view( 'mini-cart', cs_extract( $data, array( 'cart' => '' ) ) ) )
+  ) );
+
+  return cs_get_partial_view( 'anchor', cs_extract( $data, array( 'toggle_anchor' => 'anchor', 'toggle' => '' ) ) );
+
+}
+
+
 
 // Define Element
 // =============================================================================
 
 $data = array(
   'title'  => __( 'Cart Modal', '__x__' ),
-  'values' => x_values_element_tp_wc_cart_modal(),
+  'values' => $values,
+  'builder' => 'x_element_builder_setup_tp_wc_cart_modal',
+  'style' => 'x_element_style_tp_wc_cart_modal',
+  'render' => 'x_element_render_tp_wc_cart_modal',
+  'icon' => 'native',
+  'active' => class_exists( 'WC_API' )
 );
 
 
@@ -28,12 +101,12 @@ $data = array(
 // =============================================================================
 
 function x_element_builder_setup_tp_wc_cart_modal() {
-  return array(
-    'controls'           => x_controls_element_tp_wc_cart_modal(),
-    'controls_adv'       => x_controls_element_tp_wc_cart_modal( true ),
-    'control_groups'     => x_control_groups_element_tp_wc_cart_modal(),
-    'control_groups_adv' => x_control_groups_element_tp_wc_cart_modal( true ),
-    'active'             => class_exists( 'WC_API' )
+  return cs_compose_controls(
+    cs_partial_controls( 'anchor', cs_recall( 'settings_anchor:cart-toggle' ) ),
+    cs_partial_controls( 'modal' ),
+    cs_partial_controls( 'cart' ),
+    cs_partial_controls( 'anchor', cs_recall( 'settings_anchor:cart-button' ) ),
+    cs_partial_controls( 'omega', array( 'add_toggle_hash' => true ) )
   );
 }
 
@@ -42,4 +115,4 @@ function x_element_builder_setup_tp_wc_cart_modal() {
 // Register Module
 // =============================================================================
 
-cornerstone_register_element( 'tp-wc-cart-modal', x_element_base( $data ) );
+cs_register_element( 'tp-wc-cart-modal', $data );

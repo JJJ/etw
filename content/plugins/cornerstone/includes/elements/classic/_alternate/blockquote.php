@@ -23,8 +23,8 @@ class CS_Blockquote extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'textarea',
-      __( 'Quote &amp Citation', 'cornerstone' ),
-      __( 'Enter your quote in the textarea below. If you want to cite your quote, you can place that in the input following the textarea.', 'cornerstone' ),
+      __( 'Quote', 'cornerstone' ),
+      __( 'Enter the content of your quote.', 'cornerstone' ),
       __( 'Input your quotation here. Also, you can cite your quotes if you would like.', 'cornerstone' ),
       array(
         'expandable' => __( 'Quote', 'cornerstone' )
@@ -34,8 +34,8 @@ class CS_Blockquote extends Cornerstone_Element_Base {
     $this->addControl(
       'cite',
       'text',
-      NULL,
-      NULL,
+      __( 'Citation', 'cornerstone' ),
+      __( 'Include an optional citation to appear with the quote.', 'cornerstone' ),
       __( 'Mr. WordPress', 'cornerstone' )
     );
 

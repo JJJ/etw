@@ -19,7 +19,7 @@ class CS_Self_Hosted_Video extends Cornerstone_Element_Base {
     $this->addControl(
       'src',
       'text',
-      __( 'Src &amp; Poster', 'cornerstone' ),
+      __( 'Video Src URL', 'cornerstone' ),
       __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv).', 'cornerstone' ),
       '',
       array(
@@ -47,8 +47,8 @@ class CS_Self_Hosted_Video extends Cornerstone_Element_Base {
     $this->addControl(
       'poster',
       'image',
-      NULL,
-      NULL,
+      __( 'Video Poster Image', 'cornerstone' ),
+      __( 'Include a poster image to appear before the video is played.', 'cornerstone' ),
       ''
     );
 
@@ -137,6 +137,8 @@ class CS_Self_Hosted_Video extends Cornerstone_Element_Base {
   public function render( $atts ) {
 
     extract( $atts );
+
+    $src = cs_clean_shortcode_att( $src );
 
     $shortcode = "[x_video_player type=\"$aspect_ratio\" src=\"$src\" hide_controls=\"$hide_controls\" autoplay=\"$autoplay\" no_container=\"$no_container\" preload=\"$preload\" advanced_controls=\"$advanced_controls\" muted=\"$muted\" loop=\"$loop\"{$extra} poster=\"{$poster}\"]";
 

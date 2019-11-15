@@ -23,10 +23,21 @@
 // Define Constants
 // =============================================================================
 
-define( 'BP_AVATAR_THUMB_WIDTH', 45 );
-define( 'BP_AVATAR_THUMB_HEIGHT', 45 );
-define( 'BP_AVATAR_FULL_WIDTH', 100 );
-define( 'BP_AVATAR_FULL_HEIGHT', 100 );
+if ( ! defined( 'BP_AVATAR_THUMB_WIDTH' ) ) {
+  define( 'BP_AVATAR_THUMB_WIDTH', 45 );
+}
+
+if ( ! defined( 'BP_AVATAR_THUMB_HEIGHT' ) ) {
+  define( 'BP_AVATAR_THUMB_HEIGHT', 45 );
+}
+
+if ( ! defined( 'BP_AVATAR_FULL_WIDTH' ) ) {
+  define( 'BP_AVATAR_FULL_WIDTH', 100 );
+}
+
+if ( ! defined( 'BP_AVATAR_FULL_HEIGHT' ) ) {
+  define( 'BP_AVATAR_FULL_HEIGHT', 100 );
+}
 
 
 
@@ -293,9 +304,9 @@ if ( ! function_exists( 'x_buddypress_get_blog_latest_post' ) ) :
     $latest_post_title = bp_get_blog_latest_post_title();
 
     if ( ! empty( $latest_post_title ) ) {
-      $output = '<a href="' . $blogs_template->blog->latest_post->guid . '" title="' . $latest_post_title . '">Latest Post</a>';
+      $output = '<a href="' . $blogs_template->blog->latest_post->guid . '" title="' . $latest_post_title . '">' . __( 'Latest Post', '__x__' ) . '</a>';
     } else {
-      $output = 'No Posts Yet';
+      $output = __( 'No Posts Yet', '__x__' );
     }
 
     return $output;
@@ -456,6 +467,7 @@ if ( ! function_exists( 'x_buddypress_navbar_menu' ) ) :
         $submenu_items .= '<li class="menu-item menu-item-buddypress-navigation"><a href="' . wp_login_url() . '" class="cf"><i class="x-icon-sign-in" data-x-icon-s="&#xf2f6;" aria-hidden="true"></i> <span>' . __( 'Log in', '__x__' ) . '</span></a></li>';
       } else {
         $submenu_items .= '<li class="menu-item menu-item-buddypress-navigation"><a href="' . bp_loggedin_user_domain() . '" class="cf"><i class="x-icon-cog" data-x-icon-s="&#xf013;" aria-hidden="true"></i> <span>' . __( 'Profile', '__x__' ) . '</span></a></li>';
+        $submenu_items .= '<li class="menu-item menu-item-buddypress-navigation"><a href="' . wp_logout_url() . '" class="cf"><i class="x-icon-sign-logout" data-x-icon-s="&#xf2f5;" aria-hidden="true"></i> <span>' . __( 'Log out', '__x__' ) . '</span></a></li>';
       }
 
       if ( $args->theme_location == 'primary' ) {
@@ -566,3 +578,6 @@ if ( ! function_exists( 'x_buddypress_is_component_with_landmark_header' ) ) :
 
   }
 endif;
+
+// Use legacy as default template
+add_theme_support('buddypress-use-legacy');

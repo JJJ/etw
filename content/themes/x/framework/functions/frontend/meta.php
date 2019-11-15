@@ -9,45 +9,24 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Add Headers
-//   02. Filter <title> Output
-//   03. Generic <head> Meta Data
+//   01. Filter <title> Output
+//   02. Generic <head> Meta Data
 // =============================================================================
-
-// Add Headers
-// =============================================================================
-
-if ( ! function_exists( 'x_add_headers' ) ) :
-  function x_add_headers( $headers ) {
-
-    if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE' ) !== false ) {
-      $headers['X-UA-Compatible'] = 'IE=edge';
-    }
-
-    return $headers;
-
-  }
-  add_filter( 'wp_headers', 'x_add_headers' );
-endif;
-
-
 
 // Filter <title> Output
 // =============================================================================
 
-if ( ! function_exists( 'x_wp_title' ) ) :
-  function x_wp_title( $title ) {
 
-    if ( is_front_page() ) {
-      return get_bloginfo( 'name' ) . ' | ' . get_bloginfo( 'description' );
-    } elseif ( is_feed() ) {
-      return ' | RSS Feed';
-    } else {
-      return trim( $title ) . ' | ' . get_bloginfo( 'name' ); 
-    }
+if ( ! function_exists( 'x_title_separator' ) ) :
+  function x_title_separator( $sep ) {
+
+    $sep = "|";
+
+    return $sep;
 
   }
-  add_filter( 'wp_title', 'x_wp_title' );
+
+  add_filter( 'document_title_separator', 'x_title_separator' );
 endif;
 
 

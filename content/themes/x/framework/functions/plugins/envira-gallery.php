@@ -30,7 +30,7 @@ add_action( 'envira_gallery_admin_styles', 'x_envira_gallery_hide_key_box' );
 function x_envira_gallery_hide_license_errors() { ?>
   <script>
     jQuery(function($){
-      $('.error p:contains(Envira Gallery)').parent().remove();
+      $('.updated p:contains(Envira Gallery)').parent().remove();
     });
   </script>
   <?php

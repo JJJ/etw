@@ -33,16 +33,35 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
     add_filter( 'body_class', array( $this, 'body_class' ) );
     add_filter( "get_post_metadata", array( $this, 'prefilter_meta_handler' ), 10, 4 );
 
-    $route = ( isset( $this->state['route'] ) ) ? $this->state['route'] : 'app';
-    $frame_component = cs_to_component_name( $route ) . '_Preview_Frame';
-    $this->frame = $this->plugin->component( $frame_component );
+    if (defined('CS_APP_DEV_TOOLS') && CS_APP_DEV_TOOLS) {
+      add_action( 'wp_head', array( $this, 'react_dev_tools' ), 0 );
+    }
 
-    if ( ! $this->frame ) {
-      throw new Exception( "Requested frame handler '$frame_component' does not exist." );
+    $this->frame = null;
+
+    if ( isset( $this->state['route'] ) ) {
+      $frame_component = cs_to_component_name( $this->state['route'] ) . '_Preview_Frame';
+      $this->frame = $this->plugin->component( $frame_component );
+
+      if ( ! $this->frame ) {
+        throw new Exception( "Requested frame handler '$frame_component' does not exist." );
+      }
     }
 
     if ( isset( $this->state['noClient'] ) ) {
       return;
+    }
+
+    if ( isset( $state['custom_js'] ) ) {
+
+      $inline_scripts = $this->plugin->component('Inline_Scripts');
+
+      foreach ($state['custom_js'] as $id => $content) {
+        if ( $content ) {
+          $inline_scripts->add_script_safely($id, $content);
+        }
+      }
+
     }
 
     add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
@@ -81,14 +100,10 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
     if ( ! $this->state ) {
       return array(
         'timestamp' => $this->state,
-        'collapsed' => false
       );
     }
 
-    return array(
-      'timestamp' => $this->state['timestamp'],
-      'collapsed' => $this->state['collapsed'],
-    );
+    return array( 'timestamp' => $this->state['timestamp'] );
 
   }
 
@@ -123,7 +138,9 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
     ob_clean();
 
     wp_enqueue_script( 'cs-app' );
-    wp_enqueue_style( 'cs-preview', $this->plugin->css( 'preview', true ), null, $this->plugin->version() );
+
+    $preview_style_asset = $this->plugin->css( 'app/preview' );
+    wp_enqueue_style( 'cs-preview', $preview_style_asset['url'], null, $preview_style_asset['version'] );
   }
 
   public function route_config() {
@@ -184,13 +201,16 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
     $header = $this->plugin->component('Regions')->get_last_active_header();
 
     if ( $header && $this->component('App_Permissions')->user_can('headers') ) {
+
+      $post_type_obj = get_post_type_object( 'cs_header' );
+
       $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
         'action' => array(
           'route'   => 'headers.header',
           'id'      => $header->get_id(),
-          'context' => 'Header'
+          'context' => $post_type_obj->labels->singular_name
         ),
-        'label' => 'Edit Header'
+        'label' => sprintf( csi18n( 'common.edit' ), $post_type_obj->labels->singular_name )
       ) );
     }
 
@@ -202,13 +222,16 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
     $footer = $this->plugin->component('Regions')->get_last_active_footer();
 
     if ( $footer && $this->component('App_Permissions')->user_can( 'footers' ) ) {
+
+      $post_type_obj = get_post_type_object( 'cs_footer' );
+
       $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
         'action' => array(
           'route'   => 'footers.footer',
           'id'      => $footer->get_id(),
-          'context' => 'Footer'
+          'context' => $post_type_obj->labels->singular_name
         ),
-        'label' => 'Edit Footer'
+        'label' => sprintf( csi18n( 'common.edit' ), $post_type_obj->labels->singular_name )
       ) );
     }
 
@@ -228,7 +251,7 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
           'id'      => $id,
           'context' => $post_type_obj->labels->singular_name
         ),
-        'label' => 'Edit ' . $post_type_obj->labels->singular_name
+        'label' => sprintf( csi18n( 'common.edit' ), $post_type_obj->labels->singular_name )
       ) );
     }
 
@@ -240,15 +263,15 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
 
     if ( $global_block_id && $this->component('App_Permissions')->user_can('content.cs_global_block') ) {
 
-      $post_type = get_post_type_object( 'cs_global_block' );
+      $post_type_obj = get_post_type_object( 'cs_global_block' );
 
       $atts['data-cs-observeable-nav'] = cs_prepare_json_att( array(
         'action' => array(
           'route'   => 'global-blocks.builder',
           'id'      => $global_block_id,
-          'context' => $post_type->labels->singular_name
+          'context' => $post_type_obj->labels->singular_name
         ),
-        'label' => 'Edit ' . $post_type->labels->singular_name
+        'label' => sprintf( csi18n( 'common.edit' ), $post_type_obj->labels->singular_name )
       ) );
 
     }
@@ -260,6 +283,12 @@ class Cornerstone_Preview_Frame_Loader extends Cornerstone_Plugin_Component {
   public function body_class( $classes ) {
     $classes[] = 'cs-preview';
     return $classes;
+  }
+
+  public function react_dev_tools() {
+    ?>
+    <script>if (window.parent !== window) window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__;</script>
+    <?php
   }
 
 }

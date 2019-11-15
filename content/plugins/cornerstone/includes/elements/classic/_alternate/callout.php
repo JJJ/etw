@@ -23,16 +23,16 @@ class CS_Callout extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Title &amp; Message', 'cornerstone' ),
-      __( 'Enter the title and message for your Callout below.', 'cornerstone' ),
+      __( 'Title', 'cornerstone' ),
+      __( 'Enter the title for your Callout.', 'cornerstone' ),
       __( 'Callout Title', 'cornerstone' )
     );
 
     $this->addControl(
       'message',
       'textarea',
-      NULL,
-      NULL,
+      __( 'Message', 'cornerstone' ),
+      __( 'Enter the message for your Callout.', 'cornerstone' ),
       __( 'The message text for your Callout goes here.', 'cornerstone' ),
       array(
         'expandable' => __( 'Message', 'cornerstone' )
@@ -91,6 +91,8 @@ class CS_Callout extends Cornerstone_Element_Base {
     $heading     = cs_clean_shortcode_att( $heading );
     $message     = cs_clean_shortcode_att( $message );
     $button_text = cs_clean_shortcode_att( $button_text );
+    $href        = cs_clean_shortcode_att( $href );
+    $href_title  = cs_clean_shortcode_att( $href_title );
 
     $shortcode = "[x_callout title=\"$heading\" message=\"$message\" type=\"$type\" button_text=\"$button_text\" circle=\"$circle\" button_icon=\"$button_icon\" href=\"$href\" href_title=\"$href_title\" target=\"$href_target\"{$extra}]";
 

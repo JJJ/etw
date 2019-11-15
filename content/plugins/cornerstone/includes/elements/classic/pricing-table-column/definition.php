@@ -23,7 +23,8 @@ class CSE_Pricing_Table_Column {
         'currency',
         'price',
         'interval',
-      ),
+			),
+			'label_key' => 'title'
 		);
 	}
 

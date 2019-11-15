@@ -30,10 +30,10 @@
     margin: $line_margin;
   }
   @if $line_direction === 'horizontal' {
-    border-top-width: $line_size;
+    border-width: $line_size 0 0 0;
   }
   @if $line_direction === 'vertical' {
-    border-left-width: $line_size;
+    border-width: 0 0 0 $line_size;
   }
   border-style: $line_style;
   border-color: $line_color;

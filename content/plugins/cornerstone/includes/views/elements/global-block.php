@@ -8,21 +8,7 @@
 
 $mod_id = ( isset( $mod_id ) ) ? $mod_id : '';
 $class  = ( isset( $class )  ) ? $class  : '';
-$global_block_id = (int) $global_block_id;
-
-
-
-// Start Rendering Isolation
-// -------------------
-
-$gb_top_level = false;
-
-if ( ! apply_filters( '_cs_rendering_global_block', false ) ) {
-  $gb_top_level = true;
-  do_action( '_cs_rendering_global_block_begin' );
-  add_filter('_cs_rendering_global_block', '__return_true' );
-}
-
+$global_block_id = apply_filters( 'cs_global_block_id', $global_block_id );
 
 
 // Prepare Attr Values
@@ -49,18 +35,22 @@ if ( isset( $id ) && ! empty( $id ) ) {
 // Validation
 // ------------------------
 
+$error = false;
+
 if ( ! $global_block_id ) {
   return;
+} else {
+  $current_id = (int) get_the_ID();
+  $global_block_post = get_post( $global_block_id );
+  if ( ! is_a($global_block_post, 'WP_Post' ) ) {
+    $error = 'Unable to locate Global Block';
+  } else if ( 'cs_global_block' !== $global_block_post->post_type ) {
+    $error = 'The Global Block element was passed a non Global Block ID.';
+  }
 }
 
-$error = false;
-$current_id = (int) get_the_ID();
-$global_block_post = get_post( $global_block_id );
-if ( ! is_a($global_block_post, 'WP_Post' ) ) {
-  $error = 'Unable to locate Global Block';
-} else if ( 'cs_global_block' !== $global_block_post->post_type ) {
-  $error = 'The Global Block element was passed a non Global Block ID.';
-}
+
+
 
 
 
@@ -90,6 +80,17 @@ if ( in_array( $global_block_id, $cs_global_block_ancestory, true) || $global_bl
 
 if ( ! $error ) {
 
+  // Start Rendering Isolation
+  // -------------------
+
+  $gb_top_level = false;
+
+  if ( ! apply_filters( '_cs_rendering_global_block', false ) ) {
+    $gb_top_level = true;
+    do_action( '_cs_rendering_global_block_begin' );
+    add_filter('_cs_rendering_global_block', '__return_true' );
+  }
+
   $front_end = CS()->component('Element_Front_End');
   $front_end->start_load_styles();
   array_push( $cs_global_block_ancestory, $global_block_id );
@@ -112,20 +113,18 @@ if ( ! $error ) {
     $error = 'This Global Block does not have any content.';
   }
 
+  // End Rendering Isolation
+  // -------------------
+
+  if ( $gb_top_level ) {
+    remove_filter('_cs_rendering_global_block', '__return_true' );
+    do_action( '_cs_rendering_global_block_end' );
+  }
+
 }
 
 if ( $error ) {
   $content = apply_filters( 'cs_global_block_error', "<div style=\"padding: 35px; line-height: 1.5; text-align: center; color: #000; background-color: #fff;\">$error</div>");
-}
-
-
-
-// End Rendering Isolation
-// -------------------
-
-if ( $gb_top_level ) {
-  remove_filter('_cs_rendering_global_block', '__return_true' );
-  do_action( '_cs_rendering_global_block_end' );
 }
 
 

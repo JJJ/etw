@@ -9,8 +9,8 @@ return array(
 	'heading' => array(
 		'type'    => 'text',
 		'ui' => array(
-			'title'   => __( 'Heading &amp; Content', 'cornerstone' ),
-			'tooltip' => __( 'Text for your alert heading and content.', 'cornerstone' ),
+			'title'   => __( 'Heading', 'cornerstone' ),
+			'tooltip' => __( 'Text for your alert heading', 'cornerstone' ),
 		),
 		'context' => 'content',
     'suggest' => __( 'Alert Title', 'cornerstone' ),
@@ -18,6 +18,10 @@ return array(
 
 	'content' => array(
 		'type'    => 'textarea',
+		'ui' => array(
+			'title'   => __( 'Content', 'cornerstone' ),
+			'tooltip' => __( 'Text for your alert content.', 'cornerstone' ),
+		),
 		'context' => 'content',
 		'suggest' => __( 'Click to inspect, then edit as needed.', 'cornerstone' ),
 	),

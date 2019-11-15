@@ -181,7 +181,10 @@ class CS_Creative_CTA extends Cornerstone_Element_Base {
     } else if ( $graphic == 'image' ) {
       $graphic = "image=\"$image\" image_width=\"$image_width\"";
     }
+
     $text = cs_clean_shortcode_att( $text );
+    $link = cs_clean_shortcode_att( $link );
+
     $shortcode = "[x_creative_cta padding=\"$alt_padding\" text=\"$text\" font_size=\"$font_size\" $graphic animation=\"$animation\" link=\"$link\"{$href_target} color=\"$color\" bg_color=\"$bg_color\" bg_color_hover=\"$bg_color_hover\"{$extra}]";
 
     return $shortcode;

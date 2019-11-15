@@ -97,6 +97,10 @@ class CS_Counter extends Cornerstone_Element_Base {
 
     extract( $atts );
 
+    $num_prefix = cs_clean_shortcode_att( $num_prefix );
+    $num_suffix = cs_clean_shortcode_att( $num_suffix );
+    $text_above = cs_clean_shortcode_att( $text_above );
+    $text_below = cs_clean_shortcode_att( $text_below );
     $shortcode = "[x_counter num_start=\"$num_start\" num_end=\"$num_end\" num_speed=\"$num_speed\" num_prefix=\"$num_prefix\" num_suffix=\"$num_suffix\" num_color=\"$num_color\" text_above=\"$text_above\" text_below=\"$text_below\" text_color=\"$text_color\"{$extra}]";
 
     return $shortcode;

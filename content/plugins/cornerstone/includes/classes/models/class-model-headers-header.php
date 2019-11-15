@@ -32,7 +32,7 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
     }
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {
@@ -153,10 +153,6 @@ class Cornerstone_Model_Headers_Header extends Cornerstone_Plugin_Component {
   }
 
   public function delete( $params ) {
-
-    if ( ! $this->plugin->component('App_Permissions')->user_can('headers.delete') ) {
-      throw new Exception( 'Unauthorized' );
-    }
 
     $atts = $this->atts_from_request( $params );
 

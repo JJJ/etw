@@ -3,12 +3,34 @@
 // Theme Constants
 // =============================================================================
 
-define( 'X_VERSION', '6.2.5' );
+define( 'X_VERSION', '7.0.4' );
+define( 'X_CS_VERSION', '4.0.4' );
 define( 'X_SLUG', 'x' );
 define( 'X_TITLE', 'X' );
 define( 'X_I18N_PATH', X_TEMPLATE_PATH . '/framework/functions/x/i18n');
 
 
+// if ( ! defined('X_ASSET_REV') ) {
+//   define( 'X_ASSET_REV', X_VERSION );
+// }
+
+// Require Cornerstone
+// =============================================================================
+
+function x_require_cornerstone( $tgmpa ) {
+
+  $tgmpa->register( array(
+    'name'        => 'Cornerstone',
+    'slug'        => 'cornerstone',
+    'source'      => X_TEMPLATE_PATH . '/framework/cornerstone.zip',
+    'required'    => true,
+    'version'     => X_CS_VERSION,
+    'is_callable' => 'CS'
+  ) );
+
+}
+
+add_action( 'x_tgmpa_register', 'x_require_cornerstone' );
 
 // App Environment Data
 // =============================================================================
@@ -52,7 +74,7 @@ endif;
 // Overview Page Modules
 // =============================================================================
 
-add_action('x_overview_init', 'x_validation_modules' );
+add_action( 'x_overview_init', 'x_validation_modules' );
 
 function x_validation_modules() {
 

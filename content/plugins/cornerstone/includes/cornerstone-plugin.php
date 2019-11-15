@@ -18,9 +18,8 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	 * @param  string asset name. For example: "admin/builder"
 	 * @return string URL to asset
 	 */
-	public function js( $asset, $app = false ) {
-    $app = ( $app ) ? '-app' : '';
-		return $this->url( "assets/dist$app/js/$asset" . $this->component( 'Common' )->jsSuffix() );
+	public function js( $asset ) {
+		return $this->versioned_url( "assets/dist/js/$asset", 'js');
 	}
 
 	/**
@@ -28,9 +27,61 @@ class Cornerstone_Plugin extends Cornerstone_Plugin_Base {
 	 * @param  string asset name. For example: "admin/builder"
 	 * @return string URL to asset
 	 */
-	public function css( $asset, $app = false ) {
-    $app = ( $app ) ? '-app' : '';
-		return $this->url( "assets/dist$app/css/$asset.css" );
+	public function css( $asset ) {
+		return $this->versioned_url( "assets/dist/css/$asset", 'css' );
+	}
+
+	public function versioned_url( $asset, $ext ) {
+
+		// Return matching asset rev file if it exists
+		if ( defined('CS_ASSET_REV') && CS_ASSET_REV ) {
+			$rev = CS_ASSET_REV;
+			$path = "$asset.$rev.$ext";
+			$filename = $this->path( $path );
+			if (file_exists($filename)) {
+				return array(
+					'asset_rev' => true,
+					'url' => $this->url($path),
+					'version' => null
+				);
+			}
+		}
+
+		// Return a unversioned file if it exists
+		$basepath = $this->path($asset);
+		$unversioned = "$basepath.$ext";
+		$version = defined('CS_APP_BUILD_TOOLS') && CS_APP_BUILD_TOOLS ? time() : null;
+
+		if (file_exists($unversioned)) {
+			return array(
+				'unversioned' => true,
+				'url' => $this->url("$asset.$ext"),
+				'version' => $version
+			);
+		}
+
+		// Try to detect a versioned file that wasn't declared
+		$files = glob("$basepath.*.$ext", GLOB_NOSORT);
+
+		if (count($files) > 0) {
+
+			$urlpath = dirname($asset);
+			$filename = basename($files[0]);
+
+			return array(
+				'versioned' => true,
+				'url' => $this->url("$urlpath/$filename"),
+				'version' => $version
+			);
+		}
+
+		// If we can't find anything, return a fallback to the exact requested URL even though it will 404
+		return array(
+			'not_found' => true,
+			'url' => $this->url("$asset.$ext"),
+			'version' => $this->version()
+		);
+
 	}
 
 	/**

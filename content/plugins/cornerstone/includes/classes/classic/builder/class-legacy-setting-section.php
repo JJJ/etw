@@ -36,7 +36,7 @@ abstract class Cornerstone_Legacy_Setting_Section {
 	public function register() {
 
 		$data = wp_parse_args( $this->data(), array(
-			'title'       => 'Settings', // Localized title to be setup in overriding class
+			'title'       => '', // Localized title to be setup in overriding class
 			'priority'    => 10
 		));
 

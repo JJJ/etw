@@ -14,7 +14,7 @@ GLOBAL $user_login;
 
 $action       = esc_url( site_url( 'wp-login.php' ) );
 $value_user   = esc_attr( $user_login );
-$value_submit = esc_html__( 'Login', '__x__' );
+$value_submit = esc_html__( 'Login', 'cornerstone' );
 $value_hidden = esc_url( get_permalink() );
 
 
@@ -62,11 +62,11 @@ $atts_input_hidden = array(
 <form <?php echo x_atts( $atts_form ); ?>>
   <h4 class="x-login-title">Login</h4>
   <div>
-    <label><?php esc_html__( 'Username', '__x__' ); ?></label>
+    <label><?php esc_html__( 'Username', 'cornerstone' ); ?></label>
     <input <?php echo x_atts( $atts_input_user ); ?>>
   </div>
   <div>
-    <label><?php esc_html__( 'Password', '__x__' ); ?></label>
+    <label><?php esc_html__( 'Password', 'cornerstone' ); ?></label>
     <input <?php echo x_atts( $atts_input_pass ); ?>>
   </div>
   <div>

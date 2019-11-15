@@ -72,7 +72,7 @@ function x_shortcode_feature_box( $atts, $content = '' ) {
   $link_color               = ( $link_color               != ''      ) ? ' style="color: ' . $link_color . ';"' : '';
   $href                     = ( $href                     != ''      ) ? $href : '#';
   $href_title               = ( $href_title               != ''      ) ? $href_title : $link_text;
-  $href_target              = ( $href_target              == 'blank' ) ? ' target="_blank"' : '';
+  $href_target              = ( $href_target              == 'blank' ) ? ' ' . cs_output_target_blank( false ) : '';
   $align_h                  = ( $align_h                  != ''      ) ? $align_h : 'center';
   $align_v                  = ( $align_v                  != ''      ) ? $align_v : 'top';
   $side_graphic_spacing     = ( $side_graphic_spacing     != ''      ) ? $side_graphic_spacing : '20px';

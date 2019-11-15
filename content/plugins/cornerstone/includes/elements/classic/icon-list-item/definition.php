@@ -21,7 +21,8 @@ class CSE_Icon_List_Item {
         'link_url',
         'link_title',
         'link_new_tab',
-      ),
+			),
+			'label_key' => 'title'
 		);
 	}
 

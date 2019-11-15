@@ -23,11 +23,13 @@ class Cornerstone_Huebert {
   }
 
   public function register() {
-    wp_register_style( 'cs-huebert-style' , CS()->css( 'admin/huebert' ), array(), CS()->version() );
-    wp_register_script( 'cs-huebert', CS()->js( 'admin/huebert' ), array( 'underscore', 'jquery' ), CS()->version(), true );
+    $huebert_style_asset = CS()->css( 'admin/huebert' );
+    $huebert_script_asset = CS()->js( 'admin/huebert' );
+    wp_register_style( 'cs-huebert-style' , $huebert_style_asset['url'], array(), $huebert_style_asset['version'] );
+    wp_register_script( 'cs-huebert', $huebert_script_asset['url'], array( 'underscore', 'jquery' ), $huebert_script_asset['version'], true );
 
     wp_localize_script( 'cs-huebert', 'csHuebert', array(
-	'selectColor' => csi18n('admin.huebert-select-color')
+	    'selectColor' => csi18n('admin.huebert-select-color')
     ) );
 
   }

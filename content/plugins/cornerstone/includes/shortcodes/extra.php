@@ -22,7 +22,7 @@ function x_shortcode_extra( $atts, $content = null ) {
   $style  = ( $style  != ''      ) ? 'style="' . $style . '"' : '';
   $href   = ( $href   != ''      ) ? $href : '#';
   $title  = ( $title  != ''      ) ? 'title="' . $title . '"' : '';
-  $target = ( $target == 'blank' ) ? 'target="_blank"' : '';
+  $target = ( $target == 'blank' ) ? cs_output_target_blank( false ) : '';
 
   $data = cs_generate_data_attributes_extra( $info, $info_trigger, $info_place, $title, $info_content );
 

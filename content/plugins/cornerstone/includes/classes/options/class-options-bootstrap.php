@@ -97,8 +97,8 @@ class Cornerstone_Options_Bootstrap extends Cornerstone_Plugin_Component {
     }
 
     if ( 'option' === $store_as || ! is_string( $store_as ) ) {
-      if ( $value === false ) {
-        $value = '';
+      if ( is_bool($value) ) {
+        $value = sanitize_key($value); // Convert bool to "1" and ""
       }
       return update_option( $name, $value );
     }

@@ -36,10 +36,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'body_css_class',
       'text',
       __( 'Body CSS Class(es)', 'cornerstone' ),
-      __( 'Add a custom CSS class to the &lt;body&gt; element. Separate multiple class names with a space.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_body_css_class', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -47,10 +47,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'fullwidth_post_layout',
       'toggle',
       __( 'Fullwidth Post Layout', 'cornerstone' ),
-      __( 'If your global content layout includes a sidebar, selecting this option will remove the sidebar for this post.', 'cornerstone' ),
+      '',
       ( get_post_meta( $post->ID, '_x_post_layout', true ) == 'on' ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -58,10 +58,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'alternate_index_title',
       'text',
       __( 'Alternate Index Title', 'cornerstone' ),
-      __( 'Filling out this text input will replace the standard title on all index pages (i.e. blog, category archives, search, et cetera) with this one.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_alternate_index_title', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -69,10 +69,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full',
       'text',
       __( 'Background Image(s)', 'cornerstone' ),
-      __( 'Enter a single URL, or multiple comma separated URLs. Loading multiple background images will create a slideshow effect. To clear, delete the image URLs from the text field and save your page.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_bg_image_full', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -83,10 +83,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full_fade',
       'text',
       __( 'Background Image(s) Fade', 'cornerstone' ),
-      __( 'Set a time in milliseconds for your image(s) to fade in. To disable this feature, set the value to "0."', 'cornerstone' ),
+      '',
       $default,
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -97,10 +97,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full_duration',
       'text',
       __( 'Background Images Duration', 'cornerstone' ),
-      __( 'Only applicable if multiple images are selected, creating a background image slider. Set a time in milliseconds for your images to remain on screen.', 'cornerstone' ),
+      '',
       $default,
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -114,10 +114,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'body_css_class',
       'text',
       __( 'Body CSS Class(es)', 'cornerstone' ),
-      __( 'Add a custom CSS class to the &lt;body&gt; element. Separate multiple class names with a space.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_body_css_class', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -125,10 +125,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'alternate_index_title',
       'text',
       __( 'Alternate Index Title', 'cornerstone' ),
-      __( 'Filling out this text input will replace the standard title on all index pages (i.e. blog, category archives, search, et cetera) with this one.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_alternate_index_title', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -136,10 +136,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'disable_page_title',
       'toggle',
       __( 'Disable Page Title', 'cornerstone' ),
-      __( 'Select to disable the page title. Disabling the page title provides greater stylistic flexibility on individual pages.', 'cornerstone' ),
+      '',
       ( get_post_meta( $post->ID, '_x_entry_disable_page_title', true ) == 'on' ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -159,11 +159,11 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'one_page_navigation',
       'select',
       __( 'One Page Navigation', 'cornerstone' ),
-      __( 'To activate your one page navigation, select a menu from the dropdown. To deactivate one page navigation, set the dropdown back to "Deactivated."', 'cornerstone' ),
+      '',
       $default,
       array(
         'choices' => $choices,
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -171,10 +171,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full',
       'text',
       __( 'Background Image(s)', 'cornerstone' ),
-      __( 'Enter a single URL, or multiple comma separated URLs. Loading multiple background images will create a slideshow effect. To clear, delete the image URLs from the text field and save your page.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_bg_image_full', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -185,10 +185,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full_fade',
       'text',
       __( 'Background Image(s) Fade', 'cornerstone' ),
-      __( 'Set a time in milliseconds for your image(s) to fade in. To disable this feature, set the value to "0."', 'cornerstone' ),
+      '',
       $default,
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -199,10 +199,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full_duration',
       'text',
       __( 'Background Images Duration', 'cornerstone' ),
-      __( 'Only applicable if multiple images are selected, creating a background image slider. Set a time in milliseconds for your images to remain on screen.', 'cornerstone' ),
+      '',
       $default,
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -216,10 +216,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'body_css_class',
       'text',
       __( 'Body CSS Class(es)', 'cornerstone' ),
-      __( 'Add a custom CSS class to the &lt;body&gt; element. Separate multiple class names with a space.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_body_css_class', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -227,10 +227,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'alternate_index_title',
       'text',
       __( 'Alternate Index Title', 'cornerstone' ),
-      __( 'Filling out this text input will replace the standard title on all index pages (i.e. blog, category archives, search, et cetera) with this one.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_alternate_index_title', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -262,11 +262,11 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
         'portfolio_parent',
         'wpselect',
         __('Portfolio Parent', 'cornerstone' ),
-        __('Assign the parent portfolio page for this portfolio item. This will be used in various places throughout the theme such as your breadcrumbs. If "Default" is selected then the first page with the "Layout - Portfolio" template assigned to it will be used.', 'cornerstone' ),
+        '',
         "{$current}",
         array(
           'markup' => $markup,
-          'notLive' => 'settings-theme-changed'
+          'trigger' => 'settings-theme-changed'
         )
       );
     }
@@ -275,7 +275,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'media_type',
       'select',
       __( 'Media Type', 'cornerstone' ),
-      __( 'Select which kind of media you want to display for your portfolio. If selecting a "Gallery," simply upload your images to this post and organize them in the order you want them to display.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_portfolio_media', true ),
       array(
         'choices' => array(
@@ -283,7 +283,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
           array( 'value' => 'Gallery', 'label' => __( 'Gallery', 'cornerstone' ) ),
           array( 'value' => 'Video',   'label' => __( 'Video', 'cornerstone' ) ),
         ),
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -292,7 +292,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'video_aspect_ratio',
       'select',
       __( 'Video Aspect Ratio', 'cornerstone' ),
-      __( 'If selecting "Video," choose the aspect ratio you would like for your video.', 'cornerstone' ),
+      '',
       ($current_video_aspect_ratio == '' ) ? '16:9' : $current_video_aspect_ratio,
       array(
         'choices' => array(
@@ -305,7 +305,7 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
         'condition' => array(
           'media_type' => 'Video',
         ),
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -313,13 +313,13 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'm4v_file_url',
       'text',
       __( 'M4V File URL', 'cornerstone' ),
-      __( 'If selecting "Video," place the URL to your .m4v video file here.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_portfolio_m4v', true ),
       array(
         'condition' => array(
           'media_type' => 'Video',
         ),
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -327,13 +327,13 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'ogv_file_url',
       'text',
       __( 'OGV File URL', 'cornerstone' ),
-      __( 'If selecting "Video," place the URL to your .ogv video file here.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_portfolio_ogv', true ),
       array(
         'condition' => array(
           'media_type' => 'Video',
         ),
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -343,13 +343,13 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
         'embedded_video_code',
         'textarea',
         __( 'Embedded Video Code', 'cornerstone' ),
-        __( 'If you are using something other than self hosted video such as YouTube, Vimeo, or Wistia, paste the embed code here. This field will override the above.', 'cornerstone' ),
+        '',
         get_post_meta( $post->ID, '_x_portfolio_embed', true ),
         array(
           'condition' => array(
             'media_type' => 'Video',
           ),
-          'notLive' => 'settings-theme-changed'
+          'trigger' => 'settings-theme-changed'
         )
       );
     }
@@ -358,14 +358,14 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'featured_content',
       'select',
       __( 'Featured Content', 'cornerstone' ),
-      __( 'Select "Media" if you would like to show your video or gallery on the index page in place of the featured image. Note: will always use "Thumbnail" in Ethos due to Stack styling.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_portfolio_index_media', true ),
       array(
         'choices' => array(
           array( 'value' => 'Thumbnail', 'label' => __( 'Thumbnail', 'cornerstone' ) ),
           array( 'value' => 'Media',     'label' => __( 'Media', 'cornerstone' ) ),
         ),
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -373,10 +373,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'project_link',
       'text',
       __( 'Project Link', 'cornerstone' ),
-      __( 'Provide an external link to the project you worked on if one is available.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_portfolio_project_link', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -384,10 +384,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full',
       'text',
       __( 'Background Image(s)', 'cornerstone' ),
-      __( 'Enter a single URL, or multiple comma separated URLs. Loading multiple background images will create a slideshow effect. To clear, delete the image URLs from the text field and save your page.', 'cornerstone' ),
+      '',
       get_post_meta( $post->ID, '_x_entry_bg_image_full', true ),
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -398,10 +398,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full_fade',
       'text',
       __( 'Background Image(s) Fade', 'cornerstone' ),
-      __( 'Set a time in milliseconds for your image(s) to fade in. To disable this feature, set the value to "0."', 'cornerstone' ),
+      '',
       $default,
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 
@@ -412,10 +412,10 @@ class CS_Settings_X_Settings extends Cornerstone_Legacy_Setting_Section {
       'bg_image_full_duration',
       'text',
       __( 'Background Images Duration', 'cornerstone' ),
-      __( 'Only applicable if multiple images are selected, creating a background image slider. Set a time in milliseconds for your images to remain on screen.', 'cornerstone' ),
+      '',
       $default,
       array(
-        'notLive' => 'settings-theme-changed'
+        'trigger' => 'settings-theme-changed'
       )
     );
 

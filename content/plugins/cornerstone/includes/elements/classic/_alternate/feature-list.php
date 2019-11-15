@@ -137,7 +137,7 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'connector_style',
       'select',
-      __( 'Connector Style, Color, &amp; Width', 'cornerstone' ),
+      __( 'Connector Style', 'cornerstone' ),
       __( 'Specify the style of the connector between graphics.', 'cornerstone' ),
       'dashed',
       array(
@@ -152,16 +152,16 @@ class CS_Feature_List extends Cornerstone_Element_Base {
     $this->addControl(
       'connector_color',
       'color',
-      NULL,
-      NULL,
+      __( 'Connector Color', 'cornerstone' ),
+      __( 'Specify the color of the connector between graphics.', 'cornerstone' ),
       '#272727'
     );
 
     $this->addControl(
       'connector_width',
       'text',
-      NULL,
-      NULL,
+      __( 'Connector Width', 'cornerstone' ),
+      __( 'Specify the width of the connector between graphics.', 'cornerstone' ),
       '1px'
     );
 

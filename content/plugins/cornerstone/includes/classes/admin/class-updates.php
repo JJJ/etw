@@ -218,7 +218,7 @@ class Cornerstone_Updates extends Cornerstone_Plugin_Component {
 
 	public function filter_plugins( $data ) {
 		foreach ( $data['plugins'] as $file => $plugin ) {
-			$path = trailingslashit( WP_PLUGIN_DIR . '/' . dirname( $file ) ); // TODO files without dir?
+			$path = trailingslashit( WP_PLUGIN_DIR . '/' . dirname( $file ) );
       if ( in_array( $file, array($this->plugin_file), true ) ) {
 				unset( $data['plugins'][ $file ] );
 				unset( $data['active'][ array_search( $file, $data['active'] ) ] );

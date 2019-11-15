@@ -18,7 +18,7 @@ if ( has_nav_menu( 'footer' ) ) :
     'depth'          => 1
   ) );
 else :
-  echo '<ul class="x-nav"><li><a href="' . home_url( '/' ) . 'wp-admin/nav-menus.php">Assign a Menu</a></li></ul>';
+  echo '<ul class="x-nav"><li><a href="' . home_url( '/' ) . 'wp-admin/nav-menus.php">' . __( 'Assign a Menu', '__x__' ) . '</a></li></ul>';
 endif;
 
 ?>

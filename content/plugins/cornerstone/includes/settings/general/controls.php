@@ -3,12 +3,9 @@ return array(
 
 	'post_title'     => array(
 		'type' => 'text',
-		'ui' => array(
-			'title'   => __( 'Title', 'cornerstone' ),
-			'tooltip' => __( 'Shortcut for changing the title from within Cornerstone.', 'cornerstone' ),
-		),
+		'ui' => array( 'title' => __( 'Title', 'cornerstone' ) ),
 		'options' => array(
-			'notLive' => 'settings-wp-changed'
+			'trigger' => 'settings-wp-changed'
 		)
 	),
 
@@ -18,7 +15,7 @@ return array(
 			'title' => __( 'Status', 'cornerstone' )
 		),
 		'options' => array(
-			'notLive' => 'settings-wp-changed',
+			'trigger' => 'settings-wp-changed',
 			'choices' => $definition->post_status_choices()
 		),
     'condition' => array(
@@ -28,12 +25,9 @@ return array(
 
 	'allow_comments' => array(
 		'type' => 'toggle',
-		'ui' => array(
-			'title'   => __( 'Allow Comments', 'cornerstone' ),
-			'tooltip' => __( 'Opens or closes comments. Note: The comment form may not be shown if your chosen page template doesn&apost support them.', 'cornerstone' ),
-		),
+		'ui' => array( 'title' => __( 'Allow Comments', 'cornerstone' ) ),
 		'options' => array(
-			'notLive' => 'settings-wp-changed',
+			'trigger' => 'settings-wp-changed',
 		)
 	),
 
@@ -49,22 +43,18 @@ return array(
 
 	'post_parent' => array(
 		'type' => 'wpselect',
-		'ui' => array(
-			'title' => __( 'Parent Page', 'cornerstone' )
-		),
+		'ui' => array( 'title' => __( 'Parent Page', 'cornerstone' ) ),
 		'options' => array(
-			'notLive' => 'settings-wp-changed',
+			'trigger' => 'settings-wp-changed',
 			'markup' => $definition->post_parent_markup()
 		)
 	),
 
 	'page_template' => array(
 		'type' => 'select',
-		'ui' => array(
-			'title' => __( 'Page Template', 'cornerstone' )
-		),
+		'ui' => array( 'title' => __( 'Page Template', 'cornerstone' ) ),
 		'options' => array(
-			'notLive' => 'settings-wp-changed',
+			'trigger' => 'settings-wp-changed',
 			'choices' => $definition->page_template_choices()
 		)
 	)

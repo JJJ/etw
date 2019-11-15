@@ -22,8 +22,8 @@ class CS_Columnize extends Cornerstone_Element_Base {
     $this->addControl(
       'content',
       'editor',
-      NULL,
-      NULL,
+      __( 'Content', 'cornerstone' ),
+      __( 'Set the content you would like broken out into columns.', 'cornerstone' ),
       ''
     );
 

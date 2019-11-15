@@ -4,27 +4,32 @@ class Cornerstone_Wpml extends Cornerstone_Plugin_Component {
 
   protected $previous_lang;
 
-
   public function setup() {
 
     if ( ! $this->is_active() ) {
       return;
     }
 
-    add_action('cs_before_preview_frame', array( $this, 'before_preview_frame' ) );
-    add_filter('cs_locate_wpml_language', array( $this, 'locate_wpml_language'), 10, 2);
+    add_action( 'option_wpml_registered_endpoints', array( $this, 'unset_endpoint' ) );
+
+    add_action( 'cs_before_preview_frame', array( $this, 'before_preview_frame' ) );
+    add_filter( 'cs_locate_wpml_language', array( $this, 'locate_wpml_language'), 10, 2);
+    add_filter( 'cs_global_block_id', array($this,  'icl_global_block_id' ) );
+
+    add_filter( 'wpml_enqueue_browser_redirect_language', array( $this, 'disable_browser_redirect' ) );
+
 
     add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-    add_filter( 'the_title', array( $this, 'filter_title' ), 99, 2 );
-    add_filter( 'the_permalink', array( $this, 'filter_permalink' ) );
 
-    // global $sitepress;
-    // $wpml_post_types = $sitepress->get_setting('custom_posts_sync_option');
-    //
-    // $wpml_post_types['cs_header'] = 1;
-    // $wpml_post_types['cs_footer'] = 1;
-    //
-    // $sitepress->set_setting('custom_posts_sync_option', $wpml_post_types);
+    if ( apply_filters ( 'cs_enable_wpml_legacy_filters', '__return_false' ) ) {
+
+      add_filter( 'the_title', array( $this, 'filter_title' ), 99, 2 );
+      add_filter( 'the_permalink', array( $this, 'filter_permalink' ) );
+
+    }
+
+    // Prevent '_cornerstone_data' from being duplicated
+    add_action( 'save_post', array( $this, 'save_post' ), -100 );
 
   }
 
@@ -102,7 +107,7 @@ class Cornerstone_Wpml extends Cornerstone_Plugin_Component {
       return $query;
     }
 
-    $sitepress->switch_lang( $sitepress->get_current_language() ); //Make sure that even custom query gets the current language
+    // $sitepress->switch_lang( $sitepress->get_current_language() ); //Make sure that even custom query gets the current language
 
     $query->query_vars['suppress_filters'] = false;
 
@@ -120,6 +125,18 @@ class Cornerstone_Wpml extends Cornerstone_Plugin_Component {
     }
 
     return get_post( icl_object_id( $post->ID, 'post', false, $sitepress->get_current_language() ) );
+  }
+
+  public function icl_global_block_id ( $ID ) {
+
+    if( !$this->is_active() ) return $ID;
+
+    global $sitepress;
+
+    $global_block_id = icl_object_id( $ID, 'cs_global_block', false, $sitepress->get_current_language() );
+
+    return get_post( empty( $global_block_id ) ? apply_filters('cs_global_block_linked_id', $ID ) : $global_block_id )->ID;
+
   }
 
   public function filter_title( $title, $id = null ) {
@@ -334,4 +351,24 @@ class Cornerstone_Wpml extends Cornerstone_Plugin_Component {
     return apply_filters( 'wpml_object_id', $post_id, $post_type, true, $details['source_language_code'] );
 
   }
+
+  public function unset_endpoint( $endpoints ) {
+    unset($endpoints['cornerstone-endpoint']);
+    return $endpoints;
+  }
+
+  public function save_post() {
+    global $sitepress_settings;
+
+    if ( $sitepress_settings && isset( $sitepress_settings['translation-management'] ) && isset( $sitepress_settings['translation-management']['custom_fields_translation'] ) ) {
+      unset($sitepress_settings['translation-management']['custom_fields_translation']['_cornerstone_data']);
+    }
+  }
+
+  public function disable_browser_redirect ( $enable ) {
+
+    return did_action('cs_before_preview_frame') ? false : $enable;
+
+  }
+
 }

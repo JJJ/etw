@@ -31,10 +31,7 @@ if ( ! function_exists( 'x_ethos_entry_meta' ) ) :
     // Author.
     //
 
-    $author = sprintf( ' %1$s %2$s</span>',
-      __( 'by', '__x__' ),
-      get_the_author()
-    );
+    $author = sprintf( __( 'by %s', '__x__' ), get_the_author() ) . '</span>';
 
 
     //
@@ -340,7 +337,7 @@ if ( ! function_exists( 'x_ethos_comment' ) ) :
         $rating = esc_attr( get_comment_meta( $GLOBALS['comment']->comment_ID, 'rating', true ) );
       endif;
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review" <?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="comment" itemscope itemtype="https://schema.org/Comment" <?php comment_class(); ?>>
       <article id="comment-<?php comment_ID(); ?>" class="comment">
         <?php
         printf( '<div class="x-comment-img">%1$s %2$s</div>',

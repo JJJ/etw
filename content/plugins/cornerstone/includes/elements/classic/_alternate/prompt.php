@@ -23,16 +23,16 @@ class CS_Prompt extends Cornerstone_Element_Base {
     $this->addControl(
       'heading',
       'text',
-      __( 'Title &amp; Content', 'cornerstone' ),
-      __( 'Enter the title and content for your Prompt.', 'cornerstone' ),
+      __( 'Title ', 'cornerstone' ),
+      __( 'Enter the title for your Prompt.', 'cornerstone' ),
       __( 'Prompt Title', 'cornerstone' )
     );
 
     $this->addControl(
       'message',
       'textarea',
-      NULL,
-      NULL,
+      __( 'Content', 'cornerstone' ),
+      __( 'Enter the content for your Prompt.', 'cornerstone' ),
       __( 'This is where the main content for your Prompt can go.', 'cornerstone' ),
       array(
         'expandable' => __( 'Content', 'cornerstone' )
@@ -91,6 +91,8 @@ class CS_Prompt extends Cornerstone_Element_Base {
     $heading     = cs_clean_shortcode_att( $heading );
     $message     = cs_clean_shortcode_att( $message );
     $button_text = cs_clean_shortcode_att( $button_text );
+    $href       = cs_clean_shortcode_att( $href );
+    $href_title = cs_clean_shortcode_att( $href_title );
 
     $shortcode = "[x_prompt type=\"$align\" title=\"$heading\" message=\"$message\" button_text=\"$button_text\" button_icon=\"$button_icon\" circle=\"$circle\" href=\"$href\" href_title=\"$href_title\" target=\"$href_target\"{$extra}]";
 

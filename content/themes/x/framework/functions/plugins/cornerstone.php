@@ -193,7 +193,7 @@ function x_cornerstone_home_page_scripts_output() {
   <script type="text/javascript">
 
     jQuery( '[data-tco-module="cs-validation-revoke"]').remove();
-    jQuery( '[data-tco-module="cs-purchase-another-license"]' ).click( function( e ) {
+    jQuery( '[data-tco-module="cs-purchase-another-license"]' ).on( 'click', function( e ) {
 
       e.preventDefault();
 

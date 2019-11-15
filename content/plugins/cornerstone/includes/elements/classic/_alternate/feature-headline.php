@@ -80,7 +80,7 @@ class CS_Feature_Headline extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_color',
       'color',
-      __( 'Icon Color &amp; Background Color', 'cornerstone' ),
+      __( 'Icon Color', 'cornerstone' ),
       __( 'Choose a specific color for the icon. Reset the color picker to inherit a color.', 'cornerstone' ),
       ''
     );
@@ -88,8 +88,8 @@ class CS_Feature_Headline extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_bg_color',
       'color',
-      NULL,
-      NULL,
+      __( 'Icon Background Color', 'cornerstone' ),
+      __( 'Choose a specific background color for the icon. Reset the color picker to inherit a color.', 'cornerstone' ),
       ''
     );
 

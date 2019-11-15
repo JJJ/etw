@@ -8,6 +8,20 @@ return array(
 
   'common' => array( 'margin', 'padding', 'border', 'text_align', 'visibility' ),
 
+  'elements' => array(
+		'type' => 'sortable',
+		'ui' => array(
+			'title' => __( 'Rows', 'cornerstone' ),
+      'tooltip' => ''
+    ),
+		'options' => array(
+      'add_label' => __( 'Classic Row', 'cornerstone' ),
+			'element'   => 'row',
+			'newTitle'  => __( 'Classic Row %s', 'cornerstone' ),
+		),
+		'context' => 'content',
+  ),
+
   'bg_type' => array(
     'type' => 'choose',
     'ui' => array(
@@ -79,7 +93,7 @@ return array(
   'bg_video' => array(
     'type' => 'text',
     'ui' => array(
-      'title' => __( 'Background Video URL &amp; Poster', 'cornerstone' ),
+      'title' => __( 'Background Video URL', 'cornerstone' ),
       'tooltip' => __( 'Include your video URL(s) here. If using multiple sources, separate them using the pipe character (|) and place fallbacks towards the end (i.e. .webm then .mp4 then .ogv). For performance reasons, videos are not loaded into the editor but are shown live.', 'cornerstone' ),
     ),
     'options' => array(
@@ -91,6 +105,10 @@ return array(
 
   'bg_video_poster' => array(
     'type' => 'image',
+    'ui' => array(
+      'title' => __( 'Background Poster Image', 'cornerstone' ),
+      'tooltip' => __( 'Set an image to appear while the video is loading.', 'cornerstone' ),
+    ),
     'condition' => array( 'bg_type' => 'video' )
   ),
 

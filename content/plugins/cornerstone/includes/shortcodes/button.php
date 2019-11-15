@@ -47,7 +47,7 @@ function x_shortcode_button( $atts, $content = null ) {
   $icon_only        = ( $icon_only        == 'true'  ) ? ' x-btn-icon-only' : '';
   $href             = ( $href             != ''      ) ? $href : '#';
   $title            = ( $title            != ''      ) ? 'title="' . $title . '"' : '';
-  $target           = ( $target           == 'blank' ) ? 'target="_blank"' : '';
+  $target           = ( $target           == 'blank' ) ? cs_output_target_blank( false ) : '';
   $lightbox_thumb   = ( $lightbox_thumb   != ''      ) ? $lightbox_thumb : '';
   $lightbox_video   = ( $lightbox_video   == 'true'  ) ? ', width: 1080, height: 608' : '';
   $lightbox_caption = ( $lightbox_caption != ''      ) ? 'data-caption="' . $lightbox_caption . '"' : '';

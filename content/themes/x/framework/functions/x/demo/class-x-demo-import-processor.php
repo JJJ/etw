@@ -58,8 +58,9 @@ class X_Demo_Import_Processor {
     // Ensure an import method exists for the requested task
     $methodName = 'import' . $job['task'];
 
-    if ( !method_exists( $this, $methodName ) )
+    if ( !method_exists( $this, $methodName ) ) {
       return new WP_Error( '__x__', 'Task does not have an import method: ' . $job['task'] );
+    }
 
     // Run the job
     $run = call_user_func_array( array( $this, $methodName ), array( $job['data'] ) );
@@ -164,30 +165,44 @@ class X_Demo_Import_Processor {
     ob_start();
 
     try {
+
       $slider = new RevSliderSlider;
-      $file = $this->tempDownload( $data['url'] );
+
+      ob_start();
+      $creds = request_filesystem_credentials( '', '', false, false, null );
+      ob_get_clean();
+
+      if ( ! WP_Filesystem( $creds ) ) {
+        return new WP_Error( '__x__', 'Unable to use file system.' );
+      }
+
+      global $wp_filesystem;
+
+      $dir = wp_upload_dir();
+      $file = trailingslashit( $dir['basedir'] )  . basename( $data['url'] );
+
+      $response = wp_remote_get( $data['url'] );
+
+      $wp_filesystem->put_contents(
+        $file,
+        $response['body'],
+        FS_CHMOD_FILE // predefined mode settings for WP files
+      );
+
       $slider->importSliderFromPost( true, true, $file );
+
+      if ( file_exists( $file ) ) {
+        wp_delete_file( $file );
+      }
+
     } catch (Exception $e) {
       return new WP_Error( '__x__', $e->getMessage() );
     }
-
-
-    if ( file_exists( $file ) )
-      unlink( $file );
 
     $this->debugMessage = ob_get_clean();
 
     $this->message = __('Revolution Slider downloaded...', '__x__');
     return 'text';
-  }
-
-  public function tempDownload( $url ) {
-
-    $dir = wp_upload_dir();
-    $temp = trailingslashit( $dir['basedir'] )  . basename( $url );
-    file_put_contents( $temp, file_get_contents($url) );
-    return $temp;
-
   }
 
   public function importImage( $data ) {
@@ -408,21 +423,23 @@ class X_Demo_Import_Processor {
 
   public function importPostMeta( $data ) {
 
-    if ( $this->isPostMetaSkipped( $data['id'] ) )
+    if ( $this->isPostMetaSkipped( $data['id'] ) ) {
       return false;
+    }
 
     $postID = $this->registry->get( 'post', $data['id'] );
 
     $post = get_post( $postID );
 
-    if ( is_null( $post ) )
+    if ( is_null( $post ) ) {
       return new WP_Error('__x__', "Could not locate post: $postID | " . $data['id'] );
+    }
 
-    if ( is_wp_error( $post ) )
+    if ( is_wp_error( $post ) ) {
       return $post;
+    }
 
     foreach ($data['meta'] as $key => $value) {
-
 
       // Specific cases
       if ( '_thumbnail_id' == $key ) {
@@ -435,11 +452,15 @@ class X_Demo_Import_Processor {
       $newValue = maybe_unserialize( $this->normalizeContentURLs( $value ) );
 
       // Skip existing values
-      if ( get_post_meta( $post->ID, $key, $value ) == $newValue )
+      if ( get_post_meta( $post->ID, $key, $value ) == $newValue ) {
         continue;
+      }
 
-      if ( false === update_post_meta( $post->ID, $key, $newValue ) )
+
+      if ( false === update_post_meta( $post->ID, $key, $newValue ) ) {
         $this->debugMessage = "Could not add meta key ($key) to post: {$post->ID}";
+      }
+
     }
 
     // Flag this as disposable demo content.
@@ -456,8 +477,9 @@ class X_Demo_Import_Processor {
 
     $newMenu = wp_update_nav_menu_object( 0, $menu );
 
-    if ( is_wp_error( $newTerm ) )
+    if ( is_wp_error( $newTerm ) ) {
       return $newTerm;
+    }
 
     $this->registry->set( 'term', $menu['id'], (int) $newMenu );
 
@@ -478,14 +500,16 @@ class X_Demo_Import_Processor {
 
       if ( 0 != (int) $menuItem['menu-item-parent-id'] ) {
         $menuItem['menu-item-parent-id'] = $this->registry->get( 'post', $menuItem['menu-item-parent-id'] );
-        if ( is_null( $menuItem['menu-item-parent-id'] ) )
+        if ( is_null( $menuItem['menu-item-parent-id'] ) ) {
           continue;
+        }
       }
 
       $newMenuItem = wp_update_nav_menu_item( $newMenu, 0, $menuItem );
 
-      if ( is_wp_error( $newMenuItem ) )
+      if ( is_wp_error( $newMenuItem ) ) {
         return $newMenuItem;
+      }
 
       $this->registry->set( 'post', $menuItem['id'], (int) $newMenuItem );
 
@@ -504,8 +528,9 @@ class X_Demo_Import_Processor {
       // Move existing widgets to inactive
       if( isset( $sidebars_widgets[$sidebar] ) && !empty($sidebars_widgets[$sidebar] ) ) {
 
-        if ( !isset( $sidebars_widgets['wp_inactive_widgets'] ) )
+        if ( !isset( $sidebars_widgets['wp_inactive_widgets'] ) ) {
           $sidebars_widgets['wp_inactive_widgets'] = array();
+        }
 
         foreach ( $sidebars_widgets[$sidebar] as $widget_id ) {
           $sidebars_widgets['wp_inactive_widgets'][] = $widget_id;
@@ -528,8 +553,9 @@ class X_Demo_Import_Processor {
 
         $default = array( '_multiwidget' => 1 );
         $allWidgets = get_option( 'widget_' . $widget['type'], $default ); // all instances for that widget ID base, get fresh every time
-        if ( empty( $allWidgets ) )
+        if ( empty( $allWidgets ) ) {
           $allWidgets = $default;
+        }
 
         $allWidgets[] = $widget['meta'];
 
@@ -569,8 +595,9 @@ class X_Demo_Import_Processor {
 
       $postID = $key = $this->registry->get( 'post', $data['page_on_front'] );
 
-      if ( !is_null( $postID ) )
+      if ( !is_null( $postID ) ) {
         update_option('page_on_front', $postID );
+      }
 
       unset($data['page_on_front']);
     }
@@ -579,15 +606,20 @@ class X_Demo_Import_Processor {
 
       $postID = $this->registry->get( 'post', $data['page_for_posts'] );
 
-      if ( !is_null( $postID ) )
+      if ( !is_null( $postID ) ) {
         update_option('page_for_posts', $postID );
+      }
 
       unset($data['page_for_posts']);
     }
 
     foreach ($data as $key => $value) {
-      if ( false === update_option(  $key, maybe_unserialize( $this->normalizeContentURLs( $value ) ) ) )
-        $this->debugMessage = "Could not set meta key ($key) to post: {$value}";
+      if ( false === update_option( $key, maybe_unserialize( $this->normalizeContentURLs( $value ) ) ) ) {
+        if ( ! $this->debugMessage ) {
+          $this->debugMessage = '';
+        }
+        $this->debugMessage .= "Could not set meta key ($key) to post: {$value} . ";
+      }
     }
 
     $this->message = __( 'Setting Customizer values...', '__x__' );
@@ -663,8 +695,9 @@ class X_Demo_Import_Processor {
 
     foreach ($ids as $id) {
       $imageData = $this->registry->get( 'image', $id );
-      if ( !is_null( $imageData) && isset( $imageData['url'] ) )
+      if ( !is_null( $imageData) && isset( $imageData['url'] ) ) {
         $content = $this->strReplace( '{{img:' . $id . ':img}}', $imageData['url'] , $content );
+      }
     }
 
     return $content;
@@ -727,7 +760,7 @@ class X_Demo_Import_SearchReplacer {
    * @param int          $recursion_level Current recursion depth within the original data.
    * @param array        $visited_data    Data that has been seen in previous recursion iterations.
    */
-  private function _run( $data, $serialised, $recursion_level = 0, &$visited_data = array() ) {
+  private function _run( $data, $serialised, $recursion_level = 0, $visited_data = array() ) {
 
     // some unseriliased data cannot be re-serialised eg. SimpleXMLElements
     try {
@@ -749,7 +782,11 @@ class X_Demo_Import_SearchReplacer {
         }
       }
 
-      if ( is_string( $data ) && ( $unserialized = @unserialize( $data ) ) !== false ) {
+      ob_start();
+      $unserialized = is_string( $data ) ? unserialize( $data ) : false;
+      ob_end_clean();
+
+      if ( $unserialized !== false ) {
         $data = $this->_run( $unserialized, true, $recursion_level + 1 );
       }
 
@@ -774,8 +811,9 @@ class X_Demo_Import_SearchReplacer {
         }
       }
 
-      if ( $serialised )
+      if ( $serialised ) {
         return serialize( $data );
+      }
 
     } catch( Exception $error ) {
 

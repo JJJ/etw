@@ -137,7 +137,9 @@ class Cornerstone_Template {
       $args['ID'] = $this->id;
     }
 
+    do_action( 'cs_before_save_json_content' );
     $id = wp_insert_post( $args );
+    do_action( 'cs_after_save_json_content' );
 
     if ( ! $id || is_wp_error( $id ) ) {
       throw new Exception( "Unable to update template: $id" );
@@ -214,7 +216,7 @@ class Cornerstone_Template {
   }
 
   public function set_title( $title ) {
-    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.entity-content') ) );
+    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.content.entity') ) );
   }
 
   public function set_type( $type ) {

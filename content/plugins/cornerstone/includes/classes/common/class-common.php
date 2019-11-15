@@ -14,18 +14,26 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
    */
   public function setup() {
 
-    $this->font_icons = $this->plugin->config_group( 'common/font-icons' );
+    $this->font_icons = apply_filters('cs_font_icon_data', array_merge($this->plugin->config_group( 'common/font-icons' ), $this->plugin->config_group( 'common/font-icon-aliases' ), array(
+      'groups' => array(
+        'solid'   => __( 'Solid', 'cornerstone' ),
+        'regular' => __( 'Regular', 'cornerstone' ),
+        'light'   => __( 'Light', 'cornerstone' ),
+        'brands'  => __( 'Brands', 'cornerstone ')
+      )
+    )));
+
     add_action( 'init', array( $this, 'init' ) );
 
     $version = CS()->version();
 
-    if ( false !== strpos( $version, '-alpha' ) ) {
-      $this->plugin->component( 'Alpha' );
+    // WP 5.1 fix
+    if ( function_exists( 'wp_init_targeted_link_rel_filters' ) &&
+         function_exists( 'wp_remove_targeted_link_rel_filters' ) ) {
+      add_action( 'cs_before_save_json_content', 'wp_remove_targeted_link_rel_filters' );
+      add_action( 'cs_after_save_json_content', 'wp_init_targeted_link_rel_filters' );
     }
 
-    if ( false !== strpos( $version, '-' ) ) {
-      $this->plugin->component( 'Prerelease' );
-    }
 
   }
 
@@ -36,7 +44,7 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
     }
 
     register_post_status( 'tco-data', array(
-      'label'                     => 'Data',
+      'label'                     => 'Data', // not localized / not public facing
       'label_count'               => 'Data (%s)',
       'internal'                  => true,
     ) );
@@ -67,8 +75,15 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 
     if ( 0 === strpos($key, 'o-' ) ) {
       $key = substr( $key, 2 );
-      if ( in_array($key, $this->font_icons['outlines']) ) {
+      if ( in_array($key, $this->font_icons['regular']) ) {
         $set = 'o';
+      }
+    }
+
+    if ( 0 === strpos($key, 'l-' ) ) {
+      $key = substr( $key, 2 );
+      if ( in_array($key, $this->font_icons['light']) ) {
+        $set = 'l';
       }
     }
 
@@ -109,8 +124,12 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
 
     $ids = array_keys( $this->font_icons['icons'] );
 
-    foreach ($this->font_icons['outlines'] as $key) {
+    foreach ($this->font_icons['regular'] as $key) {
       $ids[] = "o-$key";
+    }
+
+    foreach ($this->font_icons['light'] as $key) {
+      $ids[] = "l-$key";
     }
 
     return $ids;
@@ -134,24 +153,6 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
       return null;
 
     $url = $this->get_app_route_url( 'content', $post->ID, 'builder' );
-
-    // $args = apply_filters( 'cornerstone_edit_url_query_args', array( 'cornerstone' => 1 ) );
-    //
-    // $no_permalinks = apply_filters( 'cornerstone_no_permalinks', false );
-    //
-    // // if ( $no_permalinks ) {
-    // //   add_filter( 'page_link', array( $this, 'direct_page_link'), 10, 3 );
-    // //   add_filter( 'post_link', array( $this, 'direct_post_link'), 10, 3 );
-    // //   add_filter( 'post_type_link', array( $this, 'direct_custom_post_type_link'), 10, 4 );
-    // // }
-    //
-    // $url = add_query_arg( $args, get_permalink( $post->ID ) );
-    //
-    // // if ( $no_permalinks ) {
-    // //   remove_filter( 'page_link', array( $this, 'direct_page_link') );
-    // //   remove_filter( 'post_link', array( $this, 'direct_post_link') );
-    // //   remove_filter( 'post_type_link', array( $this, 'direct_custom_post_type_link') );
-    // // }
 
     if ( force_ssl_admin() ) {
       $url = preg_replace( '#^http://#', 'https://', $url );
@@ -241,15 +242,6 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
         'cornerstone' => '1'
       ), wp_login_url( get_the_permalink() ) ) );
     }
-  }
-
-  /**
-   * Previusly returned appropriate js extension depending on SCRIPT_DEBUG.
-   * This was removed in 2.0.3 in favor of always serving minified files with sourcemaps
-   * @return string
-   */
-  public function jsSuffix() {
-    return '.js';
   }
 
   /**
@@ -525,7 +517,7 @@ class Cornerstone_Common extends Cornerstone_Plugin_Component {
     if ( ! isset( $this->env_data ) ) {
       $this->env_data = apply_filters('_cornerstone_app_env', array(
         'product' => 'cornerstone',
-        'title'   => CS()->common()->properTitle(),
+        'title'   => $this->properTitle(),
         'version' => CS()->version(),
         'productKey' => esc_attr( get_option( 'cs_product_validation_key', '' ) )
       ));

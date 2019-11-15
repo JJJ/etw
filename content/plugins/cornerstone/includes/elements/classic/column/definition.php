@@ -8,13 +8,13 @@ class CSE_Column {
 
 	public function ui() {
 		return array(
-      'title' => __( 'Column', 'cornerstone' ),
+      'title' => __( 'Column (v1)', 'cornerstone' ),
     );
 	}
 
 	public function flags() {
 		return array(
-      'no_server_render' => true,
+      '_no_server_render' => true,
 			'context' => '_layout',
 			'dynamic_child' => true
 		);

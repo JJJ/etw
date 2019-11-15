@@ -21,7 +21,6 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
   public function setup () {
 
     // Component routing
-    $this->routes = include( $this->plugin->path( 'includes/routes.php' ) );
     $this->register_routes();
 
     // Custom Endpoint registration
@@ -34,11 +33,37 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 
   }
 
+  public function initial_routes() {
+    return array(
+
+      // Register Cornerstone endpoint and Admin AJAX fallback
+      'endpoint_save'      => array( 'Save_Handler', 'ajax_handler' ),
+      'setting_sections'   => array( 'Settings_Manager', 'ajax_handler' ),
+      'templates'          => array( 'Layout_Manager', 'ajax_templates' ),
+      'template_migration' => array( 'Layout_Manager', 'ajax_template_migration' ),
+      'save_template'      => array( 'Layout_Manager', 'ajax_save' ),
+      'delete_template'    => array( 'Layout_Manager', 'ajax_delete' ),
+      'cheatsheet'         => array( 'Cheatsheet', 'ajax_handler' ),
+
+      // Admin AJAX only
+      'dashboard_save_settings'     => array( 'Settings_Handler', 'ajax_save', false ),
+      'dashboard_clear_style_cache' => array( 'Cleanup', 'ajax_clean_generated_styles', false ),
+      'override'                    => array( 'Admin', 'ajax_override', false ),
+      'dismiss_validation_notice'   => array( 'Admin', 'ajax_dismiss_validation_notice', false ),
+      'update_check'                => array( 'Updates', 'ajax_update_check', false ),
+      'validation'                  => array( 'Validation', 'ajax_validation', false ),
+      'validation_revoke'           => array( 'Validation', 'ajax_revoke', false ),
+      'yoast_do_shortcode'          => array( 'Yoast', 'ajax_yoast_do_shortcode', false )
+    );
+  }
+
   /**
    * Attach hooks to both endpoints
    * @return none
    */
   public function register_routes() {
+
+    $this->routes = $this->initial_routes();
 
     // Add special controllers route
     $this->routes['controllers'] = array( 'Router', 'controllers' );
@@ -123,7 +148,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
     do_action( 'cornerstone_before_custom_endpoint' );
 
     send_origin_headers();
-    @header( 'X-Robots-Tag: noindex' );
+    header( 'X-Robots-Tag: noindex' );
     send_nosniff_header();
     nocache_headers();
 
@@ -363,6 +388,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
         $data = $_POST['data']; // Allow pass-through for things like backend options
       } else {
 
+
         $data = json_decode( file_get_contents( 'php://input' ), true );
 
         if ( is_null( $data ) ) {
@@ -411,7 +437,6 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
         $data[$key] = $value;
       }
     }
-
     return $data;
 
   }
@@ -444,8 +469,8 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 
     if ( ! isset( $this->ajax_url ) ) {
       $this->ajax_url = ( $this->endpoint_available() )
-      ? home_url( $this->endpoint )
-      : $this->get_fallback_ajax_url();
+        ? apply_filters( 'cs_ajax_url', home_url( $this->endpoint ), $this->endpoint )
+        : $this->get_fallback_ajax_url();
     }
 
     return $this->ajax_url;
@@ -535,9 +560,9 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
     $response = array();
 
     foreach ( $json['actions' ] as $action ) {
-      $params = ( isset($action['params']) && is_array( $action['params']) ) ? $action['params'] : array();
+      $request_data = ( isset($action['request']) && is_array( $action['request']) ) ? $action['request'] : array();
 
-      $action_response = $this->get_aggregate_response( $action['name'], $params );
+      $action_response = $this->get_aggregate_response( $action['name'], $request_data );
 
       $action_response_data = array( 'name' => $action['name'] );
 
@@ -555,6 +580,9 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 
       }
 
+      // $action_response_data['data'] = serialize($action);
+      // $action_response_data['success'] = false;
+
       $response[] = $action_response_data;
     }
 
@@ -562,7 +590,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
 
   }
 
-  public function get_aggregate_response( $action, $params ) {
+  public function get_aggregate_response( $action, $request_data ) {
 
     try {
 
@@ -583,7 +611,7 @@ class Cornerstone_Router extends Cornerstone_Plugin_Component {
         throw new Exception( "Requested method '$component_name::" . $controller_method[1] . "' is not registered." );
       }
 
-      $result = call_user_func_array( $method, array( $params ) );
+      $result = call_user_func_array( $method, array( $request_data ) );
 
       if ( is_wp_error( $result ) ) {
         throw new Exception( $result->get_error_message() );

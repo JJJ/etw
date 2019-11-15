@@ -41,7 +41,7 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
        * This will use a more robust and strict style loader. It outputs late
        * CSS as script tags (templates) and adds them t the head after page load.
        */
-      if ( defined('CS_STRICT_LATE_STYLES') && CS_STRICT_LATE_STYLES ) {
+      if ( (defined('CS_STRICT_LATE_STYLES') && CS_STRICT_LATE_STYLES) || apply_filters('cs_strict_late_styles', false) ) {
         $this->late_styles[$handle] = $css;
       } else {
         $source = array();
@@ -76,23 +76,17 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
       return '';
     }
 
-    $styles = '';
-
-    if ( $this->debug) { $styles = '/* '; }
-
-    $this->before_post_process();
-
-    foreach ($source as $key => $style) {
-      if ( $this->debug) { $styles .= ++$this->count ." start: $key*/"; }
-      $styles .= $this->post_process( $style, $this->minify[$key] );
-      if ( $this->debug) { $styles .= "/*end:$key|"; }
+    $styles = array();
+    foreach ($source as $key => $css) {
+      $styles[] = array(
+        'key' => $key,
+        'css' => $css,
+        'minify' => $this->minify[$key]
+      );
     }
 
-    if ( $this->debug) { $styles = '*/'; }
+    return $this->post_process( $styles, $this->debug );
 
-    $this->after_post_process();
-
-    return $styles;
   }
 
   //
@@ -121,31 +115,62 @@ class Cornerstone_Styling extends Cornerstone_Plugin_Component {
     return true;
   }
 
-  protected function before_post_process() {
+  protected function before_process_style() {
     set_error_handler( array( $this, 'error_handler' ) );
   }
 
-  protected function after_post_process() {
+  protected function after_process_style() {
     restore_error_handler();
   }
 
-  public function external_post_process( $css, $minify = false) {
-    $this->before_post_process();
-    $buffer = $this->post_process( $css, $minify );
-    $this->after_post_process();
-    return $buffer;
+  public function post_process( $sources, $debug = false) {
+
+    // allow direct CSS input
+    if ( is_string( $sources ) ) {
+      $sources = array( array(
+        'css' => $sources
+      ) );
+    }
+
+    // Allow input of a single
+    if (isset($sources['css']) ) {
+      $sources = array( $sources );
+    }
+
+    $buffer = '';
+
+    if ( $debug ) { $buffer = '/* '; }
+
+    $this->before_process_style();
+
+    foreach ($sources as $style) {
+      $style = wp_parse_args( $style, array(
+        'key' => 'css',
+        'css' => '',
+        'minify' => false
+      ));
+      if ( $debug ) { $buffer .= ++$this->count ." start: $key*/"; }
+      $buffer .= $this->process_style( $style['css'], $style['minify'] );
+      if ( $debug ) { $buffer .= "/*end:$key|"; }
+    }
+
+    if ( $debug ) { $buffer = '*/'; }
+
+    $this->after_process_style();
+
+    return apply_filters( 'cs_css_post_process', $buffer );
   }
 
-  protected function post_process( $css, $minify = true ) {
-    $output = preg_replace_callback('/%%post ([\w-:]+?)%%([\s\S]*?)%%\/post%%/', array( $this, 'post_process_replacer' ), $css );
+  protected function process_style( $css, $minify = true ) {
+    $output = preg_replace_callback('/%%post ([\w:\-]+?)%%([\s\S]*?)%%\/post%%/', array( $this, 'style_replacer' ), $css );
     return ( $minify ) ? $this->clean_css( $output ) : $output;
   }
 
-	public function post_process_replacer( $matches ) {
+	public function style_replacer( $matches ) {
     if ( 'raw' === $matches[1] ) {
       return $matches[2];
     }
-    return apply_filters('cornerstone_css_post_process_' . $matches[1], $matches[2]);
+    return apply_filters('cs_css_post_process_' . $matches[1], $matches[2]);
 	}
 
   public function clean_css( $css ) {

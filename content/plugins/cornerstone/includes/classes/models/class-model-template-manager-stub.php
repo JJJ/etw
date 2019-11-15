@@ -57,7 +57,7 @@ class Cornerstone_Model_Template_Manager_Stub extends Cornerstone_Plugin_Compone
 
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {

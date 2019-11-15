@@ -28,7 +28,7 @@ $link                     = get_post_meta( get_the_ID(), '_x_link_url',  true );
       <?php x_get_view( 'ethos', '_content', 'post-header' ); ?>
       <?php if ( is_single() ) : ?>
         <div class="link">
-          <a href="<?php echo $link; ?>" title="<?php echo esc_attr( sprintf( __( 'Shared link from post: "%s"', '__x__' ), the_title_attribute( 'echo=0' ) ) ); ?>" target="_blank"><?php echo $link; ?></a>
+          <a href="<?php echo $link; ?>" title="<?php echo esc_attr( sprintf( __( 'Shared link from post: "%s"', '__x__' ), the_title_attribute( 'echo=0' ) ) ); ?>" <?php x_output_target_blank(); ?>><?php echo $link; ?></a>
         </div>
         <?php x_get_view( 'global', '_content', 'the-content' ); ?>
       <?php else : ?>

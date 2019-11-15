@@ -30,7 +30,7 @@ class WC_Validation {
 	 * @return bool
 	 */
 	public static function is_phone( $phone ) {
-		if ( 0 < strlen( trim( preg_replace( '/[\s\#0-9_\-\+\/\(\)]/', '', $phone ) ) ) ) {
+		if ( 0 < strlen( trim( preg_replace( '/[\s\#0-9_\-\+\/\(\)\.]/', '', $phone ) ) ) ) {
 			return false;
 		}
 
@@ -64,10 +64,14 @@ class WC_Validation {
 				break;
 			case 'ES':
 			case 'FR':
+			case 'IT':
 				$valid = (bool) preg_match( '/^([0-9]{5})$/i', $postcode );
 				break;
 			case 'GB':
 				$valid = self::is_gb_postcode( $postcode );
+				break;
+			case 'IE':
+				$valid = (bool) preg_match( '/([AC-FHKNPRTV-Y]\d{2}|D6W)[0-9AC-FHKNPRTV-Y]{4}/', wc_normalize_postcode( $postcode ) );
 				break;
 			case 'JP':
 				$valid = (bool) preg_match( '/^([0-9]{3})([-])([0-9]{4})$/', $postcode );
@@ -88,6 +92,9 @@ class WC_Validation {
 			case 'CZ':
 			case 'SK':
 				$valid = (bool) preg_match( '/^([0-9]{3})(\s?)([0-9]{2})$/', $postcode );
+				break;
+			case 'NL':
+				$valid = (bool) preg_match( '/^([1-9][0-9]{3})(\s?)(?!SA|SD|SS)[A-Z]{2}$/i', $postcode );
 				break;
 
 			default:

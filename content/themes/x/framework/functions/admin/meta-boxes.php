@@ -9,39 +9,42 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Add Entry Meta
-//   02. Create Entry Meta
+//   01. Register Meta Box
+//   02. Create Meta Box
 //   03. Save Entry Meta
 // =============================================================================
 
-// Add Entry Meta
+// Register Meta Box
 // =============================================================================
 
-function x_add_meta_box( $meta_box ) {
+function x_register_meta_box( $meta_box ) {
 
   if ( ! is_array( $meta_box ) ) {
     return false;
   }
 
-  add_meta_box( $meta_box['id'], $meta_box['title'], 'x_add_meta_box_callback', $meta_box['page'], $meta_box['context'], $meta_box['priority'], $meta_box );
+  // Take an array configuration (see meta-entries.php) and connect items to a single function that renders different fields based configuration
+  add_meta_box( $meta_box['id'], $meta_box['title'], 'x_create_meta_box', $meta_box['page'], $meta_box['context'], $meta_box['priority'], $meta_box );
 
 }
 
-function x_add_meta_box_callback( $post, $meta_box ) {
-  return x_create_meta_box( $post, $meta_box["args"] );
-}
 
 
-// Create Entry Meta
+// Create Meta Box
 // =============================================================================
 
-function x_create_meta_box( $post, $meta_box ) {
+function x_create_meta_box( $post, $args ) {
 
-  if ( ! is_array( $meta_box ) )
+  if ( ! is_array( $args["args"] ) ) {
     return false;
+  }
 
-  if ( isset( $meta_box['description'] ) && $meta_box['description'] != '' )
+  $meta_box = $args["args"];
+
+  if ( isset( $meta_box['description'] ) && $meta_box['description'] != '' ) {
     echo '<p>' . $meta_box['description'] . '</p>';
+  }
+
 
   wp_nonce_field( basename( __FILE__ ), 'x_meta_box_nonce' );
 
@@ -111,7 +114,7 @@ function x_create_meta_box( $post, $meta_box ) {
         break;
 
       case 'file':
-        echo '<td><input type="text" name="x_meta[' . $field['id'] . ']" id="' . $field['id'] . '" value="' . $meta . '" size="30" class="file" /> <input type="button" class="button" name="'. $field['id'] .'_button" id="'. $field['id'] .'_button" value="Browse" /></td>';
+        echo '<td><input type="text" name="x_meta[' . $field['id'] . ']" id="' . $field['id'] . '" value="' . $meta . '" size="30" class="file" /> <input type="button" class="button" name="'. $field['id'] .'_button" id="'. $field['id'] .'_button" value="' . __( 'Browse', '__x__') . '" /></td>';
         break;
 
       case 'images':
@@ -124,12 +127,12 @@ function x_create_meta_box( $post, $meta_box ) {
         if ( $meta != '' ) {
           $thumb = explode( ',', $meta );
           foreach ( $thumb as $thumb_image ) {
-            $output .= '<div class="x-uploader-image"><img src="' . $thumb_image . '" alt="" /></div>';
+            $output .= '<div class="x-uploader-image"><img src="' . $thumb_image . '"/></div>';
           }
         }
         echo '<td>'
              . '<input type="text" name="x_meta[' . $field['id'] . ']" id="' . $field['id'] . '" value="' . $meta . '" class="file" />'
-             . '<input data-id="' . get_the_ID() . '"  type="button" class="button" name="' . $field['id'] . '_button" id="' . $field['id'] . '_upload" value="Select Background Image(s)" />'
+             . '<input data-id="' . get_the_ID() . '"  type="button" class="button" name="' . $field['id'] . '_button" id="' . $field['id'] . '_upload" value="' . __( 'Select Background Image(s)', '__x__' ) . '" />'
              . '<div class="x-meta-box-img-thumb-wrap">' . $output . '</div>'
            . '</td>';
         ?>
@@ -166,8 +169,8 @@ function x_create_meta_box( $post, $meta_box ) {
               }
 
               x_uploader = wp.media.frames.x_uploader = wp.media({ // 3
-                title    : 'Insert Media',
-                button   : { text : 'Select' },
+                title    : '<?php _e( 'Insert Media', '__x__' ); ?>',
+                button   : { text : '<?php _e( 'Select', '__x__' ); ?>' },
                 multiple : true
               });
 
@@ -186,7 +189,7 @@ function x_create_meta_box( $post, $meta_box ) {
 
                 for ( var i = 0; i < files.length; i++ ) {
                   var ext = files[i].substr(files[i].lastIndexOf('.') + 1, files[i].length);
-                  x_button.next().append('<div class="row-image"><img src="' + files[i] + '" alt="" /></div>');
+                  x_button.next().append('<div class="row-image"><img src="' + files[i] + '" /></div>');
                 }
 
                 wp.media.model.settings.post.id = wp_media_post_id; // 5
@@ -216,7 +219,7 @@ function x_create_meta_box( $post, $meta_box ) {
           'sort_column' => 'ID'
         ) );
         echo '<td><select name="x_meta[' . $field['id'] . ']" id="' . $field['id'] . '">';
-        echo '<option value="Default">Default</option>';
+        echo '<option value="Default">' . __( 'Default', '__x__' ) . '</option>';
         foreach ( $pages as $page ) {
           echo '<option value="' . $page->ID . '"';
           if ( $meta ) {
@@ -233,7 +236,7 @@ function x_create_meta_box( $post, $meta_box ) {
         $categories = get_terms( 'portfolio-category' );
         $meta       = ( $meta == '' ) ? array( 0 => 'All Categories' ) : $meta;
         echo '<td><select name="x_meta[' . $field['id'] . '][]" id="' . $field['id'] . '" multiple="multiple">';
-        echo '<option value="All Categories" ' . selected( $meta[0], 'All Categories', true ) . '>All Categories</option>';
+        echo '<option value="All Categories" ' . selected( $meta[0], 'All Categories', true ) . '>' . __( 'All Categories', '__x__' ) . '</option>';
         foreach ( $categories as $category ) {
           echo '<option value="' . $category->term_id . '"';
           if ( in_array( $category->term_id, $meta ) ) echo ' selected="selected"';
@@ -259,7 +262,7 @@ function x_create_meta_box( $post, $meta_box ) {
       case 'menus' :
         $menus = get_terms( 'nav_menu', array( 'hide_empty' => true ) );
         echo '<td><select name="x_meta[' . $field['id'] . ']" id="' . $field['id'] . '">';
-        echo '<option>Deactivated</option>';
+        echo '<option>' . __( 'Deactivated', '__x__' ) . '</option>';
         foreach ( $menus as $menu ) {
           echo '<option';
           if ( $meta ) {
@@ -275,11 +278,11 @@ function x_create_meta_box( $post, $meta_box ) {
       case 'sliders' :
         $sliders = apply_filters( 'x_sliders_meta', array() );
         echo '<td><select name="x_meta[' . $field['id'] . ']" id="' . $field['id'] . '">';
-        echo '<option value="Deactivated">Deactivated</option>';
+        echo '<option value="Deactivated">' . __( 'Deactivated', '__x__' ) . '</option>';
         foreach ( $sliders as $key => $value ) {
           echo '<option value="' . $key . '"';
           if ( $meta ) {
-            if ( $meta == $key || $meta == $value['slug'] ) echo ' selected="selected"';
+            if ( $meta == $key ) echo ' selected="selected"';
           }
           echo '>' . $value['source'] . ': ' . $value['name'] . '</option>';
         }

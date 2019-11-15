@@ -15,15 +15,16 @@
 // Include Partial CSS
 // =============================================================================
 
-include( '_menu-css.php' );
+echo cs_get_partial_style( 'menu' );
 
-$anchor_selector = '.x-menu > li > .x-anchor';
-$anchor_k_pre    = '';
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => '.x-menu > li > .x-anchor',
+  'key_prefix'    => ''
+) );
 
-include( '_anchor-css.php' );
-include( '_dropdown-css.php' );
+echo cs_get_partial_style( 'dropdown' );
 
-$anchor_selector = ' .sub-menu .x-anchor';
-$anchor_k_pre    = 'sub';
-
-include( '_anchor-css.php' );
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => ' .sub-menu .x-anchor',
+  'key_prefix'    => 'sub'
+) );

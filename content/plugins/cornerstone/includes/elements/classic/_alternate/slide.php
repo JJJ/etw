@@ -11,7 +11,8 @@ class CS_Slide extends Cornerstone_Element_Base {
       'supports'    => array( 'id', 'class', 'style' ),
       'render'      => false,
       'delegate'    => true,
-      'protected_keys' => array( 'title', 'content' )
+      'protected_keys' => array( 'title', 'content' ),
+      'label_key' => 'title'
     );
   }
 
@@ -34,21 +35,5 @@ class CS_Slide extends Cornerstone_Element_Base {
     );
 
   }
-
-  // public function render( $atts ) {
-
-  //   extract( $atts );
-
-  //   $extra = $this->extra( array(
-  //     'id'    => $id,
-  //     'class' => $class,
-  //     'style' => $style
-  //   ) );
-
-  //   $shortcode = "[x_slide{$extra}][/x_slide]";
-
-  //   return $shortcode;
-
-  // }
 
 }

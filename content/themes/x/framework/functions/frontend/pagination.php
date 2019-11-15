@@ -24,8 +24,8 @@ if ( ! function_exists( 'pagenavi' ) ) :
     $pagenavi_options['pages_text']                   = ('Page %CURRENT_PAGE% of %TOTAL_PAGES%');
     $pagenavi_options['current_text']                 = '%PAGE_NUMBER%';
     $pagenavi_options['page_text']                    = '%PAGE_NUMBER%';
-    $pagenavi_options['first_text']                   = ('First Page');
-    $pagenavi_options['last_text']                    = ('Last Page');
+    $pagenavi_options['first_text']                   = __( 'First Page', '__x__' );
+    $pagenavi_options['last_text']                    = __( 'Last Page', '__x__' );
     $pagenavi_options['next_text']                    = '&#x2192;';
     $pagenavi_options['prev_text']                    = '&#x2190;';
     $pagenavi_options['dotright_text']                = '...';

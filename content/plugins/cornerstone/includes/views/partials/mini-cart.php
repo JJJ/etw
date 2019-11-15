@@ -47,6 +47,7 @@ if ( class_exists( 'WC_API' ) ) {
 
 } else {
 
-  echo '<div style="padding: 35px; line-height: 1.5; text-align: center; color: #000; background-color: #fff;">The shopping cart currently unavailable.</div>';
+  $message = __( 'The shopping cart currently unavailable.', 'cornerstone' );
+  echo '<div style="padding: 35px; line-height: 1.5; text-align: center; color: #000; background-color: #fff;">' . $message . '</div>';
 
 }

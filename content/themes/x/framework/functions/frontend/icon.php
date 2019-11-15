@@ -89,7 +89,7 @@ if ( ! function_exists( 'x_icon_comment' ) ) :
         $comment_time = sprintf( __( '%1$s at %2$s', '__x__' ), get_comment_date(), get_comment_time() );
       endif;
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review"<?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="comment" itemscope itemtype="https://schema.org/Comment"<?php comment_class(); ?>>
       <?php $comment_reply = ( ! x_is_product() ) ? '<div class="x-reply">' . get_comment_reply_link( array_merge( $args, array( 'reply_text' => __( 'Reply<span class="comment-reply-link-after"><i class="x-icon-reply" data-x-icon-s="&#xf3e5;"></i></span>', '__x__' ), 'depth' => $depth, 'max_depth' => $args['max_depth'] ) ) ) . '</div>' : ''; ?>
       <?php
       printf( '<div class="x-comment-img">%1$s %2$s %3$s</div>',
@@ -116,7 +116,7 @@ if ( ! function_exists( 'x_icon_comment' ) ) :
             get_comment_time( 'c' ),
             $comment_time
           );
-          edit_comment_link( __( '<i class="x-icon-edit" data-x-icon-s="&#xf044;"></i> Edit', '__x__' ) );
+          edit_comment_link( sprintf( __( '%s Edit', '__x__' ), '<i class="x-icon-edit" data-x-icon-s="&#xf044;"></i>' ) );
           ?>
         </header>
         <?php if ( '0' == $comment->comment_approved ) : ?>

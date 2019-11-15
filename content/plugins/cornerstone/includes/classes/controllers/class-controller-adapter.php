@@ -4,7 +4,7 @@ class Cornerstone_Controller_Adapter extends Cornerstone_Plugin_Component {
 
   public function __call( $name, $arguments ) {
 
-    $params = $arguments[0];
+    $request = $arguments[0];
 
     $component_name = 'Model_' . cs_to_component_name( $name );
 
@@ -19,19 +19,19 @@ class Cornerstone_Controller_Adapter extends Cornerstone_Plugin_Component {
       throw new Exception( "Requested model '$component_name' does not exist." );
     }
 
-    if ( ! isset( $params['action'] ) ) {
-      throw new Exception( 'No action specified in request with params: ' . json_encode( $params ) );
+    if ( ! isset( $request['action'] ) ) {
+      throw new Exception( 'No action specified in request with params: ' . json_encode( $request ) );
     }
 
-    $action = $params['action'];
+
+    $action = $request['action'];
     $method = array( $model, $action );
 
     if ( ! is_callable( $method ) ) {
       throw new Exception( "Action '$action' not present on model: $component_name" );
     }
 
-    $params = ( isset( $params['params'] ) && is_array( $params['params'] ) ) ? array( $params['params'] ) : array();
-
+    $params = ( isset( $request['params'] ) && is_array( $request['params'] ) ) ? array( $request['params'] ) : array();
     return call_user_func_array( $method, $params );
 
   }

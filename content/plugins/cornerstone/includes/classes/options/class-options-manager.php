@@ -2,7 +2,6 @@
 
 class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
 
-  public $dependencies = array( 'Options_Bootstrap' );
   protected $counters = array();
   protected $sections = array();
   protected $controls = array();
@@ -22,18 +21,13 @@ class Cornerstone_Options_Manager extends Cornerstone_Plugin_Component {
   }
 
   public function config() {
-
     return array(
-      'i18n' => $this->plugin->i18n_group( 'options' ),
-      'customCSSKey' => $this->get_custom_css_key(),
-      'customCSSSelector' => $this->get_custom_css_selector(),
-      'customJSKey' => $this->get_custom_js_key(),
-      'title' => apply_filters( 'cornerstone_options_theme_title', false ) ? 'theme' : 'styling',
-    );
 
+    );
   }
 
   public function register_native_options() {
+    $this->plugin->component('Options_Bootstrap');
     $this->register_sections( $this->plugin->config_group( 'options/sections' ) );
   }
 

@@ -13,7 +13,7 @@ class Cornerstone_Color_Manager extends Cornerstone_Plugin_Component {
     add_filter( 'cornerstone_option_model_save_cornerstone_color_items', array( $this, 'items_save_transform' ) );
     add_filter( 'cornerstone_option_model_permissions_cornerstone_color_items', array( $this, 'permissions' ), 10, 2 );
 
-    add_filter( 'cornerstone_css_post_process_color', array( $this, 'css_post_process_color') );
+    add_filter( 'cs_css_post_process_color', array( $this, 'css_post_process_color') );
 
   }
 
@@ -21,22 +21,22 @@ class Cornerstone_Color_Manager extends Cornerstone_Plugin_Component {
     return array(
       array(
         '_id'     => bin2hex('Brand Primary'),
-        'title'   => 'Brand Primary',
+        'title'   => csi18n( 'app.colors.brand-primary' ),
         'value'   => 'transparent',
       ),
       array(
         '_id'     => bin2hex('Brand Secondary'),
-        'title'   => 'Brand Secondary',
+        'title'   => csi18n( 'app.colors.brand-secondary' ),
         'value'   => 'transparent',
       ),
       array(
         '_id'     => bin2hex('Link'),
-        'title'   => 'Link',
+        'title'   => csi18n( 'app.colors.link' ),
         'value'   => 'transparent',
       ),
       array(
         '_id'     => bin2hex('Link Interaction'),
-        'title'   => 'Link Interaction',
+        'title'   => csi18n( 'app.colors.link-interaction' ),
         'value'   => 'transparent',
       )
     );

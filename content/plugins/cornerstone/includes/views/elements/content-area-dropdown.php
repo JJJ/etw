@@ -24,8 +24,8 @@ if ( isset( $id ) && ! empty( $id ) ) {
 // Data: Partials
 // --------------
 
-$data_toggle   = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'toggle_anchor' => 'anchor', 'toggle' => '' ) ) );
-$data_dropdown = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'dropdown' => '' ) ) );
+$data_toggle   = cs_extract( $_view_data, array( 'toggle_anchor' => 'anchor', 'toggle' => '' ) );
+$data_dropdown = cs_extract( $_view_data, array( 'dropdown' => '' ) );
 
 
 // Output
@@ -34,6 +34,6 @@ $data_dropdown = x_get_partial_data( $_custom_data, array( 'find_data' => array(
 ?>
 
 <div <?php echo x_atts( $atts ); ?>>
-  <?php x_get_view( 'partials', 'anchor', '', $data_toggle, true ); ?>
-  <?php x_get_view( 'partials', 'dropdown', '', $data_dropdown, true ); ?>
+  <?php echo cs_get_partial_view( 'anchor', $data_toggle ); ?>
+  <?php echo cs_get_partial_view( 'dropdown', $data_dropdown ); ?>
 </div>

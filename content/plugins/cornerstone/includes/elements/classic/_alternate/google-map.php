@@ -114,10 +114,13 @@ class CS_Google_Map extends Cornerstone_Element_Base {
     $contents = '';
 
     foreach ( $elements as $e ) {
-
-      $contents .= '[x_google_map_marker lat="' . $e['lat'] . '" lng="' . $e['lng'] . '" start_open="' . $e['start_open'] .'" info="' . cs_clean_shortcode_att( $e['info'] ) . '" image="' . $e['image'] . '"]';
-
+      $contents .= '[x_google_map_marker lat="' . cs_clean_shortcode_att( $e['lat'] ) . '" lng="' . cs_clean_shortcode_att( $e['lng'] ) . '" start_open="' . $e['start_open'] .'" info="' . cs_clean_shortcode_att( $e['info'] ) . '" image="' . $e['image'] . '"]';
     }
+
+    $api_key = cs_clean_shortcode_att( $api_key );
+    $lat     = cs_clean_shortcode_att( $lat );
+    $lng     = cs_clean_shortcode_att( $lng );
+    $height  = cs_clean_shortcode_att( $height );
 
     $shortcode = "[x_google_map api_key=\"$api_key\" lat=\"{$lat}\" lng=\"{$lng}\" zoom=\"{$zoom}\" zoom_control=\"{$zoom_control}\" drag=\"{$drag}\" height=\"{$height}\" hue=\"{$hue}\" no_container=\"{$no_container}\" {$extra}]{$contents}[/x_google_map]";
 

@@ -6,11 +6,24 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
   protected $located;
 
   public function setup() {
+
     add_action( 'cornerstone_delete_header', array( $this, 'assignments_deleted' ) );
+    add_action( 'cornerstone_after_option_save_' . $this->option_key, array( $this, 'update_google_font_cache' ) );
+
     add_filter( 'cornerstone_option_model_whitelist', array( $this, 'whitelist_options' ) );
     add_filter( 'cornerstone_option_model_load_' . $this->option_key, array( $this, 'load_transform' ) );
     add_filter( 'cornerstone_option_model_save_' . $this->option_key, array( $this, 'save_transform' ) );
     add_filter( 'cornerstone_option_model_permissions_' . $this->option_key, array( $this, 'permissions' ), 10, 2 );
+
+  }
+
+  // This gets called after either of the following is completed:
+  // 1. A Global header is assigned
+  // 2. A Global header assignment is removed
+  // 3. When under Theme Options > Headers, the "Switch back to Original Header" is clicked
+  public function update_google_font_cache( $atts ){
+    // The "true" parameter is there to force the updating of the cached value
+    x_google_fonts_queue_cached( true );
   }
 
   public function assignments_deleted( $entity_id ) {
@@ -153,7 +166,8 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
 
     $posts = get_posts( array(
       'post_type' => apply_filters('cs_header_assignment_post_types', $post_types ),
-      'orderby' => 'type',
+      'post_status' => 'any',
+      'orderby' => array( 'type' => 'ASC', 'title' => 'ASC' ),
       'posts_per_page' => apply_filters( 'cs_query_limit', 2500 )
     ) );
 
@@ -173,9 +187,13 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
         );
       }
 
+      // Display status only if it's not "publish"
+      $post_status = ( $post->post_status != 'publish' ) ? ':' . ucwords($post->post_status) : '';
+
       $groups[ $key ]['items'][] = array(
         'value' => $post->ID,
         'title' => $post->post_title,
+        'status' => $post_status,
         'url'   => $url,
       );
 
@@ -273,7 +291,9 @@ class Cornerstone_Header_Assignments extends Cornerstone_Plugin_Component {
   }
 
   public function permissions( $value, $operation ) {
-    return $this->plugin->component('App_Permissions')->user_can('headers.manage_assignments');
+    $permissions = $this->plugin->component('App_Permissions');
+    $can_manage = $permissions->user_can('headers.manage_assignments');
+    return $can_manage || ( $operation === 'access' && $permissions->user_can('theme_options') );
   }
 
 }

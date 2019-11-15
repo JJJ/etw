@@ -121,7 +121,7 @@ if ( ! function_exists( 'x_featured_audio' ) ) :
     $embed    = get_post_meta( $entry_id, '_x_audio_embed', true );
 
     if ( $embed != '' ) {
-      echo do_shortcode( '[x_audio_embed class="mvn"]' . stripslashes( htmlspecialchars_decode( $embed ) ) . '[/x_audio_embed]' );
+      echo do_shortcode( '[x_audio_embed class="mvn"]' . stripslashes( wp_specialchars_decode( $embed, ENT_QUOTES ) ) . '[/x_audio_embed]' );
     } else {
       echo do_shortcode( '[x_audio_player mp3="' . $mp3 . '" oga="' . $ogg . '" preload="metadata" autoplay="false" loop="false" class="mvn"]' );
     }
@@ -152,7 +152,7 @@ if ( ! function_exists( 'x_featured_video' ) ) :
     }
 
     if ( $embed != '' ) {
-      echo do_shortcode( '[x_video_embed type="' . $aspect_ratio . '" no_container="true" class="mvn"]' . stripslashes( htmlspecialchars_decode( $embed ) ) . '[/x_video_embed]' );
+      echo do_shortcode( '[x_video_embed type="' . $aspect_ratio . '" no_container="true" class="mvn"]' . stripslashes( wp_specialchars_decode( $embed, ENT_QUOTES ) ) . '[/x_video_embed]' );
     } else {
       echo do_shortcode( '[x_video_player m4v="' . $m4v . '" ogv="' . $ogv . '" poster="' . $poster[0] . '" type="' . $aspect_ratio . '" preload="metadata" hide_controls="false" autoplay="false" loop="false" muted="false" no_container="true" class="mvn"]' );
     }

@@ -20,22 +20,42 @@ class Cornerstone_Element_Definition {
 
       'title'          => '',
       'values'         => array(),
-      'options'        => array(),
       'style'          => null,
+      'builder'        => null,
 
-      'builder'            => null,
-      'controls'           => array(),
-      'control_groups'     => array(),
-      'controls_adv'       => array(),
-      'control_groups_adv' => array(),
-      // 'conditions'     => array(),
-      // 'supports'       => array(),
+      'options'        => array(),
+
+      'controls_std'   => array(),
+      'controls'       => array(),
+      'control_nav' => array(),
+
       'icon'           => null,
       'active'         => true,
       'render'         => null,
 
       '_upgrade_data' => array()
     );
+
+    $controls_std = array();
+    if ( isset( $update['controls_std_content'] ) ) {
+      $controls_std = array_merge( $controls_std, $update['controls_std_content'] );
+    }
+
+    if ( isset( $update['controls_std_design_setup'] ) ) {
+      $controls_std = array_merge( $controls_std, $update['controls_std_design_setup'] );
+    }
+
+    if ( isset( $update['controls_std_design_colors'] ) ) {
+      $controls_std = array_merge( $controls_std, $update['controls_std_design_colors'] );
+    }
+
+    if ( isset( $update['controls_std_customize'] ) ) {
+      $controls_std = array_merge( $controls_std, $update['controls_std_customize'] );
+    }
+
+    if ( count( $controls_std ) > 0 ) {
+      $update['controls_std'] = $controls_std;
+    }
 
     if ( isset( $update['options'] ) ) {
       $current_options = isset( $this->def['options'] ) ? $this->def['options'] : array();
@@ -217,12 +237,9 @@ class Cornerstone_Element_Definition {
     return 0 === strpos($this->type, 'classic:');
   }
 
-  public function is_child_or_classic_child() {
-    return $this->is_child() || ( isset( $this->def['options']['classic'] ) && isset( $this->def['options']['classic']['child'] ) && $this->def['options']['classic']['child'] );
-  }
-
-  public function is_private() {
-    return ( isset( $this->def['options']['private'] ) && $this->def['options']['private'] ) || $this->is_child_or_classic_child();
+  public function in_library() {
+    $is_classic_child = ( isset( $this->def['options']['classic'] ) && isset( $this->def['options']['classic']['child'] ) && $this->def['options']['classic']['child'] );
+    return ( !isset( $this->def['options']['library'] ) || false !== $this->def['options']['library'] ) && ! $is_classic_child && 'classic:undefined' !== $this->type;
   }
 
   public function render_children() {
@@ -242,13 +259,11 @@ class Cornerstone_Element_Definition {
       'title'          => $this->def['title'],
       'options'        => $this->def['options'],
       'values'         => $this->def['values'],
-      // 'stylecompiled'  => $this->get_compiled_style(),
-      'style'              => $this->get_style_template(),
-      'controls'           => $this->def['controls'],
-      'control-groups'     => $this->def['control_groups'],
-      'controls-adv'       => $this->def['controls_adv'],
-      'control-groups-adv' => $this->def['control_groups_adv'],
-      'active'             => $this->def['active']
+      'style'          => $this->get_style_template(),
+      'controls-std'   => $this->def['controls_std'],
+      'controls'       => $this->def['controls'],
+      'control-nav' => $this->def['control_nav'],
+      'active'         => $this->def['active']
     );
 
     if ( is_string( $this->def['icon'] ) ) {
@@ -264,6 +279,7 @@ class Cornerstone_Element_Definition {
       return;
     }
 
+    CS()->component('Element_Manager')->load_builder_files();
     $this->update( call_user_func( $this->def['builder'], $this->type ) );
     $this->ready_for_builder = true;
 
@@ -280,7 +296,7 @@ class Cornerstone_Element_Definition {
       $this->sanitize_html_safe_keys = $this->get_designated_keys('*:html', '*:raw' );
     }
 
-    $internal_keys = array( '_id', '_p', '_type', '_region', '_modules', '_transient' );
+    $internal_keys = array( '_id', '_p', '_type', '_region', '_label', '_modules', '_transient' );
 
     foreach ( $data as $key => $value ) {
 
@@ -327,7 +343,7 @@ class Cornerstone_Element_Definition {
 
     }
 
-    $internal_keys = array( '_id', '_p', '_type', '_region', '_modules', '_transient', 'p_mod_id' );
+    $internal_keys = array( '_id', '_p', '_type', '_region', '_label', '_modules', '_transient', 'p_mod_id' );
 
     foreach ( $data as $key => $value ) {
 
@@ -349,10 +365,14 @@ class Cornerstone_Element_Definition {
     return $escaped;
   }
 
-  public function save( $data, $content, $atts = array() ) {
+  public function save( $data, $content, $atts = array(), $depth = 0 ) {
 
     $type = str_replace('-', '_', $data['_type'] );
     $tag = "cs_element_$type";
+
+    if ( $depth > 1 && in_array( $data['_type'], apply_filters( 'cs_nested_element_types', array( 'row', 'column', 'layout-row', 'layout-column', 'layout-grid', 'layout-cell' ) ), true ) ) {
+      $tag .= "_$depth";
+    }
 
     $atts = array_merge( $atts, array( '_id' => $data['_id'] ) );
     $atts = cs_atts( $atts );
@@ -362,7 +382,7 @@ class Cornerstone_Element_Definition {
       $content = $this->def['options']['fallback_content'];
     }
 
-    if ( $content ) {
+    if ( $content || $this->type_is_layout( $type ) ) {
       $shortcode .= $content . "[/$tag]";
     }
 
@@ -372,7 +392,16 @@ class Cornerstone_Element_Definition {
   }
 
   public function render( $data ) {
-    return is_callable( $this->def['render'] ) ? call_user_func( $this->def['render'], $this->escape( $data ) ) : '';
+    ob_start();
+    echo is_callable( $this->def['render'] ) ? call_user_func( $this->def['render'], $data ) : '';
+    return ob_get_clean();
+  }
+
+  public function type_is_layout( $type ) {
+    return in_array(
+      str_replace( 'classic:', '', $type ),
+      array( 'bar', 'container', 'section', 'row', 'column', 'layout-row', 'layout-column', 'layout-grid', 'layout-cell' )
+    );
   }
 
 }

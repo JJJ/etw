@@ -40,9 +40,10 @@ class CS_Author extends Cornerstone_Element_Base {
 
     extract( $atts );
 
-    $shortcode = "[x_author title=\"$heading\" author_id=\"$author_id\"{$extra}]";
-
-    return $shortcode;
+    return cs_build_shortcode('x_author', array(
+      'title' => $heading,
+      'author_id' => $author_id,
+    ), $extra );
 
   }
 

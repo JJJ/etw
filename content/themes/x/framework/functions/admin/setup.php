@@ -47,8 +47,9 @@ X_Validation_Extensions::instance();
 // =============================================================================
 
 function x_addons_add_menu() {
-  add_menu_page( 'Validation', X_TITLE, 'manage_options', 'x-addons-home', 'x_addons_page_home', 'dashicons-arrow-right-alt2', 3 );
-  add_submenu_page( 'x-addons-home', 'Validation', 'Validation', 'manage_options', 'x-addons-home', 'x_addons_page_home' );
+  $title = __( 'Validation', '__x__' );
+  add_menu_page( $title, X_TITLE, 'manage_options', 'x-addons-home', 'x_addons_page_home', 'dashicons-arrow-right-alt2', 3 );
+  add_submenu_page( 'x-addons-home', $title, $title, 'manage_options', 'x-addons-home', 'x_addons_page_home' );
 }
 
 add_action( 'admin_menu', 'x_addons_add_menu', 5 );

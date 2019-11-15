@@ -44,8 +44,15 @@ if ( $is_headline && $text_subheadline === true && ! empty( $text_subheadline_co
 // Optional graphic output for headlines.
 
 if ( $is_headline && isset( $text_graphic ) && $text_graphic === true ) {
-  $data_graphic         = x_get_partial_data( $_custom_data, array( 'add_in' => array( 'class' => '' ), 'find_data' => array( 'text_graphic' => 'graphic' ) ) );
-  $text_graphic_content = x_get_view( 'partials', 'graphic', '', $data_graphic, false );
+
+  $text_graphic_content = cs_get_partial_view(
+    'graphic',
+    array_merge(
+      cs_extract( $_view_data, array( 'text_graphic' => 'graphic' ) ),
+      array( 'class' => '' )
+    )
+  );
+
 } else {
   $text_graphic_content = NULL;
 }

@@ -28,8 +28,7 @@ if ( isset( $id ) && ! empty( $id ) ) {
 // ------------------
 
 if ( $container_bg_advanced == true ) {
-  $data_bg      = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'bg' => '' ) ) );
-  $container_bg = x_get_view( 'partials', 'bg', '', $data_bg, false );
+  $container_bg = cs_get_partial_view( 'bg', cs_extract( $_view_data, array( 'bg' => '' ) ) );
 }
 
 
@@ -42,6 +41,6 @@ if ( $container_bg_advanced == true ) {
 
   <?php if ( isset( $container_bg ) ) { echo $container_bg; } ?>
 
-  <?php do_action( 'x_bar_container', $_modules, $global ); ?>
+  <?php do_action( 'x_bar_container', $_modules ); ?>
 
 </div>

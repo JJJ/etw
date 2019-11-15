@@ -18,7 +18,7 @@ class Cornerstone_Model_Classic_Template extends Cornerstone_Plugin_Component {
     }
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {

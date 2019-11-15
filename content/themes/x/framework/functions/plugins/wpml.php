@@ -28,30 +28,3 @@ add_filter( 'wp_nav_menu_items', 'x_wpml_add_classes_for_language_switcher' );
 
 
 
-// Translate page and term ids in custom sidebar settings
-// ======================================================================================
-
-function x_wpml_translate_ups_sidebar_settings( $sidebars ) {
-	foreach ( $sidebars as $id => &$sidebar ) {
-		if ( array_key_exists( 'pages', $sidebar ) ) {
-			$pages = array();
-			foreach ( $sidebar['pages'] as $id => $title ) {
-				$id = apply_filters( 'wpml_object_id', $id, get_post_type( $id ) );
-				$pages[ $id ] = $title;
-			}
-			$sidebar['pages']= $pages;
-		}
-		if ( array_key_exists( 'taxonomies', $sidebar ) ) {
-			$taxonomies = array();
-			foreach ( $sidebar['taxonomies'] as $id => $title ) {
-				$term = get_term( $id );
-				$id = apply_filters( 'wpml_object_id', $id, $term->taxonomy );
-				$taxonomies[ $id ] = $term->name;
-			}
-			$sidebar['taxonomies'] = $taxonomies;
-		}
-	}
-	return $sidebars;
-}
-
-add_filter( 'option_ups_sidebars', 'x_wpml_translate_ups_sidebar_settings' );

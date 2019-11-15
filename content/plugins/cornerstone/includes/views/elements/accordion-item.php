@@ -17,6 +17,9 @@ $atts_accordion_item = array(
   'class' => x_attr_class( array( $mod_id, 'x-acc-item', $class ) ),
 );
 
+if (isset($id)) {
+  $atts_accordion_item['id'] = $id;
+}
 
 // Atts: Accordion Header
 // ----------------------
@@ -47,6 +50,10 @@ if ( $accordion_grouped ) {
   }
 }
 
+if ( ! empty( $toggle_hash ) ) {
+  $atts_accordion_header['data-x-toggle-hash'] = $toggle_hash;
+}
+
 
 // Atts: Accordion Collapse
 // ------------------------
@@ -71,7 +78,7 @@ if ( ! $accordion_item_starts_open ) {
 $accordion_header_indicator_content = '';
 
 if ( $accordion_header_indicator === true ) {
-  $accordion_header_indicator_content = ( $accordion_header_indicator_type === 'text' ) ? $accordion_header_indicator_text : x_get_view( 'partials', 'icon', '', x_get_partial_data( $_custom_data, array( 'find_data' => array( 'accordion_header_indicator_icon' => 'icon' ) ) ), false );
+  $accordion_header_indicator_content = ( $accordion_header_indicator_type === 'text' ) ? $accordion_header_indicator_text : cs_get_partial_view( 'icon', cs_extract( $_view_data, array( 'accordion_header_indicator_icon' => 'icon' ) ) );
   $accordion_header_indicator_content = '<span class="x-acc-header-indicator">' . $accordion_header_indicator_content . '</span>';
 }
 

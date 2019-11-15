@@ -14,7 +14,8 @@ class CSE_Pricing_Table {
 
 	public function flags() {
 		return array(
-			'dynamic_child' => true
+			'dynamic_child' => true,
+			'safe_container' => true,
 		);
 	}
 

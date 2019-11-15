@@ -32,8 +32,8 @@
               <div class="tco-demo-content-control">
                 <div class="tco-select">
                   <select class="tco-form-control" data-tco-module-target="select">
-                    <optgroup label="Expanded Demos" data-tco-module-target="select-group-expanded"></optgroup>
-                    <optgroup label="Standard Demos" data-tco-module-target="select-group-standard"></optgroup>
+                    <optgroup label="<?php _e( 'Expanded Demos', '__x__'); ?>" data-tco-module-target="select-group-expanded"></optgroup>
+                    <optgroup label="<?php _e( 'Standard Demos', '__x__'); ?>" data-tco-module-target="select-group-standard"></optgroup>
                   </select>
                 </div>
                 <a class="tco-demo-content-link" href="#" target="_blank" data-tco-module-target="demo-link"><?php x_tco()->admin_icon( 'external' ); ?></a>

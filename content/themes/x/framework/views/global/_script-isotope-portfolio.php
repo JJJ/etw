@@ -27,7 +27,7 @@ $is_rtl = is_rtl();
     var $optionSets  = $('.option-set');
     var $optionLinks = $optionSets.find('a');
 
-    $container.before('<span id="x-isotope-loading"><span>');
+    $container.before('<span id="x-isotope-loading" class="x-loading"><span>');
 
     $(window).on('load', function() {
       $container.xIsotope({
@@ -52,7 +52,7 @@ $is_rtl = is_rtl();
       $container.xIsotope({  });
     });
 
-    $optionLinks.click(function() {
+    $optionLinks.on( 'click', function() {
       var $this = $(this);
       if ( $this.hasClass('selected') ) {
         return false;
@@ -76,7 +76,7 @@ $is_rtl = is_rtl();
       return false;
     });
 
-    $('.x-portfolio-filters').click(function() {
+    $('.x-portfolio-filters').on('click', function() {
       $(this).parent().find('ul').slideToggle(600, 'xEaseOutExpo');
     });
 

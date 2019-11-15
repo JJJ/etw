@@ -24,9 +24,15 @@ function x_shortcode_author( $atts ) {
   $twitter      = get_the_author_meta( 'twitter', $author_id );
   $googleplus   = get_the_author_meta( 'googleplus', $author_id );
 
-  $facebook_output   = ( $facebook )   ? "<a href=\"{$facebook}\" class=\"x-author-social\" title=\"Visit the Facebook Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-facebook-square\" " . fa_data_icon('facebook') . "></i> Facebook</a>" : '';
-  $twitter_output    = ( $twitter )    ? "<a href=\"{$twitter}\" class=\"x-author-social\" title=\"Visit the Twitter Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-twitter-square\" " . fa_data_icon('twitter-square') . "></i> Twitter</a>" : '';
-  $googleplus_output = ( $googleplus ) ? "<a href=\"{$googleplus}\" class=\"x-author-social\" title=\"Visit the Google+ Profile for {$display_name}\" target=\"_blank\"><i class=\"x-icon-google-plus-square\" " . fa_data_icon('google-plus-square') . "></i> Google+</a>" : '';
+  $facebook_title   = sprintf( __('Visit the Facebook Profile for %s', 'cornerstone'), $display_name);
+  $twitter_title    = sprintf( __('Visit the Twitter Profile for %s', 'cornerstone'), $display_name);
+  $googleplus_title = sprintf( __('Visit the Google+ Profile for %s', 'cornerstone'), $display_name);
+
+  $target = cs_output_target_blank(false);
+
+  $facebook_output   = ( $facebook )   ? "<a href=\"{$facebook}\" class=\"x-author-social\" title=\"{$facebook_title}\" $target ><i class=\"x-icon-facebook-square\" " . fa_data_icon('facebook') . "></i> Facebook</a>" : '';
+  $twitter_output    = ( $twitter )    ? "<a href=\"{$twitter}\" class=\"x-author-social\" title=\"{$twitter_title}\" $target ><i class=\"x-icon-twitter-square\" " . fa_data_icon('twitter-square') . "></i> Twitter</a>" : '';
+  $googleplus_output = ( $googleplus ) ? "<a href=\"{$googleplus}\" class=\"x-author-social\" title=\"{$googleplus_title}\" $target ><i class=\"x-icon-google-plus-square\" " . fa_data_icon('google-plus-square') . "></i> Google+</a>" : '';
 
   $output = "<div {$id} class=\"{$class}\" {$style}>"
             . "<h6 class=\"h-about-the-author\">{$title}</h6>"

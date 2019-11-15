@@ -14,7 +14,7 @@ class CSE_Section {
 
 	public function flags() {
 		return array(
-      'no_server_render' => true,
+      '_no_server_render' => true,
 			'context' => '_layout',
 			'dynamic_child' => true,
 			'elements' => array(

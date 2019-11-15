@@ -9,66 +9,27 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Legacy Update
-//   02. Check if Visual Composer Integration is On
-//   03. Set Visual Composer
-//   04. Add Visual Composer Options
-//   05. Overwrite Visual Composer Rows and Columns
-//   06. Remove Default Shortcodes
-//   07. Remove Default Templates
-//   08. Remove Meta Boxes
-//   09. Provision Frontend Editor
-//   10. Map Shortcodes
-//   11. Update Existing Shortcodes
-//   12. Incremental ID Counter for Templates
-//   13. Overwrite No Content Message
-//   14. Overwrite Layout Error Message
-//   15. VC Column Inner Template
-//   16. VC Column Template
-//   17. VC Coulmn Row Inner Template
-//   18. VC Row template
+//   01. Conditional Theme Integration
+//   02. Add X Legacy Integration Checkbox
+//   03. Provision Frontend Editor
+//   04. Map Shortcodes
+//   05. Update Existing Elements
+//   06. Incremental ID Counter for Templates
+//   07. VC Column Inner Template
+//   08. VC Column Template
+//   09. VC Row Inner Template
+//   10. VC Row template
 // =============================================================================
 
-// Legacy Update
-// =============================================================================
-
-function x_visual_composer_legacy_update() {
-  if ( defined( 'WPB_VC_VERSION' ) && version_compare( WPB_VC_VERSION, '4.3.5', '<' ) ) {
-    do_action( 'vc_before_init' );
-  }
-}
-
-add_action( 'admin_init', 'x_visual_composer_legacy_update' );
-
-
-function x_visual_composer_filter_removals() {
-  remove_action( 'wp_head', array( visual_composer(), 'addMetaData' ) );
-  remove_filter( 'upgrader_pre_download', array( vc_updater(), 'preUpgradeFilter' ) );
-}
-
-add_action( 'vc_after_init', 'x_visual_composer_filter_removals' );
-
-
-
-// Check if Visual Composer Integration is On
+// Conditional Theme Integration
 // =============================================================================
 
 function x_visual_composer_integration_on() {
-  return get_option( 'wpb_js_x_integration', true );
+  return get_option( 'wpb_js_x_integration', false );
 }
 
-
-
-// Set Visual Composer
-// =============================================================================
-
-//
-// Disables automatic updates. Optionally removes tabs such as  "Design Options"
-// from the Visual Composer Settings page.
-//
-
 function x_visual_composer_set_as_theme() {
-  if ( get_option( 'wpb_js_x_hide_design_options', true ) && x_visual_composer_integration_on() ) {
+  if ( x_visual_composer_integration_on() ) {
     vc_set_as_theme( true );
   } else {
     add_action( 'admin_notices', 'x_visual_composer_hide_update_notice', -99 );
@@ -78,217 +39,47 @@ function x_visual_composer_set_as_theme() {
 
 add_action( 'vc_before_init', 'x_visual_composer_set_as_theme' );
 
-
 function x_visual_composer_hide_update_notice() {
   remove_action( 'admin_notices', array( vc_license(), 'adminNoticeLicenseActivation' ) );
 }
 
-
-
-// Add Visual Composer Options
-// =============================================================================
-
-//
-// Add "X Integration" tab.
-//
-
-function x_visual_composer_add_options_tab($tabs) {
-  $tabs['x-integration'] = 'X Integration';
-  return $tabs;
+function x_visual_composer_filter_removals() {
+  // Note to reviewer: This remove_filter call disabled VC automatic updates because we provide those
+  // updates directly so the buyer doesn't need to purchase the plugin to get automatic updates.
+  remove_filter( 'upgrader_pre_download', array( vc_updater(), 'preUpgradeFilter' ) );
 }
 
-add_filter( 'vc_settings_tabs', 'x_visual_composer_add_options_tab');
+add_action( 'vc_after_init', 'x_visual_composer_filter_removals' );
 
+
+
+// Add X Legacy Integration Checkbox
+// =============================================================================
 
 //
 // Add setting fields.
 //
 
 function x_visual_composer_add_setting_fields( $vc_settings ) {
-
-  $vc_settings->addSection( 'x-integration', null, 'x_visual_composer_options_description' );
-
-  $vc_settings->addField( 'x-integration', __( 'X Integration', '__x__' ), 'x_integration', 'x_visual_composer_sanitize_checkbox', 'x_visual_composer_x_integration' );
-
-  if ( x_visual_composer_integration_on() ) {
-    $vc_settings->addField( 'x-integration', __( 'Hide Teaser Metabox', '__x__' ),      'x_hide_teaser_mb',           'x_visual_composer_sanitize_checkbox', 'x_visual_composer_hide_teaser_mb_callback' );
-    $vc_settings->addField( 'x-integration', __( 'Remove Native Elements', '__x__' ),   'x_remove_native_elements',   'x_visual_composer_sanitize_checkbox', 'x_visual_composer_remove_native_elements_callback' );
-    $vc_settings->addField( 'x-integration', __( 'Remove Default Templates', '__x__' ), 'x_remove_default_templates', 'x_visual_composer_sanitize_checkbox', 'x_visual_composer_remove_default_templates_callback' );
-    $vc_settings->addField( 'x-integration', __( 'Remove Frontend Editor', '__x__' ),   'x_disable_frontend_editor',  'x_visual_composer_sanitize_checkbox', 'x_visual_composer_disable_frontend_editor_callback' );
-    $vc_settings->addField( 'x-integration', __( 'Hide Design Options', '__x__' ),      'x_hide_design_options',      'x_visual_composer_sanitize_checkbox', 'x_visual_composer_hide_design_options_callback' );
-  }
-
+  $vc_settings->addField( 'general', __( 'Legacy X Integration', '__x__' ), 'x_integration', 'sanitize_key', 'x_visual_composer_x_integration' );
 }
 
-add_action( 'vc_settings_tab-x-integration', 'x_visual_composer_add_setting_fields' );
-
-
-//
-// Checkbox sanitization callback.
-//
-
-function x_visual_composer_sanitize_checkbox( $value ) {
-  return $value;
-}
-
-
-//
-// Settings tab description callback.
-//
-
-function x_visual_composer_options_description( $tab ) {
-  if ( $tab['id'] == 'wpb_js_composer_settings_x-integration' ) : ?>
-
-    <div class="tab_intro">
-      <p class="description">
-        <?php _e( 'Toggle certain Visual Composer features for better integration with X.', '__x__' ) ?>
-      </p>
-    </div>
-
-  <?php endif;
-}
-
-
-//
-// Reusable checkbox function.
-//
-
-function x_visual_composer_options_checkbox( $setting_id, $default, $label, $description ) {
-  $checked = ( $checked = get_option( 'wpb_js_' . $setting_id, $default ) ) ? $checked : false; ?>
+function x_visual_composer_x_integration() {
+  $checked = ( $checked = get_option( 'wpb_js_x_integration', false ) ) ? $checked : false; ?>
 
   <label>
-    <input type="checkbox"<?php echo( $checked ? ' checked="checked";' : '' ) ?> value="1" id="wpb_js_<?php echo $setting_id ?>" name="<?php echo 'wpb_js_' . $setting_id ?>">
-    <?php echo $label; ?>
+    <input type="checkbox"<?php echo( $checked ? ' checked="checked";' : '' ) ?> value="1" id="wpb_js_x_integration" name="wpb_js_x_integration">
+    <?php _e( 'Enable', '__x__' ); ?>
   </label>
   <br/>
-  <p class="description indicator-hint"><?php echo $description; ?></p>
+  <p class="description indicator-hint">
+    <?php _e( 'Activate legacy X integration. Keep this enabled if you built your site with Visual Composer and X shortcodes. This allows the theme to overwrite the column and row shortcodes. Turning this off will allow the plugin to operate natively without any changes from the theme.', '__x__' ); ?>
+  </p>
 
   <?php
 }
 
-
-//
-// Register checkbox settings.
-//
-
-function x_visual_composer_x_integration() {
-  return x_visual_composer_options_checkbox( 'x_integration', true, __( 'Enable', '__x__' ), __( 'Activate X integration with Visual Composer. This allows for the theme to overwrite certain Visual Composer shortcodes and map in custom shortcodes. Turning this off will make Visual Composer oparate natively without any overwriting being done.', '__x__' ) );
-}
-
-function x_visual_composer_hide_teaser_mb_callback() {
-  return x_visual_composer_options_checkbox( 'x_hide_teaser_mb', true, __( 'Enable', '__x__' ), __( 'Removes an uncommonly used metabox from the Wordpress Post editor.', '__x__' ) );
-}
-
-function x_visual_composer_remove_native_elements_callback() {
-  return x_visual_composer_options_checkbox( 'x_remove_native_elements', true, __( 'Enable', '__x__' ), __( 'Ensures only X styled elements will be used on this site.', '__x__' ) );
-}
-
-function x_visual_composer_remove_default_templates_callback() {
-  return x_visual_composer_options_checkbox( 'x_remove_default_templates', true, __( 'Enable', '__x__' ), __( 'Recommend if you are hiding native Visual Composer elements.', '__x__' ) );
-}
-
-function x_visual_composer_disable_frontend_editor_callback() {
-  return x_visual_composer_options_checkbox( 'x_disable_frontend_editor', false, __( 'Enable', '__x__' ), __( 'Hides access to the Frontend editor.', '__x__' ) );
-}
-
-function x_visual_composer_hide_design_options_callback() {
-  return x_visual_composer_options_checkbox( 'x_hide_design_options', true, __( 'Enable', '__x__' ), __( 'Hides Visual Composer options for which X already provides functionality.', '__x__' ) );
-}
-
-// Remove Default Shortcodes
-// =============================================================================
-
-if ( ! function_exists( 'x_visual_composer_remove_default_shortcodes' ) && x_visual_composer_integration_on() ) {
-
-  function x_visual_composer_remove_default_shortcodes() {
-
-    vc_remove_element( 'vc_column_text' );
-    vc_remove_element( 'vc_separator' );
-    vc_remove_element( 'vc_text_separator' );
-    vc_remove_element( 'vc_message' );
-    vc_remove_element( 'vc_facebook' );
-    vc_remove_element( 'vc_tweetmeme' );
-    vc_remove_element( 'vc_googleplus' );
-    vc_remove_element( 'vc_pinterest' );
-    vc_remove_element( 'vc_toggle' );
-    vc_remove_element( 'vc_single_image' );
-    vc_remove_element( 'vc_gallery' );
-    vc_remove_element( 'vc_images_carousel' );
-    vc_remove_element( 'vc_tabs' );
-    vc_remove_element( 'vc_tour' );
-    vc_remove_element( 'vc_accordion' );
-    vc_remove_element( 'vc_posts_grid' );
-    vc_remove_element( 'vc_carousel' );
-    vc_remove_element( 'vc_posts_slider' );
-    // vc_remove_element( 'vc_widget_sidebar' );
-    vc_remove_element( 'vc_button' );
-    vc_remove_element( 'vc_cta_button' );
-    vc_remove_element( 'vc_video' );
-    vc_remove_element( 'vc_gmaps' );
-    // vc_remove_element( 'vc_raw_html' );
-    // vc_remove_element( 'vc_raw_js' );
-    vc_remove_element( 'vc_flickr' );
-    vc_remove_element( 'vc_progress_bar' );
-    vc_remove_element( 'vc_pie' );
-    // vc_remove_element( 'contact-form-7' );
-    // vc_remove_element( 'rev_slider_vc' );
-    vc_remove_element( 'vc_wp_search' );
-    vc_remove_element( 'vc_wp_meta' );
-    vc_remove_element( 'vc_wp_recentcomments' );
-    vc_remove_element( 'vc_wp_calendar' );
-    vc_remove_element( 'vc_wp_pages' );
-    vc_remove_element( 'vc_wp_tagcloud' );
-    vc_remove_element( 'vc_wp_custommenu' );
-    vc_remove_element( 'vc_wp_text' );
-    vc_remove_element( 'vc_wp_posts' );
-    vc_remove_element( 'vc_wp_links' );
-    vc_remove_element( 'vc_wp_categories' );
-    vc_remove_element( 'vc_wp_archives' );
-    vc_remove_element( 'vc_wp_rss' );
-    vc_remove_element( 'vc_button2' );
-    vc_remove_element( 'vc_cta_button2' );
-    vc_remove_element( 'vc_custom_heading' );
-    vc_remove_element( 'vc_empty_space' );
-
-  }
-
-  if ( get_option( 'wpb_js_x_remove_native_elements', true ) ) {
-    add_action( 'vc_before_init', 'x_visual_composer_remove_default_shortcodes' );
-  }
-
-}
-
-
-
-// Remove Default Templates
-// =============================================================================
-
-if ( get_option( 'wpb_js_x_remove_default_templates', true ) && x_visual_composer_integration_on() ) {
-  add_filter( 'vc_load_default_templates', '__return_empty_array', 1 );
-}
-
-
-
-// Remove Meta Boxes
-// =============================================================================
-
-if ( ! function_exists( 'x_visual_composer_remove_meta_boxes' ) && x_visual_composer_integration_on() ) {
-
-  function x_visual_composer_remove_meta_boxes() {
-
-    if ( is_admin() ) {
-      foreach ( get_post_types() as $post_type ) {
-        remove_meta_box( 'vc_teaser',  $post_type, 'side' );
-      }
-    }
-
-  }
-
-  if ( get_option( 'wpb_js_x_hide_teaser_mb', true ) ) {
-    add_action( 'do_meta_boxes', 'x_visual_composer_remove_meta_boxes' );
-  }
-
-}
+add_action( 'vc_settings_tab-general', 'x_visual_composer_add_setting_fields' );
 
 
 
@@ -5111,39 +4902,6 @@ if ( ! function_exists( 'x_visual_composer_templates_id_increment' ) ) {
 }
 
 
-
-// Overwrite No Content Message
-// =============================================================================
-
-if ( ! function_exists( 'x_visual_composer_overwrite_no_content_message' ) && x_visual_composer_integration_on() ) {
-
-  function x_visual_composer_overwrite_no_content_message() {
-    $message = __( 'Add Some Using the Button Below!', '__x__' );
-    $output  = "<script>jQuery(function($){ $('#vc_no-content-helper h3').html('{$message}'); $('#vc_no-content-helper #vc_no-content-add-text-block').remove(); });</script>";
-    echo $output;
-  }
-
-  add_action( 'admin_head-post.php',     'x_visual_composer_overwrite_no_content_message', 999 );
-  add_action( 'admin_head-post-new.php', 'x_visual_composer_overwrite_no_content_message', 999 );
-
-}
-
-
-
-// Overwrite Layout Error Message
-// =============================================================================
-
-if ( ! function_exists( 'x_visual_composer_overwrite_layout_error_message' ) && x_visual_composer_integration_on() ) {
-
-  function x_visual_composer_overwrite_layout_error_message() {
-    $message = '<div class="messagebox_text"><p>' . __( 'The layout you are trying to use on this page does not conform to Visual Composer&#39;s layout guidelines. For more information on this situation and how to avoid this error going forward, please see our <a href="http://theme.co/x/member/kb/solutions-to-potential-setup-issues-visual-composer/" target="_blank">Knowledge Base article</a> in the X Member Area.', '__x__' ) . '</p></div>';
-    $output  = "<script>jQuery(function($){ $('#wpb-convert-message').html('{$message}'); });</script>";
-    echo $output;
-  }
-
-  add_action( 'admin_head-post.php', 'x_visual_composer_overwrite_layout_error_message', 999 );
-
-}
 
 if ( x_visual_composer_integration_on() ) {
 

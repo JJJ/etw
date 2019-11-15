@@ -36,7 +36,7 @@ function x_shortcode_image( $atts ) {
   $link_class       = ( $link             == 'true'  ) ? ' x-img-link' : '';
   $href             = ( $href             != ''      ) ? $href : $src;
   $title            = ( $title            != ''      ) ? 'title="' . $title . '"' : '';
-  $target           = ( $target           == 'blank' ) ? 'target="_blank"' : '';
+  $target           = ( $target           == 'blank' ) ? cs_output_target_blank( false ) : '';
   $lightbox_thumb   = ( $lightbox_thumb   != ''      ) ? $lightbox_thumb : $src;
   $lightbox_video   = ( $lightbox_video   == 'true'  ) ? ', width: 1080, height: 608' : '';
   $lightbox_caption = ( $lightbox_caption != ''      ) ? 'data-caption="' . $lightbox_caption . '"' : '';

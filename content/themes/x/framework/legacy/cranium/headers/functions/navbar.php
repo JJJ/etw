@@ -84,7 +84,7 @@ if ( ! function_exists( 'x_output_primary_navigation' ) ) :
 
     } else {
 
-      echo '<ul class="x-nav"><li><a href="' . home_url( '/' ) . 'wp-admin/nav-menus.php">Assign a Menu</a></li></ul>';
+      echo '<ul class="x-nav"><li><a href="' . home_url( '/' ) . 'wp-admin/nav-menus.php">' . __( 'Assign a Menu', '__x__' ) . '</a></li></ul>';
 
     }
 
@@ -141,6 +141,7 @@ if ( ! function_exists( 'x_navbar_searchform_overlay' ) ) :
             <form method="get" id="searchform" class="form-search center-text" action="<?php echo esc_url( home_url( '/' ) ); ?>">
               <label for="s" class="cfc-h-tx tt-upper"><?php _e( 'Type and Press &ldquo;enter&rdquo; to Search', '__x__' ); ?></label>
               <input type="text" id="s" class="search-query cfc-h-tx center-text tt-upper" name="s">
+               <?php do_action( 'wpml_add_language_form_field' ) ?>
             </form>
           </div>
         </div>

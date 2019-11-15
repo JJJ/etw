@@ -84,7 +84,7 @@ class Cornerstone_Footer {
 
   public function save() {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! CS()->component('App_Permissions')->user_can('footers') ) {
       throw new Exception( 'Unauthorized' );
     }
 
@@ -113,7 +113,9 @@ class Cornerstone_Footer {
       $args['ID'] = $this->id;
     }
 
+    do_action( 'cs_before_save_json_content' );
     $id = wp_insert_post( $args );
+    do_action( 'cs_after_save_json_content' );
 
     if ( 0 === $id || is_wp_error( $id ) ) {
       throw new Exception( "Unable to update footer: $id" );
@@ -173,7 +175,7 @@ class Cornerstone_Footer {
   }
 
   public function set_title( $title ) {
-    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.entity-footer') ) );
+    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.footers.entity') ) );
   }
 
   public function set_settings( $settings ) {
@@ -186,7 +188,7 @@ class Cornerstone_Footer {
 
   public function delete() {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! CS()->component('App_Permissions')->user_can('footers.delete') ) {
       throw new Exception( 'Unauthorized' );
     }
 

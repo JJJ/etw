@@ -24,7 +24,7 @@ $is_rtl = is_rtl();
 
     var $container = $('#x-iso-container');
 
-    $container.before('<span id="x-isotope-loading"><span>');
+    $container.before('<span id="x-isotope-loading" class="x-loading"><span>');
 
     $(window).on('load', function() {
       $container.xIsotope({

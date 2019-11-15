@@ -17,7 +17,7 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 
 		add_action( 'admin_init', array( $this, 'start' ) );
 		add_action( 'cornerstone_load_builder', array( $this, 'start' ) );
-    add_action( 'wp_ajax_csg_list_shortcodes', array( &$this, 'modelEndpoint' ) );
+    add_action( 'wp_ajax_csg_list_shortcodes', array( $this, 'modelEndpoint' ) );
 
   }
 
@@ -30,9 +30,11 @@ class Cornerstone_Shortcode_Generator extends Cornerstone_Plugin_Component {
 
   public function enqueue( ) {
 
-    wp_enqueue_style( 'cs-generator-css' , CS()->css( 'admin/generator' ), array(), CS()->version() );
+		$generator_style_asset = CS()->css( 'admin/generator' );
+    wp_enqueue_style( 'cs-generator-css' , $generator_style_asset['url'], array(), $generator_style_asset['version'] );
 
-    wp_register_script( 'cs-generator', CS()->js( 'admin/generator' ), array( 'backbone', 'jquery-ui-core', 'jquery-ui-accordion' ), CS()->version(), true );
+		$generator_script_asset = CS()->js( 'admin/generator' );
+    wp_register_script( 'cs-generator', $generator_script_asset['url'], array( 'backbone', 'jquery-ui-core', 'jquery-ui-accordion' ), $generator_script_asset['version'], true );
     wp_localize_script( 'cs-generator', 'csgData', $this->getData() ) ;
     wp_enqueue_script( 'cs-generator' );
 

@@ -89,17 +89,11 @@ function x_is_validated() {
 
 //
 // Accepts a string and replaces any instances of "http://" and "https://" with
-// the protocol relative "//" instead. Only applied when the host matches.
+// the protocol relative "//" instead.
 //
 
 function x_make_protocol_relative( $url ) {
-
-  if ( false !== strpos( $url, $_SERVER['HTTP_HOST'] ) ) {
-    $url = str_replace( array( 'http://', 'https://' ), '//', $url );
-  }
-
-  return $url;
-
+  return str_replace( 'https:', '', set_url_scheme( $url, 'https' ) );
 }
 
 
@@ -574,6 +568,52 @@ function x_i18n( $namespace, $key ) {
 }
 
 
+/**
+ * Add 'noopener noreferrer' to a string if it doesn't exist yet
+ */
+function x_targeted_link_rel( $rel = '', $is_target_blank = true ) {
+
+  if ( $is_target_blank && apply_filters( 'tco_targeted_link_rel', ! is_ssl() ) ) {
+
+		$more = apply_filters( 'tco_targeted_link_rel', array( 'noopener', 'noreferrer' ) );
+
+		foreach ($more as $str ) {
+			if ( false === strpos($rel, $str ) ) {
+				$rel .= " $str";
+			}
+		}
+
+	}
+
+  return ltrim($rel);
+
+}
+
+function x_output_target_blank($echo = true) {
+	$output = 'target="blank" rel="' . x_targeted_link_rel() .'"';
+	if ($echo) {
+		echo $output;
+	}
+	return $output;
+}
+
+
+
+function cs_get_versioned_asset( $url ) {
+  if ( file_exists($url) ) {
+    return array(
+      'url' => $url,
+      'version' => CS()->version()
+    );
+  }
+
+
+  return array(
+    'url' => $url,
+    'version' => CS()->version()
+  );
+
+}
 
 // Deprecated
 // =============================================================================
@@ -593,3 +633,5 @@ if ( ! function_exists( 'x_footer_widget_areas_count' ) ) :
 
   }
 endif;
+
+

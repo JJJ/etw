@@ -8,6 +8,9 @@ return array(
 
 	'elements' => array(
 		'type' => 'sortable',
+		'ui' => array(
+			'title' => __( 'Icons', 'cornerstone' ),
+		),
 		'options' => array(
 			'element' => 'icon-list-item',
 			'floor'   => 1,

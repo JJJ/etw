@@ -15,13 +15,14 @@
 // Include Partial CSS
 // =============================================================================
 
-$anchor_selector = '.x-anchor-toggle';
-$anchor_k_pre    = 'toggle';
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => '.x-anchor-toggle',
+  'key_prefix'    => 'toggle'
+) );
 
-include( '_anchor-css.php' );
-include( '_dropdown-css.php' );
+echo cs_get_partial_style( 'dropdown' );
 
-$anchor_selector = '.x-anchor-menu-item';
-$anchor_k_pre    = '';
-
-include( '_anchor-css.php' );
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => '.x-anchor-menu-item',
+  'key_prefix'    => ''
+) );

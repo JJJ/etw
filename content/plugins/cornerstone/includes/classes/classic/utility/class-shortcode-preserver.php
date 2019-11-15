@@ -53,13 +53,12 @@ class Cornerstone_Shortcode_Preserver {
 	 */
 	public function attach_hooks( $hook ) {
 
-		if ( 'the_content' !== $hook ) {
-			$this->sandbox_hooks( $hook );
-		}
-
 		add_filter( $hook, array( $this, 'preserve_shortcodes' ), 9 );
 		add_filter( $hook, array( $this, 'restore_shortcodes' ), 11 );
 
+		if ( 'the_content' !== $hook ) {
+			$this->sandbox_hooks( $hook );
+		}
 	}
 
 	/**
@@ -69,13 +68,14 @@ class Cornerstone_Shortcode_Preserver {
 	 * @return none
 	 */
 	public function sandbox_hooks( $hook ) {
-
+		
 		add_filter( $hook, array( $GLOBALS['wp_embed'], 'run_shortcode' ), 8 );
 		add_filter( $hook, array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
 		add_filter( $hook, 'capital_P_dangit', 11 );
 		add_filter( $hook, 'wptexturize' );
 		add_filter( $hook, 'convert_smilies' );
 		add_filter( $hook, 'wpautop' );
+		add_filter( $hook, 'cs_noemptyp' );
 		add_filter( $hook, 'shortcode_unautop' );
 		add_filter( $hook, 'prepend_attachment' );
 
@@ -134,7 +134,7 @@ class Cornerstone_Shortcode_Preserver {
 
 		}
 
-		return do_shortcode( $content, true );
+		return do_shortcode(shortcode_unautop(cs_noemptyp($content)));
 
 	}
 

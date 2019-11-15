@@ -35,7 +35,7 @@ class X_Validation_Demo_Content {
 
     $extra = '';
 
-    if ( ! is_plugin_active( 'revslider/revslider.php' ) ) {
+    if ( ! X_REVOLUTION_SLIDER_IS_ACTIVE ) {
       $extra = __( 'Note: Revolution Slider is not active. Activate it from the plugins page, as Expanded Demos use it to import sliders.', '__x__' );
       $extra .= '<br/><br/>';
     }
@@ -66,7 +66,7 @@ class X_Validation_Demo_Content {
     // Get Remote demo list
     //
 
-    $request = wp_remote_get( 'http://themeco-demo-content.s3.amazonaws.com/x/' . apply_filters( 'x_demo_listing_index', 'index' ) . '.json' );
+    $request = wp_remote_get( 'https://themeco-demo-content.s3.amazonaws.com/x/' . apply_filters( 'x_demo_listing_index', 'index-v2' ) . '.json' );
 
 
     //

@@ -38,8 +38,10 @@ if ( isset( $id ) && ! empty( $id ) ) {
 $section_top_separator_content = NULL;
 
 if ( $section_top_separator === true ) {
-  $data_section_top_separator    = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'section_top_separator' => 'separator' ) ) );
-  $section_top_separator_content = x_get_view( 'partials', 'separator', '', $data_section_top_separator, false );
+  $section_top_separator_content = cs_get_partial_view(
+    'separator',
+    cs_extract( $_view_data, array( 'section_top_separator' => 'separator' ) )
+  );
 }
 
 
@@ -49,8 +51,10 @@ if ( $section_top_separator === true ) {
 $section_bottom_separator_content = NULL;
 
 if ( $section_bottom_separator === true ) {
-  $data_section_bottom_separator    = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'section_bottom_separator' => 'separator' ) ) );
-  $section_bottom_separator_content = x_get_view( 'partials', 'separator', '', $data_section_bottom_separator, false );
+  $section_bottom_separator_content = cs_get_partial_view(
+    'separator',
+    cs_extract( $_view_data, array( 'section_bottom_separator' => 'separator' ) )
+  );
 }
 
 
@@ -60,14 +64,14 @@ if ( $section_bottom_separator === true ) {
 $section_bg = NULL;
 
 if ( $section_bg_advanced === true ) {
-  $data_bg    = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'bg' => '' ) ) );
-  $section_bg = x_get_view( 'partials', 'bg', '', $data_bg, false );
+  $section_bg = cs_get_partial_view( 'bg', cs_extract( $_view_data, array( 'bg' => '' ) ) );
 }
 
 
 // Output
 // ------
 
+// var_dump($_view_data);
 ?>
 
 <div <?php echo x_atts( $atts ); ?>>

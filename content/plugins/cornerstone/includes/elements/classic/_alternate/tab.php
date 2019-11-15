@@ -11,7 +11,8 @@ class CS_Tab extends Cornerstone_Element_Base {
       'supports'    => array( 'class' ),
       'render'      => false,
       'delegate'    => true,
-      'protected_keys' => array( 'title', 'content' )
+      'protected_keys' => array( 'title', 'content' ),
+      'label_key' => 'title'
     );
   }
 

@@ -84,7 +84,7 @@ class Cornerstone_Header {
 
   public function save() {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! CS()->component('App_Permissions')->user_can('headers') ) {
       throw new Exception( 'Unauthorized' );
     }
 
@@ -112,7 +112,9 @@ class Cornerstone_Header {
       $args['ID'] = $this->id;
     }
 
+    do_action( 'cs_before_save_json_content' );
     $id = wp_insert_post( $args );
+    do_action( 'cs_after_save_json_content' );
 
     if ( 0 === $id || is_wp_error( $id ) ) {
       throw new Exception( "Unable to update header: $id" );
@@ -156,7 +158,7 @@ class Cornerstone_Header {
   }
 
   public function set_title( $title ) {
-    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.entity-header') ) );
+    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.headers.entity') ) );
   }
 
   public function set_settings( $settings ) {
@@ -169,7 +171,7 @@ class Cornerstone_Header {
 
   public function delete() {
 
-    if ( ! current_user_can( 'manage_options' ) ) {
+    if ( ! CS()->component('App_Permissions')->user_can('headers.delete') ) {
       throw new Exception( 'Unauthorized' );
     }
 

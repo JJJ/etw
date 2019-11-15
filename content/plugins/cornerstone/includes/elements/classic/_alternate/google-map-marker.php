@@ -10,7 +10,8 @@ class CS_Google_Map_Marker extends Cornerstone_Element_Base {
       'description' => __( 'Google Map Marker description.', 'cornerstone' ),
       'render'      => false,
       'delegate'    => true,
-      'protected_keys' => array( 'title', 'lat', 'lng', 'info', 'image' )
+      'protected_keys' => array( 'title', 'lat', 'lng', 'info', 'image' ),
+      'label_key' => 'title'
     );
   }
 

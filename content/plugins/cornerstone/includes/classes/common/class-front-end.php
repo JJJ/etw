@@ -38,6 +38,9 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 		add_action('x_section', array( $this, 'output_layout_content') );
 		add_action('x_row', array( $this, 'output_layout_content') );
 		add_action('x_column', array( $this, 'output_layout_content') );
+		add_action('x_layout_row', array( $this, 'output_layout_content') );
+    add_action('x_layout_column', array( $this, 'output_layout_content') );
+    add_action('x_layout_cell', array( $this, 'output_layout_content') );
 
     add_action('cs_before_preview_frame', array( $this, 'preview_frame_setup' ) );
     add_action('cs_element_rendering', array( $this, 'register_scripts') );
@@ -63,11 +66,13 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 	public function styles() {
 
 		if ( apply_filters( 'cornerstone_enqueue_styles', true ) ) {
-			wp_enqueue_style( 'cornerstone-shortcodes', $this->plugin->css( 'site/style' ), array(), $this->plugin->version() );
+			$style_asset = $this->plugin->css( 'site/style' );
+			wp_enqueue_style( 'cornerstone-shortcodes', $style_asset['url'], array(), $style_asset['version'] );
 		}
 
 		if ( apply_filters( 'cornerstone_legacy_font_classes', false ) ) {
-			wp_enqueue_style( 'x-fa-icon-classes', $this->plugin->css( 'site/fa-icon-classes' ), array(), $this->plugin->version() );
+			$fa_icons_asset = $this->plugin->css( 'site/fa-icon-classes' );
+			wp_enqueue_style( 'x-fa-icon-classes', $fa_icons_asset['url'], array(), $fa_icons_asset['version'] );
 		}
 
 	}
@@ -84,8 +89,10 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 	}
 
   public function register_scripts() {
-    wp_register_script( 'cornerstone-site-head', $this->plugin->js( 'site/cs-head' ), array( 'jquery' ), $this->plugin->version(), false );
-  	wp_register_script( 'cornerstone-site-body', $this->plugin->js( 'site/cs-body' ), array( 'cornerstone-site-head' ), $this->plugin->version(), true );
+		$head_script_asset = CS()->js( 'site/cs-head' );
+		$body_script_asset = CS()->js( 'site/cs-body' );
+    wp_register_script( 'cornerstone-site-head', $head_script_asset['url'], array( 'jquery' ), $head_script_asset['version'], false );
+  	wp_register_script( 'cornerstone-site-body', $body_script_asset['url'], array( 'cornerstone-site-head' ), $body_script_asset['version'], true );
   	wp_register_script( 'vendor-ilightbox',      $this->url( 'assets/dist/js/site/ilightbox.js' ), array( 'jquery' ), $this->plugin->version(), true );
   }
 
@@ -124,6 +131,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 
 		ob_start();
 
+		$styling = $this->plugin->component('Styling');
 		if ( apply_filters( 'cornerstone_customizer_output', true ) ) {
 
 			echo '<style id="cornerstone-generated-css">';
@@ -131,25 +139,26 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 			$data = array_merge( $this->plugin->settings(), $this->plugin->common()->theme_integration_options() );
     	$this->view( 'frontend/styles', true, $data, true );
 
-      echo $this->plugin->component('Styling')->get_generated_styles();
+      echo $styling->get_generated_styles();
     	do_action( 'cornerstone_head_css' );
 
 	  	echo '</style>';
 
-		$custom_css = get_option( 'cs_v1_custom_css', '' );
+			$custom_css = $styling->post_process( get_option( 'cs_v1_custom_css', '' ) );
 			if ( $custom_css ) {
-				echo '<style id="cornerstone-custom-css">' . $custom_css . '</style>';
+				echo "<style id=\"cornerstone-custom-css\">$custom_css</style>";
 			}
 
 		}
 
-
-
 		if ( is_singular() && apply_filters( '_cornerstone_custom_css', isset( $this->postSettings['custom_css'] ) ) ) {
-			echo '<style id="cornerstone-custom-page-css">';
-				echo $this->postSettings['custom_css'];
-				do_action( 'cornerstone_custom_page_css' );
-	  	echo '</style>';
+			ob_start();
+			echo $styling->post_process( $this->postSettings['custom_css'] );
+			do_action( 'cornerstone_custom_page_css' );
+			$page_style = ob_get_clean();
+			if ( $page_style ) {
+				echo "<style id=\"cornerstone-custom-page-css\">$page_style</style>";
+			}
 		}
 
 	  $css = ob_get_contents(); ob_end_clean();
@@ -213,6 +222,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
 	 */
 	public function cs_content_before_shortcodes( $content ) {
 
+
 		if ( false !== strpos( $content, '[cs_content]' ) && false !== strpos( $content, '[/cs_content]' ) ) {
 			$content = cs_noemptyp( $content );
 
@@ -237,7 +247,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
       ob_start();
       do_action( 'cs_the_content_late' );
       $late_content = ob_get_clean();
-      $content = apply_filters( 'cs_content_late', str_replace( '<!--cs-content-end-->', $late_content, $content ) );
+			$content = apply_filters( 'cs_content_late', str_replace( '<!--cs-content-end-->', $late_content, $content ) );
     }
     return $content;
   }
@@ -261,7 +271,7 @@ class Cornerstone_Front_End extends Cornerstone_Plugin_Component {
       $attrs['id'] = 'cs-content';
     }
 
-    $content =  do_shortcode( $content );
+    $content = apply_filters( 'cs_content_shortcode_output', do_shortcode( $content ) );
 
     do_action('cs_content_shortcode', $_p );
 

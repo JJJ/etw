@@ -33,6 +33,7 @@ switch ( $video_type ) {
     // Variable Markup
     // ---------------
 
+    $video_is_bg = isset( $video_is_bg ) ? $video_is_bg : false;
     $mejs_bg_start = ( $video_is_bg ) ? '<script type="text/template">' : '';
     $mejs_bg_end   = ( $video_is_bg ) ? '</script>' : '';
 
@@ -94,6 +95,7 @@ switch ( $video_type ) {
 
       $mejs_classes = array( 'x-mejs' );
 
+      if ( $video_is_bg ) $mejs_classes[] = 'transparent';
       if ( $mejs_advanced_controls ) $mejs_classes[] = 'advanced-controls';
 
       GLOBAL $wp_version;

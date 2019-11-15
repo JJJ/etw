@@ -101,7 +101,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
   if ( $front_page_is_page ) {
 
     wp_update_nav_menu_item( $menu_id, 0, array(
-      'menu-item-title'     =>  __( 'Home', '__x__' ),
+      'menu-item-title'     => 'Home',
       'menu-item-object-id' => x_demo_content_home_page(),
       'menu-item-object'    => 'page',
       'menu-item-type'      => 'post_type',
@@ -111,7 +111,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
     if ( $include_posts ) {
 
       wp_update_nav_menu_item( $menu_id, 0, array(
-        'menu-item-title'     =>  __( 'Blog', '__x__' ),
+        'menu-item-title'     => 'Blog',
         'menu-item-object-id' => x_demo_content_blog_page(),
         'menu-item-object'    => 'page',
         'menu-item-type'      => 'post_type',
@@ -123,7 +123,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
     if ( $include_portfolio_items ) {
 
       wp_update_nav_menu_item( $menu_id, 0, array(
-        'menu-item-title'     =>  __( 'Portfolio', '__x__' ),
+        'menu-item-title'     => 'Portfolio',
         'menu-item-object-id' => x_demo_content_portfolio_page(),
         'menu-item-object'    => 'page',
         'menu-item-type'      => 'post_type',
@@ -140,7 +140,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
   } elseif ( $front_page_is_blog ) {
 
     wp_update_nav_menu_item( $menu_id, 0, array(
-      'menu-item-title'  =>  __( 'Home', '__x__' ),
+      'menu-item-title'  => 'Home',
       'menu-item-url'    => home_url( '/' ),
       'menu-item-status' => 'publish'
     ) );
@@ -148,7 +148,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
     if ( $include_portfolio_items ) {
 
       wp_update_nav_menu_item( $menu_id, 0, array(
-        'menu-item-title'     =>  __( 'Portfolio', '__x__' ),
+        'menu-item-title'     => 'Portfolio',
         'menu-item-object-id' => x_demo_content_portfolio_page(),
         'menu-item-object'    => 'page',
         'menu-item-type'      => 'post_type',
@@ -165,7 +165,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
   } elseif ( $front_page_is_portfolio ) {
 
     wp_update_nav_menu_item( $menu_id, 0, array(
-      'menu-item-title'     =>  __( 'Home', '__x__' ),
+      'menu-item-title'     => 'Home',
       'menu-item-object-id' => x_demo_content_portfolio_page(),
       'menu-item-object'    => 'page',
       'menu-item-type'      => 'post_type',
@@ -175,7 +175,7 @@ function x_demo_content_create_nav_menu( $menu_id, $front_page_is_page, $front_p
     if ( $include_posts ) {
 
       wp_update_nav_menu_item( $menu_id, 0, array(
-        'menu-item-title'     =>  __( 'Blog', '__x__' ),
+        'menu-item-title'     => 'Blog',
         'menu-item-object-id' => x_demo_content_blog_page(),
         'menu-item-object'    => 'page',
         'menu-item-type'      => 'post_type',

@@ -79,18 +79,17 @@ class WC_Shortcode_Checkout {
 
 		do_action( 'before_woocommerce_pay' );
 
-		wc_print_notices();
-
 		$order_id = absint( $order_id );
 
 		// Pay for existing order.
 		if ( isset( $_GET['pay_for_order'], $_GET['key'] ) && $order_id ) { // WPCS: input var ok, CSRF ok.
 			try {
-				$order_key = isset( $_GET['key'] ) ? wc_clean( wp_unslash( $_GET['key'] ) ) : ''; // WPCS: input var ok, CSRF ok.
-				$order     = wc_get_order( $order_id );
+				$order_key          = isset( $_GET['key'] ) ? wc_clean( wp_unslash( $_GET['key'] ) ) : ''; // WPCS: input var ok, CSRF ok.
+				$order              = wc_get_order( $order_id );
+				$hold_stock_minutes = (int) get_option( 'woocommerce_hold_stock_minutes', 0 );
 
 				// Order or payment link is invalid.
-				if ( ! $order || $order->get_id() !== $order_id || $order->get_order_key() !== $order_key ) {
+				if ( ! $order || $order->get_id() !== $order_id || ! hash_equals( $order->get_order_key(), $order_key ) ) {
 					throw new Exception( __( 'Sorry, this order is invalid and cannot be paid for.', 'woocommerce' ) );
 				}
 
@@ -116,14 +115,48 @@ class WC_Shortcode_Checkout {
 					throw new Exception( sprintf( __( 'This order&rsquo;s status is &ldquo;%s&rdquo;&mdash;it cannot be paid for. Please contact us if you need assistance.', 'woocommerce' ), wc_get_order_status_name( $order->get_status() ) ) );
 				}
 
-				// Ensure order items are still stocked.
-				foreach ( $order->get_items() as $item_key => $item ) {
-					if ( $item && is_callable( array( $item, 'get_product' ) ) ) {
-						$product = $item->get_product();
+				// Ensure order items are still stocked if paying for a failed order. Pending orders do not need this check because stock is held.
+				if ( ! $order->has_status( wc_get_is_pending_statuses() ) ) {
+					$quantities = array();
 
-						if ( $product && ! apply_filters( 'woocommerce_pay_order_product_in_stock', $product->is_in_stock(), $product, $order ) ) {
-							/* translators: %s: product name */
-							throw new Exception( sprintf( __( 'Sorry, "%s" is no longer in stock so this order cannot be paid for. We apologize for any inconvenience caused.', 'woocommerce' ), $product->get_name() ) );
+					foreach ( $order->get_items() as $item_key => $item ) {
+						if ( $item && is_callable( array( $item, 'get_product' ) ) ) {
+							$product = $item->get_product();
+
+							if ( ! $product ) {
+								continue;
+							}
+
+							$quantities[ $product->get_stock_managed_by_id() ] = isset( $quantities[ $product->get_stock_managed_by_id() ] ) ? $quantities[ $product->get_stock_managed_by_id() ] + $item->get_quantity() : $item->get_quantity();
+						}
+					}
+
+					foreach ( $order->get_items() as $item_key => $item ) {
+						if ( $item && is_callable( array( $item, 'get_product' ) ) ) {
+							$product = $item->get_product();
+
+							if ( ! $product ) {
+								continue;
+							}
+
+							if ( ! apply_filters( 'woocommerce_pay_order_product_in_stock', $product->is_in_stock(), $product, $order ) ) {
+								/* translators: %s: product name */
+								throw new Exception( sprintf( __( 'Sorry, "%s" is no longer in stock so this order cannot be paid for. We apologize for any inconvenience caused.', 'woocommerce' ), $product->get_name() ) );
+							}
+
+							// We only need to check products managing stock, with a limited stock qty.
+							if ( ! $product->managing_stock() || $product->backorders_allowed() ) {
+								continue;
+							}
+
+							// Check stock based on all items in the cart and consider any held stock within pending orders.
+							$held_stock     = ( $hold_stock_minutes > 0 ) ? wc_get_held_stock_quantity( $product, $order->get_id() ) : 0;
+							$required_stock = $quantities[ $product->get_stock_managed_by_id() ];
+
+							if ( $product->get_stock_quantity() < ( $held_stock + $required_stock ) ) {
+								/* translators: 1: product name 2: quantity in stock */
+								throw new Exception( sprintf( __( 'Sorry, we do not have enough "%1$s" in stock to fulfill your order (%2$s available). We apologize for any inconvenience caused.', 'woocommerce' ), $product->get_name(), wc_format_stock_quantity_for_display( $product->get_stock_quantity() - $held_stock, $product ) ) );
+							}
 						}
 					}
 				}
@@ -144,7 +177,8 @@ class WC_Shortcode_Checkout {
 				}
 
 				wc_get_template(
-					'checkout/form-pay.php', array(
+					'checkout/form-pay.php',
+					array(
 						'order'              => $order,
 						'available_gateways' => $available_gateways,
 						'order_button_text'  => apply_filters( 'woocommerce_pay_order_button_text', __( 'Pay for order', 'woocommerce' ) ),
@@ -152,7 +186,7 @@ class WC_Shortcode_Checkout {
 				);
 
 			} catch ( Exception $e ) {
-				wc_add_notice( $e->getMessage(), 'error' );
+				wc_print_notice( $e->getMessage(), 'error' );
 			}
 		} elseif ( $order_id ) {
 
@@ -160,7 +194,7 @@ class WC_Shortcode_Checkout {
 			$order_key = isset( $_GET['key'] ) ? wc_clean( wp_unslash( $_GET['key'] ) ) : ''; // WPCS: input var ok, CSRF ok.
 			$order     = wc_get_order( $order_id );
 
-			if ( $order && $order->get_id() === $order_id && $order->get_order_key() === $order_key ) {
+			if ( $order && $order->get_id() === $order_id && hash_equals( $order->get_order_key(), $order_key ) ) {
 
 				if ( $order->needs_payment() ) {
 
@@ -168,16 +202,14 @@ class WC_Shortcode_Checkout {
 
 				} else {
 					/* translators: %s: order status */
-					wc_add_notice( sprintf( __( 'This order&rsquo;s status is &ldquo;%s&rdquo;&mdash;it cannot be paid for. Please contact us if you need assistance.', 'woocommerce' ), wc_get_order_status_name( $order->get_status() ) ), 'error' );
+					wc_print_notice( sprintf( __( 'This order&rsquo;s status is &ldquo;%s&rdquo;&mdash;it cannot be paid for. Please contact us if you need assistance.', 'woocommerce' ), wc_get_order_status_name( $order->get_status() ) ), 'error' );
 				}
 			} else {
-				wc_add_notice( __( 'Sorry, this order is invalid and cannot be paid for.', 'woocommerce' ), 'error' );
+				wc_print_notice( __( 'Sorry, this order is invalid and cannot be paid for.', 'woocommerce' ), 'error' );
 			}
 		} else {
-			wc_add_notice( __( 'Invalid order.', 'woocommerce' ), 'error' );
+			wc_print_notice( __( 'Invalid order.', 'woocommerce' ), 'error' );
 		}
-
-		wc_print_notices();
 
 		do_action( 'after_woocommerce_pay' );
 	}
@@ -188,9 +220,6 @@ class WC_Shortcode_Checkout {
 	 * @param int $order_id Order ID.
 	 */
 	private static function order_received( $order_id = 0 ) {
-
-		wc_print_notices();
-
 		$order = false;
 
 		// Get the order.
@@ -199,13 +228,19 @@ class WC_Shortcode_Checkout {
 
 		if ( $order_id > 0 ) {
 			$order = wc_get_order( $order_id );
-			if ( ! $order || $order->get_order_key() !== $order_key ) {
+			if ( ! $order || ! hash_equals( $order->get_order_key(), $order_key ) ) {
 				$order = false;
 			}
 		}
 
 		// Empty awaiting payment session.
 		unset( WC()->session->order_awaiting_payment );
+
+		// In case order is created from admin, but paid by the actual customer, store the ip address of the payer.
+		if ( $order ) {
+			$order->set_customer_ip_address( WC_Geolocation::get_ip_address() );
+			$order->save();
+		}
 
 		// Empty current cart.
 		wc_empty_cart();
@@ -217,12 +252,11 @@ class WC_Shortcode_Checkout {
 	 * Show the checkout.
 	 */
 	private static function checkout() {
-
 		// Show non-cart errors.
-		wc_print_notices();
+		do_action( 'woocommerce_before_checkout_form_cart_notices' );
 
 		// Check cart has contents.
-		if ( WC()->cart->is_empty() && ! is_customize_preview() ) {
+		if ( WC()->cart->is_empty() && ! is_customize_preview() && apply_filters( 'woocommerce_checkout_redirect_empty_cart', true ) ) {
 			return;
 		}
 
@@ -238,6 +272,7 @@ class WC_Shortcode_Checkout {
 		if ( empty( $_POST ) && wc_notice_count( 'error' ) > 0 ) { // WPCS: input var ok, CSRF ok.
 
 			wc_get_template( 'checkout/cart-errors.php', array( 'checkout' => $checkout ) );
+			wc_clear_notices();
 
 		} else {
 

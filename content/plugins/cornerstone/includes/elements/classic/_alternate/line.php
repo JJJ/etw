@@ -9,7 +9,8 @@ class CS_Line extends Cornerstone_Element_Base {
       'section'     => 'structure',
       'description' => __( 'Line description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
-      'attr_keys'   => array( 'line_color' )
+      'attr_keys'   => array( 'line_color' ),
+      'safe_container' => true,
     );
   }
 
@@ -41,6 +42,7 @@ class CS_Line extends Cornerstone_Element_Base {
 		if ( isset( $atts['line_height'] ) && '' != $atts['line_height'] )
 			$inject['styles'][] = 'border-top-width: ' . $atts['line_height'] . ';';
 
+    $inject['styles'][] = 'width: 100%;';
 		return $inject;
 
   }

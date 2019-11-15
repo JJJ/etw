@@ -110,6 +110,41 @@ class Cornerstone_App_Permissions extends Cornerstone_Plugin_Component {
 
   }
 
+  public function get_user_creatable_post_types( $user = null) {
+    $types = $this->get_user_post_types( $user );
+
+    if ( is_null( $user ) ) {
+      $user = get_current_user_id();
+    }
+
+    $creatable_types = array();
+    foreach ($types as $type) {
+
+      $post_type = get_post_type_object($type);
+
+      // Post type previously saved, but plugin is no longer active
+      if ( ! $post_type ) {
+        continue;
+      }
+
+      $labels = get_post_type_labels($post_type);
+
+      if (! user_can( $user, $post_type->cap->edit_posts) ) {
+        continue;
+      }
+
+      $creatable_types[] = array(
+        'type' => $type,
+        'name' => $labels->singular_name,
+        'name_plural' => $labels->name
+      );
+    }
+
+
+    return $creatable_types;
+
+  }
+
   public function user_can_access_post_type( $post = '', $user_id = null, $wp_cap = 'edit_post' ) {
 
     if ( is_string( $post ) ) {
@@ -270,7 +305,7 @@ class Cornerstone_App_Permissions extends Cornerstone_Plugin_Component {
 
     $items = array_merge($items, array(
       'footers' => csi18n('common.title.footers'),
-      'templates' => csi18n('common.title.templates'),
+      'templates' => csi18n('common.title.template-manager'),
       'content.cs_global_block' => csi18n('common.title.global-blocks'),
       'colors' => csi18n('common.title.colors'),
       'fonts' => csi18n('common.title.fonts'),
@@ -386,9 +421,11 @@ class Cornerstone_App_Permissions extends Cornerstone_Plugin_Component {
     $disable_classic_elements = array();
 
     $disable_preferences = array(
-      'preference.advanced_mode'   => false,
-      'preference.show_wp_toolbar' => false,
-      'preference.help_text.user'  => false
+      'preference.advanced_mode.user'     => false,
+      'preference.show_wp_toolbar.user'   => false,
+      'preference.rich_text_default.user' => false,
+      'preference.help_text.user'         => false,
+      'preference.ui_theme.user'          => false,
     );
 
     $content_types = array_keys( $this->get_content_types() );

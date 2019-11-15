@@ -10,6 +10,9 @@ return array(
 
 	'content' => array(
 		'type'    => 'editor',
+		'ui' => array(
+			'title' => 'Text Content'
+		),
 		'context' => 'content',
 	),
 

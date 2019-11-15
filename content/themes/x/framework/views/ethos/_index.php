@@ -51,7 +51,7 @@ $categories = get_categories( array( 'include' => x_get_option( 'x_ethos_filtera
         endwhile;
       endif;
 
-      echo '<a href="' . get_category_link( $category->term_id ) . '" class="x-btn-filterable x-btn">See All ' . $category->name . ' Posts</a>';
+      echo '<a href="' . get_category_link( $category->term_id ) . '" class="x-btn-filterable x-btn">' . sprintf( __( 'See All %s Posts', '__x__' ), $category->name ) . '</a>';
 
     echo '</div>';
 
@@ -67,7 +67,7 @@ $categories = get_categories( array( 'include' => x_get_option( 'x_ethos_filtera
 
 <script>
 
-  jQuery('.x-index-filters').click(function(e) {
+  jQuery('.x-index-filters').on('click', function(e) {
     e.preventDefault();
     var $this = jQuery(this);
     $this.parent().find('ul').slideToggle(600, 'xEaseOutExpo');
@@ -78,7 +78,7 @@ $categories = get_categories( array( 'include' => x_get_option( 'x_ethos_filtera
     }
   });
 
-  jQuery('.x-index-filters-menu a').click(function(e) {
+  jQuery('.x-index-filters-menu a').on('click', function(e) {
     e.preventDefault();
     var $this       = jQuery(this);
     var $filter_cat = $this.data('category-id');
@@ -90,14 +90,12 @@ $categories = get_categories( array( 'include' => x_get_option( 'x_ethos_filtera
     jQuery('.x-filterable-category-group').each(function() {
       $this = jQuery(this);
       if ( $this.data('category-id') === $filter_cat ) {
-        $this.css({ 'display' : 'block', 'visibility' : 'visible' });
-        $this.find('.x-btn-filterable').css({ 'display' : 'block' });
+        $this.css({ 'display' : 'block', 'visibility' : 'visible' });        
       } else {
         $this.css({ 'display' : 'none', 'visibility' : 'hidden' });
       }
       if ( $filter_cat === 0 ) {
         $this.css({ 'display' : 'block', 'visibility' : 'visible' });
-        $this.find('.x-btn-filterable').css({ 'display' : 'block' });
       }
     });
   });

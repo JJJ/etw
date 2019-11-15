@@ -260,6 +260,9 @@ class CS_Button extends Cornerstone_Element_Base {
     $type  = ( $type  != 'global' ) ? " type=\"$type\"" : '';
     $size  = ( $type  != 'global' ) ? " size=\"$button_size\"" : '';
 
+    $href       = cs_clean_shortcode_att( $href );
+    $href_title = cs_clean_shortcode_att( $href_title );
+
     $shortcode = "[x_button{$type}{$shape}{$size} block=\"$block\" circle=\"$circle\" icon_only=\"$icon_only\" href=\"$href\" title=\"$href_title\" target=\"$href_target\" info=\"$info\" info_place=\"$info_place\" info_trigger=\"$info_trigger\" info_content=\"$info_content\"{$extra}]{$content}[/x_button]";
 
     return $shortcode;

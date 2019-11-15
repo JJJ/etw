@@ -44,7 +44,9 @@ function x_customizer_manage_theme_options_button() {
           <span class="preview-notice">
             <a href="<?php echo $manage_options_url; ?>" class="button change-theme" aria-label="<?php echo x_i18n( 'dashboard', 'customizer-theme-options-button' ); ?>"><?php echo x_i18n( 'dashboard', 'customizer-theme-options-button' ); ?></a>
           </span>
-          <button type="button" class="customize-help-toggle dashicons dashicons-editor-help" aria-expanded="false"><span class="screen-reader-text">Help</span></button>
+          <button type="button" class="customize-help-toggle dashicons dashicons-editor-help" aria-expanded="false">
+            <span class="screen-reader-text"><?php _e( 'Help', '__x__' ); ?></span>
+            </button>
         </div>
         <div class="customize-panel-description"><?php echo x_i18n( 'dashboard', 'customizer-theme-options-description' ); ?></div>
       </div>

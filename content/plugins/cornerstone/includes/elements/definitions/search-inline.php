@@ -9,17 +9,52 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Define Element
-//   02. Builder Setup
-//   03. Register Element
+//   01. Controls
+//   02. Control Groups
+//   03. Values
+//   04. Define Element
+//   05. Builder Setup
+//   06. Register Element
 // =============================================================================
+
+// Values
+// =============================================================================
+
+$values = cs_compose_values(
+  'search-inline',
+  'omega'
+);
+
+
+
+// Style
+// =============================================================================
+
+function x_element_style_search_inline() {
+  return cs_get_partial_style( 'search' );
+}
+
+
+
+// Render
+// =============================================================================
+
+function x_element_render_search_inline( $data ) {
+  return cs_get_partial_view( 'search', $data );
+}
+
+
 
 // Define Element
 // =============================================================================
 
 $data = array(
   'title'  => __( 'Search Inline', '__x__' ),
-  'values' => x_values_element_search_inline(),
+  'values' => $values,
+  'builder' => 'x_element_builder_setup_search_inline',
+  'style' => 'x_element_style_search_inline',
+  'render' => 'x_element_render_search_inline',
+  'icon' => 'native',
 );
 
 
@@ -28,11 +63,9 @@ $data = array(
 // =============================================================================
 
 function x_element_builder_setup_search_inline() {
-  return array(
-    'controls'           => x_controls_element_search_inline(),
-    'controls_adv'       => x_controls_element_search_inline( true ),
-    'control_groups'     => x_control_groups_element_search_inline(),
-    'control_groups_adv' => x_control_groups_element_search_inline( true ),
+  return cs_compose_controls(
+    cs_partial_controls( 'search', array( 'type' => 'inline' ) ),
+    cs_partial_controls( 'omega', array( 'add_toggle_hash' => true ) )
   );
 }
 
@@ -41,4 +74,4 @@ function x_element_builder_setup_search_inline() {
 // Register Module
 // =============================================================================
 
-cornerstone_register_element( 'search-inline', x_element_base( $data ) );
+cs_register_element( 'search-inline', $data );

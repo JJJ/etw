@@ -44,7 +44,7 @@ class CS_Protect extends Cornerstone_Element_Base {
   public function render( $atts ) {
 
     extract( $atts );
-    $heading = ( $heading != '' ) ? "heading=\"$heading\"": '';
+    $heading = ( $heading != '' ) ? 'heading="' . cs_clean_shortcode_att( $heading) . '"' : '';
     $shortcode = "[x_protect {$heading} {$extra}]{$content}[/x_protect]";
 
     return $shortcode;

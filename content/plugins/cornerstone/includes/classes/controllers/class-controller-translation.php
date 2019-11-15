@@ -39,7 +39,13 @@ class Cornerstone_Controller_Translation extends Cornerstone_Plugin_Component {
       $iclTranslationManagement->reset_duplicate_flag( $duplicate ); // Translate Independently
 
       if ( 0 === $duplicate ) {
+        
         return new WP_Error( 'cornerstone', 'Unable to duplicate.' );
+
+      } else {
+
+        do_action('cs_wpml_duplicate', $duplicate, $copy_from,  $data['lang'] );
+
       }
 
       return array( 'id' => $duplicate );

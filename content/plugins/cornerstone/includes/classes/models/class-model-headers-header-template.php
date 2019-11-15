@@ -52,7 +52,7 @@ class Cornerstone_Model_Headers_Header_Template extends Cornerstone_Plugin_Compo
 
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     if ( ! $this->plugin->component('App_Permissions')->user_can('headers.create_from_template') ) {
       return $this->make_response( array() );

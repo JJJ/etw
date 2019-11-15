@@ -206,26 +206,26 @@ if ( ! function_exists( 'x_scroll_top_anchor' ) ) :
 
       jQuery(document).ready(function($) {
 
-        var windowObj            = $(window);
+        var $window            = $(window);
         var body                 = $('body');
-        var bodyOffsetBottom     = windowObj.scrollBottom();             // 1
+        var bodyOffsetBottom     = $window.scrollBottom();             // 1
         var bodyHeightAdjustment = body.height() - bodyOffsetBottom;     // 2
         var bodyHeightAdjusted   = body.height() - bodyHeightAdjustment; // 3
-        var scrollTopAnchor      = $('.x-scroll-top');
+        var $scrollTopAnchor      = $('.x-scroll-top');
 
         function sizingUpdate(){
-          var bodyOffsetTop = windowObj.scrollTop();
+          var bodyOffsetTop = $window.scrollTop();
           if ( bodyOffsetTop > ( bodyHeightAdjusted * <?php echo x_get_option( 'x_footer_scroll_top_display_unit' ) / 100; ?> ) ) {
-            scrollTopAnchor.addClass('in');
+            $scrollTopAnchor.addClass('in');
           } else {
-            scrollTopAnchor.removeClass('in');
+            $scrollTopAnchor.removeClass('in');
           }
         }
 
-        windowObj.bind('scroll', sizingUpdate).resize(sizingUpdate);
+        $window.on('scroll', sizingUpdate).resize(sizingUpdate);
         sizingUpdate();
 
-        scrollTopAnchor.click(function(){
+        $scrollTopAnchor.on( 'click', function(){
           $('html, body').animate({ scrollTop: 0 }, 850, 'xEaseInOutExpo');
           return false;
         });
@@ -278,7 +278,7 @@ if ( ! function_exists( 'x_legacy_header_widget_areas' ) ) :
       </div>
     </div>
 
-    <a href="#" id="x-btn-widgetbar" class="x-btn-widgetbar collapsed" data-x-toggle="collapse-b" data-x-toggleable="x-widgetbar" aria-selected="false" aria-expanded="false" aria-controls="x-widgetbar">
+    <a href="#" id="x-btn-widgetbar" class="x-btn-widgetbar collapsed" data-x-toggle="collapse-b" data-x-toggleable="x-widgetbar" aria-expanded="false" aria-controls="x-widgetbar" role="button">
       <i class="x-icon-plus-circle" data-x-icon-s="&#xf055;"><span class="visually-hidden"><?php _e( 'Toggle the Widgetbar', '__x__' ); ?></span></i>
     </a>
 

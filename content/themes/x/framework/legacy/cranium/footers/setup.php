@@ -71,7 +71,7 @@ function x_legacy_cranium_footers_reroute_templates( $view, $directory, $file_ba
     $view_extension = $view['extension'];
     $template       = ( '' == $view_extension ) ? "{$view_base}.php" : "{$view_base}-{$view_extension}.php";
 
-    if ( file_exists( STYLESHEETPATH . '/' . $template ) ) {
+    if ( file_exists( get_stylesheet_directory() . '/' . $template ) ) {
       return $view;
     }
 

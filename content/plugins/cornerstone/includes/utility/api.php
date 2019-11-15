@@ -34,37 +34,7 @@ function cornerstone_theme_integration( $args ) {
 	CS()->component( 'Integration_Manager' )->theme_integration( $args );
 }
 
-/**
- * Register a new element
- * @param  $type       slug name of the element. "alert" for example.
- * @param  $atts       Element definition.
- */
-function cornerstone_register_element( $type, $atts, $deprecated = null ) {
 
-  if ( null !== $deprecated || is_string( $atts ) ) {
-    /**
-     * Override for old method. Register a new element
-     * @param  $class_name Name of the class you've created in definition.php
-     * @param  $name       slug name of the element. "alert" for example.
-     * @param  $path       Path to the folder containing a definition.php file.
-     */
-  	CS()->component( 'Element_Orchestrator' )->add( $type, $atts, $deprecated );
-    return;
-  }
-
-  CS()->component( 'Element_Manager' )->register_element( $type, $atts );
-
-}
-
-
-/**
- * Remove a previously added element from the Builder interface.
- * @param  string $name Name used when the element's class was added
- * @return none
- */
-function cornerstone_remove_element( $name ) {
-	CS()->component( 'Element_Orchestrator' )->remove( $name );
-}
 
 /**
  * Registers a class as a candidate for Cornerstone Integration
@@ -154,14 +124,9 @@ function cornerstone_options_enable_custom_js( $option_name ) {
   return CS()->component( 'Options_Manager' )->enable_custom_js( $option_name );
 }
 
-function cornerstone_get_element( $name ) {
-  return CS()->component('Element_Manager')->get_element( $name );
-}
-
-
 function cornerstone_preview_container_output() {
   if ( apply_filters('cornerstone_preview_container_output', true ) ) {
-    echo '{{yield}}';
+    echo '{%%{children}%%}';
   }
 }
 
@@ -197,12 +162,12 @@ function cornerstone_dequeue_custom_script( $id ) {
 function cornerstone_post_process_css( $css, $minify = false ) {
 	CS()->component('Font_Manager');
   CS()->component('Color_Manager');
-	return CS()->component( 'Styling' )->external_post_process( $css, $minify );
+	return CS()->component( 'Styling' )->post_process( array( 'css' => $css, 'minify' => $minify ) );
 }
 
 function cornerstone_post_process_color( $value ) {
   CS()->component('Color_Manager');
-	return apply_filters('cornerstone_css_post_process_color', $value);
+	return apply_filters('cs_css_post_process_color', $value);
 }
 
 function cornerstone_cleanup_generated_styles() {
@@ -217,6 +182,18 @@ function cornerstone_queue_font( $font ) {
   return CS()->component('Font_Manager')->queue_font( $font );
 }
 
+function cornerstone_dynamic_content_register_field( $field ) {
+  CS()->component('Dynamic_Content')->register_field( $field );
+}
+
+function cornerstone_dynamic_content_register_group( $group ) {
+  CS()->component('Dynamic_Content')->register_group( $group );
+}
+
+function cs_dynamic_content( $content = '' ) {
+  return apply_filters( 'cs_dynamic_content', $content );
+}
+
 /**
  * Deprecated
  */
@@ -226,4 +203,27 @@ function cornerstone_add_element( $class_name ) {
 
 function cornerstone_make_placeholder_image_uri( $height = '300', $width = '250', $color = '#eeeeee' ) {
 	return CS()->common()->placeholderImage( $height, $width, $color );
+}
+
+function cornerstone_get_element( $name ) {
+  return cs_get_element( $name );
+}
+
+function cornerstone_register_element( $type, $atts, $deprecated = null ) {
+  if ( null !== $deprecated || is_string( $atts ) ) {
+    /**
+     * Override for old method. Register a new element
+     * @param  $class_name Name of the class you've created in definition.php
+     * @param  $name       slug name of the element. "alert" for example.
+     * @param  $path       Path to the folder containing a definition.php file.
+     */
+  	CS()->component( 'Element_Orchestrator' )->add( $type, $atts, $deprecated );
+    return;
+  }
+
+  cs_register_element( $type, $atts );
+}
+
+function cornerstone_remove_element( $name ) {
+	CS()->component( 'Element_Orchestrator' )->remove( $name );
 }

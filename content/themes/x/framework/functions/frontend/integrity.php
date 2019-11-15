@@ -177,7 +177,7 @@ if ( ! function_exists( 'x_integrity_comment' ) ) :
       endif;
       $avatar_variation = ( x_is_product() ) ? ' x-img-thumbnail' : '';
     ?>
-    <li id="li-comment-<?php comment_ID(); ?>" itemprop="review" itemscope itemtype="http://schema.org/Review" <?php comment_class(); ?>>
+    <li id="li-comment-<?php comment_ID(); ?>" itemprop="comment" itemscope itemtype="https://schema.org/Comment" <?php comment_class(); ?>>
       <?php
       printf( '<div class="x-comment-img">%1$s %2$s</div>',
         '<span class="avatar-wrap cf' . $avatar_variation . '">' . get_avatar( $comment, 120 ) . '</span>',

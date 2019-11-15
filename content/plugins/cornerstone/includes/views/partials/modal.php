@@ -29,21 +29,31 @@ $atts_modal = array(
   'data-x-toggleable' => $mod_id,
   'data-x-scrollbar'  => '{"suppressScrollX":true}',
   'aria-hidden'       => 'true',
-  'aria-label'        => __( 'Modal', '__x__' ),
+  'aria-label'        => __( 'Modal', 'cornerstone' ),
 );
 
 $atts_modal_close = array(
   'class'               => $classes_modal_close,
   'data-x-toggle-close' => true,
-  'aria-label'          => __( 'Close Modal Content', '__x__' ),
+  'aria-label'          => __( 'Close Modal Content', 'cornerstone' ),
 );
 
 $atts_modal_content = array(
   'class'      => 'x-modal-content',
   'role'       => 'document',
-  'aria-label' => __( 'Modal Content', '__x__' ),
+  'aria-label' => __( 'Modal Content', 'cornerstone' ),
 );
 
+// Dynamic Rendering
+// -----------------
+
+$output_modal_content = cs_dynamic_content( do_shortcode( $modal_content ) );
+
+if (isset($modal_content_dynamic_rendering) && $modal_content_dynamic_rendering) {
+  $output_modal_content = apply_filters( 'cs_dynamic_rendering', $output_modal_content );
+  $output_modal_content = "<script type=\"text/cs-toggle-template\">$output_modal_content</script>";
+  $atts_modal_content['data-x-toggleable-content'] = $mod_id;
+}
 
 // Output
 // ------
@@ -61,7 +71,7 @@ $atts_modal_content = array(
   <div class="x-modal-content-outer">
     <div class="x-modal-content-inner">
       <div <?php echo x_atts( $atts_modal_content ); ?>>
-        <?php echo do_shortcode( $modal_content ); ?>
+        <?php echo $output_modal_content; ?>
       </div>
     </div>
   </div>

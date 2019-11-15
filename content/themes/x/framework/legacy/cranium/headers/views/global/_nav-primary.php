@@ -10,7 +10,7 @@ if( function_exists( 'ubermenu' ) && $config_id = ubermenu_get_menu_instance_by_
 	ubermenu( $config_id, array( 'theme_location' => 'primary') );
  else: ?>
 
-<a href="#" id="x-btn-navbar" class="x-btn-navbar collapsed" data-x-toggle="collapse-b" data-x-toggleable="x-nav-wrap-mobile" aria-selected="false" aria-expanded="false" aria-controls="x-widgetbar">
+<a href="#" id="x-btn-navbar" class="x-btn-navbar collapsed" data-x-toggle="collapse-b" data-x-toggleable="x-nav-wrap-mobile" aria-expanded="false" aria-controls="x-nav-wrap-mobile" role="button">
   <i class="x-icon-bars" data-x-icon-s="&#xf0c9;"></i>
   <span class="visually-hidden"><?php _e( 'Navigation', '__x__' ); ?></span>
 </a>

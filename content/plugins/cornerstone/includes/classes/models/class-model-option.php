@@ -9,7 +9,7 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
     return apply_filters( "cornerstone_option_model_load_$option", get_option( $option, $default ) );
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) || ! isset( $params['query']['id'] ) ) {
@@ -40,7 +40,7 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
     }
 
     if ( ! apply_filters( "cornerstone_option_model_permissions_$id", 'access' === $operation, $operation ) ) {
-      throw new Exception( 'Unauthorized' );
+      throw new Exception( "Unauthorized: $id | $operation" );
     }
 
   }
@@ -57,6 +57,9 @@ class Cornerstone_Model_Option extends Cornerstone_Plugin_Component {
     $this->validate( $option, 'update' );
 
     update_option( $option, apply_filters( "cornerstone_option_model_save_$option", $atts['value'] ) );
+
+    // Call after options is updated
+    do_action( "cornerstone_after_option_save_$option", $atts );
 
     return array(
       'data' => array(

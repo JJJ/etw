@@ -58,7 +58,7 @@ function x_shortcode_tab_nav_item( $atts ) {
   $id     = ( $id     != ''     ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class  = ( $class  != ''     ) ? 'x-nav-tabs-item ' . esc_attr( $class ) : 'x-nav-tabs-item';
   $style  = ( $style  != ''     ) ? 'style="' . $style . '"' : '';
-  $title  = ( $title  != ''     ) ? $title : 'Make Sure to Set a Title';
+  $title  = ( $title  != ''     ) ? $title : __( 'Make Sure to Set a Title', 'cornerstone' );
   $active = ( $active == 'true' ) ? ' active' : '';
 
   static $count = 0; $count++;

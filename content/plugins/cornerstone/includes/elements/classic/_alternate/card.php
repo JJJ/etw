@@ -61,16 +61,16 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'front_title',
       'text',
-      __( 'Front Title &amp; Content', 'cornerstone' ),
-      __( 'Specify the title and content for the front of your Card.', 'cornerstone' ),
+      __( 'Front Title', 'cornerstone' ),
+      __( 'Set the title for the front of your Card.', 'cornerstone' ),
       __( 'Front Title', 'cornerstone' )
     );
 
     $this->addControl(
       'front_text',
       'textarea',
-      NULL,
-      NULL,
+      __( 'Front Content', 'cornerstone' ),
+      __( 'Set the content for the front of your Card.', 'cornerstone' ),
       __( 'This is the content for the front of your Card. You can put anything you like here! Make sure it&apos;s something not too long though. As Shakespeare once said, &ldquo;Brevity is the soul of wit.&rdquo;', 'cornerstone' ),
       array(
         'expandable' => __( 'Content', 'cornerstone' )
@@ -222,16 +222,16 @@ class CS_Card extends Cornerstone_Element_Base {
     $this->addControl(
       'back_title',
       'text',
-      __( 'Back Title &amp; Content', 'cornerstone' ),
-      __( 'Specify the title and content for the back of your Card.', 'cornerstone' ),
+      __( 'Back Title ', 'cornerstone' ),
+      __( 'Set the title for the back of your Card.', 'cornerstone' ),
       __( 'Back Title', 'cornerstone' )
     );
 
     $this->addControl(
       'back_text',
       'textarea',
-      NULL,
-      NULL,
+      __( 'Back Content', 'cornerstone' ),
+      __( 'Set the content for the back of your Card.', 'cornerstone' ),
       __( 'This is the content for the back of your Card.', 'cornerstone' ),
       array(
         'expandable' => __( 'Content', 'cornerstone' )
@@ -380,6 +380,7 @@ class CS_Card extends Cornerstone_Element_Base {
     $back_title       = cs_clean_shortcode_att( $back_title );
     $back_text        = cs_clean_shortcode_att( $back_text );
     $back_button_text = cs_clean_shortcode_att( $back_button_text );
+    $back_button_link = cs_clean_shortcode_att( $back_button_link );
 
     if ( 'true' == $back_button_enabled ) {
     	$back_button_atts = " back_button_text=\"$back_button_text\" back_button_link=\"$back_button_link\" back_button_color=\"$back_button_color\" back_button_bg_color=\"$back_button_bg_color\"";

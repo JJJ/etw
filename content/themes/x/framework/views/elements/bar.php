@@ -11,6 +11,19 @@ $bar_region_is_tbf = $_region === 'top' || $_region === 'bottom' || $_region ===
 $bar_is_sticky     = $_region === 'top' && $bar_sticky === true;
 
 
+$bar_position = 'fixed';
+
+if ( $_region === 'top' ) {
+  if ( $bar_sticky === true && $bar_sticky_hide_initially === true ) {
+    $bar_position = 'absolute';
+  } else {
+    $bar_position = $bar_position_top;
+  }
+} else if ( $_region === 'footer' ) {
+  $bar_position = 'relative';
+}
+
+
 // Prepare Classes
 // ---------------
 
@@ -102,7 +115,7 @@ if ( $bar_scroll === true && $bar_height !== 'auto' ) {
 if ( $bar_position === 'fixed' ) {
 
   if ( 'bottom' === $_region ) { // 01
-    x_set_view( 'x_before_site_end', 'elements', 'bar', 'space', $_custom_data );
+    x_set_view( 'x_before_site_end', 'elements', 'bar', 'space', $_view_data );
   }
 
   $preview_bar_space_actions = array(
@@ -111,7 +124,7 @@ if ( $bar_position === 'fixed' ) {
   );
 
   if ( did_action( 'cs_element_rendering' ) && isset( $preview_bar_space_actions[$_region] ) ) { // 02
-    x_set_view( $preview_bar_space_actions[$_region], 'elements', 'bar', 'space', $_custom_data );
+    x_set_view( $preview_bar_space_actions[$_region], 'elements', 'bar', 'space', $_view_data );
   }
 
 }
@@ -121,8 +134,7 @@ if ( $bar_position === 'fixed' ) {
 // ------------------
 
 if ( $bar_bg_advanced == true ) {
-  $data_bg = x_get_partial_data( $_custom_data, array( 'find_data' => array( 'bg' => '' ) ) );
-  $bar_bg  = x_get_view( 'partials', 'bg', '', $data_bg, false );
+  $bar_bg  = cs_get_partial_view( 'bg', cs_extract( $_view_data, array( 'bg' => '' ) ) );
 }
 
 
@@ -131,7 +143,7 @@ if ( $bar_bg_advanced == true ) {
 
 if ( $bar_position_top === 'relative' && $bar_is_sticky && ! $bar_sticky_hide_initially ) {
   ob_start();
-  x_get_view( 'elements', 'bar', 'space', $_custom_data );
+  x_get_view( 'elements', 'bar', 'space', $_view_data );
   $top_bar_space = ob_get_clean();
   if ( ! did_action( 'cs_element_rendering' ) ) {
     echo $top_bar_space;
@@ -140,6 +152,8 @@ if ( $bar_position_top === 'relative' && $bar_is_sticky && ! $bar_sticky_hide_in
 
 ?>
 
+<?php ob_start(); ?>
+
 <div <?php echo x_atts( $atts_bar ); ?>>
 
   <?php if ( isset( $top_bar_space ) && did_action( 'cs_element_rendering' ) ) { echo $top_bar_space; } ?>
@@ -147,8 +161,11 @@ if ( $bar_position_top === 'relative' && $bar_is_sticky && ! $bar_sticky_hide_in
 
   <?php echo $bar_scroll_begin; ?>
     <div class="<?php echo $mod_id; ?> x-bar-content">
-      <?php do_action( 'x_bar', $_modules, $global ); ?>
+      <?php do_action( 'x_bar', $_modules ); ?>
     </div>
   <?php echo $bar_scroll_end; ?>
 
 </div>
+
+
+<?php echo apply_filters('cs_render_bar_output', ob_get_clean()); ?>

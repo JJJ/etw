@@ -28,11 +28,17 @@ $link_end   = '';
 
 if ( $link_enabled ) {
 
-	$link_atts = cs_atts( array(
+	$link_atts = array(
 		'href'   => $link_url,
 		'title'  => $link_title,
-		'target' => ( $link_new_tab) ? '_blank' : ''
-	) );
+		'target' => $link_new_tab ? '_blank' : ''
+	);
+
+	if ( $link_new_tab ) {
+		$link_atts = cs_atts_with_targeted_link_rel( $link_atts );
+	}
+
+	$link_atts = cs_atts( $link_atts );
 
 	$link_begin = "<a {$link_atts}>";
 	$link_end   = "</a>";

@@ -6,8 +6,10 @@ class Cornerstone_Content {
   protected $title;
   protected $post_type = 'post';
   protected $post_status = 'post';
+  protected $post_name = '';
   protected $permalink = '';
   protected $data = array();
+  protected $depths = array();
   // protected $new;
   // protected $dirty;
   // protected $modified;
@@ -31,6 +33,7 @@ class Cornerstone_Content {
     $this->set_title( isset( $data['title'] ) ? $data['title'] : false );
     $this->set_post_type( isset( $data['post_type'] ) ? $data['post_type'] : 'page' );
     $this->set_post_status( isset( $data['post_status'] ) ? $data['post_status'] : 'draft' );
+    $this->set_post_name( isset( $data['post_name'] ) ? $data['post_name'] : '' );
 
     $this->set_elements( isset( $data['elements'] ) ? $data['elements'] : array( 'data' => '') );
     $this->set_settings( isset( $data['settings'] ) ? $data['settings'] : array() );
@@ -53,10 +56,18 @@ class Cornerstone_Content {
     $this->post_status = $post->post_status;
 
     $wpml = CS()->component('Wpml');
-    $wpml->before_get_permalink();
-    $this->permalink = apply_filters( 'wpml_permalink', get_permalink( $post ), apply_filters('cs_locate_wpml_language', null, $post ) );
-    $wpml->after_get_permalink();
 
+    if ( $wpml->is_active() ) {
+    
+      $wpml->before_get_permalink();
+      $this->permalink = apply_filters( 'wpml_permalink', get_permalink( $post ), apply_filters('cs_locate_wpml_language', null, $post ) );
+      $wpml->after_get_permalink();
+
+    } else { /* prevent conflict with Polylang's wpml_permalink filter */
+
+      $this->permalink = get_permalink( $post );
+
+    }
 
     $elements = cs_get_serialized_post_meta( $this->id, '_cornerstone_data', true, 'cs_content_load_serialized_content' );
 
@@ -107,11 +118,17 @@ class Cornerstone_Content {
 
     if ( is_null( $this->id) ) {
 
-      $id = wp_insert_post( array(
+      $insert = array(
         'post_title' => $this->title,
         'post_type' => $this->post_type,
-        'post_status' => $this->post_status,
-      ));
+        'post_status' => $this->post_status
+      );
+
+      if ( $this->post_name ) {
+        $insert['post_name'] = $this->post_name;
+      }
+
+      $id = wp_insert_post( $insert );
 
       if ( is_wp_error( $id ) ) {
         return $id;
@@ -180,7 +197,7 @@ class Cornerstone_Content {
   }
 
   public function set_title( $title ) {
-    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.entity-content') ) );
+    return $this->title = sanitize_text_field( $title, sprintf( csi18n('common.untitled-entity'), csi18n('common.content.entity') ) );
   }
 
   public function set_post_type( $post_type ) {
@@ -189,6 +206,10 @@ class Cornerstone_Content {
 
   public function set_post_status( $post_status ) {
     $this->post_status = $post_status;
+  }
+
+  public function set_post_name( $post_name ) {
+    $this->post_name = $post_name;
   }
 
   public function set_settings( $settings ) {
@@ -237,13 +258,19 @@ class Cornerstone_Content {
 
 		$post_content = apply_filters( 'cornerstone_save_post_content', $output['content'] );
 
-		$id = wp_update_post( array(
+    $update = array(
 			'ID'           => $this->id,
       'title'        => $this->get_title(),
       'post_type'    => $this->post_type,
       'post_status'  => $this->post_status,
       'post_content' => wp_slash( '[cs_content]' . $post_content . '[/cs_content]' ),
-		) );
+    );
+
+    if ( $this->post_name ) {
+      $update['post_name'] = $this->post_name;
+    }
+
+		$id = wp_update_post( $update );
 
     if ( is_wp_error( $id ) ) {
       return $id;
@@ -309,6 +336,8 @@ class Cornerstone_Content {
 
     if ( isset( $element['_modules'] ) ) {
       $sanitized = array();
+      $this->inc_depth( $element['_type'] );
+
       if ( $definition->render_children() ) {
         $children = array();
         foreach ( $element['_modules'] as $child ) {
@@ -317,6 +346,7 @@ class Cornerstone_Content {
         }
         $atts['_modules'] = implode(',', $children);
       } else {
+
         foreach ( $element['_modules'] as $child ) {
           $output = $this->build_element_output( $child, $element );
           if ( is_wp_error( $output ) ) {
@@ -325,15 +355,16 @@ class Cornerstone_Content {
           $buffer .= $output['content'];
           $sanitized[] = $output['data'];
         }
-
       }
+
+      $this->dec_depth( $element['_type'] );
 
       $element['_modules'] = $sanitized;
     }
 
     $content = '';
     if ( ! isset( $element['_active'] ) || $element['_active'] ) {
-      $content = $definition->save( $element, $buffer, $atts );
+      $content = $definition->save( $element, $buffer, $atts, $this->get_depth( $element['_type'] ) );
     }
 
     unset($element['_id']);
@@ -344,6 +375,24 @@ class Cornerstone_Content {
       'data' => $element
     );
 
+  }
+
+  public function inc_depth( $type ) {
+    if ( !isset( $this->depths[$type] ) ) {
+      $this->depths[$type] = 1;
+    }
+    $this->depths[$type]++;
+  }
+
+  public function dec_depth( $type ) {
+    if ( !isset( $this->depths[$type] ) ) {
+      $this->depths[$type] = 1;
+    }
+    $this->depths[$type]--;
+  }
+
+  public function get_depth( $type ) {
+    return isset( $this->depths[$type] ) ? $this->depths[$type] : 1;
   }
 
   public function build_classic_element_output( $element, $parent = null ) {

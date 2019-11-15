@@ -34,19 +34,19 @@ class Cornerstone_App_Choices extends Cornerstone_Plugin_Component {
     $samples = array(
       array(
         'value' => 'sample:default',
-        'label' => __( 'Sample', '__x__' ),
+        'label' => csi18n('app.choices.menu-sample-default'),
       ),
       array(
         'value' => 'sample:default_no_dropdowns',
-        'label' => __( 'Sample (No Dropdowns)', 'cornerstone' ),
+        'label' => csi18n('app.choices.menu-sample-no-dropdowns')
       ),
       array(
         'value' => 'sample:default_split_1',
-        'label' => __( 'Sample (Split #1)', 'cornerstone' ),
+        'label' => csi18n('app.choices.menu-sample-split-1')
       ),
       array(
         'value' => 'sample:default_split_2',
-        'label' => __( 'Sample (Split #2)', 'cornerstone' ),
+        'label' => csi18n('app.choices.menu-sample-split-2')
       ),
     );
 

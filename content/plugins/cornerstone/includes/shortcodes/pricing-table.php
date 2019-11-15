@@ -64,11 +64,11 @@ function x_shortcode_pricing_table_column( $atts, $content = null ) {
   $class        = ( $class != ''        ) ? 'x-pricing-column ' . esc_attr( $class ) : 'x-pricing-column';
   $style        = ( $style != ''        ) ? 'style="' . $style . '"' : '';
   $featured     = ( $featured == 'true' ) ? ' featured' : '';
-  $featured_sub = ( $featured_sub != '' ) ? ' <span class="x-featured-sub">' . $featured_sub . '</span>' : '';
-  $title        = ( $title != ''        ) ? $title : '';
-  $currency     = ( $currency != ''     ) ? $currency : '';
-  $price        = ( $price != ''        ) ? $price : '';
-  $interval     = ( $interval != ''     ) ? $interval : '';
+  $featured_sub = ( $featured_sub != '' ) ? ' <span class="x-featured-sub">' . cs_decode_shortcode_attribute( $featured_sub ) . '</span>' : '';
+  $title        = ( $title != ''        ) ? cs_decode_shortcode_attribute( $title ) : '';
+  $currency     = ( $currency != ''     ) ? cs_decode_shortcode_attribute( $currency ) : '';
+  $price        = ( $price != ''        ) ? cs_decode_shortcode_attribute( $price ) : '';
+  $interval     = ( $interval != ''     ) ? cs_decode_shortcode_attribute( $interval ) : '';
 
   $output = "<div {$id} class=\"{$class}{$featured}\" {$style}>"
             . '<h2 class="man">'

@@ -14,7 +14,7 @@ if ( $cross_sells && x_get_option( 'x_woocommerce_cart_cross_sells_enable' ) == 
 
   <div class="cross-sells cols-<?php echo x_get_option( 'x_woocommerce_cart_cross_sells_columns' ); ?>">
 
-    <h2><?php _e( 'You may be interested in&hellip;', '__x__' ) ?></h2>
+    <h2><?php _e( 'You may be interested in&hellip;', 'woocommerce' ) ?></h2>
 
     <?php woocommerce_product_loop_start(); ?>
 

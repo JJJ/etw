@@ -15,21 +15,26 @@
 // Include Partial CSS
 // =============================================================================
 
-$anchor_selector = '.x-anchor-toggle';
-$anchor_k_pre    = 'toggle';
-
 ?>
 
 @if $_region === 'top' || $_region === 'bottom' || $_region === 'footer' {
-  <?php include( '_anchor-css.php' ); ?>
-  <?php include( '_off-canvas-css.php' ); ?>
+  <?php
+
+    echo cs_get_partial_style( 'anchor', array(
+      'selector' => '.x-anchor-toggle',
+      'key_prefix'    => 'toggle'
+    ) );
+
+    echo cs_get_partial_style( 'off-canvas' );
+
+  ?>
 }
 
 <?php
 
-include( '_menu-css.php' );
+echo cs_get_partial_style( 'menu' );
 
-$anchor_selector = '.x-menu .x-anchor';
-$anchor_k_pre    = '';
-
-include( '_anchor-css.php' );
+echo cs_get_partial_style( 'anchor', array(
+  'selector' => '.x-menu .x-anchor',
+  'key_prefix'    => ''
+) );

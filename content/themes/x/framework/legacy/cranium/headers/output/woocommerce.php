@@ -21,10 +21,10 @@
 
   <?php if ( x_get_option( 'x_woocommerce_header_menu_enable' ) == '1' ) : ?>
 
-    <?php $x_woocommerce_outer_color       = x_get_option( 'x_woocommerce_header_cart_content_outer_color' ); ?>
-    <?php $x_woocommerce_outer_color_hover = x_get_option( 'x_woocommerce_header_cart_content_outer_color_hover' ); ?>
-    <?php $x_woocommerce_inner_color       = x_get_option( 'x_woocommerce_header_cart_content_inner_color' ); ?>
-    <?php $x_woocommerce_inner_color_hover = x_get_option( 'x_woocommerce_header_cart_content_inner_color_hover' ); ?>
+    <?php $x_woocommerce_outer_color       = x_post_css_value( x_get_option( 'x_woocommerce_header_cart_content_outer_color' ), 'color' ); ?>
+    <?php $x_woocommerce_outer_color_hover = x_post_css_value( x_get_option( 'x_woocommerce_header_cart_content_outer_color_hover' ), 'color' ); ?>
+    <?php $x_woocommerce_inner_color       = x_post_css_value( x_get_option( 'x_woocommerce_header_cart_content_inner_color' ), 'color' );  ?>
+    <?php $x_woocommerce_inner_color_hover = x_post_css_value( x_get_option( 'x_woocommerce_header_cart_content_inner_color_hover' ), 'color' );  ?>
 
     .x-navbar .x-nav > li.x-menu-item-woocommerce > a .x-cart > span {
       padding-right: calc(0.625em - <?php echo $x_navbar_letter_spacing . 'px'; ?>);

@@ -18,6 +18,8 @@
 
 <body <?php body_class(); ?>>
 
+  <?php do_action( 'x_after_body_begin' ); ?>
+
   <div id="x-root" class="x-root">
 
     <?php do_action( 'x_before_site_begin' ); ?>

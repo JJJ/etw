@@ -31,5 +31,5 @@ if ( isset( $id ) && ! empty( $id ) ) {
 ?>
 
 <div <?php echo x_atts( $atts_accordion ); ?>>
-  <?php do_action( 'x_render_children', $_modules, array(), $_custom_data ); ?>
+  <?php do_action( 'x_render_children', $_modules, $_view_data ); ?>
 </div>

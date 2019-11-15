@@ -42,8 +42,9 @@ function x_demo_content_setup_ajax_callback() {
 
   $request = wp_remote_get( $_POST['demo'] );
 
-  if ( is_wp_error( $request ) )
+  if ( is_wp_error( $request ) ) {
     return wp_send_json_error( array( 'message' => $errorMessage, 'debug_message' => $request->get_error_message() ) );
+  }
 
   //
   // API data.
@@ -51,9 +52,9 @@ function x_demo_content_setup_ajax_callback() {
 
   $data = json_decode( $request['body'], true );
 
-  if ( !is_array( $data ) )
+  if ( ! is_array( $data ) ) {
     return wp_send_json_error( array( 'message' => $errorMessage, 'debug_message' => 'Requested demo is improperly formatted.' ) );
-
+  }
 
   //
   // Run demo setup.
@@ -65,8 +66,9 @@ function x_demo_content_setup_ajax_callback() {
 
   include_once( 'setup.php' );
 
-  if ( $error !== false )
+  if ( $error !== false ) {
     return wp_send_json_error( array( 'message' => $errorMessage, 'debug_message' => $error, 'buffer' => ob_get_clean() ) );
+  }
 
   ob_clean();
 

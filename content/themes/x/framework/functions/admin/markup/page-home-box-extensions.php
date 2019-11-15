@@ -15,6 +15,8 @@
 // Page Output
 // =============================================================================
 
+$x_tgmpa = X_TGMPA_Integration::instance();
+
 ?>
 
 <div class="tco-column">
@@ -28,18 +30,19 @@
     <?php if ( $is_validated ) : ?>
 
       <div class="tco-box-content tco-pan tco-ta-center">
-        <p class="tco-extensions-info"><?php printf( __( 'Once installed, you can activate or deactivate each Extension on the <a href="%s">Plugins</a> page.', '__x__' ), admin_url( 'plugins.php' ) ); ?></p>
+        <p class="tco-extensions-info"><?php printf( __( 'Install and activate any <strong>Extension</strong> using the buttons below. You can also use the <a href="%s">Bulk Extension Manager</a>.', '__x__' ), $x_tgmpa->bulk_manager_url() ); ?></p>
         <div class="tco-extensions">
 
           <?php
 
-          $extensions = X_Validation_Extensions::get_extension_list();
+
+          $extensions = $x_tgmpa->get_extension_list();
 
           foreach ( $extensions as $extension ) :
 
           ?>
 
-            <div class="tco-extension tco-extension-<?php echo $extension['slug']; ?> tco-extension-<?php echo ( $extension['installed'] ) ? 'installed' : 'not-installed'; ?>" id="<?php echo $extension['slug']; ?>" data-tco-module="x-extension" data-x-extension>
+            <div class="tco-extension tco-extension-<?php echo $extension['slug']; ?> tco-extension-<?php echo ( $extension['installed'] ) ? 'installed' : 'not-installed'; ?>" id="<?php echo $extension['slug']; ?>" data-tco-module="x-extension">
 
               <div class="tco-extension-content">
                 <img class="tco-extension-img" src="<?php echo $extension['logo_url']; ?>" width="100" height="100">
@@ -47,7 +50,7 @@
                 <div class="tco-extension-info">
                   <a class="tco-extension-info-details" href="#" data-tco-toggle=".tco-extension-<?php echo $extension['slug']; ?> .tco-overlay"><?php _e( 'Details', '__x__' ); ?></a>
                 </div>
-                <a class="tco-btn" data-tco-module-target="install"><?php _e( 'Install', '__x__' ); ?></a>
+                <a class="tco-btn" data-tco-module-target="manage"><?php _e( 'Install', '__x__' ); ?></a>
               </div>
 
               <footer class="tco-extension-footer">

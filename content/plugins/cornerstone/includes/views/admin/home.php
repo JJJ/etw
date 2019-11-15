@@ -1,6 +1,6 @@
 <div class="tco-reset tco-wrap tco-wrap-about tco-alt-cs">
   <div class="tco-content">
-    <div class="wrap"><h2>WordPress Wrap</h2></div>
+    <div class="wrap"></div>
     <div class="tco-main">
 
       <?php if ( ! $is_validated ) : ?>

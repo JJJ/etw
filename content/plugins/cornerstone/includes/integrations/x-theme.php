@@ -51,6 +51,9 @@ class Cornerstone_Integration_X_Theme {
     // Alias legacy shortcode names.
     add_action( 'cornerstone_shortcodes_loaded', array( $this, 'aliasShortcodes' ) );
 
+    // Prevent Cornerstone from messaging about validation
+    add_filter('_cornerstone_integration_remove_global_validation_notice', '__return_true' );
+
     add_filter( 'cornerstone_scrolltop_selector', array( $this, 'scrollTopSelector' ) );
     add_filter( 'cs_recent_posts_post_types', array( $this, 'recentPostTypes' ) );
 
@@ -61,6 +64,13 @@ class Cornerstone_Integration_X_Theme {
     add_filter( 'cs_app_preference_defaults', array( $this, 'app_preference_defaults') );
 
     add_filter( 'cs_late_styling_hook', array( $this, 'styling_hook') );
+
+    require_once( CS()->path( 'includes/extend/portfolio.php' ) );
+
+    if (! function_exists( 'ups_options_init' ) ) {
+      require_once( CS()->path( 'includes/extend/custom-sidebars.php' ) );
+    }
+
   }
 
   public function init() {
@@ -202,6 +212,7 @@ class Cornerstone_Integration_X_Theme {
 
     if ( 'pro' === $env['product'] ) {
       $defaults['advanced_mode'] = true;
+      $defaults['dynamic_content'] = true;
     }
 
     return $defaults;

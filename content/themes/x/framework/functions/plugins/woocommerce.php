@@ -48,7 +48,6 @@ add_filter( 'woocommerce_show_page_title', 'x_woocommerce_show_page_title' );
 function x_woocommerce_enqueue_styles( $stack, $ext ) {
   wp_deregister_style( 'woocommerce-layout' );
   wp_deregister_style( 'woocommerce-general' );
-  wp_deregister_style( 'woocommerce-smallscreen' );
   wp_enqueue_style( 'x-woocommerce', X_TEMPLATE_URL . '/framework/dist/css/site/woocommerce/' . $stack . $ext . '.css', NULL, X_ASSET_REV, 'all' );
 }
 
@@ -149,6 +148,11 @@ function x_woocommerce_shop_placeholder_thumbnail() {
 
 // Shop Item Wrapper
 // -----------------
+
+// remove the default opening and closing anchor tag added by woocommerce
+
+remove_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10 );
+remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
 
 function x_woocommerce_before_shop_loop_item() {
   echo '<div class="entry-product">';
@@ -433,14 +437,17 @@ endif;
 if ( ! function_exists( 'x_woocommerce_navbar_menu_item' ) ) :
   function x_woocommerce_navbar_menu_item( $items, $args ) {
 
-    if ( x_get_option( 'x_woocommerce_header_menu_enable' ) == '1' && did_action( 'x_classic_headers' ) ) {
-      if ( $args->theme_location == 'primary' ) {
-        $items .= '<li class="menu-item current-menu-parent x-menu-item x-menu-item-woocommerce">'
-                  . '<a href="' . x_get_cart_link() . '" class="x-btn-navbar-woocommerce">'
-                    . x_woocommerce_navbar_cart()
-                  . '</a>'
-                . '</li>';
+    if ( $args->theme_location == 'primary' && x_get_option( 'x_woocommerce_header_menu_enable' ) == '1' && did_action( 'x_classic_headers' ) ) {
+
+      if ( x_get_option( 'x_woocommerce_header_hide_empty_cart' ) != '1' || WC()->cart->get_cart_contents_count() > 0 ) {
+
+          $items .= '<li class="menu-item current-menu-parent x-menu-item x-menu-item-woocommerce">'
+                    . '<a href="' . x_get_cart_link() . '" class="x-btn-navbar-woocommerce">'
+                      . x_woocommerce_navbar_cart()
+                    . '</a>'
+                  . '</li>';
       }
+
     }
 
     return $items;

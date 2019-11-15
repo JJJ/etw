@@ -45,7 +45,7 @@ function x_shortcode_icon_list_item( $atts, $content = null ) {
   $icon_color  = ( $icon_color  != ''      ) ? $icon_color : '';
   $href        = ( $href        != ''      ) ? $href : '#';
   $href_title  = ( $href_title  != ''      ) ? ' title="' . $href_title . '"' : '';
-  $href_target = ( $href_target == 'blank' ) ? ' target="_blank"' : '';
+  $href_target = ( $href_target == 'blank' ) ? ' ' . cs_output_target_blank( false ) : '';
 
   if ( $icon_color != '' ) {
     $icon_style = ' style="color: ' . $icon_color . ';"';

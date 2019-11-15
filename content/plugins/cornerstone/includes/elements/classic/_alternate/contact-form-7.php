@@ -37,7 +37,10 @@ class CS_Contact_Form_7 extends Cornerstone_Element_Base {
       __( 'Select Contact Form', 'cornerstone' ),
       __( 'Select a previously created form.', 'cornerstone' ),
       $choices[0]['value'],
-      array( 'choices' => $choices )
+      array(
+        'choices' => $choices,
+        'placeholder' => 'Select'
+      )
     );
 
   }

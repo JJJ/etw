@@ -36,7 +36,7 @@ if ( ! function_exists( 'x_breadcrumbs' ) ) :
     );
 
     $args_data = array(
-      'home_label' => '<span class="home"><i class="x-icon-home" data-x-icon-s="&#xf015;"></i></span>',
+      'home_label' => '<span class="home"><i class="x-icon-home" data-x-icon-s="&#xf015;"></i><span class="visually-hidden">' . __( 'Home', '__x__' ) . '</span></span>',
     );
 
     if ( x_get_option( 'x_breadcrumb_display' ) ) {
@@ -102,7 +102,7 @@ if ( ! function_exists( 'x_breadcrumbs_items' ) ) :
       'delimiter_ltr'    => '&rarr;',
       'delimiter_rtl'    => '&larr;',
       'current_class'    => 'x-crumbs-current',
-      'anchor_atts'      => array( 'class' => 'x-crumbs-link', 'itemscope' => '', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item' ),
+      'anchor_atts'      => array( 'class' => 'x-crumbs-link', 'itemtype' => 'http://schema.org/Thing', 'itemprop' => 'item' ),
       'include_meta'     => true,
     ) ) );
 
@@ -232,7 +232,7 @@ if ( ! function_exists( 'x_breadcrumbs_data' ) ) :
     );
 
     if ( is_front_page() ) {
-      return $crumbs;
+      return apply_filters( 'x_breadcrumbs_data', $crumbs, $args );
     }
 
     $q_obj = get_queried_object();
@@ -304,6 +304,7 @@ if ( ! function_exists( 'x_breadcrumbs_data' ) ) :
     } elseif ( x_is_bbpress() ) {
 
       add_filter( 'bbp_get_breadcrumb', 'x_bbpress_get_breadcrumb', 10, 2 );
+      // Note to reviewer: This remove_filter call isn't permanent. We restore the original bbPress functionality after calling bbp_get_breadcrumbs
       remove_filter( 'bbp_no_breadcrumb', '__return_true' );
 
       if ( bbp_is_forum_archive() ) {
@@ -340,6 +341,7 @@ if ( ! function_exists( 'x_breadcrumbs_data' ) ) :
       }
 
       add_filter( 'bbp_no_breadcrumb', '__return_true' );
+      // Note to reviewer: This remove filter call is removing one of our own hooks that we only want to run once
       remove_filter( 'bbp_get_breadcrumb', 'x_bbpress_get_breadcrumb', 10,2 );
 
     } elseif ( ! empty( $q_obj ) ) {

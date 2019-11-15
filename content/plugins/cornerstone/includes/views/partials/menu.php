@@ -8,7 +8,7 @@
 
 $mod_id           = ( isset( $mod_id )       ) ? $mod_id       : '';
 $menu_type        = ( isset( $menu_type )    ) ? $menu_type    : 'inline';
-$menu_data_walker = ( isset( $_custom_data ) ) ? $_custom_data : array();
+$menu_data_walker = ( isset( $_view_data ) ) ? $_view_data : array();
 
 $menu_is_collapsed = $menu_type === 'collapsed';
 $menu_is_dropdown  = $menu_type === 'dropdown';
@@ -108,6 +108,10 @@ $walker     = new X_Walker_Nav_Menu( $menu_data_walker );
 
 // Args
 // ----
+
+// Escape preview template
+$items_wrap = str_replace( '{%%{', '{%%%%{', $items_wrap );
+$items_wrap = str_replace( '}%%}', '}%%%%}', $items_wrap );
 
 $args = array(
   'menu_class'  => $classes,

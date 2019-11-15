@@ -9,7 +9,8 @@ class CS_Clear extends Cornerstone_Element_Base {
       'section'     => 'structure',
       'description' => __( 'Clear description.', 'cornerstone' ),
       'supports'    => array( 'id', 'class', 'style' ),
-      'can_preview' => false
+      'can_preview' => false,
+      'library' => false
     );
   }
 

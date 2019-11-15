@@ -27,16 +27,16 @@ class CS_Text_Type extends Cornerstone_Element_Base {
     $this->addControl(
       'prefix',
       'text',
-      __( 'Prefix, Strings, &amp; Suffix', 'cornerstone' ),
-      __( 'Enter in your prefix text in the first input and suffix text in the last input. Typing strings go in the textarea and are separated by a new line.', 'cornerstone' ),
+      __( 'Prefix', 'cornerstone' ),
+      __( 'Enter a prefix to appear before the animating text.', 'cornerstone' ),
       __( 'This is the ', 'cornerstone' )
     );
 
     $this->addControl(
       'strings',
       'textarea',
-      NULL,
-      NULL,
+      __( 'Strings', 'cornerstone' ),
+      __( 'Enter strings to be animated and separate them by a new line.', 'cornerstone' ),
       __( 'first string' . "\n" . 'second string' . "\n" . 'third string', 'cornerstone' ),
       array(
         'expandable' => false
@@ -46,8 +46,8 @@ class CS_Text_Type extends Cornerstone_Element_Base {
     $this->addControl(
       'suffix',
       'text',
-      NULL,
-      NULL,
+      __( 'Suffix', 'cornerstone' ),
+      __( 'Enter a suffix to appear after the animating text.', 'cornerstone' ),
       __( ' of the sentence.', 'cornerstone' )
     );
 

@@ -57,6 +57,9 @@ class CS_Skill_Bar extends Cornerstone_Element_Base {
 
     extract( $atts );
 
+    $heading = cs_clean_shortcode_att( $heading );
+    $bar_text = cs_clean_shortcode_att( $bar_text );
+
     $shortcode = "[x_skill_bar heading=\"$heading\" percent=\"$percent\" bar_text=\"$bar_text\" bar_bg_color=\"{$bar_bg_color}\"{$extra}]";
 
     return $shortcode;

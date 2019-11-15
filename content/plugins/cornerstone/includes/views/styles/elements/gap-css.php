@@ -19,10 +19,10 @@
 
 .$_el.x-line {
   @if $gap_direction === 'horizontal' {
-    width: $gap_size;
+    padding: 0 0 0 $gap_size;
   }
   @if $gap_direction === 'vertical' {
-    height: $gap_size;
+    padding: $gap_size 0 0 0;
   }
-  font-size: $line_base_font_size;
+  font-size: $gap_base_font_size;
 }

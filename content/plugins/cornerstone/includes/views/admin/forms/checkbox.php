@@ -18,5 +18,5 @@
 <label class="tco-rc tco-checkbox" for="cs-control-<?php echo $name;?>">
   <input <?php cs_atts( $atts, true ); ?>>
   <span class="tco-form-control-indicator"></span>
-  <span class="tco-form-control-indicator-label">Enable</span>
+  <span class="tco-form-control-indicator-label"><?php _e( 'Enable', 'cornerstone' ); ?></span>
 </label>

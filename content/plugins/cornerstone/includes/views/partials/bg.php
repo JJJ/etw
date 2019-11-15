@@ -14,8 +14,6 @@ $bg_atts = array(
   'aria-hidden' => 'true'
 );
 
-$bg_atts = array_merge( $bg_atts, cs_element_js_atts( 'bg' ) );
-
 if ( isset( $bg_border_radius ) && $bg_border_radius !== 'inherit' ) {
   $bg_atts['style'] = 'border-radius: ' . $bg_border_radius . ';';
 }

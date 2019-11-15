@@ -60,6 +60,12 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
 
   public function render_element( $model ) {
 
+    /* internal switch for global block */
+    if ( isset($model['global_block_id']) ) {
+      $wpml = CS()->component('Wpml');
+      $wpml->switch_lang($model['lang']);
+    }
+
     $response = '';
     $this->zone_output = array();
     $this->inline_styling_handles = array();
@@ -91,7 +97,7 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
     if ( $definition->is_child() && isset( $model['_transient'] ) && isset( $model['_transient']['parent'] ) ) {
 
       $parent_definition = $element_manager->get_element( $model['_transient']['parent']['_type'] );
-      $parent_data = x_module_decorate( $model['_transient']['parent'] );
+      $parent_data = x_element_decorate( $model['_transient']['parent'] );
 
       $parent_attr_keys = $parent_definition->get_designated_keys( 'attr' );
       $parent_attr_html_keys = $parent_definition->get_designated_keys( 'attr:html' );
@@ -120,19 +126,19 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
      */
 
     foreach ($attr_keys as $key) {
-      $render_data[$key] = "{{model.atts.$key}}";
+      $render_data[$key] = "{%%{data.$key}%%}";
     }
 
     foreach ($parent_attr_keys as $key) {
-      $render_data[$key] = "{{model.parent.atts.$key}}";
+      $render_data[$key] = "{%%{parentData.$key}%%}";
     }
 
     foreach ($attr_html_keys as $key) {
-      $render_data[$key] = "{{hs model.atts.$key}}";
+      $render_data[$key] = "{%%{data.$key}%%}";
     }
 
     foreach ($parent_attr_html_keys as $key) {
-      $render_data[$key] = "{{hs model.parent.atts.$key}}";
+      $render_data[$key] = "{%%{parentData.$key}%%}";
     }
 
     $this->html_cache = array();
@@ -150,7 +156,7 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
 
       // base64 encode HTML within handlebars helper
       if ( in_array($key, $markup_html_keys, true) ) {
-        $render_data[$key] = $this->isolate_html( $key . 'aaa', $value );
+        $render_data[$key] = $this->isolate_html( $key, $value );
         continue;
       }
 
@@ -160,13 +166,13 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
     }
 
     if ( isset( $model['_id'] ) ) {
-      $render_data['_id'] = '{{model.id}}';
+      $render_data['_id'] = '{%%{_id}%%}';
     }
 
     if ( $definition->render_children() ) {
 
       add_filter('cornerstone_preview_container_output', '__return_false');
-      $decorate_parent = x_module_decorate( $render_data );
+      $decorate_parent = x_element_decorate( $render_data );
 
       if ( isset( $model['_transient']['children'] ) ) {
 
@@ -175,7 +181,7 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
         foreach ($model['_transient']['children'] as $index => $child) {
 
           $child['_transient'] = array( 'parent' => $render_data );
-          $child_render_data = x_module_decorate( $child, $decorate_parent );
+          $child_render_data = x_element_decorate( $child, $decorate_parent );
           $child_definition = $element_manager->get_element( $model['_type'] );
           $child_markup_html_keys = $child_definition->get_designated_keys('markup:html');
 
@@ -201,29 +207,13 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
      * Render the module using a registered filter
      */
 
-    ob_start();
-    $definition->render( $render_data );
-    $response = ob_get_clean();
+    $response = $definition->render( x_element_decorate( $render_data ) );
 
     /**
      * Restore Isolated HTML
      */
 
     $response = $this->restore_html( $response );
-
-
-
-    /**
-     * Add htmlSafe helper to atts inside style attributes
-     */
-    $response = preg_replace_callback('/style="(.+?)"/', array( $this, 'add_htmlsafe_helper' ), $response);
-
-    /**
-     * Add data-cs-observeable on root element if not supplied by view
-     */
-    if ( -1 !== strpos($response, 'data-cs-observeable' ) ) {
-      $response = preg_replace('/<\s*?\w+\s?/', "$0 data-cs-observeable=\"{{observer}}\" ", $response, 1 );
-    }
 
     /**
      * Capture output that was deffered into any registered zones
@@ -237,7 +227,7 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
     foreach ($this->zone_output as $key => $value) {
       $html = preg_replace('/<!--(.|\n)*?-->/', '', $value);
       $markup = base64_encode( apply_filters( 'cs_render_element_zone_output', $html ) );
-      $response .= "{{preview/zone-pipe model=model zone=\"$key\" markup=\"$markup\"}}";
+      $response .= "{%%{portal name=$key content=$markup }%%}";
     }
 
     $styling = $this->plugin->component('Styling');
@@ -269,12 +259,12 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
       return '';
     }
 
-    $this->html_cache[$key]  = '{{base64content "' . base64_encode( $content ) . '" }}';
-    return "{{isolated_html $key}}";
+    $this->html_cache[$key]  = $this->encode_base64( $content );
+    return "{%%{isolated_html $key}%%}";
   }
 
   public function restore_html( $content ) {
-    return preg_replace_callback( "/{{isolated_html (\w+)}}/s", array( $this, 'restore_html_callback' ), $content );
+    return preg_replace_callback( "/{%%{isolated_html (\w+)}%%}/s", array( $this, 'restore_html_callback' ), $content );
   }
 
   public function restore_html_callback($matches) {
@@ -285,34 +275,37 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
     $this->setup_context_all_register_hooks();
     add_action( '_cs_rendering_global_block_begin', array( $this, 'setup_context_all_teardown_hooks' ) );
     add_action( '_cs_rendering_global_block_end',   array( $this, 'setup_context_all_register_hooks' ) );
+    add_action( 'cs_dynamic_rendering', array($this, 'dynamic_rendering_filter') );
+    add_filter( 'cs_preview_decode_markup', array( $this, 'decode_base64' ) );
+    add_filter( 'cs_preview_encode_markup', array( $this, 'encode_base64' ) );
   }
 
   public function setup_context_all_register_hooks() {
     add_filter( 'x_breadcrumbs_data', 'x_bars_sample_breadcrumbs', 10, 2 );
-    add_filter('cornerstone_css_post_process_color', array( $this, 'post_process_attr' ) );
-    add_filter('cornerstone_css_post_process_font-family', array( $this, 'post_process_attr') );
-    add_filter('cornerstone_css_post_process_font-weight', array( $this, 'post_process_attr') );
     add_action( 'x_render_children', 'cornerstone_preview_container_output' );
   }
 
   public function setup_context_all_teardown_hooks() {
-    add_filter( 'x_breadcrumbs_data', 'x_bars_sample_breadcrumbs', 10, 2 );
-    add_filter('cornerstone_css_post_process_color', array( $this, 'post_process_attr' ) );
-    add_filter('cornerstone_css_post_process_font-family', array( $this, 'post_process_attr') );
-    add_filter('cornerstone_css_post_process_font-weight', array( $this, 'post_process_attr') );
-    add_action( 'x_render_children', 'cornerstone_preview_container_output' );
+    remove_filter( 'x_breadcrumbs_data', 'x_bars_sample_breadcrumbs', 10, 2 );
+    remove_action( 'x_render_children', 'cornerstone_preview_container_output' );
   }
 
   public function setup_context_content_register_hooks() {
     add_action( 'x_section', 'cornerstone_preview_container_output' );
     add_action( 'x_row', 'cornerstone_preview_container_output' );
     add_action( 'x_column', 'cornerstone_preview_container_output' );
+    add_action( 'x_layout_column', 'cornerstone_preview_container_output' );
+    add_action( 'x_layout_row', 'cornerstone_preview_container_output' );
+    add_action( 'x_layout_cell', 'cornerstone_preview_container_output' );
   }
 
   public function setup_context_content_teardown_hooks() {
     remove_action( 'x_section', 'cornerstone_preview_container_output' );
     remove_action( 'x_row', 'cornerstone_preview_container_output' );
     remove_action( 'x_column', 'cornerstone_preview_container_output' );
+    remove_action( 'x_layout_row', 'cornerstone_preview_container_output' );
+    remove_action( 'x_layout_column', 'cornerstone_preview_container_output' );
+    remove_action( 'x_layout_cell', 'cornerstone_preview_container_output' );
   }
 
   public function setup_context_content( $data ) {
@@ -335,22 +328,6 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
 
   }
 
-  public function add_htmlsafe_helper( $matches ) {
-    return str_replace('{{model.atts', '{{hs model.atts', $matches[0]);
-  }
-
-  public function post_process_attr( $value ) {
-
-    if ( preg_match('/{{(model\.atts.*?)}}/', $value, $matches ) ) {
-      if ( isset($matches[1]) ) {
-        $attr = $matches[1];
-        return "{{post-process-attr $attr processer=model.definition}}";
-      }
-    };
-
-    return $value;
-  }
-
   public function track_inline_styling_handles( $handle ) {
     $this->inline_styling_handles[] = $handle;
   }
@@ -359,6 +336,31 @@ class Cornerstone_Element_Renderer extends Cornerstone_Plugin_Component {
     foreach ($fonts as $font) {
       $this->fonts[$font['_id']] = true;
     }
+  }
+
+  //
+  // Dynamic Rendering
+  // We don't want the content to be base64 encoded.
+  //
+
+  public function dynamic_rendering_filter($content) {
+    return $this->unwrap_base64($this->restore_html($content));
+  }
+
+  public function decode_base64( $content ) {
+    return $this->unwrap_base64($this->restore_html($content));
+  }
+
+  public function encode_base64( $content ) {
+    return '{%%{base64content ' . base64_encode( $content ) . '}%%}';
+  }
+
+  public function unwrap_base64($content) {
+    return preg_replace_callback('/{%%{base64content (.*?)\s*?}%%}/', array($this, 'unwrap_base64_cb'), $content);
+  }
+
+  public function unwrap_base64_cb($match) {
+    return $this->unwrap_base64(base64_decode($match[1]));
   }
 
 }

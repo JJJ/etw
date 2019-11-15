@@ -25,6 +25,11 @@
 
 function x_setup_theme() {
 
+  // WP Title
+  // --------
+  add_theme_support( 'title-tag' );
+
+
   // Automatic Feed Links
   // --------------------
   // Adds RSS feed links to <head> for posts and comments.
@@ -37,6 +42,7 @@ function x_setup_theme() {
   // Adds support for a variety of post formats.
 
   add_theme_support( 'post-formats', array( 'link', 'gallery', 'quote', 'image', 'video', 'audio' ) );
+
 
   // WooCommerce
   // -----------
@@ -55,16 +61,16 @@ function x_setup_theme() {
 
 
   // Disable Gallery Style
-  // --------------------
+  // ---------------------
 
   add_filter( 'use_default_gallery_style', '__return_false' );
 
 
-  // Disable WordPress 4.4 Responsive Images
-  // ---------------------------------------
 
-  add_filter( 'wp_calculate_image_srcset', '__return_false' );
-
+  // Gutenburg
+  // ---------
+  add_theme_support( 'align-wide' );
+  add_theme_support( 'wp-block-styles' );
 
   // Remove Unnecessary Stuff
   // ------------------------
@@ -180,9 +186,8 @@ endif;
 // Removals
 // =============================================================================
 
-//
 // Remove Tag Cloud Inline Style
-//
+// -----------------------------
 
 if ( ! function_exists( 'x_remove_tag_cloud_inline_style' ) ) :
   function x_remove_tag_cloud_inline_style( $tag_string ) {
@@ -192,28 +197,29 @@ if ( ! function_exists( 'x_remove_tag_cloud_inline_style' ) ) :
 endif;
 
 
-//
 // Remove Recent Comments Style
-//
+// ----------------------------
 
 if ( ! function_exists( 'x_remove_recent_comments_style' ) ) :
   function x_remove_recent_comments_style() {
     GLOBAL $wp_widget_factory;
-    remove_action( 'wp_head', array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
+    if (array_key_exists('WP_Widget_Recent_Comments', $wp_widget_factory->widgets)) {
+      remove_action( 'wp_head', array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
+    }
   }
   add_action( 'widgets_init', 'x_remove_recent_comments_style' );
 endif;
 
 
-//
 // Remove Gallery <br> Tags
-//
+// ------------------------
 
 if ( ! function_exists( 'x_remove_gallery_br_tags' ) ) :
   function x_remove_gallery_br_tags( $output ) {
     return preg_replace( '/<br style=(.*?)>/mi', '', $output );
   }
   add_filter( 'the_content', 'x_remove_gallery_br_tags', 11, 2 );
+  add_filter( 'cs_content_shortcode_output', 'x_remove_gallery_br_tags' );
 endif;
 
 
@@ -230,9 +236,8 @@ function x_addons_get_link_home() {
 // TCO Setup
 // =============================================================================
 
-//
 // Accessor
-//
+// --------
 
 function x_tco() {
   return TCO_1_0::instance();
@@ -251,9 +256,8 @@ function x_tco_product_logo( $product, $class = '', $style = '' ) {
 }
 
 
-//
 // Initialization
-//
+// --------------
 
 function x_tco_init() {
 
@@ -279,9 +283,8 @@ add_action( 'init', 'x_tco_init' );
 add_action( 'admin_init', 'x_tco_init' );
 
 
-//
 // Localization
-//
+// ------------
 
 function x_tco_localize_admin_js( $strings ) {
 

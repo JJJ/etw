@@ -20,7 +20,8 @@ class CSE_Block_Grid_Item {
 			'protected_keys' => array(
         'title',
         'content'
-      )
+			),
+			'label_key' => 'title'
 		);
 	}
 

@@ -37,7 +37,7 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     }
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {
@@ -146,6 +146,50 @@ class Cornerstone_Model_Content_Content extends Cornerstone_Plugin_Component {
     }
 
     return $atts;
+  }
+
+  public function create( $params ) {
+
+    $atts = $this->atts_from_request( $params );
+    if (isset($atts['post-status'])) {
+      $atts['post_status'] = $atts['post-status'];
+      unset($atts['post-status']);
+    }
+
+    if (isset($atts['post-name'])) {
+      $atts['post_name'] = $atts['post-name'];
+      unset($atts['post-name']);
+    }
+
+    if (isset($atts['post-type'])) {
+      $atts['post_type'] = $atts['post-type'];
+      unset($atts['post-type']);
+    }
+
+    $post_type_obj = get_post_type_object( $atts['post_type'] );
+
+    if ( ! current_user_can( $post_type_obj->cap->edit_posts ) ) {
+      throw new Exception( 'Unauthorized2' . json_encode($atts) );
+    }
+
+    if ( isset( $atts['elements'] ) && isset( $atts['elements']['_clone'] ) ) {
+      $copy_from = new Cornerstone_Content( (int) $atts['elements']['_clone'] );
+      $atts['elements'] = $copy_from->get_elements();
+      $atts['settings'] = $copy_from->get_settings();
+    }
+
+    $content = new Cornerstone_Content( $atts );
+    $record = $content->save();
+    $post = get_post( $content->get_id() );
+
+    $record['post-type'] = $post->post_type;
+    $record['post-type-label'] = isset( $post_type_obj->labels ) ? $post_type_obj->labels->singular_name : $post->post_type;
+    $record['edit-url'] = get_edit_post_link( $post->ID, '' );
+    $record['modified'] = date_i18n( get_option( 'date_format' ), strtotime( $post->post_modified ) );
+    $record['permalink'] = get_permalink( $post );
+    $record['language'] = $this->plugin->component('Wpml')->get_language_data_from_post( $post, true );
+
+    return $this->make_response( $this->to_resource( $record ) );
   }
 
   public function update( $params ) {

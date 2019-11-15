@@ -8,6 +8,14 @@ return array(
 
 	'common' => array( 'padding', 'border', 'text_align', 'visibility' ),
 
+	'columns' => array(
+		'type' => '_columns',
+		'ui' => array(
+			'title' => __( 'Columns', 'cornerstone' ),
+			'tooltip' => ''
+		)
+	),
+
 	'inner_container' => array(
 		'type' => 'toggle',
 		'ui' => array(
@@ -34,28 +42,6 @@ return array(
 	'margin' => array(
 		'mixin' => 'margin',
 		'options' => array( 'lock' => array( 'left' => 'auto', 'right' => 'auto' ) )
-	),
-
-	// INTERNAL - Layout Controls
-
-	'_column_layout' => array(
-		'type' => 'column-layout',
-		'ui' => array(
-			'title' => __( 'Column Layout &ndash; %%title%%', 'cornerstone' ),
-			'tooltip' => __( 'Choose from one of our predefined column layouts, or specify your own using the input below. Columns cannot be any smaller than 1/6 and must add up to a whole.', 'cornerstone' )
-		),
-		'context' => '_layout'
-	),
-
-	'columns' => array(
-		'type' => 'column-order',
-		'key'  => 'elements',
-		'ui' => array(
-			'title' => __( 'Column Order &ndash; %%title%%', 'cornerstone' ),
-			'tooltip' => __( 'Click and drag to reorder your columns.', 'cornerstone' )
-		),
-		'options' => array( 'divider' => true ),
-		'context' => '_layout'
-	),
+	)
 
 );

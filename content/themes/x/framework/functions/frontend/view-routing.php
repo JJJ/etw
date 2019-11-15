@@ -29,7 +29,7 @@ add_filter('template_include', 'x_setup_x_late_template_redirect');
 // Get / Set View
 // =============================================================================
 
-function x_get_view( $directory, $file_base, $file_extension = '', $custom_data = array(), $echo = true ) {
+function x_get_view( $directory, $file_base, $file_extension = '', $view_data = array(), $echo = true ) {
 
   $file_action = $directory . '_' . $file_base . ( empty( $file_extension ) ? '' : '-' . $file_extension );
 
@@ -52,7 +52,7 @@ function x_get_view( $directory, $file_base, $file_extension = '', $custom_data 
 
   do_action( 'x_before_view_' . $file_action );
 
-  $output = X_View_Router::render( $template, $custom_data, $echo );
+  $output = X_View_Router::render( $template, $view_data, $echo );
 
   do_action( 'x_after_view_' . $file_action );
 
@@ -155,7 +155,7 @@ class X_View_Router {
   // 01. Import WordPress globals.
   // 02. Load the partial with $data extracted.
 
-  public static function render( $_template_file, $_custom_data = array(), $echo = true ) {
+  public static function render( $_template_file, $_view_data = array(), $echo = true ) {
 
     global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID; // 01
 
@@ -167,7 +167,7 @@ class X_View_Router {
       $s = esc_attr( $s );
     }
 
-    $_extractable_data = ( is_callable( $_custom_data ) ) ? call_user_func( $_custom_data ) : $_custom_data; // 02
+    $_extractable_data = ( is_callable( $_view_data ) ) ? call_user_func( $_view_data ) : $_view_data; // 02
 
     if ( is_array( $_extractable_data ) ) {
       extract( $_extractable_data );

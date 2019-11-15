@@ -56,7 +56,7 @@ class Cornerstone_Model_Content_Entry extends Cornerstone_Plugin_Component {
     }
   }
 
-  public function query( $params ) {
+  public function query( $params = array()) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {

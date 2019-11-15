@@ -28,7 +28,7 @@ function x_shortcode_creative_cta( $atts ) { // 1
   $class          = ( $class          != ''      ) ? 'x-creative-cta ' . esc_attr( $class ) : 'x-creative-cta';
   $style          = ( $style          != ''      ) ? ' ' . $style : '';
   $padding        = ( $padding        != ''      ) ? $padding : '35px';
-  $text           = ( $text           != ''      ) ? cs_decode_shortcode_attribute( $text ) : 'Place Your<br>Text Here';
+  $text           = ( $text           != ''      ) ? cs_decode_shortcode_attribute( $text ) : __( 'Place Your<br>Text Here', 'cornerstone' );
   $font_size      = ( $font_size      != ''      ) ? $font_size : '36px';
   $icon           = ( $icon           != ''      ) ? $icon : '';
   $icon_size      = ( $icon_size      != ''      ) ? $icon_size : '36px';
@@ -36,7 +36,7 @@ function x_shortcode_creative_cta( $atts ) { // 1
   $image_width    = ( $image_width    != ''      ) ? $image_width : '';
   $animation      = ( $animation      != ''      ) ? ' ' . $animation : '';
   $link           = ( $link           != ''      ) ? $link : '#';
-  $target         = ( $target         == 'blank' ) ? ' target="_blank"' : '';
+  $target         = ( $target         == 'blank' ) ? ' ' . cs_output_target_blank( false ) : '';
   $color          = ( $color          != ''      ) ? $color : '#ffffff';
   $bg_color       = ( $bg_color       != ''      ) ? $bg_color : '#ff2a13';
   $bg_color_hover = ( $bg_color_hover != ''      ) ? $bg_color_hover : '#d80f0f';

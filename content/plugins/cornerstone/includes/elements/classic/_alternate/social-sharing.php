@@ -107,6 +107,7 @@ class CS_Social_Sharing extends Cornerstone_Element_Base {
 
     extract( $atts );
 
+    $heading = cs_clean_shortcode_att( $heading );
     $email_subject = cs_clean_shortcode_att( $email_subject );
 
     $shortcode = "[x_share title=\"$heading\" share_title=\"$share_title\" facebook=\"$facebook\" twitter=\"$twitter\" google_plus=\"$google_plus\" linkedin=\"$linkedin\" pinterest=\"$pinterest\" reddit=\"$reddit\" email=\"$email\" email_subject=\"$email_subject\"{$extra}]";

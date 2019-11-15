@@ -5,7 +5,7 @@ class Cornerstone_Model_Content_Template extends Cornerstone_Plugin_Component {
   public $resources = array();
   public $name = 'content/template';
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     $queried = array();
     $this->included = array();

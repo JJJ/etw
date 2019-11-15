@@ -35,7 +35,7 @@ if ( ! class_exists( 'TCO_1_0' ) ) :
     protected $url = '';
 
     public function __construct( $file ) {
-      $this->path = trailingslashit( dirname( $file ) );
+      $this->path = plugin_dir_path( $file );
       add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), -999 );
       require_once( $this->path( 'class-tco-updates.php' ) );
       require_once( $this->path( 'class-tco-validator.php' ) );
@@ -75,12 +75,7 @@ if ( ! class_exists( 'TCO_1_0' ) ) :
         'debug' => ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ),
         'logo'  => $this->get_themeco_logo(),
         '_tco_nonce' => wp_create_nonce( 'tco-common' ),
-        'strings' => apply_filters( 'tco_localize_' . $handle, array(
-            'details' => 'Details',
-            'back'    => 'Back',
-            'yep'     => 'Yep',
-            'nope'    => 'Nope'
-          ) )
+        'strings' => apply_filters( 'tco_localize_' . $handle, array() )
       ) );
 
     }

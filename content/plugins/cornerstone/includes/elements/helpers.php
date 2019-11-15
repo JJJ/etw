@@ -9,238 +9,95 @@
 // =============================================================================
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
-//   01. Base Element
-//   02. Render Bar Module
-//   03. Render Bar Modules
-//   04. Value: Default / Designation
-//   05. Module Decorate
-//   06. Get Partial Data
-//   07. Module Conditions
-//   08. Inject Conditions
-//   08. Return Bar Mixin Values
-//   09. Custom Menu Item Output
-//   10. Generated Navigation
+//   01. Render Bar Modules
+//   02. Decorate
+//   03. Custom Menu Item Output
+//   04. Generated Navigation
 // =============================================================================
 
-// Base Element
+// Render Bar Elements
 // =============================================================================
 
-function x_element_base( $data ) {
-  return CS()->component('Element_Manager')->native_element_base( $data );
-}
+function x_render_elements( $elements, $parent = null ) {
 
-
-
-// Render Bar Module
-// =============================================================================
-
-function x_render_bar_module( $module, $global = array(), $parent = null ) {
-
-  $module['global'] = $global;
-
-  if ( ! isset( $module['_modules'] ) ) {
-    $module['_modules'] = array();
-  }
-
-  x_get_view( 'elements', $module['_type'], '', x_module_decorate( $module, $parent ) );
-
-}
-
-
-
-// Render Bar Modules
-// =============================================================================
-
-function x_render_bar_modules( $modules, $global = array(), $parent = null ) {
-
-  // Used for content when modules are rendered via shortcodes
-  if ( is_string( $modules ) ) {
-    echo $modules;
+  // Used for content when elements are rendered via shortcodes
+  if ( is_string( $elements ) ) {
+    echo $elements;
     return;
   }
 
-  if ( ! is_array( $modules ) ) {
+  if ( ! is_array( $elements ) ) {
     return;
   }
 
-  foreach ( $modules as $module ) {
-    if ( isset( $module['_type'] ) ) {
-      x_render_bar_module( $module, $global, $parent );
+  foreach ( $elements as $element ) {
+    $decorated = x_element_decorate( $element, $parent );
+    if ( isset( $decorated['_def'] ) ) {
+      echo $decorated['_def']->render( $decorated );
     }
   }
 }
 
 
 
-// Value: Default / Designation / Protected
+// Decorate
 // =============================================================================
 
-function x_module_value( $default = null, $designation = 'all', $protected = false ) {
+function x_element_decorate( $element, $parent = null ) {
 
-  return array( 'default' => $default, 'designation' => $designation, 'protected' => $protected );
+  if ( ! isset( $element['_type'] ) ) {
+    return array();
+  }
 
-}
+  if ( ! isset( $element['_modules'] ) ) {
+    $element['_modules'] = array();
+  }
 
+  $definition = cs_get_element( $element['_type'] );
 
+  $element = $definition->apply_defaults( $element );
 
-// Module Decorate
-// =============================================================================
+  // Escape based on element value designations
+  $element = $definition->escape( $element );
 
-function x_module_decorate( $module, $parent = null ) {
+  $element['_def'] = $definition;
 
-  if ( isset( $module['_type'] ) ) {
+  if ( ! isset( $element['_region'] ) ) {
+    $element['_region'] = 'top';
+  }
 
-    $decorator  = 'x_module_decorator_' . str_replace( '-', '_', $module['_type'] );
-    $definition = cornerstone_get_element( $module['_type'] );
+  $unique_id = $element['_id'];
 
-    $module     = x_module_decorator_base( $definition->apply_defaults( $module ) );
+  if ( isset( $element['_p'] ) ) {
+    $unique_id = $element['_p'] . '-' . $unique_id;
+  }
 
-    if ( function_exists( $decorator ) ) {
-      $module = call_user_func_array( $decorator, array( $module ) );
+  $element['mod_id'] = 'e' . $unique_id;
+
+  if ( ! empty( $element['hide_bp'] ) ) {
+    $hide_bps = explode( ' ', trim($element['hide_bp']) );
+    foreach ( $hide_bps as $bp ) {
+      if ( $bp == 'none' ) {
+        continue;
+      }
+      $element['class'] .= ' x-hide-' . $bp;
     }
+  }
 
-    // Allow shadow elements to get parent keys
-    // This only applies in direct content rendering like headers/footers
-    if ( ! is_null( $parent ) && $definition->is_child() ) {
+  // Allow shadow elements to get parent keys
+  // This only applies in direct content rendering like headers/footers
+  if ( ! is_null( $parent ) && $definition->is_child() ) {
 
-      $module['p_mod_id'] = $parent['mod_id'];
+    $element['p_mod_id'] = $parent['mod_id'];
 
-      foreach ($parent as $key => $value) {
-        if ( ! isset( $module[$key] ) ) {
-          $module[$key] = $value;
-        }
+    foreach ($parent as $key => $value) {
+      if ( ! isset( $element[$key] ) ) {
+        $element[$key] = $value;
       }
     }
-
   }
 
-  return $module;
-
-}
-
-
-
-// Get Partial Data
-// =============================================================================
-
-function x_get_partial_data( $_custom_data, $args = array() ) {
-
-  // Notes
-  // -----
-  // 01. ['pass_on'] - Grabs any top level data points from $_custom_data for
-  //     use in the partial template.
-  // 02. ['add_in'] - Introduces previously non-existent data for use in the
-  //     partial template. Needs to be after 'pass_on' so things like 'id' or
-  //     'class' can be overwritten as necessary.
-  // 03. ['keep_out'] - Removes any top level data points from $_custom_data to
-  //     avoid potential conflicts in the partial template.
-  // 04. ['find_data'] - (a) Returns $_custom_data with a beginning that matches
-  //     the $key and (b) that $_custom_data is cleaned to reflect the $value as
-  //     the new beginning so it can be passed on to the partial template.
-
-  $defaults = array(
-    'pass_on'   => array( '_region', '_id', '_type', '_transient', '_modules', 'mod_id', 'id', 'class' ),
-    'add_in'    => array(),
-    'keep_out'  => array(),
-    'find_data' => array(),
-  );
-
-  $args         = array_merge( $defaults, $args );
-  $partial_data = array();
-
-  foreach ( $args['pass_on'] as $key ) {
-    if ( isset( $_custom_data[$key]) ) {
-      $partial_data[$key] = $_custom_data[$key]; // 01
-    }
-  }
-
-  foreach ( $args['add_in'] as $key => $value ) {
-    $partial_data[$key] = $value; // 02
-  }
-
-  foreach ( $args['keep_out'] as $key ) {
-    unset( $_custom_data[$key] ); // 03
-  }
-
-  foreach ( $args['find_data'] as $begins_with => $update_to ) :
-
-    foreach ( $_custom_data as $key => $value ) :
-      if ( 0 === strpos( $key, $begins_with )  ) { // 04 a
-
-        if ( ! empty( $update_to ) ) {
-          $key = $update_to . substr( $key, strlen( $begins_with ) );
-        }
-
-        $partial_data[$key] = $value;
-
-      }
-    endforeach;
-
-  endforeach;
-
-  return $partial_data;
-
-}
-
-
-
-// Module Conditions
-// =============================================================================
-// Replaced array_keys( $condition, array() ) with array_keys( $condition ) as
-// it was wrapping an extra array too many times.
-
-function x_module_conditions( $condition ) {
-
-  // $condition = ( count( array_keys( $condition ) ) > 0 ) ? $condition : array( $condition ); // 01
-  $condition = ( count( array_keys( $condition, array() ) ) > 0 ) ? $condition : array( $condition ); // 01
-
-  return $condition;
-
-}
-
-
-
-// Inject Conditions
-// =============================================================================
-
-function x_controls_inject_std_design_controls_condition( $control ) {
-
-  if ( isset($control['group']) && 'std:design' === $control['group'] ) {
-
-    if ( isset( $control['condition'] ) ) {
-      $control['conditions'] = array( $control['condition'] );
-      unset($control['condition']);
-    }
-
-    if ( ! isset( $control['conditions'] ) ) {
-      $control['conditions'] = array();
-    }
-
-    array_push( $control['conditions'], array( 'user_can:{context}.design_controls' => true ));
-
-  }
-
-  return $control;
-
-}
-
-
-
-// Return Bar Mixin Values
-// =============================================================================
-
-function x_bar_mixin_values( $values, $settings ) {
-
-  $theme = ( isset( $settings['theme'] ) && is_array( $settings['theme'] ) ) ? $settings['theme']       : array();
-  $k_pre = ( isset( $settings['k_pre'] )                                   ) ? $settings['k_pre'] . '_' : '';
-
-  $new_values = array();
-
-  foreach ( $theme as $key => $value ) {
-    $new_values[$k_pre . $key] = $value;
-  }
-
-  return wp_parse_args( $new_values, $values );
+  return $element;
 
 }
 
@@ -433,6 +290,8 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     $x_anchor_graphic_icon_alt          = ( isset( $x_item_meta['menu-item-anchor_graphic_icon_alt'] )          ) ? $x_item_meta['menu-item-anchor_graphic_icon_alt'][0]          : '';
     $x_anchor_graphic_image_src         = ( isset( $x_item_meta['menu-item-anchor_graphic_image_src'] )         ) ? $x_item_meta['menu-item-anchor_graphic_image_src'][0]         : '';
     $x_anchor_graphic_image_src_alt     = ( isset( $x_item_meta['menu-item-anchor_graphic_image_src_alt'] )     ) ? $x_item_meta['menu-item-anchor_graphic_image_src_alt'][0]     : '';
+    $x_anchor_graphic_image_alt         = ( isset( $x_item_meta['menu-item-anchor_graphic_image_alt'] )         ) ? $x_item_meta['menu-item-anchor_graphic_image_alt'][0]         : '';
+    $x_anchor_graphic_image_alt_alt     = ( isset( $x_item_meta['menu-item-anchor_graphic_image_alt_alt'] )     ) ? $x_item_meta['menu-item-anchor_graphic_image_alt_alt'][0]     : '';
     $x_anchor_graphic_image_width       = ( isset( $x_item_meta['menu-item-anchor_graphic_image_width'] )       ) ? $x_item_meta['menu-item-anchor_graphic_image_width'][0]       : '';
     $x_anchor_graphic_image_height      = ( isset( $x_item_meta['menu-item-anchor_graphic_image_height'] )      ) ? $x_item_meta['menu-item-anchor_graphic_image_height'][0]      : '';
     $x_anchor_graphic_menu_item_display = ( isset( $x_item_meta['menu-item-anchor_graphic_menu_item_display'] ) ) ? $x_item_meta['menu-item-anchor_graphic_menu_item_display'][0] : '';
@@ -444,6 +303,8 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
       'anchor_graphic_icon_alt'          => $x_anchor_graphic_icon_alt,
       'anchor_graphic_image_src'         => $x_anchor_graphic_image_src,
       'anchor_graphic_image_src_alt'     => $x_anchor_graphic_image_src_alt,
+      'anchor_graphic_image_alt'         => $x_anchor_graphic_image_alt,
+      'anchor_graphic_image_alt_alt'     => $x_anchor_graphic_image_alt_alt,
       'anchor_graphic_image_width'       => $x_anchor_graphic_image_width,
       'anchor_graphic_image_height'      => $x_anchor_graphic_image_height,
       'anchor_graphic_menu_item_display' => $x_anchor_graphic_menu_item_display,
@@ -524,7 +385,7 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     // --------------------
 
     $x_has_unique_sub_styles = in_array( $this->x_menu_type, array( 'inline', 'collapsed' ), true ) && $depth !== 0;
-    $k_pre                   = ( $x_has_unique_sub_styles ) ? 'sub_' : '';
+    $key_prefix              = ( $x_has_unique_sub_styles ) ? 'sub_' : '';
 
 
     // Menu Item Text Output
@@ -532,11 +393,11 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     // 01. Merge meta from the WP menu system into our main data to complete
     //     the whole picture.
 
-    if ( $this->x_menu_data[$k_pre . 'anchor_text_primary_content'] !== 'on' ) {
+    if ( $this->x_menu_data[$key_prefix . 'anchor_text_primary_content'] !== 'on' ) {
       $x_menu_meta_data['anchor_text_primary_content'] = '';
     }
 
-    if ( $this->x_menu_data[$k_pre . 'anchor_text_secondary_content'] !== 'on' ) {
+    if ( $this->x_menu_data[$key_prefix . 'anchor_text_secondary_content'] !== 'on' ) {
       $x_menu_meta_data['anchor_text_secondary_content'] = '';
     }
 
@@ -553,12 +414,12 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
 
     if ( $x_has_unique_sub_styles ) {
 
-      $x_data_args = array(
-        'pass_on'   => array_merge( array_keys( $x_menu_meta_data ), array( '_region', '_id', 'mod_id', 'id', 'class' ) ),
-        'find_data' => array( 'sub_anchor' => 'anchor' ),
-      );
+      $top_level = array_intersect_key( $x_anchor_data, array_flip( array_keys( $x_menu_meta_data ) ) );
 
-      $x_anchor_data = x_get_partial_data( $x_anchor_data, $x_data_args ); // 01
+      $x_anchor_data = array_merge( $top_level, cs_extract( $x_anchor_data, array( 'sub_anchor' => 'anchor' ) ) ); // 01
+
+      unset( $x_anchor_data['_type'] );
+      unset( $x_anchor_data['_modules'] );
 
     }
 
@@ -566,8 +427,9 @@ class X_Walker_Nav_Menu extends Walker_Nav_Menu {
     // Item Output
     // -----------
 
+
     $item_output  = isset( $args->before ) ? $args->before : '';
-    $item_output .= x_get_view( 'partials', 'anchor', '', $x_anchor_data, false );
+    $item_output .= cs_get_partial_view( 'anchor', $x_anchor_data );
 
     if ( isset( $args->after ) ) {
       $item_output .= $args->after;
@@ -749,3 +611,4 @@ class CS_Generated_Nav_Menu { // 02
   }
 
 }
+

@@ -23,7 +23,7 @@ class Cornerstone_Element_Wrapper {
 
 	protected $shortcode_template = null;
 
-	protected static $default_flags = array( 'context' => 'all', 'dynamic_child' => false, 'linked_child' => false, 'child' => false, '_v' => 'mk2', 'can_preview' => true );
+	protected static $default_flags = array( 'library' => 'content', 'context' => 'all', 'dynamic_child' => false, 'linked_child' => false, 'child' => false, '_v' => 'mk2', 'can_preview' => true );
 	protected static $default_ui = array( 'title' => 'Element', 'description' => '', 'autofocus' => '', 'icon_group' => '', 'icon_id' => 'default' );
 	protected static $common_controls = array( 'id', 'class', 'style' );
 
@@ -134,6 +134,10 @@ class Cornerstone_Element_Wrapper {
 				$this->flags['context'] = 'all';
 
 			}
+
+			if ($this->flags['context'] !== 'all') {
+				$this->flags['library'] = false;
+			};
 
 		}
 
@@ -405,7 +409,7 @@ class Cornerstone_Element_Wrapper {
 			$content = '';
 
       if ( $inception && $flags['dynamic_child'] ) { // Added for V2
-			  $content = $inception;
+			  $content = '{%%{children}%%}';
       }
 
 			if ( isset( $element['elements'] ) && is_array( $element['elements'] ) && !empty( $element['elements'] ) ) {
@@ -426,14 +430,6 @@ class Cornerstone_Element_Wrapper {
 
 		return $markup;
 
-	}
-
-	public function migrate( $element, $version ) {
-
-		if ( method_exists( $this->definition, 'migrate' ) )
-			return $this->definition->migrate( $element, $version );
-
-		return $element;
 	}
 
 	public function compose( $data ) {

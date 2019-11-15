@@ -12,7 +12,8 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
       'render'         => false,
       'delegate'       => true,
       'alt_breadcrumb' => __( 'Item', 'cornerstone' ),
-      'protected_keys' => array( 'title', 'content', 'graphic_icon', 'graphic_image', 'graphic_image_alt_text', 'link_text', 'href', 'href_title', 'href_target' )
+      'protected_keys' => array( 'title', 'content', 'graphic_icon', 'graphic_image', 'graphic_image_alt_text', 'link_text', 'href', 'href_title', 'href_target' ),
+      'label_key' => 'title'
     );
   }
 
@@ -41,16 +42,16 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
     $this->addControl(
       'title_color',
       'color',
-      __( 'Title &amp; Content Colors', 'cornerstone' ),
-      __( 'Optionally specify colors for your title and content.', 'cornerstone' ),
+      __( 'Title Color', 'cornerstone' ),
+      __( 'Optionally specify colors for your title.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'text_color',
       'color',
-      NULL,
-      NULL,
+      __( 'Content Color', 'cornerstone' ),
+      __( 'Optionally specify colors for your content.', 'cornerstone' ),
       ''
     );
 
@@ -101,16 +102,16 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
     $this->addControl(
       'graphic_color',
       'color',
-      __( 'Graphic Color &amp; Background Color', 'cornerstone' ),
-      __( 'Specify the color and background color of your graphic.', 'cornerstone' ),
+      __( 'Graphic Color', 'cornerstone' ),
+      __( 'Specify the color of your graphic.', 'cornerstone' ),
       '#ffffff'
     );
 
     $this->addControl(
       'graphic_bg_color',
       'color',
-      NULL,
-      NULL,
+      __( 'Graphic Background Color', 'cornerstone' ),
+      __( 'Specify the background color of your graphic.', 'cornerstone' ),
       '#2ecc71'
     );
 
@@ -194,19 +195,6 @@ class CS_Feature_List_Item extends Cornerstone_Element_Base {
       __( 'Specify a custom color for your Feature List Item link.', 'cornerstone' ),
       ''
     );
-
-  }
-
-  public function migrate( $element, $version ) {
-
-  	if ( version_compare( $version, '1.0.10', '<' ) ) {
-  		if ( !isset( $element['content'] ) || '' == $element['content'] && isset( $element['text'] ) ) {
-				$element['content'] = $element['text'];
-				unset($element['text']);
-			}
-  	}
-
-		return $element;
 
   }
 

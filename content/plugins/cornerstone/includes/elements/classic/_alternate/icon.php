@@ -27,23 +27,23 @@ class CS_Icon extends Cornerstone_Element_Base {
     $this->addControl(
       'icon_color',
       'color',
-      __( 'Icon Color &amp; Background Color', 'cornerstone' ),
-      __( 'Specify custom colors for your icon if desired.', 'cornerstone' ),
+      __( 'Icon Color', 'cornerstone' ),
+      __( 'Specify a custom color for your icon if desired.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'bg_color',
       'color',
-      NULL,
-      NULL,
+      __( 'Icon Background Color', 'cornerstone' ),
+      __( 'Specify a custom background color for your icon if desired.', 'cornerstone' ),
       ''
     );
 
     $this->addControl(
       'icon_size',
       'text',
-      __( 'Icon Size &amp; Background Size', 'cornerstone' ),
+      __( 'Icon Size', 'cornerstone' ),
       __( 'Specify custom dimensions for your icon for use in situations other than inline.', 'cornerstone' ),
       ''
     );
@@ -51,8 +51,8 @@ class CS_Icon extends Cornerstone_Element_Base {
     $this->addControl(
       'bg_size',
       'text',
-      NULL,
-      NULL,
+      __( 'Background Size', 'cornerstone' ),
+      __( 'Specify custom dimensions for your icon for use in situations other than inline.', 'cornerstone' ),
       ''
     );
 

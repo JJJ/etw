@@ -51,7 +51,7 @@ function x_shortcode_accordion_item( $atts, $content = null ) {
   $id        = ( $id    != ''     ) ? 'id="' . esc_attr( $id ) . '"' : '';
   $class     = ( $class != ''     ) ? 'x-accordion-group ' . esc_attr( $class ) : 'x-accordion-group';
   $style     = ( $style != ''     ) ? 'style="' . $style . '"' : '';
-  $title     = ( $title != ''     ) ? $title : 'Make Sure to Set a Title';
+  $title     = ( $title != ''     ) ? $title : __( 'Make Sure to Set a Title'. 'cornerstone' );
 
   GLOBAL $x_accordion_group_id;
 

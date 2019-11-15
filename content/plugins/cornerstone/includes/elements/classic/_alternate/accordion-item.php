@@ -12,7 +12,8 @@ class CS_Accordion_Item extends Cornerstone_Element_Base {
       'render'         => false,
       'delegate'       => true,
       'alt_breadcrumb' => __( 'Item', 'cornerstone' ),
-      'protected_keys' => array( 'title', 'content' )
+      'protected_keys' => array( 'title', 'content' ),
+      'label_key' => 'title'
     );
   }
 
@@ -43,21 +44,5 @@ class CS_Accordion_Item extends Cornerstone_Element_Base {
     );
 
   }
-
-  // public function render( $atts ) {
-
-  //   extract( $atts );
-
-  //   $extra = $this->extra( array(
-  //     'id'    => $id,
-  //     'class' => $class,
-  //     'style' => $style
-  //   ) );
-
-  //   $shortcode = "[x_accordion_item title=\"$title\" open=\"$open\"{$extra}]{$content}[/x_accordion_item]";
-
-  //   return $shortcode;
-
-  // }
 
 }

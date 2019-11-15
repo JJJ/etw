@@ -39,8 +39,8 @@ function x_shortcode_share( $atts ) {
   $share_image_info = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full' );
   $share_image      = ( function_exists( 'x_get_featured_image_with_fallback_url' ) ) ? urlencode( x_get_featured_image_with_fallback_url() ) : urlencode( $share_image_info[0] );
 
-  if ( $linkedin    == 'true' ) {
-    $share_content    = urlencode( cs_get_raw_excerpt() );
+  if ( $linkedin === 'true' ) {
+    $share_content = urlencode( cs_get_raw_excerpt() );
   }
 
   $tooltip_attr = cs_generate_data_attributes_extra( 'tooltip', 'hover', 'bottom' );
@@ -60,7 +60,7 @@ function x_shortcode_share( $atts ) {
   if ( $email       == 'true' ) {
 
     $email_subject = esc_attr( ( $email_subject != '' ) ? cs_decode_shortcode_attribute( $email_subject ) : csi18n('shortcodes.share-email-subject') );
-    $mail_to_subject = esc_url( get_the_title() );
+    $mail_to_subject = esc_attr( $share_title );
     $mail_to_url = esc_url( get_permalink() );
 
     $mail_to = "mailto:?subject=$mail_to_subject&amp;body=$email_subject $mail_to_url";

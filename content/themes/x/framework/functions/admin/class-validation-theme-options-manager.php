@@ -105,12 +105,12 @@ class X_Validation_Theme_Options_Manager {
       'importBegin'      => __( 'Importing&hellip;', '__x__' ),
       'importSuccess'    => __( 'All set! Settings imported.', '__x__' ),
       'importError'      => __( 'The uploaded file was not a valid XCS export.', '__x__' ),
-      'importConfirm'    => __( 'This will overwrite your Customizer settings and is not reversible unless you have previously made a backup of your settings. Are you sure you want to proceed?', '__x__' ),
+      'importConfirm'    => __( 'This will overwrite your Theme Options and is not reversible unless you have previously made a backup of your settings. Are you sure you want to proceed?', '__x__' ),
       'export'           => __( 'Downloading XCS file&hellip;', '__x__' ),
       'resetBegin'       => __( 'Resetting&hellip;', '__x__' ),
-      'resetSuccess'     => __( 'Customizer settings successfully reset!', '__x__' ),
-      'resetError'       => __( 'X was unable to reset the Customizer.', '__x__' ),
-      'resetConfirm'     => __( 'This will reset your Customizer settings and is not reversible unless you have previously made a backup of your settings. Are you sure you want to proceed?', '__x__' )
+      'resetSuccess'     => __( 'Theme Options settings successfully reset!', '__x__' ),
+      'resetError'       => __( 'Unable to reset Theme Options.', '__x__' ),
+      'resetConfirm'     => __( 'This will reset your Theme Options and is not reversible unless you have previously made a backup of your settings. Are you sure you want to proceed?', '__x__' )
     );
   }
 

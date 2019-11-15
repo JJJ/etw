@@ -25,7 +25,7 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
 
   }
 
-  public function query( $params ) {
+  public function query( $params = array() ) {
 
     // Find All
     if ( empty( $params ) || ! isset( $params['query'] ) ) {
@@ -48,10 +48,10 @@ class Cornerstone_Model_Element_Preset extends Cornerstone_Plugin_Component {
       try {
 
         global $wpdb;
-        $results = $this->plugin->component('Template_Manager')->lookup_default_presets();
+        $results = $this->plugin->component('Controller_Presets')->lookup_default_presets();
 
-        foreach ($results as $key => $value) {
-          $record = $this->make_record( (int) $value );
+        foreach ($results as $preset) {
+          $record = $this->make_record( (int) $preset );
           if ( $record ) {
             $queried[] = $this->to_resource( $record );
           }

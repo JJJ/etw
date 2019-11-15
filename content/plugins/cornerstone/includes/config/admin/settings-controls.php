@@ -2,30 +2,6 @@
 
 return array(
 
-  // 'allowed_post_types' => array(
-	// 	'type' => 'multi-select',
-	// 	'ui' => array(
-	// 		'title'   => __( 'Allowed Post Types', 'cornerstone' ),
-	// 		'description' => __( 'Select which post types to enable for the Content Builder.', 'cornerstone' ),
-	// 	),
-	// 	'options' => array(
-	// 		'placeholder' => __( 'Click to select post types.', 'cornerstone' ),
-	// 		'choices' => $this->component( 'Settings_Handler' )->get_post_type_choices()
-	// 	)
-	// ),
-  //
-  // 'permitted_roles' => array(
-	// 	'type' => 'multi-select',
-	// 	'ui' => array(
-	// 		'title'       => __( 'Content Roles', 'cornerstone' ),
-	// 		'description' => __( 'Allow content editing for roles other than Administrator.', 'cornerstone' ),
-	// 	),
-	// 	'options' => array(
-	// 		'placeholder' => __( 'Click to choose additional roles.', 'cornerstone' ),
-	// 		'choices' => $this->component( 'Settings_Handler' )->get_role_choices()
-	// 	)
-	// ),
-
   'custom_app_slug' => array(
     'type' => 'text',
     'ui' => array(

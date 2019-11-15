@@ -19,7 +19,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
   public function post_loaded() {
 
     $this->load_styles = true;
-    $this->load_element_data( get_the_ID() );
+    $this->load_element_data( apply_filters( 'cs_element_post_id', get_the_ID() ) );
 
   }
 
@@ -30,10 +30,19 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
     add_shortcode( 'cs_context', array( $this, 'shortcode_output' ) );
     add_shortcode( 'cs_gb', array( $this, 'global_block_shortcode_output' ) );
 
+    $nested = apply_filters( 'cs_nested_element_types', array( 'row', 'column', 'layout-row', 'layout-column', 'layout-grid', 'layout-cell' ) );
+
     foreach ($elements as $name) {
       if ( false === strpos($name, 'classic:' ) ) {
         $tag = "cs_element_" . str_replace('-', '_', $name );
         add_shortcode( $tag, array( $this, 'shortcode_output' ) );
+
+        // Add more shortcodes to indicate depth
+        if ( in_array( $name, $nested, true ) ) {
+          for ( $i = 2;  $i <= 10;  $i++) {
+            add_shortcode( "{$tag}_$i", array( $this, 'shortcode_output' ) );
+          }
+        }
       }
     }
 
@@ -93,7 +102,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
     $target_id = $this->target_post_id;
 
     if ( is_null( $target_id ) ) {
-      $target_id = get_the_ID();
+      $target_id = apply_filters( 'cs_element_post_id', get_the_ID() );
     }
 
     if ( isset( $atts['_id'] ) ) {
@@ -121,7 +130,7 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
     if ( $definition->is_child() && is_array( $parent_atts ) ) {
 
-      $parent_atts = x_module_decorate( $parent_atts );
+      $parent_atts = x_element_decorate( $parent_atts );
 
       $data['p_mod_id'] = $parent_atts['mod_id'];
 
@@ -159,14 +168,10 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
       $element['_modules'] = ( isset( $content ) ) ? do_shortcode($content) : '';
     }
 
-
     array_pop($this->ancestor_data);
 
-    ob_start();
+    $output = $definition->render( x_element_decorate( $element ) );
 
-    $definition->render( $element );
-
-    $output = ob_get_clean();
     if ( isset( $atts['_p'] ) ) {
       $this->target_post_id = array_pop($this->previous_target_stack);
     }
@@ -183,6 +188,10 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
       if ( 'styles/elements' === $directory ) {
         $base_path = 'styles/elements';
+      }
+
+      if ( 'styles/partials' === $directory ) {
+        $base_path = 'styles/partials';
       }
 
       if ( 'elements' === $directory ) {
@@ -344,23 +353,23 @@ class Cornerstone_Element_Front_End extends Cornerstone_Plugin_Component {
 
   public function global_block_shortcode_output( $atts ) {
 
-
     $this->load_styles = true;
-    extract( shortcode_atts( array(
+
+    $atts = shortcode_atts( array(
       'id'    => '',
       'class'    => '',
-    ), $atts, 'cs_gb' ) );
-
-    $definition = $this->plugin->component('Element_Manager')->get_element( 'global-block' );
+    ), $atts, 'cs_gb' );
 
     ob_start();
 
-    $definition->render( array(
-      '_id'             => '',
-      '_type'           => 'global-block',
-      'global_block_id' => $id,
-      'class'           => $class
-    ) );
+    x_render_elements( array(
+      array(
+        '_id'             => '',
+        '_type'           => 'global-block',
+        'global_block_id' => $atts['id'],
+        'class'           => $atts['class']
+      )
+    ));
 
     return ob_get_clean();
 

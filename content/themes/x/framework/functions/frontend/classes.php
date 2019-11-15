@@ -15,6 +15,7 @@
 //   03. Main Content Class
 //   04. Sidebar Class
 //   05. Portfolio Entry Class
+//   06. Responsive Embeds
 // =============================================================================
 
 // Body Class
@@ -52,14 +53,22 @@ if ( ! function_exists( 'x_body_class' ) ) :
     // Stack.
     //
 
-    $output[] .= 'x-' . $stack;
+    if ( $stack == 'icon' ) {
 
-    if ( $stack == 'integrity' ) {
-      if ( $integrity_design_dark ) {
-        $output[] .= 'x-integrity-dark';
-      } else {
-        $output[] .= 'x-integrity-light';
+      $output[] .= 'x-stack-' . $stack;
+
+    } else {
+
+      $output[] .= 'x-' . $stack;
+
+      if ( $stack == 'integrity' ) {
+        if ( $integrity_design_dark ) {
+          $output[] .= 'x-integrity-dark';
+        } else {
+          $output[] .= 'x-integrity-light';
+        }
       }
+
     }
 
 
@@ -261,5 +270,16 @@ if ( ! function_exists( 'x_sidebar_class' ) ) :
 
     echo $output;
 
+  }
+endif;
+
+// Responsive Embeds
+// =============================================================================
+
+add_filter('embed_oembed_html', 'x_responsive_embed_class', 10, 3);
+
+if ( ! function_exists( 'x_responsive_embed_class' ) ) :
+  function x_responsive_embed_class($html, $url, $attr) {
+      return $html!=='' ? '<div class="x-resp-embed">'.$html.'</div>' : '';
   }
 endif;

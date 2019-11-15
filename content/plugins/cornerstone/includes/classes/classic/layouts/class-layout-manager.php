@@ -2,7 +2,6 @@
 class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 
 	private $registry = array();
-	protected $data_controller;
 	protected $loaded = false;
 
 	public function setup() {
@@ -205,8 +204,6 @@ class Cornerstone_Layout_Manager extends Cornerstone_Plugin_Component {
 			'posts_per_page' => apply_filters( 'cs_query_limit', 2500 ),
 			'post_status' => 'any'
 		) );
-
-		//var_dump($query->posts);die();
 
 		foreach ($query->posts as $post) {
 			$template = array(

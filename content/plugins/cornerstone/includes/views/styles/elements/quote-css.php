@@ -10,9 +10,9 @@
 // TABLE OF CONTENTS
 // -----------------------------------------------------------------------------
 //   01. Base
-//   02. Quote
+//   02. Text
 //   03. Cite
-//   04. Quote Marks
+//   04. Marks
 // =============================================================================
 
 // Base
@@ -161,11 +161,11 @@
 
     <?php
 
-    $graphic_no_base  = true;
-    $graphic_selector = ' .x-quote-cite-mark';
-    $graphic_k_pre    = 'quote_cite';
-
-    include( '_graphic-css.php' );
+    echo cs_get_partial_style( 'graphic', array(
+      'no_base' => true,
+      'selector' => ' .x-quote-cite-mark',
+      'key_prefix' => 'quote_cite'
+    ) );
 
     ?>
 
@@ -183,7 +183,7 @@
 
 <?php
 
-// Quote Marks
+// Marks
 // =============================================================================
 
 ?>
@@ -202,11 +202,11 @@
 
   <?php
 
-  $graphic_no_base  = true;
-  $graphic_selector = ' .x-quote-mark-opening';
-  $graphic_k_pre    = 'quote_marks_opening';
-
-  include( '_graphic-css.php' );
+  echo cs_get_partial_style( 'graphic', array(
+    'no_base' => true,
+    'selector' => ' .x-quote-mark-opening',
+    'key_prefix' => 'quote_marks_opening'
+  ) );
 
   ?>
 
@@ -220,11 +220,11 @@
 
   <?php
 
-  $graphic_no_base  = true;
-  $graphic_selector = ' .x-quote-mark-closing';
-  $graphic_k_pre    = 'quote_marks_closing';
-
-  include( '_graphic-css.php' );
+  echo cs_get_partial_style( 'graphic', array(
+    'no_base' => true,
+    'selector' => ' .x-quote-mark-closing',
+    'key_prefix' => 'quote_marks_closing'
+  ) );
 
   ?>
 

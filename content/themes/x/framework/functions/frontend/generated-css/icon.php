@@ -22,6 +22,7 @@
 //   11. Custom Fonts - Colors
 //   12. Responsive Styling
 //   13. Adminbar Styling
+//   14. Gutenberg
 // =============================================================================
 
 $x_icon_post_title_icon_enable      = x_get_option( 'x_icon_post_title_icon_enable' );
@@ -562,7 +563,7 @@ input[type="color"]:focus,
 .comment-form-url label,
 .comment-form-rating label,
 .comment-form-comment label {
-  font-family: "<?php echo $x_headings_font_stack; ?>";
+  font-family: <?php echo $x_headings_font_stack; ?>;
 }
 
 
@@ -651,8 +652,79 @@ input[type="color"]:focus,
   */
 
   @media (min-width: 1200px) {
-    .admin-bar.x-icon                     .x-sidebar { top: 32px; }
-    .admin-bar.x-icon.x-full-width-active .x-sidebar { top: 0;    }
+    .admin-bar.x-stack-icon                     .x-sidebar { top: 32px; }
+    .admin-bar.x-stack-icon.x-full-width-active .x-sidebar { top: 0;    }
+  }
+
+<?php endif; ?>
+
+
+
+/* Gutenberg
+// ========================================================================== */
+
+<?php if ( $x_layout_site == 'boxed' ) : ?>
+
+  <?php
+
+  $w_wide         = $x_layout_site_max_width * 0.92;
+  $w_full         = $x_layout_site_max_width * 1;
+  $w_current      = $x_layout_site_max_width * ($x_layout_site_width / 100);
+
+  $val_wide_w     = 'calc((' . $w_wide . ' / ' . $w_current . ') * 100%)';
+  $val_wide_max_w = $val_wide_w;
+  $val_wide_m_l   = 'calc((((' . $w_wide . ' / ' . $w_current . ') * 100%) - 100%) / -2)';
+
+  $val_full_w     = 'calc((' . $w_full . ' / ' . $w_current . ') * 100%)';
+  $val_full_max_w = $val_full_w;
+  $val_full_m_l   = 'calc((((' . $w_full . ' / ' . $w_current . ') * 100%) - 100%) / -2)';
+
+  ?>
+
+  .x-content-sidebar-active .alignwide,
+  .x-sidebar-content-active .alignwide {
+    width: <?php echo $val_wide_w; ?>;
+    max-width: <?php echo $val_wide_max_w; ?>;
+    margin-left: <?php echo $val_wide_m_l; ?>;
+  }
+
+  @media (min-width: 1200px) {
+    .x-content-sidebar-active .alignwide,
+    .x-sidebar-content-active .alignwide {
+      width: auto;
+      max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .x-content-sidebar-active .alignfull,
+  .x-sidebar-content-active .alignfull {
+    width: <?php echo $val_full_w; ?>;
+    max-width: <?php echo $val_full_max_w; ?>;
+    margin-left: <?php echo $val_full_m_l; ?>;
+  }
+
+  @media (min-width: 1200px) {
+    .x-content-sidebar-active .alignfull,
+    .x-sidebar-content-active .alignfull {
+      width: auto;
+      max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .x-full-width-active .alignwide {
+    width: <?php echo $val_wide_w; ?>;
+    max-width: <?php echo $val_wide_max_w; ?>;
+    margin-left: <?php echo $val_wide_m_l; ?>;
+  }
+
+  .x-full-width-active .alignfull {
+    width: <?php echo $val_full_w; ?>;
+    max-width: <?php echo $val_full_max_w; ?>;
+    margin-left: <?php echo $val_full_m_l; ?>;
   }
 
 <?php endif; ?>

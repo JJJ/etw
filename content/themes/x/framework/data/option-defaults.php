@@ -6,6 +6,9 @@
 // brought through from Theme Options (i.e. a user doesn't change an option).
 //
 
+$blog_title = __( 'The Blog', '__x__' );
+$shop_title = __( 'The Shop', '__x__' );
+
 return array(
 
   'x_stack'                                             => 'integrity',
@@ -14,12 +17,12 @@ return array(
   'x_integrity_navbar_transparency_enable'              => '',
   'x_integrity_footer_transparency_enable'              => '',
   'x_integrity_blog_header_enable'                      => '1',
-  'x_integrity_blog_title'                              => __( 'The Blog', '__x__' ),
+  'x_integrity_blog_title'                              => $blog_title,
   'x_integrity_blog_subtitle'                           => __( 'Welcome to our little corner of the Internet. Kick your feet up and stay a while.', '__x__' ),
   'x_integrity_portfolio_archive_sort_button_text'      => __( 'Sort Portfolio', '__x__' ),
   'x_integrity_portfolio_archive_post_sharing_enable'   => '',
   'x_integrity_shop_header_enable'                      => '1',
-  'x_integrity_shop_title'                              => __( 'The Shop', '__x__' ),
+  'x_integrity_shop_title'                              => $shop_title,
   'x_integrity_shop_subtitle'                           => __( 'Welcome to our online store. Take some time to browse through our items.', '__x__' ),
   'x_renew_topbar_background'                           => '#1f2c39',
   'x_renew_logobar_background'                          => '#2c3e50',
@@ -36,7 +39,7 @@ return array(
   'x_renew_entry_icon_position'                         => 'standard',
   'x_renew_entry_icon_position_horizontal'              => '18',
   'x_renew_entry_icon_position_vertical'                => '25',
-  'x_renew_shop_title'                                  => __( 'The Shop', '__x__' ),
+  'x_renew_shop_title'                                  => $shop_title,
   'x_icon_post_title_icon_enable'                       => '1',
   'x_icon_post_standard_colors_enable'                  => '',
   'x_icon_post_standard_color'                          => '#d1f2eb',
@@ -59,7 +62,7 @@ return array(
   'x_icon_post_link_colors_enable'                      => '',
   'x_icon_post_link_color'                              => '#f9d0cc',
   'x_icon_post_link_background'                         => '#c0392b',
-  'x_icon_shop_title'                                   => __( 'The Shop', '__x__' ),
+  'x_icon_shop_title'                                   => $shop_title,
   'x_ethos_topbar_background'                           => '#222222',
   'x_ethos_navbar_background'                           => '#333333',
   'x_ethos_sidebar_widget_headings_color'               => '#333333',
@@ -82,7 +85,7 @@ return array(
   'x_ethos_post_slider_archive_display'                 => 'most-commented',
   'x_ethos_filterable_index_enable'                     => '',
   'x_ethos_filterable_index_categories'                 => '',
-  'x_ethos_shop_title'                                  => __( 'The Shop', '__x__' ),
+  'x_ethos_shop_title'                                  => $shop_title,
   'x_layout_site'                                       => 'full-width',
   'x_layout_site_max_width'                             => '1200',
   'x_layout_site_width'                                 => '88',
@@ -143,12 +146,14 @@ return array(
   'x_logobar_adjust_spacing_bottom'                     => '15',
   'x_navbar_height'                                     => '90',
   'x_navbar_width'                                      => '235',
+  'x_logo_text'                                         => '',
   'x_logo_font_family'                                  => 'Lato',
   'x_logo_font_color'                                   => '#272727',
   'x_logo_font_size'                                    => '42',
   'x_logo_font_weight'                                  => '700',
   'x_logo_letter_spacing'                               => '-0.035',
   'x_logo_uppercase_enable'                             => '',
+  'x_logo_visually_hidden_h1'                           => false,
   'x_logo'                                              => '',
   'x_logo_width'                                        => '',
   'x_logo_adjust_navbar_top'                            => '22',
@@ -222,6 +227,7 @@ return array(
   'x_buddypress_register_subtitle'                      => __( 'Just fill in the fields below and we\'ll get a new account set up for you in no time!', '__x__' ),
   'x_buddypress_activate_subtitle'                      => __( 'You\'re almost there! Simply enter your activation code below and we\'ll take care of the rest.', '__x__' ),
   'x_woocommerce_header_menu_enable'                    => '',
+  'x_woocommerce_header_hide_empty_cart'                => '',
   'x_woocommerce_header_cart_info'                      => 'outer-inner',
   'x_woocommerce_header_cart_style'                     => 'square',
   'x_woocommerce_header_cart_layout'                    => 'inline',
