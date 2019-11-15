@@ -29,7 +29,7 @@ echo '<?xml version="1.0"?' . ">\n";
 	<head>
 		<title>
 		<?php
-			/* translators: %s: site name */
+			/* translators: %s: Site title. */
 			printf( __( 'Links for %s' ), esc_attr( get_bloginfo( 'name', 'display' ) ) );
 		?>
 		</title>
@@ -63,13 +63,7 @@ if ( empty( $link_cat ) ) {
 }
 
 foreach ( (array) $cats as $cat ) :
-	/**
-	 * Filters the OPML outline link category name.
-	 *
-	 * @since 2.2.0
-	 *
-	 * @param string $catname The OPML outline category name.
-	 */
+	/** This filter is documented in wp-includes/bookmark-template.php */
 	$catname = apply_filters( 'link_category', $cat->name );
 
 	?>
