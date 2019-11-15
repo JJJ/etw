@@ -1,0 +1,3115 @@
+# Copyright (C) 2019 WooCommerce
+# This file is distributed under the GNU General Public License v3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Square 2.0.6\n"
+"Report-Msgid-Bugs-To: "
+"https://github.com/woocommerce/woocommerce-square/issues\n"
+"POT-Creation-Date: 2019-08-19 13:09:58+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"X-Generator: grunt-wp-i18n 1.0.3\n"
+
+#: includes/AJAX.php:104
+msgid "Please mark product as un-synced and save, then synced again."
+msgstr ""
+
+#: includes/AJAX.php:117
+#. translators: Placeholders: %1$s = error message, %2$s = help text
+msgid "Unable to fetch inventory: %1$s. %2$s"
+msgstr ""
+
+#: includes/AJAX.php:122
+#. translators: Placeholders: %s = help text
+msgid "Error finding item in Square. %s"
+msgstr ""
+
+#: includes/AJAX.php:140
+msgid "Could not start import. Please try again."
+msgstr ""
+
+#: includes/AJAX.php:143
+msgid ""
+"Your products are being imported in the background! This may take some time "
+"to complete."
+msgstr ""
+
+#: includes/AJAX.php:189
+msgid "Could not delete records."
+msgstr ""
+
+#: includes/AJAX.php:198
+msgid "Could not delete record."
+msgstr ""
+
+#: includes/AJAX.php:209
+msgid "Could not resolve record."
+msgstr ""
+
+#: includes/AJAX.php:222
+msgid "Could not unsync product."
+msgstr ""
+
+#: includes/AJAX.php:234
+#. translators: Placeholder: %s - error message
+msgid "An error occurred. %s"
+msgstr ""
+
+#: includes/AJAX.php:279
+#. translators: Placeholder: %s - sync job ID
+msgid "No sync job in progress found %s"
+msgstr ""
+
+#: includes/Admin/Privacy.php:46 includes/Admin/Settings_Page.php:55
+#: includes/Gateway.php:58 includes/Settings.php:144 includes/Settings.php:566
+msgid "Square"
+msgstr ""
+
+#: includes/Admin/Privacy.php:48
+msgid "WooCommerce Square Customer Data"
+msgstr ""
+
+#: includes/Admin/Privacy.php:62
+#. translators: Placeholder: %1$s - <a> tag, %2$s - </a> tag
+msgid ""
+"By using this extension, you may be storing personal data or sharing data "
+"with an external service. %1$sLearn more about how this works, including "
+"what you may want to include in your privacy policy.%2$s"
+msgstr ""
+
+#: includes/Admin/Privacy.php:93
+msgid "Square User Data Erased."
+msgstr ""
+
+#: includes/Admin/Products.php:62
+msgid ""
+"Please add a SKU to sync this product with Square. The SKU must match the "
+"item's SKU in your Square account."
+msgstr ""
+
+#: includes/Admin/Products.php:63
+msgid ""
+"Please add a SKU to every variation of this variable product for syncing "
+"with Square. Each SKU must match the corresponding item's SKU in your "
+"Square account."
+msgstr ""
+
+#: includes/Admin/Products.php:64
+msgid "Products with multiple variation attributes cannot be synced with Square."
+msgstr ""
+
+#: includes/Admin/Products.php:168 includes/Admin.php:113
+msgid "Synced with Square"
+msgstr ""
+
+#: includes/Admin/Products.php:264
+msgid "Update product data with Square data"
+msgstr ""
+
+#: includes/Admin/Products.php:264
+msgid "Send product data to Square"
+msgstr ""
+
+#: includes/Admin/Products.php:268
+msgid "Sync with Square"
+msgstr ""
+
+#: includes/Admin/Products.php:303
+msgid "Sync with Square?"
+msgstr ""
+
+#: includes/Admin/Products.php:307
+msgid "No change"
+msgstr ""
+
+#: includes/Admin/Products.php:309
+msgid "No"
+msgstr ""
+
+#: includes/Admin/Products.php:310
+msgid "Yes"
+msgstr ""
+
+#: includes/Admin/Products.php:672
+#. translators: Placeholder: %1$s - date (localized), %2$s - time (localized),
+#. %3$s - opening <a> HTML link tag, %4$s closing </a> HTML link tag
+msgid ""
+"The product catalog visibility has been set to \"hidden\", as a matching "
+"product could not be found in Square on %1$s at %2$s. %3$sCheck sync "
+"records%4$s."
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:145
+msgid "Settings"
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:146 includes/Admin/Sync_Page.php:50
+msgid "Update"
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:173
+msgid "Import Products From Square"
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:175 includes/Admin/Sync_Page.php:334
+msgid "Close modal window"
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:180
+#. translators: Placeholders: %1$s - <strong>, %2%s - </strong>
+msgid ""
+"You are about to import all products from Square. This will create a new "
+"product in WooCommerce for every product retrieved from Square. %1$sOnly "
+"use this action to perform a one-time import!%2$s"
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:184 includes/Admin/Sync_Page.php:366
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:133
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:66
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:227
+msgid "Cancel"
+msgstr ""
+
+#: includes/Admin/Settings_Page.php:185 includes/Settings.php:165
+msgid "Import Products"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:54
+msgid "Sync records"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:79
+#. translators: Placeholders: %1$s, %3$s - opening <strong> HTML tag, %2$s,
+#. $4%s - closing </strong> HTML tag
+msgid ""
+"%1$sSquare%2$s is the system of record. The following data from Square will "
+"overwrite WooCommerce data for synced products: %3$sname, price, "
+"inventory%4$s."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:88
+#. translators: Placeholders: %1$s - opening <strong> HTML tag, %2$s closing
+#. </strong> HTML tag
+msgid ""
+"%1$sProduct images%2$s will be imported from Square if no featured image is "
+"set in WooCommerce."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:100
+#. translators: Placeholders: %1$s, %3$s - opening <strong> HTML tag, %2$s,
+#. %4$s - closing </strong> HTML tag
+msgid ""
+"%1$sWooCommerce%2$s is the system of record. The following data from "
+"WooCommerce will overwrite Square data for synced products: %3$sname, "
+"price, inventory, category, image%4$s."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:112
+#. translators: Placeholders: %1$s - opening <strong> HTML tag, %2$s closing
+#. </strong> HTML tag
+msgid ""
+"%1$sNo chosen system of record.%2$s Products will not be synced between "
+"Square and WooCommerce."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:145
+msgid "Please connect to Square to enable product sync."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:147
+msgid "There are currently no products marked to be synced with Square."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:149
+msgid "A sync is currently in progress. Please try again later."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:154
+#. translators: Placeholder: %s - reason text
+msgid "Product sync between WooCommerce and Square is currently unavailable. %s"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:161
+msgid "Synced products"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:162
+msgid "Latest sync"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:163
+msgid "Next sync"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:164 includes/Admin/Sync_Page.php:270
+#: includes/Admin/Sync_Page.php:311
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:426
+msgid "Actions"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:173 includes/Emails/Sync_Completed.php:329
+#. translators: Placeholder: %d number of products synced with Square
+#. translators: Placeholder: %d products count
+msgid "%d product"
+msgid_plural "%d products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Sync_Page.php:190
+msgid "Importing now&hellip;"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:192
+msgid "Syncing now&hellip;"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:207
+msgid "Not synced yet."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:239
+msgid "Sync now"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:268 includes/Admin/Sync_Page.php:309
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:97
+msgid "Status"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:269 includes/Admin/Sync_Page.php:310
+msgid "Message"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:300
+msgid "No records found."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:332
+msgid "Sync products with Square"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:342
+msgid ""
+"If a match is found in Square, product data in WooCommerce will be "
+"overwritten with Square data."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:344
+msgid ""
+"If a match is found in WooCommerce, product data in Square will be "
+"overwritten with WooCommerce data."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:348
+msgid ""
+"If a match is not found in Square, the product will be hidden from the "
+"catalog in WooCommerce."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:350
+msgid "If a match is not found in Square, the product will be skipped in the sync."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:353
+msgid "If a match is not found, a new product will be created in Square."
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:359
+#. translators: Placeholders: %1$s - the system of record name (e.g. Square or
+#. WooCommerce), %3%s - unordered HTML list of additional information item(s)
+msgid ""
+"You are about to sync products with Square. %1$s is your system of record. "
+"For all products synced with Square: %2$s"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:367
+msgid "Start sync"
+msgstr ""
+
+#: includes/Admin.php:114
+msgid "Managed by Square"
+msgstr ""
+
+#: includes/Admin.php:115
+msgid "Fetch stock from Square"
+msgstr ""
+
+#: includes/Admin.php:147 includes/Sync/Records/Record.php:206
+msgid "Resolved"
+msgstr ""
+
+#: includes/Admin.php:148
+msgid "No records found"
+msgstr ""
+
+#: includes/Admin.php:149
+msgid "Skipped"
+msgstr ""
+
+#: includes/Admin.php:150
+msgid "Imported"
+msgstr ""
+
+#: includes/Admin.php:152
+msgid "Enable to fetch inventory changes from Square"
+msgstr ""
+
+#: includes/Admin.php:153
+msgid "Enable to push inventory changes to Square"
+msgstr ""
+
+#: includes/Admin.php:156 includes/Settings.php:154
+msgid "Inventory is fetched from Square periodically and updated in WooCommerce"
+msgstr ""
+
+#: includes/Admin.php:159
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag
+msgid ""
+"Inventory is %1$salways fetched from Square%2$s periodically to account for "
+"sales from other channels."
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:51
+msgid "Square sync completed"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:52
+msgid ""
+"This email is sent once a manual sync has been completed between "
+"WooCommerce and Square"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:93
+#. translators: Placeholder: %s - default email subject text
+msgid ""
+"This controls the email subject line. Leave blank to use the default "
+"subject: %s"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:101
+msgid "Recipient(s)"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:104
+#. translators: Placeholder: %s default email address
+msgid ""
+"Enter recipients (comma separated) for this email. Defaults to admin email: "
+"%s"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:126
+msgid "Square sync failed"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:209
+#. translators: Placeholders: %1$s - opening <a> HTML link tag, %2$s - closing
+#. </a> HTML link tag
+msgid "%1$sInspect status logs%2$s"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:215
+#. translators: Placeholders: %1$s - opening <a> HTML link tag, %2$s - closing
+#. </a> HTML link tag
+msgid "%1$sEnable logging%2$s"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:222
+#. translators: Placeholders: %1$s - opening <a> HTML link tag, %2$s - closing
+#. </a> HTML link tag, %3$s - additional action
+msgid "The sync job has failed. %1$sClick for more details%2$s, or %3$s."
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:230
+msgid "Inspect status logs"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:232 includes/Settings.php:179
+msgid "Enable Logging"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:237
+#. translators: Placeholders: %s - additional action
+msgid "The sync job has failed. Check sync records, or %s."
+msgstr ""
+
+#: includes/Gateway/API/Requests/Orders.php:81
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:555
+msgid "Discount"
+msgstr ""
+
+#: includes/Gateway/Payment_Form.php:95
+msgid "Postal code"
+msgstr ""
+
+#: includes/Gateway/Payment_Form.php:147 includes/Gateway.php:188
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Hosted_Payment_Handler.php:216
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2758
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:376
+msgid "An error occurred, please try again or try an alternate form of payment."
+msgstr ""
+
+#: includes/Gateway.php:59
+msgid "Allow customers to use Square to securely pay with their credit cards"
+msgstr ""
+
+#: includes/Gateway.php:356
+msgid "Refunds must be made within 120 days of the original payment date."
+msgstr ""
+
+#: includes/Gateway.php:381
+msgid ""
+"Could not find original transaction tender. Please refund this transaction "
+"from your Square dashboard."
+msgstr ""
+
+#: includes/Gateway.php:496
+msgid "Customer Profiles"
+msgstr ""
+
+#: includes/Handlers/Background_Job.php:339
+msgid "Clear Square Sync"
+msgstr ""
+
+#: includes/Handlers/Background_Job.php:340
+msgid "Clear"
+msgstr ""
+
+#: includes/Handlers/Background_Job.php:341
+msgid "This tool will clear any ongoing Square product syncs."
+msgstr ""
+
+#: includes/Handlers/Background_Job.php:360
+msgid "Success! You can now sync your products."
+msgstr ""
+
+#: includes/Handlers/Connection.php:113 includes/Handlers/Connection.php:159
+msgid "Sorry, you do not have permission to manage the Square connection."
+msgstr ""
+
+#: includes/Handlers/Connection.php:189
+msgid "Disconnected successfully"
+msgstr ""
+
+#: includes/Handlers/Connection.php:373
+msgid "Connect with Square"
+msgstr ""
+
+#: includes/Handlers/Connection.php:393
+msgid "Disconnect from Square"
+msgstr ""
+
+#: includes/Handlers/Product.php:311
+msgid "Product not synced with Square"
+msgstr ""
+
+#: includes/Handlers/Sync.php:318
+#. translators: Placeholder: %d number of products processed
+msgid "Updated data for %d product."
+msgid_plural "Updated data for %d products."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Plugin.php:269
+msgid ""
+"Heads up! There may be a problem with your connection to Square. In order "
+"to continue accepting payments, please %1$sdisconnect and re-connect your "
+"site%2$s."
+msgstr ""
+
+#: includes/Plugin.php:281
+msgid "You are connected to Square!"
+msgstr ""
+
+#: includes/Plugin.php:288
+msgid "To get started, set your business location."
+msgstr ""
+
+#: includes/Plugin.php:294
+#. translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag
+msgid "Visit the %1$splugin settings%2$s to set your business location."
+msgstr ""
+
+#: includes/Plugin.php:303
+msgid "You are ready to sync products!"
+msgstr ""
+
+#: includes/Plugin.php:309
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - product count, %3$s -
+#. </strong> tag, %4$s - <a> tag, %5$s - </a> tag
+msgid ""
+"%1$s%2$d products%3$s are marked \"sync with Square\". %4$sStart a new sync "
+"now &raquo;%5$s"
+msgstr ""
+
+#: includes/Plugin.php:318
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
+#. <a> tag, %4$s - </a> tag
+msgid ""
+"%1$sNo products%2$s are marked \"sync with Square\". %3$sUpdate your "
+"products to sync data &raquo;%4$s"
+msgstr ""
+
+#: includes/Plugin.php:331
+msgid ""
+"Heads up! Square is configured to sync product inventory, but WooCommerce "
+"stock management is disabled. Please %1$senable stock management%2$s to "
+"ensure product inventory counts are kept in sync."
+msgstr ""
+
+#: includes/Plugin.php:344
+msgid "To get started, connect with Square."
+msgstr ""
+
+#: includes/Plugin.php:350
+#. translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag
+msgid "To get started, %1$sconnect with Square &raquo;%2$s"
+msgstr ""
+
+#: includes/Plugin.php:357
+#. translators: Placeholders: %1$s - plugin name
+msgid "Thanks for installing %1$s!"
+msgstr ""
+
+#: includes/Plugin.php:378
+#. translators: Placeholders: %1$s - plugin name, %2$ - plugin version number,
+#. %3$s - opening <a> HTML link tag, %4$s - closing </a> HTML link tag,  %5$s -
+#. opening <a> HTML link tag, %6$s - closing </a> HTML link tag
+msgid ""
+"%1$s has been updated to version %2$s. In order to continue syncing product "
+"inventory, please make sure to disconnect and reconnect with Square from "
+"the %3$splugin settings%4$s and re-sync your products. Read more in the "
+"%5$supdated documentation%6$s."
+msgstr ""
+
+#: includes/Plugin.php:412
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
+#. 2-character country code, %4$s - comma separated list of 2-character country
+#. codes
+msgid ""
+"%1$sWooCommerce Square:%2$s Your base country is %3$s, but Square can’t "
+"accept transactions from merchants outside of %4$s."
+msgstr ""
+
+#: includes/Plugin.php:434
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
+#. <a> tag, %4$s - </a> tag
+msgid ""
+"%1$sWooCommerce Square:%2$s It looks like your site does not support "
+"background processing, which means large numbers of products may not sync "
+"successfully with Square. %3$sRead more here%4$s on how to resolve this."
+msgstr ""
+
+#: includes/Plugin.php:461
+msgid ""
+"%1$sWooCommerce Square:%2$s Product prices are entered inclusive of tax, "
+"but Square does not support syncing tax-inclusive prices. Please make sure "
+"your Square tax rates match your WooCommerce tax rates."
+msgstr ""
+
+#: includes/Plugin.php:487
+msgid ""
+"Heads up! Your store currency is %1$s but your configured Square business "
+"location currency is %2$s, so payments cannot be processed. Please "
+"%3$schoose a different business location%4$s or change your %5$sshop "
+"currency%6$s."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Square"
+msgstr ""
+
+#: includes/Settings.php:100
+#. translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag
+msgid ""
+"Sync your products and inventory and also accept credit and debit card "
+"payments at checkout. %1$sClick here%2$s to configure payments."
+msgstr ""
+
+#: includes/Settings.php:106
+msgid ""
+"Connect with Square to start syncing your products and inventory and also "
+"accept credit and debit card payments at checkout."
+msgstr ""
+
+#: includes/Settings.php:120
+msgid "Business location"
+msgstr ""
+
+#: includes/Settings.php:125
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
+#. <a> tag, %4$s - </a> tag
+msgid ""
+"Select a location to link to this site. Only %1$sactive%2$s "
+"%3$slocations%4$s that support credit card processing in Square can be "
+"linked."
+msgstr ""
+
+#: includes/Settings.php:133
+msgid "Product system of record"
+msgstr ""
+
+#: includes/Settings.php:138
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s -
+#. <a> tag, %4$s - </a> tag
+msgid ""
+"Choose where you will update data for synced products. Inventory in Square "
+"is %1$salways%2$s checked for adjustments when sync is enabled. %3$sClick "
+"here%4$s to read more about choosing a system of record."
+msgstr ""
+
+#: includes/Settings.php:143
+msgid "Do not sync product data"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WooCommerce"
+msgstr ""
+
+#: includes/Settings.php:151
+msgid "Sync inventory"
+msgstr ""
+
+#: includes/Settings.php:152
+msgid "Enable to sync product inventory with Square"
+msgstr ""
+
+#: includes/Settings.php:158
+msgid "Handle missing products"
+msgstr ""
+
+#: includes/Settings.php:159
+msgid "Hide synced products when not found in Square"
+msgstr ""
+
+#: includes/Settings.php:161
+msgid ""
+"Products not found in Square will be hidden in the WooCommerce product "
+"catalog."
+msgstr ""
+
+#: includes/Settings.php:174
+msgid "Connection"
+msgstr ""
+
+#: includes/Settings.php:183
+#. translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag
+msgid "Log debug messages to the %1$sWooCommerce status log%2$s"
+msgstr ""
+
+#: includes/Settings.php:210
+msgid "Please choose a location"
+msgstr ""
+
+#: includes/Settings.php:240
+msgid "Import all products from Square"
+msgstr ""
+
+#: includes/Sync/Manual_Synchronization.php:1084
+msgid "Product could not be updated in Square"
+msgstr ""
+
+#: includes/Sync/Product_Import.php:264
+msgid "You do not have permission to create products"
+msgstr ""
+
+#: includes/Sync/Product_Import.php:280
+msgid "Missing parameter %s"
+msgstr ""
+
+#: includes/Sync/Product_Import.php:295
+msgid "Invalid product type - the product type must be any of these: %s"
+msgstr ""
+
+#: includes/Sync/Product_Import.php:539 includes/Sync/Product_Import.php:803
+msgid "The SKU already exists on another product"
+msgstr ""
+
+#: includes/Sync/Product_Import.php:727
+msgid "Variation #%1$s of %2$s"
+msgstr ""
+
+#: includes/Sync/Records/Record.php:203
+msgid "Info"
+msgstr ""
+
+#: includes/Sync/Records/Record.php:204
+msgid "Notice"
+msgstr ""
+
+#: includes/Sync/Records/Record.php:205
+msgid "Alert"
+msgstr ""
+
+#: includes/Sync/Records/Record.php:371
+#. translators: Placeholder: %s - product name
+msgid "%s not found in Square."
+msgstr ""
+
+#: includes/Sync/Records/Record.php:542
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:92
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:819
+msgid "Delete"
+msgstr ""
+
+#: includes/Sync/Records/Record.php:550
+msgid "Ignore"
+msgstr ""
+
+#: includes/Sync/Records/Record.php:559
+msgid "Unlink"
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:56
+msgid "Encryption is not supported on this site."
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:74
+msgid "%1$s encryption is not available on this site. %2$s will be used instead."
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:99
+msgid "No encryption method available"
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:103
+msgid "Data must be a non-empty string or array"
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:107
+#: includes/Utilities/Encryption_Utility.php:150
+msgid "Encryption key must be a string"
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:119
+msgid "Could not generate encryption vector."
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:142
+msgid "No decryption method available"
+msgstr ""
+
+#: includes/Utilities/Encryption_Utility.php:146
+msgid "Data must be a non-empty string"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_AdminView.php:48
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_AdminView.php:63
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_AdminView.php:64
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:89
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:19
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:30
+msgid "Scheduled Actions"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_InvalidActionException.php:22
+msgid "Action [%s] has invalid arguments. It cannot be JSON decoded to an array."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:96
+msgid "Hook"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:98
+msgid "Arguments"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:99
+msgid "Group"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:100
+msgid "Recurrence"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:101
+msgid "Scheduled Date"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:102
+msgid "Log"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:122
+msgid "Claim ID"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:129
+msgid "Run"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:130
+msgid "Process the action now as if it were run as part of a queue"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:134
+msgid "Cancel the action now to avoid it being run in future"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:143
+msgid "%s year"
+msgid_plural "%s years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:147
+msgid "%s month"
+msgid_plural "%s months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:151
+msgid "%s week"
+msgid_plural "%s weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:155
+msgid "%s day"
+msgid_plural "%s days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:159
+msgid "%s hour"
+msgid_plural "%s hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:163
+msgid "%s minute"
+msgid_plural "%s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:167
+msgid "%s second"
+msgid_plural "%s seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:194
+msgid "Now!"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:227
+msgid "Every %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:231
+msgid "Cron %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:235
+msgid "Non-repeating"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:321
+msgid ""
+"Maximum simultaneous batches already in progress (%s queues). No actions "
+"will be processed until the current batches are complete."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:336
+msgid "Successfully executed action: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:339
+msgid "Successfully canceled action: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:342
+msgid "Successfully processed change for action: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:347
+msgid "Could not process change for action: \"%s\" (ID: %d). Error: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:392
+msgid " (%s ago)"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:394
+msgid " (%s)"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_ListTable.php:531
+msgid "Search hook, args and claim ID"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:61
+msgid "action created"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:65
+msgid "action canceled"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:69
+msgid "action started"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:73
+msgid "action complete"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:77
+msgid "action failed: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:81
+msgid "action timed out after %s seconds"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:86
+msgid "unexpected shutdown: PHP Fatal error %s in %s on line %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:91
+msgid "action reset"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Logger.php:95
+msgid "action ignored"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_QueueRunner.php:110
+msgid "Every minute"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:152
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:169
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:268
+msgid "Invalid schedule. Cannot save action."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:181
+msgid "Complete"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:182
+msgid "Pending"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:183
+msgid "In-progress"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:184
+msgid "Failed"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_Store.php:185
+msgid "Canceled"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:31
+#. translators: %s php class name
+msgid "The %s class can only be run within WP CLI."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:59
+msgid "There are too many concurrent batches, but the run is forced to continue."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:61
+msgid "There are too many concurrent batches."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:92
+msgid "Running %d action"
+msgid_plural "Running %d actions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:109
+msgid "The claim has been lost. Aborting current batch."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:139
+#. translators: %s refers to the action ID
+msgid "Started processing action %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:156
+#. translators: %s refers to the action ID
+msgid "Completed processing action %s with hook: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:171
+#. translators: %1$s refers to the action ID, %2$s refers to the Exception
+#. message
+msgid "Error processing action %1$s: %2$s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:183
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_QueueRunner.php:187
+msgid "Attempting to reduce used memory..."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_Scheduler_command.php:87
+#. translators: %d refers to how many scheduled taks were found to run
+msgid "Found %d scheduled task"
+msgid_plural "Found %d scheduled tasks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_Scheduler_command.php:104
+#. translators: %d refers to the total number of batches executed
+msgid "%d batch executed."
+msgid_plural "%d batches executed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_Scheduler_command.php:123
+#. translators: %s refers to the exception error message.
+msgid "There was an error running the action scheduler: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_WPCLI_Scheduler_command.php:140
+#. translators: %d refers to the total number of taskes completed
+msgid "%d scheduled task completed."
+msgid_plural "%d scheduled tasks completed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:27
+msgid "Error saving action: %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:51
+msgid "Unable to save action."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:441
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:452
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:478
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:755
+msgid "Unidentified action %s"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:590
+msgid "Unable to claim actions. Database error."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:610
+msgid "The group \"%s\" does not exist."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:678
+msgid "Unable to unlock claim %s. Database error."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:692
+msgid "Unable to unlock claim on action %s. Database error."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:703
+msgid "Unable to mark failure on action %s. Database error."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore.php:727
+msgid "Invalid action ID. No status found."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostStatusRegistrar.php:37
+msgid "Failed <span class=\"count\">(%s)</span>"
+msgid_plural "Failed <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostStatusRegistrar.php:51
+msgid "In-Progress <span class=\"count\">(%s)</span>"
+msgid_plural "In-Progress <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:20
+msgid "Scheduled actions are hooks triggered on a cetain date and time."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:31
+msgid "Scheduled Action"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:33
+msgid "Add"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:34
+msgid "Add New Scheduled Action"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:35
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:226
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:758
+msgid "Edit"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:36
+msgid "Edit Scheduled Action"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:37
+msgid "New Scheduled Action"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:38
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:39
+msgid "View Action"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:40
+msgid "Search Scheduled Actions"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:41
+msgid "No actions found"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:42
+msgid "No actions found in trash"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_TaxonomyRegistrar.php:14
+msgid "Action Group"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/Lifecycle.php:374
+msgid "Awesome"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/Lifecycle.php:375
+msgid "Fantastic"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/Lifecycle.php:376
+msgid "Cowabunga"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/Lifecycle.php:377
+msgid "Congratulations"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/Lifecycle.php:378
+msgid "Hot dog"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/Lifecycle.php:385
+#. translators: Placeholders: %1$s - plugin name, %2$s - <a> tag, %3$s - </a>
+#. tag, %4$s - <a> tag, %5$s - </a> tag
+msgid ""
+"Are you having a great experience with %1$s so far? Please consider "
+"%2$sleaving a review%3$s! If things aren't going quite as expected, we're "
+"happy to help -- please %4$sreach out to our support team%5$s."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:183
+msgid ""
+"Thanks for installing %1$s! To get started, take a minute to %2$sread the "
+"documentation%3$s :)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:211
+msgid ""
+"Thanks for installing %1$s! To get started, take a minute to complete these "
+"%2$squick and easy setup steps%3$s :)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:236
+msgid "Setup"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:304
+#. translators: Placeholders: %s - plugin name
+msgid "%s &rsaquo; Setup"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:352
+msgid "Oops! An error occurred, please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:490
+msgid "Ready!"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:583
+#. translators: Placeholder: %s - plugin name
+msgid "Welcome to %s!"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:596
+msgid ""
+"This quick setup wizard will help you configure the basic settings and get "
+"you started."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:610
+msgid "%s is ready!"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:662
+msgid "Next step"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:688
+msgid "You can also:"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:732
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:762
+msgid "View the Docs"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:733
+msgid "See more setup options"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:734
+msgid "Learn more about customizing the plugin"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:758
+msgid "Review Your Settings"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:766
+msgid "Leave a Review"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:790
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:660
+msgid "Continue"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:950
+msgid "Return to the WordPress Dashboard"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:952
+msgid "Not right now"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:954
+msgid "Skip this step"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-framework-bootstrap.php:268
+msgid ""
+"The following plugin is disabled because it is out of date and incompatible "
+"with newer plugins on your site:"
+msgid_plural ""
+"The following plugins are disabled because they are out of date and "
+"incompatible with newer plugins on your site:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-framework-bootstrap.php:282
+msgid ""
+"To resolve this, please %1$supdate%2$s (recommended) %3$sor%4$s "
+"%5$sdeactivate%6$s the above plugin, or %7$sdeactivate the following%8$s:"
+msgid_plural ""
+"To resolve this, please %1$supdate%2$s (recommended) %3$sor%4$s "
+"%5$sdeactivate%6$s the above plugins, or %7$sdeactivate the following%8$s:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-framework-bootstrap.php:303
+msgid ""
+"The following plugins are inactive because they require a newer version of "
+"WooCommerce:"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-framework-bootstrap.php:303
+msgid ""
+"The following plugin is inactive because it requires a newer version of "
+"WooCommerce:"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-framework-bootstrap.php:308
+#. translators: Placeholders: %1$s - plugin name, %2$s - WooCommerce version
+#. number
+msgid "%1$s requires WooCommerce %2$s or newer"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-framework-bootstrap.php:312
+#. translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag
+msgid "Please %1$supdate WooCommerce%2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:148
+#. translators: Placeholders: %1$s - plugin name, %2$s - a PHP
+#. extension/comma-separated list of PHP extensions
+msgid ""
+"%1$s requires the %2$s PHP extension to function. Contact your host or "
+"server administrator to install and configure the missing extension."
+msgid_plural ""
+"%1$s requires the following PHP extensions to function: %2$s. Contact your "
+"host or server administrator to install and configure the missing "
+"extensions."
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:176
+#. translators: Placeholders: %1$s - plugin name, %2$s - a PHP
+#. function/comma-separated list of PHP functions
+msgid ""
+"%1$s requires the %2$s PHP function to exist.  Contact your host or server "
+"administrator to install and configure the missing function."
+msgid_plural ""
+"%1$s requires the following PHP functions to exist: %2$s.  Contact your "
+"host or server administrator to install and configure the missing functions."
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:206
+#. translators: Placeholders: %s - plugin name
+msgid ""
+"%s may behave unexpectedly because the following PHP configuration settings "
+"are required:"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:220
+msgid "%s or higher"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:230
+msgid ""
+"Please contact your hosting provider or server administrator to configure "
+"these settings."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:252
+#. translators: Placeholders: %1$s - <strong>, %2$s - </strong>
+msgid ""
+"Hey there! We've noticed that your server is running %1$san outdated "
+"version of PHP%2$s, which is the programming language that WooCommerce and "
+"its extensions are built on.\n"
+"\t\t\t\t\tThe PHP version that is currently used for your site is no longer "
+"maintained, nor %1$sreceives security updates%2$s; newer versions are "
+"faster and more secure.\n"
+"\t\t\t\t\tAs a result, %3$s no longer supports this version and you should "
+"upgrade PHP as soon as possible.\n"
+"\t\t\t\t\tYour hosting provider can do this for you. %4$sHere are some "
+"resources to help you upgrade%5$s and to explain PHP versions further."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin-dependencies.php:271
+#. translators: Placeholders: %1$s - WooCommerce version number, %2$s -
+#. <strong>, %3$s - </strong>, %4$s - Plugin name, %5$s - <a> tag, %6$s - </a>
+#. tag
+msgid ""
+"Hey there! We've noticed that your site is running version %1$s of "
+"WooCommerce, but %2$sWooCommerce 3.0 or higher will soon be required%3$s by "
+"%4$s. We recommend you %5$supdate WooCommerce%6$s to the latest version as "
+"soon as possible."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:297
+#. translators: Placeholders: %s - plugin name
+msgid "You cannot clone instances of %s."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:308
+#. translators: Placeholders: %s - plugin name
+msgid "You cannot unserialize instances of %s."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:529
+#. translators: Docs as in Documentation
+msgid "Docs"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:622
+msgid "%1$s - A minimum of %2$s is required."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:631
+msgid "Set as %1$s - %2$s is required."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:854
+msgid "Configure"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Hosted_Payment_Handler.php:178
+msgid ""
+"There was a problem processing your order and it is being placed on hold "
+"for review. Please contact us to complete the transaction."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Hosted_Payment_Handler.php:319
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:444
+#. translators: Placeholders: %s - a WooCommerce order ID
+msgid "Could not find order %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:151
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2351
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:163
+#. translators: Placeholders: %1$s - status code, %2$s - status message
+#. translators: Placeholders: %1$s - payment request response status code, %2$s
+#. - payment request response status message
+msgid "Status code %1$s: %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:154
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2354
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:166
+#. translators: Placeholders: %s - status code
+#. translators: Placeholders: %s - payment request response status code
+msgid "Status code: %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:157
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2357
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:169
+#. translators: Placeholders; %s - status message
+#. translators: Placeholders: %s - payment request response status message
+msgid "Status message: %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:162
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2362
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:176
+msgid "Transaction ID %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:203
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:508
+#. translators: Placeholders: %s - payment gateway title (such as
+#. Authorize.net, Braintree, etc)
+msgid "%s duplicate transaction received"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:206
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:511
+msgid "Order %s is already paid for."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:266
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2694
+msgid ""
+"Your order has been received and is being reviewed. Thank you for your "
+"business."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:273
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:851
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1732
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:363
+#. translators: This is a message describing that the transaction in question
+#. only performed a credit card authorization and did not capture any funds.
+msgid "Authorization only transaction"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:361
+#. translators: Placeholders: %s - payment gateway title
+msgid "%s Transaction Held for Review"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:432
+#. translators: Placeholders: %s - payment gateway title
+msgid "%s Payment Failed"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Abstract_Payment_Handler.php:459
+#. translators: Placeholders: %s - payment gateway title
+msgid "%s Transaction Cancelled"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:157
+msgid "Order cannot be captured"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:162
+msgid "Transaction authorization has expired"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:167
+msgid "Transaction has already been fully captured"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:172
+msgid "Transaction cannot be captured"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:188
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - transaction amount. Definitions:
+#. Capture, as in capture funds from a credit card.
+msgid "%1$s Capture of %2$s Approved"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:195
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:670
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:755
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2030
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2261
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2575
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2620
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:346
+#. translators: Placeholders: %s - transaction ID
+msgid "(Transaction ID %s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/Handlers/Capture.php:226
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - failure message. Definitions:
+#. "capture" as in capturing funds from a credit card.
+msgid "%1$s Capture Failed: %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:119
+msgid "Are you sure you wish to process this capture? The action cannot be undone."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:122
+msgid ""
+"Something went wrong, and the capture could no be completed. Please try "
+"again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:166
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:241
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:304
+#. translators: verb, as in "Capture credit card charge". 		 Used when an
+#. amount has been pre-authorized before, but funds have not yet been captured
+#. (taken) from the card. 		 Capturing the charge will take the money from the
+#. credit card and put it in the merchant's pockets.
+msgid "Capture Charge"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:294
+msgid "This charge has been fully captured."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:296
+msgid "This charge can no longer be captured."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-order.php:298
+msgid "This charge cannot be captured."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:90
+msgid "Are you sure you want to remove this token?"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:100
+msgid "Invalid token data"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:104
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:453
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-user-handler.php:302
+msgid "(%s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:483
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:664
+msgid "Default"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:519
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:552
+msgid "Token ID"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:524
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:299
+msgid "Card Type"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:529
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:565
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:191
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:297
+msgid "Last Four"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:536
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:320
+msgid "Expiration (MM/YY)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:557
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:427
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:298
+#. translators: e-check account type, HTML form field label
+msgid "Account Type"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:560
+msgid "Checking"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:561
+msgid "Savings"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:662
+msgid "Refresh"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:664
+msgid "Add New"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:667
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:759
+msgid "Save"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-payment-token-editor.php:690
+msgid "Remove"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-user-handler.php:221
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:208
+msgid "%s Payment Tokens"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/class-sv-wc-payment-gateway-admin-user-handler.php:299
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:663
+msgid "Customer ID"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:32
+msgid "This section contains configuration settings for this gateway."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:53
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1267
+#. translators: environment as in a software environment (test/production)
+msgid "Environment"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:54
+msgid "The transaction environment for this gateway."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:61
+msgid "Tokenization Enabled"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:62
+msgid "Displays whether or not tokenization is enabled for this gateway."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:75
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1197
+msgid "Debug Mode"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:76
+msgid "Displays whether or not debug logging is enabled for this gateway."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:79
+msgid "Display at Checkout & Log"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:81
+msgid "Display at Checkout"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:83
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1205
+msgid "Save to Log"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-admin-gateway-status.php:85
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1203
+msgid "Off"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:30
+msgid "Authorization total"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:34
+msgid "Amount already captured"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:40
+msgid "Remaining order total"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:46
+msgid "Capture amount"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:53
+msgid "Comment (optional):"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-order-partial-capture.php:65
+msgid "Capture %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-user-payment-token-editor-token.php:48
+msgid "-- Select an option --"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-user-payment-token-editor.php:59
+msgid "No saved payment tokens"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/admin/views/html-user-profile-field-customer-id.php:30
+msgid "The gateway customer ID for the user. Only edit this if necessary."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:98
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-frontend.php:131
+msgid "An error occurred, please try again or try an alternate form of payment"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:99
+msgid ""
+"We cannot process your order with the payment information that you "
+"provided. Please use a different payment account or an alternate payment "
+"method."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:100
+msgid ""
+"This order is being placed on hold for review. Please contact us to "
+"complete the transaction."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:105
+msgid ""
+"This order is being placed on hold for review due to an incorrect card "
+"verification number.  You may contact the store to complete the transaction."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:106
+msgid "The card verification number is invalid, please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:107
+msgid "Please enter your card verification number and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:110
+msgid ""
+"That card type is not accepted, please use an alternate card or other form "
+"of payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:111
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:115
+msgid ""
+"The card type is invalid or does not correlate with the credit card number. "
+" Please try again or use an alternate card or other form of payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:112
+msgid "Please select the card type and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:116
+msgid "The card number is invalid, please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:117
+msgid "Please enter your card number and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:120
+msgid "The card expiration date is invalid, please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:121
+msgid "The card expiration month is invalid, please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:122
+msgid "The card expiration year is invalid, please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:123
+msgid "Please enter your card expiration date and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:126
+msgid "The bank routing number is invalid, please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:127
+msgid "The bank account number is invalid, please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:130
+msgid ""
+"The provided card is expired, please use an alternate card or other form of "
+"payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:131
+msgid ""
+"The provided card was declined, please use an alternate card or other form "
+"of payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:132
+msgid ""
+"Insufficient funds in account, please use an alternate card or other form "
+"of payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:133
+msgid ""
+"The card is inactivate or not authorized for card-not-present transactions, "
+"please use an alternate card or other form of payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:134
+msgid ""
+"The credit limit for the card has been reached, please use an alternate "
+"card or other form of payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:135
+msgid "The card verification number does not match. Please re-enter and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/api/class-sv-wc-payment-gateway-api-response-message-helper.php:136
+msgid ""
+"The provided address does not match the billing address for cardholder. "
+"Please verify the address and try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:83
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:101
+msgid "Apple Pay"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:107
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1143
+msgid "Enable / Disable"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:108
+msgid "Accept Apple Pay"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:115
+msgid "Allow Apple Pay on"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:125
+msgid "Button Style"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:128
+msgid "Black"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:129
+msgid "White"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:130
+msgid "White with outline"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:142
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1318
+msgid "Connection Settings"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:148
+msgid "Apple Merchant ID"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:152
+msgid "This is found in your %1$sApple developer account%2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:159
+msgid "Certificate Path"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:164
+#. translators: Placeholders: %s - the server's web root path
+msgid "For reference, your current web root path is: %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:177
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:187
+msgid "Processing Gateway"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:195
+msgid "Test Mode"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:196
+msgid ""
+"Enable to test Apple Pay functionality throughout your sites without "
+"processing real payments."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:305
+msgid "Your site must be served over HTTPS with a valid SSL certificate."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:315
+#. translators: Placeholders: %1$s - plugin name, %2$s - a
+#. currency/comma-separated list of currencies, %3$s - <a> tag, %4$s - </a> tag
+msgid ""
+"Accepts payment in %1$s only. %2$sConfigure%3$s WooCommerce to accept %1$s "
+"to enable Apple Pay."
+msgid_plural ""
+"Accepts payment in one of %1$s only. %2$sConfigure%3$s WooCommerce to "
+"accept one of %1$s to enable Apple Pay."
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:334
+msgid ""
+"Your %1$sMerchant Identity Certificate%2$s cannot be found. Please check "
+"your path configuration."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:341
+msgid "Apple Pay is disabled."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:380
+msgid "Single products"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:381
+msgid "Cart"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-admin.php:382
+msgid "Checkout"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-frontend.php:168
+msgid "Buy with"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-frontend.php:302
+msgid "Pay with"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-frontend.php:308
+msgid "or"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:86
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:93
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:106
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:115
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:127
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:171
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:181
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay-orders.php:183
+msgid "Error %d: Unable to create order. Please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:120
+msgid "Apple Pay payment authorized."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:156
+msgid "Apple Pay payment failed. %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:545
+msgid "Subtotal"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:565
+msgid "Shipping"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:575
+msgid "Fees"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/apple-pay/class-sv-wc-payment-gateway-apple-pay.php:585
+msgid "Taxes"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:60
+msgid ""
+"Payment error, please try another payment method or contact us to complete "
+"your transaction."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:160
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:479
+msgid "Card expiration date is invalid"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:184
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:472
+msgid "Card number is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:190
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:475
+msgid "Card number is invalid (wrong length)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:195
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:474
+msgid "Card number is invalid (only digits allowed)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:200
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:473
+msgid "Card number is invalid"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:227
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:477
+msgid "Card security code is invalid (only digits are allowed)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:233
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:478
+msgid "Card security code is invalid (must be 3 or 4 digits)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:239
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:476
+msgid "Card security code is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:266
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:488
+msgid "Routing Number is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:273
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:489
+msgid "Routing Number is invalid (only digits are allowed)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:279
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:490
+msgid "Routing number is invalid (must be 9 digits)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:288
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:485
+msgid "Account Number is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:295
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:486
+msgid "Account Number is invalid (only digits are allowed)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:301
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:487
+msgid "Account number is invalid (must be between 5 and 17 digits)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:308
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:484
+msgid "Drivers license number is invalid"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:314
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:480
+msgid "Check Number is invalid (only digits are allowed)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:484
+msgid "Unknown error"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:493
+msgid "Payment method address could not be updated. %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:660
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2610
+#. translators: Placeholders: %1$s - payment method title, %2$s - payment
+#. account type (savings/checking) (may or may not be available), %3$s - last
+#. four digits of the account
+msgid "%1$s Check Transaction Approved: %2$s account ending in %3$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:665
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2615
+#. translators: Placeholders: %s - check number
+msgid "Check number %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:734
+#. translators: Placeholders: %1$s - payment method title, %2$s - environment
+#. ("Test"), %3$s - transaction type (authorization/charge), %4$s - card type
+#. (mastercard, visa, ...), %5$s - last four digits of the card
+msgid "%1$s %2$s %3$s Approved: %4$s ending in %5$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:747
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:675
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2567
+#. translators: Placeholders: %s - expiry date
+msgid "(expires %s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:819
+#. translators: Placeholders: %s - failure message
+msgid "Tokenization Request Failed: %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:830
+#. translators: Placeholders: %1$s - payment method title, %2$s - failure
+#. message
+msgid "%1$s Tokenization Request Failed: %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:888
+#. translators: Placeholders: %s - failure message. Payment method as in a
+#. specific credit card, e-check or bank account
+msgid "Oops, adding your new payment method failed: %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:929
+#. translators: Payment method as in a specific credit card. Placeholders: %1$s
+#. - card type (visa, mastercard, ...), %2$s - last four digits of the card,
+#. %3$s - card expiry date
+msgid "Nice! New payment method added: %1$s ending in %2$s (expires %3$s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:939
+#. translators: Payment method as in a specific e-check account. Placeholders:
+#. %1$s - account type (checking/savings), %2$s - last four digits of the
+#. account
+msgid "Nice! New payment method added: %1$s account ending in %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:946
+#. translators: Payment method as in a specific credit card, e-check or bank
+#. account
+msgid "Nice! New payment method added."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:1066
+#. translators: Placeholders: %1$s - site title, %2$s - customer email. Payment
+#. method as in a specific credit card, e-check or bank account
+msgid "%1$s - Add Payment Method for %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:179
+msgid "PayPal"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:180
+msgid "Checking Account"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:181
+msgid "Savings Account"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:182
+msgid "Credit / Debit Card"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:183
+msgid "Bank Account"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:296
+msgid "Thank you for your order, please click the button below to pay."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:297
+msgid "Thank you for your order. We are now redirecting you to complete payment."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:298
+msgid "Pay Now"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:299
+msgid "Cancel Order"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:596
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:832
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - payment method name (mastercard, bank
+#. account, etc), %3$s - last four digits of the card/account, %4$s -
+#. card/account expiry date
+msgid "%1$s Payment Method Saved: %2$s ending in %3$s (expires %4$s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:607
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:843
+#. translators: Placeholders: %1$s - payment gateway title (such as CyberSouce,
+#. NETbilling, etc), %2$s - account type (checking/savings - may or may not be
+#. available), %3$s - last four digits of the account
+msgid "%1$s eCheck Payment Method Saved: %2$s account ending in %3$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:616
+#. translators: Placeholders: %s - payment gateway title (such as CyberSouce,
+#. NETbilling, etc)
+msgid "%s Payment Method Saved"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-hosted.php:625
+#. translators: Placeholders: %s - a failed tokenization API error
+msgid "Tokenization failed. %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:228
+msgid "Oops, there was an error updating your payment method. Please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:229
+msgid "Are you sure you want to delete this payment method?"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:287
+#. translators: Payment method as in a specific credit card, eCheck or bank
+#. account
+msgid "You do not have any saved payment methods."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:326
+#. translators: Payment method as in a specific credit card, eCheck or bank
+#. account
+msgid "My Payment Methods"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:334
+#. translators: Payment method as in a specific credit card, e-check or bank
+#. account
+msgid "Add New Payment Method"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:422
+msgid "Method"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:423
+msgid "Details"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:424
+msgid "Expires"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:425
+msgid "Default?"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:462
+msgid "Credit/Debit Cards"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:471
+msgid "Bank Accounts"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:526
+msgid "N/A"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:638
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:199
+msgid "Nickname"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:973
+msgid "Oops, you took too long, please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:986
+msgid "There was an error with your request, please try again."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:999
+#. translators: Payment method as in a specific credit card, e-check or bank
+#. account
+msgid "Error removing payment method"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-my-payment-methods.php:1004
+#. translators: Payment method as in a specific credit card, e-check or bank
+#. account
+msgid "Payment method deleted."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:302
+msgid "Card Number"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:323
+msgid "MM / YY"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:341
+msgid "Card Security Code"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:344
+msgid "CSC"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:384
+msgid "Where do I find this?"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:390
+#. translators: e-check routing number, HTML form field label,
+#. https:en.wikipedia.org/wiki/Routing_transit_number
+msgid "Routing Number"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:409
+#. translators: e-check account number, HTML form field label
+msgid "Account Number"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:475
+#. translators: Test mode refers to the current software environment
+msgid "TEST MODE ENABLED"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:577
+#. translators: Payment method as in a specific credit card, eCheck or bank
+#. account
+msgid "Manage Payment Methods"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:714
+msgid "Use a new card"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:714
+msgid "Use a new bank account"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:777
+#. translators: account as in customer's account on the eCommerce site
+msgid "Securely Save to Account"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:603
+#. translators: Placeholders: %1$s - plugin name, %2$s - <a> tag, %3$s - </a>
+#. tag
+msgid ""
+"%1$s: WooCommerce is not being forced over SSL; your customers' payment "
+"data may be at risk. %2$sVerify your site URLs here%3$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:620
+#. translators: Placeholders: %s - payment gateway name
+msgid ""
+"%s will soon require TLS 1.2 support to process transactions and your "
+"server environment may need to be updated. Please contact your hosting "
+"provider to confirm that your site can send and receive TLS 1.2 connections "
+"and request they make any necessary updates."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:676
+#. translators: Placeholders: %1$s - plugin name, %2$s - a
+#. currency/comma-separated list of currencies, %3$s - <a> tag, %4$s - </a> tag
+msgid ""
+"%1$s accepts payment in %2$s only. %3$sConfigure%4$s WooCommerce to accept "
+"%2$s to enable this gateway for checkout."
+msgid_plural ""
+"%1$s accepts payment in one of %2$s only. %3$sConfigure%4$s WooCommerce to "
+"accept one of %2$s to enable this gateway for checkout."
+msgstr[0] ""
+msgstr[1] ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:711
+#. translators: Placeholders: %1$s - payment gateway name, %2$s - opening <a>
+#. tag, %3$s - closing </a> tag
+msgid ""
+"Heads up! %1$s is currently configured to log transaction data for "
+"debugging purposes. If you are not experiencing any problems with payment "
+"processing, we recommend %2$sturning off Debug Mode%3$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:750
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - <a> tag, %3$s - </a> tag
+msgid ""
+"%1$s is inactive for subscription transactions. Please %2$senable "
+"tokenization%3$s to activate %1$s for Subscriptions."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:768
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - <a> tag, %3$s - </a> tag
+msgid ""
+"%1$s is inactive for pre-order transactions. Please %2$senable "
+"tokenization%3$s to activate %1$s for Pre-Orders."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:805
+msgid ""
+"You must enable tokenization for this gateway in order to support automatic "
+"renewal payments with the WooCommerce Subscriptions extension."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php:806
+msgid "Inactive"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:114
+msgid "%s Customer ID"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:183
+msgid "Type"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:253
+msgid "Removed payment token \"%d\""
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-privacy.php:300
+msgid "Expiry Date"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:340
+msgid "you successfully processed a payment!"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:345
+msgid "you successfully processed a refund!"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:481
+msgid "Check Number is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:482
+msgid "Drivers license state is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:483
+msgid "Drivers license number is missing"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:660
+msgid "Place order"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:692
+msgid "Thank you for your order."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1102
+msgid "Credit Card"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1104
+msgid "eCheck"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1122
+msgid "Pay securely using your credit card."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1124
+msgid "Pay securely using your checking account."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1144
+msgid "Enable this gateway"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1150
+msgid "Title"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1152
+msgid "Payment method title that the customer will see during checkout."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1157
+msgid "Description"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1159
+msgid "Payment method description that the customer will see during checkout."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1188
+msgid "Detailed Decline Messages"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1190
+msgid ""
+"Check to enable detailed decline messages to the customer during checkout "
+"when possible, rather than a generic decline message."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1200
+#. translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag
+msgid ""
+"Show Detailed Error Messages and API requests/responses on the checkout "
+"page and/or save them to the %1$sdebug log%2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1204
+msgid "Show on Checkout Page"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1207
+#. translators: show debugging information on both checkout page and in the log
+msgid "Both"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1270
+msgid "Select the gateway environment to use for transactions."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1324
+msgid "Share connection settings"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1326
+msgid "Use connection/authentication settings from other gateway"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1329
+msgid "Disabled because the other gateway is using these settings"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1346
+msgid "Card Verification (CSC)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1347
+msgid "Display the Card Security Code (CV2) field on checkout"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1355
+msgid "Saved Card Verification"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1356
+msgid "Display the Card Security Code field when paying with a saved card"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1685
+#. translators: Placeholders: %1$s - site title, %2$s - order number
+msgid "%1$s - Order %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1813
+#. translators: Placeholders: %1$s - site title, %2$s - order number.
+#. Definitions: Capture as in capture funds from a credit card.
+msgid "%1$s - Capture for Order %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:1956
+#. translators: Placeholders: %1$s - site title, %2$s - order number
+msgid "%1$s - Refund for Order %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2023
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - a monetary amount
+msgid "%1$s Refund in the amount of %2$s approved."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2051
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - error code, %3$s - error message
+msgid "%1$s Refund Failed: %2$s - %3$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2059
+#. translators: Placeholders: %1$s - payment gateway title (such as
+#. Authorize.net, Braintree, etc), %2$s - error message
+msgid "%1$s Refund Failed: %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2080
+#. translators: Placeholders: %s - payment gateway title (such as
+#. Authorize.net, Braintree, etc)
+msgid "%s Order completely refunded."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2135
+msgid ""
+"Oops, you cannot partially void this order. Please use the full order "
+"amount."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2222
+#. translators: Placeholders: %1$s - payment gateway title, %2$s - error code,
+#. %3$s - error message. Void as in to void an order.
+msgid "%1$s Void Failed: %2$s - %3$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2230
+#. translators: Placeholders: %1$s - payment gateway title, %2$s - error
+#. message. Void as in to void an order.
+msgid "%1$s Void Failed: %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2254
+#. translators: Placeholders: %1$s - payment gateway title, %2$s - a monetary
+#. amount. Void as in to void an order.
+msgid "%1$s Void in the amount of %2$s approved."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2546
+#. translators: Placeholders: %1$s - payment method title, %2$s - environment
+#. ("Test"), %3$s - transaction type (authorization/charge)
+msgid "%1$s %2$s %3$s Approved"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2556
+#. translators: Placeholders: %1$s - credit card type (MasterCard, Visa,
+#. etc...), %2$s - last four digits of the card
+msgid "%1$s ending in %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2652
+#. translators: Placeholders: %1$s - payment gateway title, %2$s - message
+#. (probably reason for the transaction being held for review)
+msgid "%1$s Transaction Held for Review (%2$s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2741
+#. translators: Placeholders: %1$s - payment gateway title, %2$s - error
+#. message; e.g. Order Note: [Payment method] Payment failed [error]
+msgid "%1$s Payment Failed (%2$s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2776
+#. translators: Placeholders: %1$s - payment gateway title, %2$s -
+#. message/error
+msgid "%1$s Transaction Cancelled (%2$s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3021
+msgid "Transaction Type"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3023
+msgid ""
+"Select how transactions should be processed. Charge submits all "
+"transactions for settlement, Authorization simply authorizes the order "
+"total for capture later."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3034
+msgid "Charge Virtual-Only Orders"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3036
+msgid ""
+"If the order contains exclusively virtual items, enable this to immediately "
+"charge, rather than authorize, the transaction."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3044
+msgid "Enable Partial Capture"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3046
+msgid "Allow orders to be partially captured multiple times."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3058
+msgid "Capture Paid Orders"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3061
+msgid "Automatically capture orders when they are changed to %s."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3062
+msgid "a paid status"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3252
+msgid "Accepted Card Logos"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3254
+msgid ""
+"These are the card logos that are displayed to customers as accepted during "
+"checkout."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3257
+#. translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag
+msgid ""
+"This setting %1$sdoes not%2$s change which card types the gateway will "
+"accept. Accepted cards are configured from your payment processor account."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3348
+#. translators:
+#. http:www.cybersource.com/products/payment_security/payment_tokenization/ and
+#. https:en.wikipedia.org/wiki/Tokenization_(data_security)
+msgid "Tokenization"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3349
+msgid "Allow customers to securely save their payment details for future checkout."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:254
+msgid "Pre-Order Tokenization attempt failed (%s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:300
+msgid "%s - Pre-Order Release Payment for Order %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:304
+msgid "Payment token missing/invalid."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:329
+msgid "%s %s Pre-Order Release Payment Approved: %s ending in %s (expires %s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:340
+msgid "%s eCheck Pre-Order Release Payment Approved: %s ending in %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-pre-orders.php:382
+msgid "Pre-Order Release Payment Failed: %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:213
+msgid "Subscription Renewal: payment token is missing/invalid."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:239
+msgid "%1$s - Subscription Renewal Order %2$s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:371
+#. translators: Placeholders: %1$s - payment gateway title, %2$s - error
+#. message; e.g. Order Note: [Payment method] Payment Change failed [error]
+msgid "%1$s Payment Change Failed (%2$s)"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:511
+msgid "Via %s ending in %s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:538
+msgid "Subscriptions"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:607
+msgid ""
+"This payment method is tied to a subscription and cannot be deleted. Please "
+"switch the subscription to another method first."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:659
+msgid "Payment Token"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:688
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:693
+msgid "%s is required."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/payment-tokens/class-sv-wc-payment-gateway-payment-tokens-handler.php:171
+msgid "Unknown Error"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:643
+msgid "Job data key \"%s\" not set"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:647
+msgid "Job data key \"%s\" is not an array"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:883
+msgid "Every %d Minutes"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:1047
+msgid "Background Processing Test"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:1048
+msgid "Run Test"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:1049
+msgid ""
+"This tool will test whether your server is capable of processing background "
+"jobs."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:1067
+msgid "Success! You should be able to process background jobs."
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/utilities/class-sv-wp-background-job-handler.php:1070
+msgid ""
+"Could not connect. Please ask your hosting company to ensure your server "
+"has loopback connections enabled."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://woocommerce.com/products/square/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Adds ability to sync inventory between WooCommerce and Square POS. In "
+"addition, you can also make purchases through the Square payment gateway."
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.woocommerce.com/"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:262
+msgctxt "Delete all records"
+msgid "Clear history"
+msgstr ""
+
+#: includes/Admin/Sync_Page.php:267 includes/Admin/Sync_Page.php:308
+msgctxt "Date - Time"
+msgid "Time"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:53
+msgctxt "Email subject"
+msgid "[WooCommerce] Square sync completed"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:54
+msgctxt "Email heading with merge tag placeholder"
+msgid "Square sync completed for {product_count}"
+msgstr ""
+
+#: includes/Emails/Sync_Completed.php:55
+msgctxt "Email body with merge tag placeholders"
+msgid ""
+"Square sync completed for {site_title} at {sync_completed_date} "
+"{sync_completed_time}."
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostStatusRegistrar.php:36
+msgctxt "post"
+msgid "Failed"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostStatusRegistrar.php:50
+msgctxt "post"
+msgid "In-Progress"
+msgstr ""
+
+#: vendor/prospress/action-scheduler/classes/ActionScheduler_wpPostStore_PostTypeRegistrar.php:32
+msgctxt "Admin menu name"
+msgid "Scheduled Actions"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:397
+msgctxt "enhanced select"
+msgid "No matches found"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:398
+msgctxt "enhanced select"
+msgid "Loading failed"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:399
+msgctxt "enhanced select"
+msgid "Please enter 1 or more characters"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:400
+msgctxt "enhanced select"
+msgid "Please enter %qty% or more characters"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:401
+msgctxt "enhanced select"
+msgid "Please delete 1 character"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:402
+msgctxt "enhanced select"
+msgid "Please delete %qty% characters"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:403
+msgctxt "enhanced select"
+msgid "You can only select 1 item"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:404
+msgctxt "enhanced select"
+msgid "You can only select %qty% items"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:405
+msgctxt "enhanced select"
+msgid "Loading more results&hellip;"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/admin/abstract-sv-wc-plugin-admin-setup-wizard.php:406
+msgctxt "enhanced select"
+msgid "Searching&hellip;"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-helper.php:408
+msgctxt "coordinating conjunction for a list of items: a, b, and c"
+msgid "and"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:534
+msgctxt "noun"
+msgid "Support"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php:539
+msgctxt "verb"
+msgid "Review"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:736
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2548
+msgctxt "noun, software environment"
+msgid "Test"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:737
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2549
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3027
+msgctxt "credit card transaction type"
+msgid "Authorization"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-direct.php:737
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2549
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3026
+msgctxt "noun, credit card transaction type"
+msgid "Charge"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:192
+msgctxt "payment method type"
+msgid "Account"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:228
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3285
+msgctxt "credit card type"
+msgid "Visa"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:232
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3286
+msgctxt "credit card type"
+msgid "MasterCard"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:236
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3287
+msgctxt "credit card type"
+msgid "American Express"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:240
+msgctxt "credit card type"
+msgid "Diners Club"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:244
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3288
+msgctxt "credit card type"
+msgid "Discover"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:248
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3290
+msgctxt "credit card type"
+msgid "JCB"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:252
+msgctxt "credit card type"
+msgid "CarteBleue"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:256
+msgctxt "credit card type"
+msgid "Maestro"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-helper.php:260
+msgctxt "credit card type"
+msgid "Laser"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3289
+msgctxt "credit card type"
+msgid "Diners"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:435
+#. translators: http:www.investopedia.com/terms/c/checkingaccount.asp
+msgctxt "account type"
+msgid "Checking"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-payment-form.php:437
+#. translators: http:www.investopedia.com/terms/s/savingsaccount.asp
+msgctxt "account type"
+msgid "Savings"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:2329
+msgctxt "hash before order number"
+msgid "#"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/integrations/class-sv-wc-payment-gateway-integration-subscriptions.php:568
+msgctxt "hash before order number"
+msgid "#%s"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3055
+msgctxt ""
+"coordinating conjunction for a list of order statuses: on-hold, processing, "
+"or completed"
+msgid "or"
+msgstr ""
+
+#: vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway.php:3891
+#. translators: https:www.skyverge.com/for-translators-environments/
+msgctxt "software environment"
+msgid "Production"
+msgstr ""

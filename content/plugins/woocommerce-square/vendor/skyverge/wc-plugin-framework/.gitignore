@@ -1,0 +1,26 @@
+# IDEs
+/.settings
+/.project
+/.idea
+
+# NPM packages used by Grunt.js
+/node_modules
+package-lock.json
+
+# NPM debug log
+npm-debug.log
+
+# Composer
+/vendor
+
+# PHPUnit
+/tmp
+
+# Misc
+*.zip
+.sass-cache*
+
+# Tests
+codeception.yml
+.env
+/tests/_data/dump.sql
