@@ -10,7 +10,20 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Set the `IS_PROFILE_PAGE` constant early
+ * Are we looking at the currently logged in user's profile page?
+ *
+ * @since 2.1.0
+ *
+ * @return boolean
+ */
+function wp_is_profile_page() {
+	$retval = defined( 'IS_PROFILE_PAGE' ) && IS_PROFILE_PAGE;
+
+	return (bool) apply_filters( 'wp_is_profile_page', $retval );
+}
+
+/**
+ * Set the `IS_PROFILE_PAGE` constant early.
  *
  * This function exists because the `IS_PROFILE_PAGE` constant is used in core
  * and by thousands of plugins to signify that a user is being edited. If it's
@@ -25,13 +38,15 @@ function wp_user_profiles_set_constants() {
 	$current_user_id = get_current_user_id();
 
 	// Get the user ID being edited
-	$user_id = ! empty( $_GET['user_id'] )
-		? (int) $_GET['user_id']
-		: (int) $current_user_id;
+	$user_id = ! empty( $_REQUEST['user_id'] )
+		? absint( $_REQUEST['user_id'] )
+		: $current_user_id;
 
 	// Maybe set constant if editing oneself
-	if ( ! defined( 'IS_PROFILE_PAGE' ) && ! empty( $current_user_id ) ) {
-		define( 'IS_PROFILE_PAGE', ( $user_id === $current_user_id ) );
+	if ( ! wp_is_profile_page() ) {
+		is_user_logged_in()
+			? define( 'IS_PROFILE_PAGE', ( $user_id === $current_user_id ) )
+			: define( 'IS_PROFILE_PAGE', false );
 	}
 }
 
@@ -153,6 +168,32 @@ function wp_user_profiles_sort_sections( $hip, $hop ) {
 }
 
 /**
+ * Filter sections
+ *
+ * @since 2.0.0
+ *
+ * @param array $args
+ * @param string $operator
+ * @return object|array
+ */
+function wp_user_profiles_filter_sections( $args = array(), $operator = 'AND' ) {
+
+	// Get all sections
+	$all    = wp_user_profiles_sections();
+
+	// Filter sections
+	$retval = wp_list_filter( $all, $args, $operator );
+
+	// Return the object if only 1 item was found and filtering by ID
+	if ( ( 1 === count( $retval ) ) && array_key_exists( 'id', $args ) ) {
+		$retval = reset( $retval );
+	}
+
+	// Filter & return
+	return apply_filters( 'wp_user_profiles_filter_sections', $retval, $args, $operator, $all );
+}
+
+/**
  * Get profile section slugs
  *
  * This function exists because hooknames change based on two unique factors:
@@ -233,7 +274,9 @@ function wp_user_profiles_get_admin_area_url( $user_id = 0, $scheme = '', $args 
 
 	// Fallback dashboard
 	} else {
-		$url = get_dashboard_url( $user_id, $file, $scheme );
+		// Using the current user id and changing it later, as using a user that does not belong to the site will
+		// trigger a 404 redirect to on the main site of the network
+		$url = get_dashboard_url( get_current_user_id(), $file, $scheme );
 	}
 
 	// Add user ID to args array for other users
@@ -249,27 +292,70 @@ function wp_user_profiles_get_admin_area_url( $user_id = 0, $scheme = '', $args 
 }
 
 /**
+ * Get the data of the user being edit
+ *
+ * @since 2.0.0
+ *
+ * @param int $user_id ID of user to get for editing
+ *
+ * @return WP_User
+ */
+function wp_user_profiles_get_user_to_edit( $user_id = 0 ) {
+
+	// Get the user ID being edited
+	if ( empty( $user_id ) ) {
+		$user_id = ! empty( $_GET['user_id'] )
+			? $_GET['user_id']
+			: get_current_user_id();
+	}
+
+	// Cast to INT because we can't be sure where this came from
+	$user_id = (int) $user_id;
+
+	// Get the user to edit
+	$user = get_userdata( $user_id );
+
+	// Set user filter to 'edit'
+	if ( ! empty( $user ) ) {
+		$user->filter = 'edit';
+	} else {
+		$user = new WP_User();
+	}
+
+	// Return the user to edit
+	return $user;
+}
+
+/**
  * Save the user when they click "Update"
  *
  * This function exists to handle the posted user information, likely submitted
  * by a user or administrator to edit an existing user account.
  *
  * @since 0.1.0
+ * @global $pagenow Current admin page.
  */
 function wp_user_profiles_save_user() {
+	global $pagenow;
 
 	// Bail if not updating a user
 	if ( empty( $_POST['user_id'] ) || empty( $_POST['action'] ) ) {
 		return;
 	}
 
-	// Bail if not updating a user
-	if ( 'update' !== $_POST['action'] ) {
+	// Bail if user is not logged in
+	if ( ! is_user_logged_in() ) {
 		return;
 	}
 
-	// Bail if user is not logged in
-	if ( ! is_user_logged_in() ) {
+	// Bail if not processing the user editing page
+	if ( ! in_array( $pagenow, array( 'users.php', 'admin.php' ), true ) ) {
+		return;
+	}
+
+	// Bail if not a registered section
+	$sections = wp_list_pluck( wp_user_profiles_sections(), 'id' );
+	if ( ! ( isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $sections ) ) ) {
 		return;
 	}
 
@@ -293,12 +379,12 @@ function wp_user_profiles_save_user() {
 	remove_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
 
 	// Fire WordPress core actions
-	IS_PROFILE_PAGE
+	wp_is_profile_page()
 		? do_action( 'personal_options_update',  $user_id )
 		: do_action( 'edit_user_profile_update', $user_id );
 
 	// Get the userdata to compare it to
-	$user = get_userdata( $user_id );
+	$user = wp_user_profiles_get_user_to_edit( $user_id, false );
 
 	// Do actions & return errors
 	$status = apply_filters( 'wp_user_profiles_save', $user );
@@ -310,7 +396,9 @@ function wp_user_profiles_save_user() {
 		$redirect = add_query_arg( array(
 			'action'  => 'update',
 			'updated' => 'true',
-			'page'    => isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : 'profile'
+			'page'    => isset( $_GET['page'] )
+				? sanitize_key( $_GET['page'] )
+				: 'profile'
 		), get_edit_user_link( $user_id ) );
 
 		// Referring?
@@ -363,4 +451,60 @@ function wp_user_profiles_save_user_notices() {
 			'is-dismissible'
 		)
 	);
+}
+
+/**
+ * Do the core show/edit actions have output associated with them?
+ *
+ * By default, this is hooked to `wp_user_profiles_show_other_section` but can
+ * be used anywhere as needed (in your custom sections, etc...)
+ *
+ * @since 2.2.0
+ *
+ * @return bool
+ */
+function wp_user_profiles_has_profile_actions() {
+
+	// Which hook to check for actions
+	$action = wp_is_profile_page()
+		? 'show_user_profile'
+		: 'edit_user_profile';
+
+	// Check if hooks have been added
+	$retval = (bool) has_action( $action );
+
+	// Return true/false
+	return $retval;
+}
+
+/**
+ * Maybe unhook the BuddyPress Profile Navigation hook
+ *
+ * BuddyPress hooks into 'show_user_profile' and 'edit_user_profile' for
+ * displaying its custom UI, it conflicts with ours, so the best thing we can do
+ * is avoid the situation completely.
+ *
+ * @since 2.4.0
+ */
+function wp_user_profiles_unhook_bp_profile_nav() {
+
+	// Bail if no BuddyPress
+	if ( ! function_exists( 'buddypress' ) ) {
+		return;
+	}
+
+	// Get BuddyPress Profile Navigation hook
+	$bp = buddypress();
+
+	// Bail if no Member Admin
+	if ( empty( $bp->members->admin ) ) {
+		return;
+	}
+
+	// Get the hook callback
+	$tag = array( $bp->members->admin, 'profile_nav' );
+
+	// Remove the actions
+	remove_action( 'show_user_profile', $tag, 99 );
+	remove_action( 'edit_user_profile', $tag, 99 );
 }

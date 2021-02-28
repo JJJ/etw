@@ -29,7 +29,7 @@ function wp_user_profiles_map_meta_cap( $caps = array(), $cap = '', $user_id = 0
 			$authed = false;
 
 			// Authed when looking at own profile
-			if ( defined( 'IS_PROFILE_PAGE' ) && ( true === IS_PROFILE_PAGE ) ) {
+			if ( wp_is_profile_page() ) {
 				$authed = true;
 
 			// Other cases
@@ -60,6 +60,46 @@ function wp_user_profiles_map_meta_cap( $caps = array(), $cap = '', $user_id = 0
 }
 
 /**
+ * Check that the current user can actually edit the user being requested
+ *
+ * @since 2.0.0
+ *
+ * @param int $user_id
+ *
+ * @return void Will wp_die() with traditional WordPress messaging on failure
+ */
+function wp_user_profiles_current_user_can_edit( $user_id = 0 ) {
+
+	// Bail if user does not exist
+	$user = get_userdata( $user_id );
+	if ( empty( $user ) ) {
+		wp_die( esc_html__( 'Invalid user ID.', 'wp-user-profiles' ) );
+	}
+
+	// Can the current user edit the requested user ID?
+	if (
+
+		// Allow administrators on Multisite to edit every user?
+		(
+			is_multisite()
+				&& ! current_user_can( 'manage_network_users' )
+				&& ( $user->ID !== get_current_user_id() )
+				&& ! apply_filters( 'enable_edit_any_user_configuration', true )
+		)
+
+		// OR
+		||
+
+		// Explicitly check the current user against the requested one
+		(
+			! current_user_can( 'edit_user', $user->ID )
+		)
+	) {
+		wp_die( esc_html__( 'Sorry, you are not allowed to edit this user.', 'wp-user-profiles' ) );
+	}
+}
+
+/**
  * Prevent access to `profile.php`
  *
  * @since 0.2.0
@@ -69,7 +109,12 @@ function wp_user_profiles_map_meta_cap( $caps = array(), $cap = '', $user_id = 0
  * @param type $user
  */
 function wp_user_profiles_old_profile_redirect() {
-	wp_safe_redirect( get_dashboard_url() );
+
+	// Get the redirect URL
+	$url = get_edit_profile_url( get_current_user_id() );
+
+	// Do the redirect
+	wp_safe_redirect( $url );
 	exit;
 }
 
@@ -97,4 +142,45 @@ function wp_user_profiles_old_user_edit_redirect() {
 	// Do the redirect
     wp_safe_redirect( $user_edit_url );
     exit;
+}
+
+/**
+ * Does a user account have support for a certain feature?
+ *
+ * @since 2.4.0
+ * @param string $thing
+ * @param int    $user_id
+ * @return bool
+ */
+function wp_user_profiles_user_supports( $thing = '', $user_id = 0 ) {
+
+	// Default return value
+	$retval = false;
+
+	// Use the first in an array
+	if ( is_array( $user_id ) ) {
+		$user_id = reset( $user_id );
+	}
+
+	// Use the ID of an object
+	if ( is_object( $user_id ) ) {
+		$user_id = $user_id->ID;
+	}
+
+	// Cast to absolute integer
+	$user_id = absint( $user_id );
+
+	// What thing?
+	switch ( $thing ) {
+
+		// Application Passwords in WordPress 5.6
+		case 'application-passwords' :
+			if ( function_exists( 'wp_is_application_passwords_available_for_user' ) && wp_is_application_passwords_available_for_user( $user_id ) ) {
+				$retval = true;
+			}
+			break;
+	}
+
+	// Filter & return
+	return apply_filters( '', $retval, $thing, $user_id );
 }

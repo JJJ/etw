@@ -2,7 +2,7 @@
 
 /**
  * User Profile Hooks
- * 
+ *
  * @package Plugins/Users/Profiles/Hooks
  */
 
@@ -16,8 +16,12 @@ add_action( 'init', 'wp_user_profiles_set_constants' );
 add_action( 'init', 'wp_user_profiles_register_profile_section'     );
 add_action( 'init', 'wp_user_profiles_register_account_section'     );
 add_action( 'init', 'wp_user_profiles_register_options_section'     );
+add_action( 'init', 'wp_user_profiles_register_other_section'       );
 add_action( 'init', 'wp_user_profiles_register_permissions_section' );
 add_action( 'init', 'wp_user_profiles_register_sites_section'       );
+
+// Initialize registered scripts
+add_action( 'init', 'wp_user_profiles_admin_register_scripts' );
 
 // Admin Menus
 add_action( 'admin_menu',         'wp_user_profiles_admin_menus' );
@@ -52,3 +56,18 @@ add_filter( 'load-user-edit.php', 'wp_user_profiles_old_user_edit_redirect' );
 // Links
 add_filter( 'edit_profile_url',   'wp_user_profiles_edit_user_url_filter', 10, 3 );
 add_filter( 'get_edit_user_link', 'wp_user_profiles_edit_user_url_filter', 10, 3 );
+
+// Ajax Calls
+add_action( 'wp_ajax_wp_user_profiles_common_roles',        'wp_user_profiles_get_common_user_roles_ajax' );
+add_action( 'wp_ajax_wp_user_profiles_export_roles',        'wp_user_profiles_export_user_roles_ajax' );
+add_action( 'wp_ajax_nopriv_wp_user_profiles_export_roles', 'wp_user_profiles_export_user_roles_ajax' );
+
+// Back compat ("Other" section)
+add_filter( 'wp_user_profiles_show_other_section', 'wp_user_profiles_has_profile_actions' );
+
+// Nav & Subnav
+add_action( 'wp_user_profiles_nav_actions', 'wp_user_profiles_admin_nav',    12 );
+add_action( 'wp_user_profiles_nav_actions', 'wp_user_profiles_admin_subnav', 14 );
+
+// BuddyPress
+add_action( 'bp_init', 'wp_user_profiles_unhook_bp_profile_nav' );

@@ -8,7 +8,7 @@
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Description: A sophisticated way to edit users in WordPress
- * Version:     1.1.0
+ * Version:     2.5.0
  * Text Domain: wp-user-profiles
  */
 
@@ -30,6 +30,7 @@ function _wp_user_profiles() {
 	require_once $plugin_path . 'includes/sections/profile.php';
 	require_once $plugin_path . 'includes/sections/account.php';
 	require_once $plugin_path . 'includes/sections/options.php';
+	require_once $plugin_path . 'includes/sections/other.php';
 	require_once $plugin_path . 'includes/sections/permissions.php';
 	require_once $plugin_path . 'includes/sections/sites.php';
 
@@ -38,12 +39,14 @@ function _wp_user_profiles() {
 	require_once $plugin_path . 'includes/metaboxes/account-email.php';
 	require_once $plugin_path . 'includes/metaboxes/account-language.php';
 	require_once $plugin_path . 'includes/metaboxes/account-password.php';
+	require_once $plugin_path . 'includes/metaboxes/account-applications.php';
 	require_once $plugin_path . 'includes/metaboxes/account-sessions.php';
 	require_once $plugin_path . 'includes/metaboxes/options-color-scheme.php';
 	require_once $plugin_path . 'includes/metaboxes/options-contact.php';
 	require_once $plugin_path . 'includes/metaboxes/options-personal.php';
+	require_once $plugin_path . 'includes/metaboxes/other-all.php';
 	require_once $plugin_path . 'includes/metaboxes/permissions-capabilities.php';
-	require_once $plugin_path . 'includes/metaboxes/permissions-roles.php';	
+	require_once $plugin_path . 'includes/metaboxes/permissions-roles.php';
 	require_once $plugin_path . 'includes/metaboxes/profile-about.php';
 	require_once $plugin_path . 'includes/metaboxes/profile-name.php';
 	require_once $plugin_path . 'includes/metaboxes/sites-list.php';
@@ -53,7 +56,7 @@ function _wp_user_profiles() {
 	require_once $plugin_path . 'includes/admin.php';
 	require_once $plugin_path . 'includes/capabilities.php';
 	require_once $plugin_path . 'includes/dependencies.php';
-	require_once $plugin_path . 'includes/functions.php';
+	require_once $plugin_path . 'includes/common.php';
 	require_once $plugin_path . 'includes/help.php';
 	require_once $plugin_path . 'includes/metaboxes.php';
 	require_once $plugin_path . 'includes/screen-options.php';
@@ -62,12 +65,12 @@ function _wp_user_profiles() {
 	require_once $plugin_path . 'includes/hooks.php';
 
 	// Load translations
-	load_plugin_textdomain( 'wp-user-profiles', false, $plugin_path . 'assets/languages/' );
+	load_plugin_textdomain( 'wp-user-profiles' );
 }
 add_action( 'plugins_loaded', '_wp_user_profiles' );
 
 /**
- * Return the plugin's URL
+ * Return the plugin URL
  *
  * @since 0.1.0
  *
@@ -85,5 +88,7 @@ function wp_user_profiles_get_plugin_url() {
  * @return int
  */
 function wp_user_profiles_get_asset_version() {
-	return 201610300001;
+	return defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
+		? time()
+		: 202011120002;
 }

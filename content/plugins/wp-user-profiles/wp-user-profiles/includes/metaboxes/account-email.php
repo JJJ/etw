@@ -2,7 +2,7 @@
 
 /**
  * User Profile Email Metabox
- * 
+ *
  * @package Plugins/Users/Profiles/Metaboxes/Email
  */
 
@@ -18,13 +18,16 @@ defined( 'ABSPATH' ) || exit;
  */
 function wp_user_profiles_email_metabox( $user = null ) {
 	$current_user = wp_get_current_user();
-	$new_email    = get_option( $current_user->ID . '_new_email' ); ?>
+	$new_email    = get_option( $current_user->ID . '_new_email' );
+
+	// Before
+	do_action( __FUNCTION__ . '_before', $user ); ?>
 
 	<table class="form-table">
 		<tr class="user-email-wrap">
 			<th>
-				<label for="email"><?php esc_html_e( 'Email', 'wp-user-profiles' ); ?>
-					<span class="description"><?php esc_html_e( '(required)', 'wp-user-profiles' ); ?></span>
+				<label for="email"><?php _e( 'Email' ); ?>
+					<span class="description"><?php _e( '(required)' ); ?></span>
 				</label>
 			</th>
 			<td>
@@ -48,4 +51,7 @@ function wp_user_profiles_email_metabox( $user = null ) {
 	</table>
 
 	<?php
+
+	// After
+	do_action( __FUNCTION__ . '_after', $user );
 }

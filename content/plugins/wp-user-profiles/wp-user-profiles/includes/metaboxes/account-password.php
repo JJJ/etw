@@ -2,7 +2,7 @@
 
 /**
  * User Profile Password Metabox
- * 
+ *
  * @package Plugins/Users/Profiles/Metaboxes/Password
  */
 
@@ -16,24 +16,27 @@ defined( 'ABSPATH' ) || exit;
  *
  * @param WP_User $user The WP_User object to be edited.
  */
-function wp_user_profiles_password_metabox() {
-?>
+function wp_user_profiles_password_metabox( $user = null ) {
+
+	// Before
+	do_action( __FUNCTION__ . '_before', $user ); ?>
 
 	<table class="form-table">
 		<tr id="password" class="user-pass1-wrap">
 			<th><label for="pass1"><?php esc_html_e( 'New Password', 'wp-user-profiles' ); ?></label></th>
 			<td>
 				<input class="hidden" value=" " /><!-- #24364 workaround -->
-				<button type="button" class="button button-secondary wp-generate-pw hide-if-no-js"><?php esc_html_e( 'Generate Password', 'wp-user-profiles' ); ?></button>
+				<button type="button" class="button wp-generate-pw hide-if-no-js" aria-expanded="false"><?php esc_html_e( 'Set New Password', 'wp-user-profiles' ); ?></button>
 				<div class="wp-pwd hide-if-js">
 					<span class="password-input-wrapper">
 						<input type="password" name="pass1" id="pass1" class="regular-text" value="" autocomplete="off" data-pw="<?php echo esc_attr( wp_generate_password( 24 ) ); ?>" aria-describedby="pass-strength-result" />
 					</span>
-					<button type="button" class="button button-secondary wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password' ); ?>">
-						<span class="dashicons dashicons-hidden"></span>
+					<button type="button" class="button wp-hide-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Hide password', 'wp-user-profiles' ); ?>">
+						<span class="dashicons dashicons-hidden" aria-hidden="true"></span>
 						<span class="text"><?php esc_html_e( 'Hide', 'wp-user-profiles' ); ?></span>
 					</button>
-					<button type="button" class="button button-secondary wp-cancel-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Cancel password change' ); ?>">
+					<button type="button" class="button wp-cancel-pw hide-if-no-js" data-toggle="0" aria-label="<?php esc_attr_e( 'Cancel', 'wp-user-profiles' ); ?>">
+						<span class="dashicons dashicons-no" aria-hidden="true"></span>
 						<span class="text"><?php esc_html_e( 'Cancel', 'wp-user-profiles' ); ?></span>
 					</button>
 					<div style="display:none" id="pass-strength-result" aria-live="polite"></div>
@@ -43,8 +46,12 @@ function wp_user_profiles_password_metabox() {
 		<tr class="user-pass2-wrap hide-if-js">
 			<th scope="row"><label for="pass2"><?php esc_html_e( 'Repeat New Password', 'wp-user-profiles' ); ?></label></th>
 			<td>
-				<input name="pass2" type="password" id="pass2" class="regular-text" value="" autocomplete="off" />
-				<p class="description"><?php esc_html_e( 'Type your new password again.', 'wp-user-profiles' ); ?></p>
+				<input name="pass2" type="password" id="pass2" class="regular-text" value="" autocomplete="off" aria-describedby="pass2-desc" />
+				<?php if ( IS_PROFILE_PAGE ) : ?>
+					<p class="description" id="pass2-desc"><?php esc_html_e( 'Type your new password again.', 'wp-user-profiles' ); ?></p>
+				<?php else : ?>
+					<p class="description" id="pass2-desc"><?php esc_html_e( 'Type the new password again.', 'wp-user-profiles' ); ?></p>
+				<?php endif; ?>
 			</td>
 		</tr>
 		<tr class="pw-weak">
@@ -52,11 +59,14 @@ function wp_user_profiles_password_metabox() {
 			<td>
 				<label>
 					<input type="checkbox" name="pw_weak" class="pw-checkbox" />
-					<?php esc_html_e( 'Confirm use of weak password', 'wp-user-profiles' ); ?>
+					<span id="pw-weak-text-label"><?php esc_html_e( 'Confirm use of weak password', 'wp-user-profiles' ); ?></span>
 				</label>
 			</td>
 		</tr>
 	</table>
 
-<?php
+	<?php
+
+	// After
+	do_action( __FUNCTION__ . '_after', $user );
 }

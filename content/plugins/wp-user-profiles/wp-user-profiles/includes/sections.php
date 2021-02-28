@@ -2,7 +2,7 @@
 
 /**
  * User Profile Sections
- * 
+ *
  * @package Plugins/Users/Profiles/Sections
  */
 
@@ -60,6 +60,31 @@ function wp_user_profiles_register_options_section() {
 		'cap'   => 'edit_profile',
 		'icon'  => 'dashicons-admin-settings',
 		'order' => 80
+	) );
+}
+
+/**
+ * Register the "Other" section
+ *
+ * @since 0.2.0
+ *
+ * @return WP_User_Profile_Section
+ */
+function wp_user_profiles_register_other_section() {
+
+	// Bail if no profile actions are registered
+	if ( ! apply_filters( 'wp_user_profiles_show_other_section', false ) ) {
+		return;
+	}
+
+	// Actually register the section
+	new WP_User_Profile_Other_Section( array(
+		'id'    => 'other',
+		'slug'  => 'other',
+		'name'  => esc_html__( 'Other', 'wp-user-profiles' ),
+		'cap'   => 'edit_profile',
+		'icon'  => 'dashicons-admin-generic',
+		'order' => 85
 	) );
 }
 

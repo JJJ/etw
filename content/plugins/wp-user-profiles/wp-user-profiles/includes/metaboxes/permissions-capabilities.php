@@ -19,11 +19,14 @@ defined( 'ABSPATH' ) || exit;
 function wp_user_profiles_additional_capabilities_metabox( $user = null ) {
 
 	// Get the roles global
-	$wp_roles = new WP_Roles();?>
+	$wp_roles = new WP_Roles();
+
+	// Before
+	do_action( __FUNCTION__ . '_before', $user ); ?>
 
 	<table class="form-table">
 
-		<?php if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! isset( $GLOBALS['super_admins'] ) ) : ?>
+		<?php if ( is_multisite() && is_network_admin() && ! wp_is_profile_page() && current_user_can( 'manage_network_options' ) && ! isset( $GLOBALS['super_admins'] ) ) : ?>
 
 			<tr class="user-super-admin-wrap"><th><?php esc_html_e( 'Super Admin', 'wp-user-profiles' ); ?></th>
 				<td>
@@ -75,5 +78,8 @@ function wp_user_profiles_additional_capabilities_metabox( $user = null ) {
 		</tr>
 	</table>
 
-<?php
+	<?php
+
+	// After
+	do_action( __FUNCTION__ . '_after', $user );
 }

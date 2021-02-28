@@ -18,9 +18,9 @@ defined( 'ABSPATH' ) || exit;
  */
 function wp_user_profiles_name_metabox( $user = null ) {
 
-	if ( IS_PROFILE_PAGE ) {
+	if ( wp_is_profile_page() ) {
 		/**
-		 * Fires after the 'Personal Options' settings table on the 'Your Profile' editing screen.
+		 * Fires after the 'Personal Options' settings table on the 'Profile' editing screen.
 		 *
 		 * The action only fires if the current user is editing their own profile.
 		 *
@@ -29,7 +29,10 @@ function wp_user_profiles_name_metabox( $user = null ) {
 		 * @param WP_User $user The current WP_User object.
 		 */
 		do_action( 'profile_personal_options', $user );
-	} ?>
+	}
+
+	// Before
+	do_action( __FUNCTION__ . '_before', $user ); ?>
 
 	<table class="form-table">
 		<tr class="user-user-login-wrap">
@@ -53,7 +56,7 @@ function wp_user_profiles_name_metabox( $user = null ) {
 		<tr class="user-nickname-wrap">
 			<th>
 				<label for="nickname"><?php esc_html_e( 'Nickname', 'wp-user-profiles' ); ?>
-					<span class="description"><?php esc_html_e( '(required)', 'wp-use-profiles' ); ?></span>
+					<span class="description"><?php esc_html_e( '(required)', 'wp-user-profiles' ); ?></span>
 				</label>
 			</th>
 			<td><input type="text" name="nickname" id="nickname" value="<?php echo esc_attr( $user->nickname ) ?>" class="regular-text" /></td>
@@ -92,8 +95,7 @@ function wp_user_profiles_name_metabox( $user = null ) {
 					}
 
 					// Trim & tidy
-					$public_display = array_map( 'trim', $public_display );
-					$public_display = array_unique( $public_display );
+					$public_display = array_unique( array_map( 'trim', $public_display ) );
 
 					// Show options
 					foreach ( $public_display as $item ) : ?>
@@ -108,4 +110,7 @@ function wp_user_profiles_name_metabox( $user = null ) {
 	</table>
 
 	<?php
+
+	// After
+	do_action( __FUNCTION__ . '_after', $user );
 }
