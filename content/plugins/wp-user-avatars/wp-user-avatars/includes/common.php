@@ -1,11 +1,11 @@
 <?php
 
 /**
- * User Avatar Functions
+ * User Avatar Common Functions
  *
  * @since 0.1.0
  *
- * @package Plugins/Users/Avatars/Functions
+ * @package Plugins/Users/Avatars/Functions/Common
  */
 
 // Exit if accessed directly
@@ -49,6 +49,9 @@ function wp_user_avatars_edit_user_profile_update( $user_id = 0 ) {
 		// Override avatar file-size
 		add_filter( 'upload_size_limit', 'wp_user_avatars_upload_size_limit' );
 
+		// Temporary global
+		$GLOBALS['wp_user_avatars_user_id'] = $user_id;
+
 		// Handle upload
 		$avatar = wp_handle_upload( $_FILES['wp-user-avatars'], array(
 			'mimes' => array(
@@ -59,6 +62,9 @@ function wp_user_avatars_edit_user_profile_update( $user_id = 0 ) {
 			'test_form' => false,
 			'unique_filename_callback' => 'wp_user_avatars_unique_filename_callback'
 		) );
+
+		// No more global
+		unset( $GLOBALS['wp_user_avatars_user_id'] );
 
 		remove_filter( 'upload_size_limit', 'wp_user_avatars_upload_size_limit' );
 
@@ -104,7 +110,7 @@ function wp_user_avatars_edit_user_profile_update( $user_id = 0 ) {
 function wp_user_avatars_unique_filename_callback( $dir, $name, $ext ) {
 
 	// Get user
-	$user = get_user_by( 'id', $GLOBALS['user_id'] );
+	$user = get_user_by( 'id', $GLOBALS['wp_user_avatars_user_id'] );
 
 	// File suffix
 	$suffix = time();
@@ -251,6 +257,7 @@ function wp_user_avatars_get_local_avatar_url( $user_id = false, $size = 250 ) {
 	// Get ratings
 	$avatar_rating = get_user_meta( $user_id, 'wp_user_avatars_rating', true );
 	$site_rating   = get_option( 'avatar_rating', 'G' );
+	$switched      = false;
 
 	// Compare ratings
 	if ( ! empty( $avatar_rating ) && ( 'G' !== $avatar_rating ) && ( $avatar_rating !== $site_rating ) ) {
@@ -267,21 +274,27 @@ function wp_user_avatars_get_local_avatar_url( $user_id = false, $size = 250 ) {
 		}
 	}
 
+	$dynamic_resize = apply_filters( 'wp_user_avatars_dynamic_resize', true, $user_id, $size, $user_avatars );
+
+	// Return early if there's no media to check and we either have an avatar of the correct size or don't dynamically resize
+	if ( empty( $user_avatars['media_id'] ) && ( ! empty( $user_avatars[ $size ] ) || $dynamic_resize === false ) ) {
+		if ( empty( $user_avatars[ $size ] ) ) {
+			return $user_avatars['full'];
+		}
+		return $user_avatars[ $size ];
+    }
+
+	// Maybe switch to blog
+	if ( isset( $user_avatars['site_id'] ) && is_multisite() ) {
+		$switched = true;
+		switch_to_blog( $user_avatars['site_id'] );
+	}
+
 	// Handle "real" media
 	if ( ! empty( $user_avatars['media_id'] ) ) {
 
-		// Maybe switch to blog
-		if ( isset( $user_avatars['site_id'] ) && is_multisite() ) {
-			switch_to_blog( $user_avatars['site_id'] );
-		}
-
 		// Has the media been deleted?
 		$avatar_full_path = get_attached_file( $user_avatars['media_id'] );
-
-		// Maybe switch back
-		if ( isset( $user_avatars['site_id'] ) && is_multisite() ) {
-			restore_current_blog();
-		}
 
 		// Maybe return null & maybe delete the avatar setting
 		if ( empty( $avatar_full_path ) ) {
@@ -291,18 +304,23 @@ function wp_user_avatars_get_local_avatar_url( $user_id = false, $size = 250 ) {
 				wp_user_avatars_delete_avatar( $user_id );
 			}
 
+			// Maybe switch back
+			if ( true === $switched ) {
+				restore_current_blog();
+			}
+
 			return null;
 		}
 	}
 
 	// Generate a new size
-	if ( ! array_key_exists( $size, $user_avatars ) ) {
+	if ( empty( $user_avatars[ $size ] ) ) {
 
 		// Set full size
 		$user_avatars[ $size ] = $user_avatars['full'];
 
 		// Allow rescaling to be toggled, usually for performance reasons
-		if ( apply_filters( 'wp_user_avatars_dynamic_resize', true ) ) {
+		if ( $dynamic_resize ) {
 
 			// Get the upload path (hard to trust this sometimes, though...)
 			$upload_path = wp_upload_dir();
@@ -339,6 +357,11 @@ function wp_user_avatars_get_local_avatar_url( $user_id = false, $size = 250 ) {
 		$user_avatars[ $size ] = home_url( $user_avatars[ $size ] );
 	}
 
+	// Maybe switch back
+	if ( true === $switched ) {
+		restore_current_blog();
+	}
+
 	// Return the url
 	return $user_avatars[ $size ];
 }
@@ -358,6 +381,12 @@ function wp_user_avatars_filter_get_avatar_url( $url, $id_or_email, $args ) {
 
 	// Bail if forcing default
 	if ( ! empty( $args['force_default'] ) ) {
+		return $url;
+	}
+
+	// Bail if explicitly an md5'd Gravatar url
+	// https://github.com/stuttter/wp-user-avatars/issues/11
+	if ( is_string( $id_or_email ) && strpos( $id_or_email, '@md5.gravatar.com' ) ) {
 		return $url;
 	}
 
