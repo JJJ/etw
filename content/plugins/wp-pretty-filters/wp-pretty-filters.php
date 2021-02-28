@@ -1,14 +1,19 @@
 <?php
 
 /*
- * Plugin Name: WP Pretty Filters
- * Plugin URI:  http://wordpress.org/plugins/wp-pretty-filters/
- * Author:      John James Jacoby
- * Author URI:  http://jjj.me
- * Version:     0.1.1
- * Description: Makes post filters match Media & Attachments
- * License:     GPLv2 or later
+ * Plugin Name:       WP Pretty Filters
+ * Plugin URI:        https://wordpress.org/plugins/wp-chosen/
+ * Author:            John James Jacoby
+ * Author URI:        https://jjj.blog
+ * Version:           2.0.0
+ * Requires at least: 5.3
+ * Requires PHP:      7.0
+ * Description:       Makes post filters match Media & Attachments
+ * License:           GPLv2 or later
  */
+
+// Exit if accessed directly
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Enqueue scripts
@@ -22,8 +27,8 @@ function _wp_pretty_filters() {
 	$ver = wp_pretty_filters_get_asset_version();
 
 	// Styles
-	wp_enqueue_style(  'wp-pretty-filters', $url . 'assets/css/pretty-filters.css', array(),           $ver       );
-	wp_enqueue_script( 'wp-pretty-filters', $url . 'assets/js/pretty-filters.js',   array( 'jquery' ), $ver, true );
+	wp_enqueue_style(  'wp-pretty-filters', $url . 'assets/css/pretty-filters.css', array(),           $ver );
+	wp_enqueue_script( 'wp-pretty-filters', $url . 'assets/js/pretty-filters.js',   array( 'jquery' ), $ver );
 }
 add_action( 'admin_enqueue_scripts', '_wp_pretty_filters', 11 );
 
@@ -35,7 +40,7 @@ add_action( 'admin_enqueue_scripts', '_wp_pretty_filters', 11 );
  * @return string
  */
 function wp_pretty_filters_get_plugin_url() {
-	return plugin_dir_url( __FILE__ );
+	return plugin_dir_url( __FILE__ ) . 'wp-pretty-filters/';
 }
 
 /**
@@ -46,5 +51,5 @@ function wp_pretty_filters_get_plugin_url() {
  * @return int
  */
 function wp_pretty_filters_get_asset_version() {
-	return 201511180001;
+	return 202003090001;
 }
