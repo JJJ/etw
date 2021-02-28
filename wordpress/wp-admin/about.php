@@ -7,37 +7,31 @@
  */
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once __DIR__ . '/admin.php';
 
 /* translators: Page title of the About WordPress page in the admin. */
 $title = _x( 'About', 'page title' );
 
 list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
+require_once ABSPATH . 'wp-admin/admin-header.php';
 ?>
 	<div class="wrap about__container">
 
 		<div class="about__header">
-			<div class="about__header-title">
-				<h1>
-					<span><?php echo $display_version; ?></span>
-					<?php _e( 'WordPress' ); ?>
-				</h1>
+			<div class="about__header-image">
+				<img alt="<?php _e( 'Code is Poetry' ); ?>" src="images/about-badge.svg" />
 			</div>
 
-			<div class="about__header-badge"></div>
+			<div class="about__header-title">
+				<p>
+					<?php _e( 'WordPress' ); ?>
+					<?php echo $display_version; ?>
+				</p>
+			</div>
 
 			<div class="about__header-text">
-				<p>
-					<?php
-					printf(
-						/* translators: %s: The current WordPress version number. */
-						__( 'Introducing our most refined user experience with the improved block editor in WordPress %s!' ),
-						$display_version
-					);
-					?>
-				</p>
+				<?php _e( 'Jazz up your stories in an editor that’s cleaner, crisper, and does more to get out of your way.' ); ?>
 			</div>
 
 			<nav class="about__header-navigation nav-tab-wrapper wp-clearfix" aria-label="<?php esc_attr_e( 'Secondary menu' ); ?>">
@@ -48,141 +42,181 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 			</nav>
 		</div>
 
-		<div class="about__section is-feature">
-			<p>
-				<?php _e( '5.3 expands and refines the block editor introduced in WordPress 5.0 with a new block, more intuitive interactions, and improved accessibility. New features in the editor increase design freedoms, provide additional layout options and style variations to allow designers complete control over the look of a site. This release also introduces the Twenty Twenty theme giving the user more design flexibility and integration with the block editor. Creating beautiful web pages and advanced layouts has never been easier.' ); ?>
-			</p>
-		</div>
-
-		<hr />
-
-		<div class="about__section has-2-columns">
-			<div class="column is-edge-to-edge has-accent-background-color">
-				<div class="about__image aligncenter">
-					<img src="data:image/svg+xml;charset=utf8,%3Csvg width='660' height='818' viewbox='0 0 660 818' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='99' y='178' width='132' height='132' fill='%23F4EFE1'/%3E%3Crect x='231' y='310' width='99' height='99' fill='%2344141E'/%3E%3Crect x='330' y='409' width='132' height='132' fill='%23F4EFE1'/%3E%3Crect x='462' y='541' width='99' height='99' fill='%2344141E'/%3E%3C/svg%3E" alt="" />
-				</div>
-			</div>
-			<div class="column is-vertically-aligned-center">
-				<h2><?php _e( 'Block Editor Improvements' ); ?></h2>
-				<p>
-					<?php _e( 'This enhancement-focused update introduces over 150 new features and usability improvements, including improved large image support for uploading non-optimized, high-resolution pictures taken from your smartphone or other high-quality cameras. Combined with larger default image sizes, pictures always look their best.' ); ?>
-				</p>
-
-				<p>
-					<?php _e( 'Accessibility improvements include the integration of block editor styles in the admin interface. These improved styles fix many accessibility issues: color contrast on form fields and buttons, consistency between editor and admin interfaces, new snackbar notices, standardizing to the default WordPress color scheme, and the introduction of Motion to make interacting with your blocks feel swift and natural. For people who use a keyboard to navigate the dashboard, the block editor now has a Navigation mode. This lets you jump from block to block without tabbing through every part of the block controls.' ); ?>
-				</p>
-			</div>
-		</div>
-
-		<div class="about__section has-2-columns">
-			<div class="column is-vertically-aligned-center">
-				<h2><?php _e( 'Expanded Design Flexibility' ); ?></h2>
+		<div class="about__section is-feature has-subtle-background-color">
+			<div class="column">
+				<h1 class="is-smaller-heading">
+					<?php
+					printf(
+						/* translators: %s: The current WordPress version number. */
+						__( 'Step into WordPress %s.' ),
+						$display_version
+					);
+					?>
+				</h1>
 				<p>
 					<?php
 					printf(
 						/* translators: %s: The current WordPress version number. */
-						__( 'WordPress %s adds even more robust tools for creating amazing designs.' ),
+						__( 'With this new version, the editor cleans up the colors and helps you work in a few places you couldn’t before—at least, not without getting into code or hiring a pro. The controls you use most, like changing type sizes, are in more places—right where you need them. And layout changes that should be simple, like full-height images, get even simpler to make.' ),
 						$display_version
 					);
 					?>
 				</p>
-				<ul>
-					<li><?php _e( 'The new Group block lets you easily divide your page into colorful sections' ); ?></li>
-					<li><?php _e( 'The Columns block now supports fixed column widths' ); ?></li>
-					<li><?php _e( 'The new Predefined layouts make it a cinch to arrange content into advanced designs' ); ?></li>
-					<li><?php _e( 'Heading blocks now offer controls for text color' ); ?></li>
-					<li><?php _e( 'Additional style options allow you to set your preferred style for any block that supports this feature' ); ?></li>
-				</ul>
-			</div>
-			<div class="column is-edge-to-edge has-accent-background-color">
-				<div class="about__image aligncenter">
-					<img src="data:image/svg+xml;charset=utf8,%3Csvg width='500' height='500' viewbox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='75' y='200' width='150' height='75' fill='%2344141E'/%3E%3Crect x='175' y='75' width='50' height='100' fill='%2385273B'/%3E%3Crect x='75' y='75' width='75' height='100' fill='%23F4EFE1'/%3E%3Crect x='250' y='200' width='175' height='75' fill='%2344141E'/%3E%3Crect x='350' y='75' width='75' height='100' fill='%2385273B'/%3E%3Crect x='250' y='75' width='75' height='100' fill='%23F4EFE1'/%3E%3Crect x='75' y='375' width='150' height='50' fill='%2344141E'/%3E%3Crect x='175' y='300' width='50' height='50' fill='%2385273B'/%3E%3Crect x='75' y='300' width='75' height='50' fill='%23F4EFE1'/%3E%3Crect x='250' y='372.5' width='175' height='52.5' fill='%2344141E'/%3E%3Crect x='350' y='300' width='75' height='50' fill='%2385273B'/%3E%3Crect x='250' y='300' width='75' height='50' fill='%23F4EFE1'/%3E%3C/svg%3E%0A" alt="">
-				</div>
 			</div>
 		</div>
 
-		<div class="about__section has-2-columns has-subtle-background-color">
-			<div class="column is-vertically-aligned-center">
-				<h2><?php _e( 'Introducing Twenty Twenty' ); ?></h2>
-				<p><?php _e( 'As the block editor celebrates its first birthday, we are proud that Twenty Twenty is designed with flexibility at its core. Show off your services or products with a combination of columns, groups, and media blocks. Set your content to wide or full alignment for dynamic and engaging layouts. Or let your thoughts be the star with a centered content column!' ); ?></p>
+		<hr class="is-large" />
 
+		<div class="about__section has-2-columns">
+			<h2 class="is-section-header is-smaller-heading">
+				<?php _e( 'Now the editor is easier to use' ); ?>
+			</h2>
+			<div class="column">
 				<p>
 					<?php
-					printf(
-						/* translators: %s: Link to the Inter font website. */
-						__( 'As befits a theme called Twenty Twenty, clarity and readability is also a big focus. The theme includes the typeface <a href="%s">Inter</a>, designed by Rasmus Andersson. Inter comes in a Variable Font version, a first for default themes, which keeps load times short by containing all weights and styles of Inter in just two font files.' ),
-						'https://rsms.me/inter/'
-					);
+					_e( '<strong>Font-size adjustment in more places:</strong> now, font-size controls are right where you need them in the List and Code blocks. No more trekking to another screen to make that single change!' );
+					?>
+				</p>
+				<p>
+					<?php
+					_e( '<strong>Reusable blocks:</strong> several enhancements make reusable blocks more stable and easier to use. And now they save automatically with the post when you click the Update button.' );
+					?>
+				</p>
+				<p>
+					<?php
+					_e( '<strong>Inserter drag-and-drop:</strong> drag blocks and block patterns from the inserter right into your post.' );
 					?>
 				</p>
 			</div>
-			<div class="column is-edge-to-edge">
-				<div class="about__image aligncenter">
-					<img src="https://s.w.org/images/core/5.3/twentytwenty-mobile.png" alt="" />
-				</div>
+			<div class="column about__image">
+				<video controls>
+					<source src="https://make.wordpress.org/core/files/2021/02/about-57-drag-drop-image.mp4" type="video/mp4" />
+				</video>
+			</div>
+		</div>
+
+		<div class="about__section has-2-columns">
+			<h2 class="is-section-header is-smaller-heading">
+				<?php _e( 'You can do more without writing custom code' ); ?>
+			</h2>
+			<div class="column">
+				<p>
+					<?php
+					_e( '<strong>Full-height alignment:</strong> have you ever wanted to make a block, like the Cover block, fill the whole window? Now you can.' );
+					?>
+				</p>
+				<p>
+					<?php
+					_e( '<strong>Buttons block:</strong> now you can align the content in buttons vertically. And you can set the width of a button to a preset percentage.' );
+					?>
+				</p>
+				<p>
+					<?php
+					_e( '<strong>Social Icons block:</strong> you can now change the size of the icons in the Social Icons block.' );
+					?>
+				</p>
+			</div>
+			<div class="column about__image">
+				<img src="https://make.wordpress.org/core/files/2021/02/about-57-cover-1.jpg" alt="" />
+			</div>
+		</div>
+
+		<hr />
+
+		<div class="about__section has-subtle-background-color">
+			<div class="column">
+				<h2 class="is-smaller-heading"><?php _e( 'A Simpler Default Color Palette' ); ?></h2>
 			</div>
 		</div>
 
 		<div class="about__section has-subtle-background-color">
-			<div class="column is-edge-to-edge">
-				<div class="about__image aligncenter">
-					<img src="https://s.w.org/images/core/5.3/twentytwenty-desktop.png" alt="" />
+			<div class="column about__image">
+				<div class="about__image-comparison">
+					<div class="about__image-comparison-resize">
+						<img src="https://make.wordpress.org/core/files/2021/02/about-57-color-new.png" />
+					</div>
+					<img src="https://make.wordpress.org/core/files/2021/02/about-57-color-old.png" />
 				</div>
 			</div>
 		</div>
-
-		<hr />
-
-		<div class="about__section has-3-columns">
-			<h2 class="is-section-header"><?php _e( 'Improvements for Everyone' ); ?></h2>
-
-			<div class="column">
-				<h3><?php _e( 'Automatic Image Rotation' ); ?></h3>
-				<p><?php _e( 'Your images will be correctly rotated upon upload according to the embedded orientation data. This feature was first proposed nine years ago and made possible through the perserverance of many dedicated contributors.' ); ?></p>
-			</div>
-			<div class="column">
-				<h3><?php _e( 'Site Health Checks' ); ?></h3>
-				<p><?php _e( 'The improvements introduced in 5.3 make it even easier to identify issues. Expanded recommendations highlight areas that may need troubleshooting on your site from the Health Check screen.' ); ?></p>
-			</div>
-			<div class="column">
-				<h3><?php _e( 'Admin Email Verification' ); ?></h3>
-				<p><?php _e( 'You’ll now be periodically asked to confirm that your admin email address is up to date when you log in as an administrator. This reduces the chance of getting locked out of your site if you change your email address.' ); ?></p>
-			</div>
-		</div>
-
-		<div class="about__section">
-			<div class="column is-edge-to-edge">
-				<div class="about__image aligncenter">
-					<img src="data:image/svg+xml;charset=utf8,%3Csvg width='1000' height='498' viewbox='0 0 1000 498' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='865.463' y='36.8596' width='133.8' height='132.326' fill='%23942F44'/%3E%3Crect x='865.463' y='180.98' width='133.8' height='132.326' fill='%23942F44'/%3E%3Crect x='866.2' y='328.05' width='133.8' height='132.694' fill='%23942F44'/%3E%3Crect y='331.736' width='405.455' height='134.169' fill='%234E1521'/%3E%3Crect y='36.8596' width='405.455' height='129.008' fill='%234E1521'/%3E%3Crect y='184.298' width='387.025' height='133.8' fill='%234E1521'/%3E%3Crect x='719.13' y='34.6479' width='133.8' height='428.677' fill='%23BD3854'/%3E%3Crect x='571.323' y='18.4297' width='133.8' height='423.885' fill='%23BD3854'/%3E%3Crect x='423.516' y='35.0164' width='133.8' height='425.728' fill='%23BD3854'/%3E%3C/svg%3E" alt="" />
-				</div>
-			</div>
-		</div>
-
-		<hr />
 
 		<div class="about__section has-2-columns has-subtle-background-color">
-			<h2 class="is-section-header"><?php _e( 'For Developers' ); ?></h2>
-
 			<div class="column">
-				<h3><?php _e( 'Date/Time Component Fixes' ); ?></h3>
 				<p>
 					<?php
 					printf(
-						/* translators: %s: Link to the date/time developer notes. */
-						__( 'Developers can now work with <a href="%s">dates and timezones</a> in a more reliable way. Date and time functionality has received a number of new API functions for unified timezone retrieval and PHP interoperability, as well as many bug fixes.' ),
-						'https://make.wordpress.org/core/2019/09/23/date-time-improvements-wp-5-3/'
+						/* translators: %s: WCAG information link. */
+						__( 'This new streamlined color palette collapses all the colors that used to be in the WordPress source code down to seven core colors and a range of 56 shades that meet the <a href="%s">WCAG 2.0 AA recommended contrast ratio</a> against white or black.' ),
+						'https://www.w3.org/WAI/WCAG2AAA-Conformance'
 					);
+					?>
+				</p>
+				<p>
+					<?php
+					_e( 'The colors are perceptually uniform from light to dark in each range, which means they start at white and get darker by the same amount with each step.' );
 					?>
 				</p>
 			</div>
 			<div class="column">
-				<h3><?php _e( 'PHP 7.4 Compatibility' ); ?></h3>
+				<p>
+					<?php
+					_e( 'Half the range has a 4.5 or higher contrast ratio against black, and the other half maintains the same contrast against white.' );
+					?>
+				</p>
 				<p>
 					<?php
 					printf(
-						/* translators: %s: Link to the PHP 7 developer notes. */
-						__( 'WordPress 5.3 aims to fully support PHP 7.4. This release contains <a href="%s">multiple changes</a> to remove deprecated functionality and ensure compatibility. WordPress continues to encourage all users to run the latest and greatest versions of PHP.' ),
-						'https://make.wordpress.org/core/2019/10/11/wordpress-and-php-7-4/'
+						/* translators: %s: Color palette dev note link. */
+						__( 'Find the new palette in the default WordPress Dashboard color scheme, and use it when you’re building themes, plugins, or any other components. For all the details, <a href="%s">check out the Color Palette dev note</a>.' ),
+						'https://make.wordpress.org/core/2021/02/23/standardization-of-wp-admin-colors-in-wordpress-5-7'
+					);
+					?>
+				</p>
+			</div>
+		</div>
+
+		<div class="about__section has-subtle-background-color">
+			<div class="column about__image">
+				<picture>
+					<source media="(max-width: 600px)" srcset="images/about-color-palette-vert.svg" />
+					<img alt="" src="images/about-color-palette.svg" />
+				</picture>
+			</div>
+		</div>
+
+		<hr />
+
+		<div class="about__section has-2-columns">
+			<div class="column">
+				<h3><?php _e( 'From HTTP to HTTPS in a single click' ); ?></h3>
+				<p><?php _e( 'Starting now, switching a site from HTTP to HTTPS is a one-click move. WordPress will automatically update database URLs when you make the switch. No more hunting and guessing!' ); ?></p>
+				<h3><?php _e( 'New Robots API' ); ?></h3>
+				<p>
+					<?php
+					_e( 'The new Robots API lets you include the filter directives in the robots meta tag, and the API includes the directive <code>max-image-preview: large</code> by default. That means search engines can show bigger image previews (unless the blog is marked as not public), which can boost your traffic.' )
+					?>
+				</p>
+			</div>
+			<div class="column">
+				<h3><?php _e( 'Ongoing cleanup after update to jQuery 3.5.1' ); ?></h3>
+				<p><?php _e( 'For years jQuery helped make things move on the screen in ways the basic tools couldn’t—but that keeps changing, and so does jQuery.' ); ?></p>
+				<p><?php _e( 'One side effect: it generated a set of cryptic messages on the dashboard that informed only developers. In 5.7, you will get far fewer of those messages, and they will be in plain language.' ); ?></p>
+				<h3><?php _e( 'Lazy-load your iframes' ); ?></h3>
+				<p><?php _e( 'Now it’s simple to let iframes lazy-load. Just add the <code>loading="lazy"</code> attribute to iframe tags on the front end.' ); ?></p>
+			</div>
+		</div>
+
+		<hr class="is-small" />
+
+		<div class="about__section">
+			<div class="column">
+				<h3><?php _e( 'Check the Field Guide for more!' ); ?></h3>
+				<p>
+					<?php
+					printf(
+						/* translators: %s: WordPress 5.7 Field Guide link. */
+						__( 'Check out the latest version of the WordPress Field Guide. It highlights developer notes for each change you may want to be aware of. <a href="%s">WordPress 5.7 Field Guide.</a>' ),
+						'https://make.wordpress.org/core/2021/02/23/wordpress-5-7-field-guide'
 					);
 					?>
 				</p>
@@ -194,7 +228,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 		<div class="return-to-dashboard">
 			<?php if ( current_user_can( 'update_core' ) && isset( $_GET['updated'] ) ) : ?>
 				<a href="<?php echo esc_url( self_admin_url( 'update-core.php' ) ); ?>">
-					<?php is_multisite() ? _e( 'Return to Updates' ) : _e( 'Return to Dashboard &rarr; Updates' ); ?>
+					<?php is_multisite() ? _e( 'Go to Updates' ) : _e( 'Go to Dashboard &rarr; Updates' ); ?>
 				</a> |
 			<?php endif; ?>
 			<a href="<?php echo esc_url( self_admin_url() ); ?>"><?php is_blog_admin() ? _e( 'Go to Dashboard &rarr; Home' ) : _e( 'Go to Dashboard' ); ?></a>
@@ -202,7 +236,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 	</div>
 <?php
 
-include( ABSPATH . 'wp-admin/admin-footer.php' );
+require_once ABSPATH . 'wp-admin/admin-footer.php';
 
 // These are strings we may use to describe maintenance/security releases, where we aim for no new strings.
 return;
