@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Admin;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Handlers\Product;
@@ -74,20 +74,28 @@ class Sync_Page {
 
 					<tr>
 						<td>
-							<?php printf(
+							<?php
+							printf(
 								/* translators: Placeholders: %1$s, %3$s - opening <strong> HTML tag, %2$s, $4%s - closing </strong> HTML tag */
-								esc_html__( '%1$sSquare%2$s is the system of record. The following data from Square will overwrite WooCommerce data for synced products: %3$sname, price, inventory%4$s.', 'woocommerce-square' ),
-								'<strong>', '</strong>', '<strong>', '</strong>'
-							); ?>
+								esc_html__( '%1$sSquare%2$s is the system of record. The following data from Square will overwrite WooCommerce data for synced products: %3$sname, price, description, category, inventory%4$s.', 'woocommerce-square' ),
+								'<strong>',
+								'</strong>',
+								'<strong>',
+								'</strong>'
+							);
+							?>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<?php printf(
+							<?php
+							printf(
 								/* translators: Placeholders: %1$s - opening <strong> HTML tag, %2$s closing </strong> HTML tag */
 								esc_html__( '%1$sProduct images%2$s will be imported from Square if no featured image is set in WooCommerce.', 'woocommerce-square' ),
-								'<strong>', '</strong>'
-							);?>
+								'<strong>',
+								'</strong>'
+							);
+							?>
 						</td>
 					</tr>
 
@@ -95,11 +103,16 @@ class Sync_Page {
 
 					<tr>
 						<td>
-							<?php printf(
+							<?php
+							printf(
 								/* translators: Placeholders: %1$s, %3$s - opening <strong> HTML tag, %2$s, %4$s - closing </strong> HTML tag */
 								esc_html__( '%1$sWooCommerce%2$s is the system of record. The following data from WooCommerce will overwrite Square data for synced products: %3$sname, price, inventory, category, image%4$s.', 'woocommerce-square' ),
-								'<strong>', '</strong>', '<strong>', '</strong>'
-							); ?>
+								'<strong>',
+								'</strong>',
+								'<strong>',
+								'</strong>'
+							);
+							?>
 						</td>
 					</tr>
 
@@ -107,11 +120,14 @@ class Sync_Page {
 
 					<tr>
 						<td>
-							<?php printf(
+							<?php
+							printf(
 								/* translators: Placeholders: %1$s - opening <strong> HTML tag, %2$s closing </strong> HTML tag*/
 								esc_html__( '%1$sNo chosen system of record.%2$s Products will not be synced between Square and WooCommerce.', 'woocommerce-square' ),
-								'<strong>', '</strong>'
-							); ?>
+								'<strong>',
+								'</strong>'
+							);
+							?>
 						</td>
 					</tr>
 
@@ -131,18 +147,20 @@ class Sync_Page {
 
 		$is_connected      = wc_square()->get_settings_handler()->is_connected();
 		$sync_in_progress  = $is_connected ? wc_square()->get_sync_handler()->is_sync_in_progress() : false;
-		$synced_products   = wc_square()->get_settings_handler()->is_product_sync_enabled() ? Product::get_products_synced_with_square() : [];
+		$synced_products   = wc_square()->get_settings_handler()->is_product_sync_enabled() ? Product::get_products_synced_with_square() : array();
 		$synced_count      = count( $synced_products );
 		$is_product_import = false;
 
 		if ( $sync_in_progress ) {
 
-			$current_job = wc_square()->get_sync_handler()->get_job_in_progress();
+			$current_job       = wc_square()->get_sync_handler()->get_job_in_progress();
 			$is_product_import = isset( $current_job->action ) && 'product_import' === $current_job->action;
 		}
 
 		if ( ! $is_connected ) {
 			$disabled_reason = esc_html__( 'Please connect to Square to enable product sync.', 'woocommerce-square' );
+		} elseif ( ! wc_square()->get_settings_handler()->get_location_id() ) {
+			$disabled_reason = esc_html__( 'Please set the business location to enable product sync.', 'woocommerce-square' );
 		} elseif ( 0 === $synced_count ) {
 			$disabled_reason = esc_html__( 'There are currently no products marked to be synced with Square.', 'woocommerce-square' );
 		} elseif ( $sync_in_progress ) {
@@ -168,11 +186,13 @@ class Sync_Page {
 				<tr>
 					<td class="synced-products">
 						<a href="<?php echo esc_url( admin_url( 'edit.php?s&post_status=all&post_type=product&product_type=synced-with-square&stock_status&paged=1' ) ); ?>">
-							<?php printf(
+							<?php
+							printf(
 								/* translators: Placeholder: %d number of products synced with Square */
 								_n( '%d product', '%d products', $synced_count, 'woocommerce-square' ),
 								$synced_count
-							); ?>
+							);
+							?>
 						</a>
 						<input
 							type="hidden"
@@ -253,12 +273,17 @@ class Sync_Page {
 	 */
 	private static function output_sync_records() {
 
-		$records = Records::get_records(); ?>
+		$records = Records::get_records();
+		?>
 
 		<button
 			id="wc-square_clear-sync-records"
 			class="button button-large"
-			<?php if ( empty( $records ) ) { echo 'disabled="disabled"'; } ?>
+			<?php
+			if ( empty( $records ) ) {
+				echo 'disabled="disabled"';
+			}
+			?>
 		><?php echo esc_html_x( 'Clear history', 'Delete all records', 'woocommerce-square' ); ?></button>
 
 		<table class="wc_square_table records widefat" cellspacing="0">
@@ -297,7 +322,7 @@ class Sync_Page {
 
 					<tr>
 						<td colspan="4">
-							<em><?php esc_html_e( 'No records found.', 'woocommerce-square' ) ?></em>
+							<em><?php esc_html_e( 'No records found.', 'woocommerce-square' ); ?></em>
 						</td>
 					</tr>
 
@@ -354,12 +379,14 @@ class Sync_Page {
 								<?php endif; ?>
 							</ul>
 							<?php $additional_info = ob_get_clean(); ?>
-							<?php printf(
+							<?php
+							printf(
 								/* translators: Placeholders: %1$s - the system of record name (e.g. Square or WooCommerce), %3%s - unordered HTML list of additional information item(s) */
 								esc_html__( 'You are about to sync products with Square. %1$s is your system of record. For all products synced with Square: %2$s', 'woocommerce-square' ),
 								$square_settings->get_system_of_record_name(),
 								$additional_info
-							); ?>
+							);
+							?>
 						</article>
 						<footer>
 							<div class="inner">

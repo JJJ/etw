@@ -28,7 +28,7 @@ use SquareConnect\Model as SquareModel;
 use SquareConnect\Api\LocationsApi;
 use WooCommerce\Square\API\Request;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WooCommerce Square locations API Request class.

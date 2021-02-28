@@ -26,7 +26,7 @@ namespace WooCommerce\Square\API\Responses;
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\API\Response;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Catalog response object

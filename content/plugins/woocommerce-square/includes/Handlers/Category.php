@@ -25,7 +25,7 @@ namespace WooCommerce\Square\Handlers;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Category handler class.
@@ -51,7 +51,7 @@ class Category {
 	 */
 	public static function get_map() {
 
-		return get_option( self::CATEGORY_MAP_META_KEY, [] );
+		return get_option( self::CATEGORY_MAP_META_KEY, array() );
 	}
 
 
@@ -86,7 +86,7 @@ class Category {
 			return $map[ $category_id ];
 		}
 
-		return [];
+		return array();
 	}
 
 
@@ -137,10 +137,10 @@ class Category {
 
 		$map = self::get_map();
 
-		$map[ $category_id ] = [
+		$map[ $category_id ] = array(
 			'square_id'      => $square_id,
 			'square_version' => $square_version,
-		];
+		);
 
 		self::update_map( $map );
 
@@ -170,7 +170,7 @@ class Category {
 
 			if ( $category = get_term_by( 'name', $name, 'product_cat', ARRAY_A ) ) {
 
-				$category_id = isset( $category['name'] ) ? $category['name'] : null;
+				$category_id = isset( $category['term_id'] ) ? absint( $category['term_id'] ) : null;
 			}
 		}
 
@@ -182,9 +182,8 @@ class Category {
 			$category_id = isset( $inserted_term['term_id'] ) ? $inserted_term['term_id'] : null;
 		}
 
-
 		if ( $category_id ) {
-
+			wp_update_term( $category_id, 'product_cat', array( 'name' => $name ) );
 			self::update_square_meta( $category_id, $id, $version );
 		}
 
@@ -219,14 +218,18 @@ class Category {
 	public static function get_category_id_by_square_id( $square_id ) {
 		global $wpdb;
 
-		$query = $wpdb->prepare( "
+		$query = $wpdb->prepare(
+			"
 			SELECT t.term_id FROM {$wpdb->prefix}terms AS t
 			LEFT JOIN {$wpdb->prefix}term_taxonomy AS tt ON t.term_id = tt.term_id
 			LEFT JOIN {$wpdb->prefix}termmeta AS tm ON t.term_id = tm.term_id
 			WHERE tt.taxonomy = 'product_cat'
 			AND tm.meta_key = '%s'
 			AND tm.meta_value = '%s'
-		", self::SQUARE_ID_META_KEY, $square_id );
+			",
+			self::SQUARE_ID_META_KEY,
+			$square_id
+		);
 
 		return $wpdb->get_var( $query );
 	}

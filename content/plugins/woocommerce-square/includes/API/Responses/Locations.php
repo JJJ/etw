@@ -27,7 +27,7 @@ use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Model as SquareModel;
 use WooCommerce\Square\API\Response;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Catalog response object
@@ -48,7 +48,7 @@ class Locations extends Response {
 	 */
 	public function get_locations() {
 
-		return $this->get_data() ? $this->get_data()->getLocations() : [];
+		return $this->get_data() ? $this->get_data()->getLocations() : array();
 	}
 
 

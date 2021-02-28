@@ -26,8 +26,9 @@ namespace WooCommerce\Square\Handlers;
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Model\CatalogObject;
 use WooCommerce\Square\Utilities\Money_Utility;
+use WooCommerce\Square\Sync\Records;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Product handler class.
@@ -61,8 +62,8 @@ class Product {
 			throw new \InvalidArgumentException( 'Type of $catalog_object must be an ITEM' );
 		}
 
-		$product->update_meta_data( self::SQUARE_ID_META_KEY,       $catalog_object->getId() );
-		$product->update_meta_data( self::SQUARE_VERSION_META_KEY,  $catalog_object->getVersion() );
+		$product->update_meta_data( self::SQUARE_ID_META_KEY, $catalog_object->getId() );
+		$product->update_meta_data( self::SQUARE_VERSION_META_KEY, $catalog_object->getVersion() );
 		$product->update_meta_data( self::SQUARE_IMAGE_ID_META_KEY, $catalog_object->getImageId() );
 
 		$product->save();
@@ -79,7 +80,7 @@ class Product {
 			throw new \InvalidArgumentException( 'Type of $catalog_object must be an ITEM_VARIATION' );
 		}
 
-		$product->update_meta_data( self::SQUARE_VARIATION_ID_META_KEY,      $catalog_object->getId() );
+		$product->update_meta_data( self::SQUARE_VARIATION_ID_META_KEY, $catalog_object->getId() );
 		$product->update_meta_data( self::SQUARE_VARIATION_VERSION_META_KEY, $catalog_object->getVersion() );
 
 		$product->save();
@@ -143,7 +144,6 @@ class Product {
 					do_action( 'wc_square_updated_product_variation_from_square', $variation, $catalog_variation );
 				}
 			}
-
 		} else {
 
 			$catalog_variation = current( $catalog_variations );
@@ -166,6 +166,35 @@ class Product {
 		}
 
 		$product->set_name( wc_clean( $catalog_item->getName() ) );
+		$product->set_description( $catalog_item->getDescription() );
+
+		$category_id = Category::get_category_id_by_square_id( $catalog_item->getCategoryId() );
+
+		if ( $category_id ) {
+			wp_set_object_terms( $product->get_id(), intval( $category_id ), 'product_cat' );
+		} else {
+			$message = sprintf(
+				/* translators: Placeholder: %s category ID */
+				__( 'Square category with id (%s) was not imported to your Store. Please run Import Products from Square settings.', 'woocommerce-square' ),
+				$catalog_item->getCategoryId()
+			);
+
+			$records = Records::get_records();
+			foreach ( $records as $record ) {
+				if ( $record->get_message() === $message ) {
+					$is_recorded = true;
+				}
+			}
+
+			if ( ! isset( $is_recorded ) ) {
+				Records::set_record(
+					array(
+						'type'    => 'alert',
+						'message' => $message,
+					)
+				);
+			}
+		}
 
 		if ( $catalog_id ) {
 			$product->update_meta_data( self::SQUARE_ID_META_KEY, $catalog_id );
@@ -189,22 +218,26 @@ class Product {
 	 * Updates a product image from a URL provided by Square (helper method).
 	 *
 	 * Note: does not save the product for persistence. If opening to public, consider changing this behavior.
+	 *       This function handles its own exceptions and logs them.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param \WC_Product|int $product product object or product ID
+	 * @param \WC_Product|int $given_product product object or product ID
 	 * @param string $image_id
-	 * @return \WC_Product updated product
+	 * @param bool $force_update If true, always import and update the product image from Square. If false, check if the image already exists on the given product before uploading a possible
+	 * @todo Look at ussages of this function. Does it even need to return anything?
+	 * @return \WC_Product|int The product id of object that was passed in.
 	 */
-	public static function update_image_from_square( $product, $image_id ) {
+	public static function update_image_from_square( $given_product, $image_id, $force_update = true ) {
 
-		$product = is_numeric( $product ) ? wc_get_product( $product ) : $product;
+		$product = is_numeric( $given_product ) ? wc_get_product( $given_product ) : $given_product;
+
+		if ( ! $product instanceof \WC_Product ) {
+			wc_square()->log( sprintf( 'Could not import image from Square at %1$s for attaching to product: Invalid product.', $image_url ) );
+			return $given_product;
+		}
 
 		try {
-
-			if ( ! $product instanceof \WC_Product ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'Invalid product' );
-			}
 
 			$image_response = wc_square()->get_api()->retrieve_catalog_object( $image_id );
 
@@ -214,78 +247,41 @@ class Product {
 
 			$image_url = $image_response->get_data()->getObject()->getImageData()->getUrl();
 
+			if ( empty( $image_url ) ) {
+				throw new Framework\SV_WC_Plugin_Exception( 'Square image url empty' );
+			}
+
+			if ( ! function_exists( 'media_sideload_image' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/media.php' );
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+				require_once( ABSPATH . 'wp-admin/includes/image.php' );
+			}
+
+			$product_image_id = $product->get_image_id();
+
+			// if the product has an image but doesn't have any Square image ID meta set, check we're not uploading a duplicate image src from Square
+			if ( ! $force_update && $product_image_id && ! $product->get_meta( '_square_item_image_id' ) ) {
+				$product_image_src = get_post_meta( $product_image_id, '_source_url', true );
+
+				if ( empty( $product_image_src ) ) {
+					throw new Framework\SV_WC_Plugin_Exception( 'Cannot compare existing product image src with new upload. Exiting to avoid uploading duplicate' );
+				} elseif ( $product_image_src === $image_url ) {
+					$product->update_meta_data( '_square_item_image_id', $image_id );
+					throw new Framework\SV_WC_Plugin_Exception( 'This image has already been uploaded to WordPress and is now set on the product' );
+				}
+			}
+
 			// grab remote image to upload into WordPress before attaching to product
-			$url_parts        = parse_url( $image_url );
-			$url_parts        = explode( '/', $url_parts['path'] );
-			$file_name        = end( $url_parts );
-			$upload_dir       = wp_upload_dir();
-			$remote_file_data = file_get_contents( $image_url );
+			$attachment_id = media_sideload_image( $image_url, $product->get_id(), $product->get_title(), 'id' );
 
-			$iterator = 0;
-
-			do {
-
-				$file_prefix      = 0 === $iterator ? '' : $iterator . '_';
-				$local_file_path  = untrailingslashit( $upload_dir['path'] ) . '/' . $file_prefix . $file_name;
-				$iterator++;
-
-			} while ( file_exists( $local_file_path ) );
-
-			if ( empty( $remote_file_data ) ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'Could not fetch remote image data' );
+			if ( is_wp_error( $attachment_id ) ) {
+				throw new Framework\SV_WC_Plugin_Exception( $attachment_id->get_error_message() );
 			}
-
-			$local_file = fopen( $local_file_path, 'wb' );
-
-			if ( ! $local_file ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'Could not create new file' );
-			}
-
-			$write = fwrite( $local_file, $remote_file_data );
-			$close = fclose( $local_file );
-
-			if ( ! $write || ! $close ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'Could not write to file' );
-			}
-
-			$wp_file = wp_check_filetype( basename( $local_file_path ) );
-
-			if ( ! $wp_file || ! isset( $wp_file['type'] ) ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'WordPress could not open the imported file' );
-			}
-
-			// some attachment media functions may not be available from WordPress core at this time
-			if ( ! function_exists( 'wp_generate_attachment_metadata' ) || ! function_exists( 'wp_update_attachment_metadata' ) ) {
-				include_once( ABSPATH . 'wp-admin/includes/image.php' );
-			}
-
-			$attachment = [
-				'post_mime_type' => $wp_file['type'],
-				'post_title'     => $product->get_title(),
-				'post_content'   => '',
-				'post_status'    => 'inherit'
-			];
-
-			// create WordPress attachment in database
-			$attachment_id   = wp_insert_attachment( $attachment, $local_file_path );
-			$attachment_post = ! $attachment_id instanceof \WP_Error ? get_post( $attachment_id ) : null;
-
-			if ( ! $attachment_post ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'WordPress cold not generate an attachment' );
-			}
-
-			$full_size_path = get_attached_file( $attachment_post->ID );
-
-			if ( ! $full_size_path ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'WordPress could not fetch the attached file' );
-			}
-
-			$attachment_data = wp_generate_attachment_metadata( $attachment_id, $full_size_path );
-
-			wp_update_attachment_metadata( $attachment_id, $attachment_data );
 
 			// attach the newly updated image to product
 			$product->set_image_id( $attachment_id );
+
+			self::set_square_image_id( $product, $image_id );
 
 		} catch ( Framework\SV_WC_Plugin_Exception $e ) {
 
@@ -354,21 +350,27 @@ class Product {
 	 */
 	public static function init_taxonomies() {
 
-		register_taxonomy( self::SYNCED_WITH_SQUARE_TAXONOMY, [ 'product' ],
-			[
+		register_taxonomy(
+			self::SYNCED_WITH_SQUARE_TAXONOMY,
+			array( 'product' ),
+			array(
 				'hierarchical'          => false,
 				'update_count_callback' => '_update_generic_term_count',
 				'show_ui'               => false,
 				'show_in_nav_menus'     => false,
 				'query_var'             => is_admin(),
 				'rewrite'               => false,
-			]
+			)
 		);
 	}
 
 
 	/**
 	 * Sets a product's synced with Square status.
+	 *
+	 * This function has a side effect where we also set the Product's
+	 * manage stock value. We ignore external type product when setting this manage
+	 * stock value.
 	 *
 	 * @since 2.0.0
 	 *
@@ -378,29 +380,29 @@ class Product {
 	 */
 	public static function set_synced_with_square( $product, $synced = 'yes' ) {
 
-		$success = false;
 		$product = is_numeric( $product ) ? wc_get_product( $product ) : $product;
 
-		if ( $product instanceof \WC_Product && in_array( $synced, [ 'yes', 'no' ], true ) ) {
+		if ( ! $product instanceof \WC_Product || ! in_array( $synced, array( 'yes', 'no' ), true ) ) {
+			return false;
+		}
 
-			// ensure only one term is associated with the product at any time
-			wp_delete_object_term_relationships( $product->get_id(), [ self::SYNCED_WITH_SQUARE_TAXONOMY ] );
+		// ensure only one term is associated with the product at any time
+		wp_delete_object_term_relationships( $product->get_id(), array( self::SYNCED_WITH_SQUARE_TAXONOMY ) );
 
-			if ( 'yes' === $synced ) {
+		// we have already set the value to "no" above by deleting the term relationship
+		// so it is safe to return with true.
+		if ( 'no' === $synced ) {
+			return true;
+		}
 
-				$set_term = wp_set_post_terms( $product->get_id(), [ $synced ], self::SYNCED_WITH_SQUARE_TAXONOMY );
-				$success  = is_array( $set_term );
+		$set_term = wp_set_post_terms( $product->get_id(), array( $synced ), self::SYNCED_WITH_SQUARE_TAXONOMY );
+		$success  = is_array( $set_term );
 
-				if ( wc_square()->get_settings_handler()->is_inventory_sync_enabled() ) {
-					$product->set_manage_stock( ! $product->is_type( 'variable' ) );
-				}
-
-				$product->save();
-
-			} else {
-
-				$success  = true;
-			}
+		// Function side effect see phpDoc for details:
+		if ( wc_square()->get_settings_handler()->is_inventory_sync_enabled()
+		&& 'external' !== $product->get_type() ) {
+			$product->set_manage_stock( ! $product->is_type( 'variable' ) );
+			$product->save();
 		}
 
 		return $success;
@@ -441,7 +443,7 @@ class Product {
 				}
 			}
 
-			$terms = wp_get_post_terms( $product->get_id(), self::SYNCED_WITH_SQUARE_TAXONOMY, [ 'fields' => 'names' ] );
+			$terms = wp_get_post_terms( $product->get_id(), self::SYNCED_WITH_SQUARE_TAXONOMY, array( 'fields' => 'names' ) );
 		}
 
 		return ! empty( $terms ) && 'yes' === $terms[0];
@@ -470,11 +472,22 @@ class Product {
 		return (bool) apply_filters( 'wc_square_product_can_sync_with_square', $can_sync, $product );
 	}
 
+	/**
+	 * Return a link to the product's edit page
+	 *
+	 * @since 2.0.8
+	 *
+	 * @param \WC_Product $product product object
+	 * @return string
+	 */
+	public static function get_product_edit_link( \WC_Product $product ) {
+		return '<a href="' . esc_url( get_edit_post_link( $product->get_id() ) ) . '">' . esc_html( $product->get_formatted_name() ) . '</a>';
+	}
 
 	/**
 	 * Determines if a product has a SKU set.
 	 *
-	 * For variable products, this checks if at least one of its variations has a SKU.
+	 * For variable products, this checks if all of its variations have a SKU.
 	 *
 	 * @since 2.0.2
 	 *
@@ -482,27 +495,18 @@ class Product {
 	 * @return bool
 	 */
 	public static function has_sku( \WC_Product $product ) {
+		if ( $product->is_type( 'variable' ) && $product->has_child() ) {
+			foreach ( $product->get_children() as $variation_id ) {
+				$variation = wc_get_product( $variation_id );
 
-		$has_sku = (bool) $product->get_sku();
-
-		if ( ! $has_sku && $product->is_type( 'variable' ) ) {
-
-			foreach ( $product->get_children() as $child ) {
-
-				$child = wc_get_product( $child );
-
-				if ( ! $child instanceof \WC_Product ) {
-					continue;
-				}
-
-				if ( $child->get_sku() ) {
-					$has_sku = true;
-					break;
+				if ( $variation instanceof \WC_Product && empty( $variation->get_sku() ) ) {
+					return false;
 				}
 			}
+			return true;
 		}
 
-		return $has_sku;
+		return ! empty( $product->get_sku() );
 	}
 
 
@@ -520,7 +524,7 @@ class Product {
 
 		if ( $product->is_type( 'variable' ) ) {
 
-			$variation_attributes = [];
+			$variation_attributes = array();
 
 			foreach ( $product->get_attributes() as $attribute ) {
 
@@ -549,30 +553,32 @@ class Product {
 	private static function get_products_synced_status( $status ) {
 
 		$sync_status_term = get_term_by( 'name', 'yes', self::SYNCED_WITH_SQUARE_TAXONOMY );
-		$product_ids      = [];
+		$product_ids      = array();
 
-		if ( $sync_status_term instanceof \WP_Term && in_array( $status, [ 'yes', 'no' ], true ) ) {
+		if ( $sync_status_term instanceof \WP_Term && in_array( $status, array( 'yes', 'no' ), true ) ) {
 
-			$tax_query_args = [
+			$tax_query_args = array(
 				'taxonomy'         => self::SYNCED_WITH_SQUARE_TAXONOMY,
 				'field'            => 'id',
 				'terms'            => $sync_status_term->term_id,
 				'include_children' => false,
-			];
+			);
 
 			if ( 'no' === $status ) {
 				$tax_query_args['operator'] = 'NOT IN';
 			}
 
-			$product_ids = get_posts( [
-				'post_type'   => [ 'product', 'product_variation' ],
-				'post_status' => 'any',
-				'fields'      => 'ids',
-				'nopaging'    => true,
-				'tax_query'   => [ $tax_query_args ],
-			] );
-		}
+			$product_ids = get_posts(
+				array(
+					'post_type'   => array( 'product', 'product_variation' ),
+					'post_status' => array( 'private', 'publish' ),
+					'fields'      => 'ids',
+					'nopaging'    => true,
+					'tax_query'   => array( $tax_query_args ),
+				)
+			);
 
+		}
 		return $product_ids;
 	}
 
@@ -694,7 +700,7 @@ class Product {
 			return self::convert_to_catalog_object( wc_get_product( $parent_id ) );
 		}
 
-		$variations = [];
+		$variations = array();
 
 		if ( $product->has_child() ) {
 
@@ -707,27 +713,26 @@ class Product {
 					$variations[] = $variation;
 				}
 			}
-
 		} else {
 
 			$variation  = self::extract_catalog_item_variation_data( $product );
-			$variations = $variation ? [ $variation ] : [];
+			$variations = $variation ? array( $variation ) : array();
 		}
 
 		if ( empty( $variations ) ) {
 			return null;
 		}
 
-		$data = [
+		$data = array(
 			'type'                    => 'ITEM',
 			'id'                      => self::get_square_item_id( $product ),
 			'version'                 => self::get_square_version( $product ),
-			'present_at_location_ids' => [ wc_square()->get_settings_handler()->get_location_id() ],
-			'item_data'               => [
+			'present_at_location_ids' => array( wc_square()->get_settings_handler()->get_location_id() ),
+			'item_data'               => array(
 				'name'       => $product->get_name(),
 				'variations' => $variations,
-			],
-		];
+			),
+		);
 
 		// TODO: Handle categories
 
@@ -745,22 +750,22 @@ class Product {
 	 * @param bool $is_soft_delete whether or not this item data is for a soft-delete
 	 * @return array
 	 */
-	public static function extract_catalog_item_data( \WC_Product $product, array $variations = [], $is_soft_delete = false ) {
+	public static function extract_catalog_item_data( \WC_Product $product, array $variations = array(), $is_soft_delete = false ) {
 
 		if ( ! $product ) {
 			return null;
 		}
 
-		$data = [
+		$data = array(
 			'type'                    => 'ITEM',
 			'id'                      => self::get_square_item_id( $product ),
 			'version'                 => self::get_square_version( $product ),
-			'present_at_location_ids' => [ wc_square()->get_settings_handler()->get_location_id() ],
-			'item_data'               => [
+			'present_at_location_ids' => array( wc_square()->get_settings_handler()->get_location_id() ),
+			'item_data'               => array(
 				'name'       => $product->get_name(),
 				'variations' => $variations,
-			],
-		];
+			),
+		);
 
 		$square_category_id = 0;
 
@@ -782,7 +787,7 @@ class Product {
 		if ( $is_soft_delete ) {
 
 			$data['present_at_all_locations'] = false;
-			$data['present_at_location_ids']  = [];
+			$data['present_at_location_ids']  = array();
 		}
 
 		return $data;
@@ -820,24 +825,24 @@ class Product {
 
 			$item_id = self::get_square_item_id( $parent_product );
 
-			$data = [
+			$data = array(
 				'type'                => 'ITEM_VARIATION',
 				'id'                  => self::get_square_item_variation_id( $product ),
 				'version'             => self::get_square_variation_version( $product ),
-				'item_variation_data' => [
+				'item_variation_data' => array(
 					'item_id'         => $item_id,
 					'name'            => $product->get_name(),
 					'sku'             => $product->get_sku(),
 					'pricing_type'    => 'FIXED_PRICING',
 					'price_money'     => self::price_to_money( $product->get_regular_price() ),
 					'track_inventory' => true,
-				]
-			];
+				),
+			);
 
 			if ( $is_soft_delete ) {
 
 				$data['present_at_all_locations'] = false;
-				$data['present_at_location_ids']  = [];
+				$data['present_at_location_ids']  = array();
 			}
 		}
 
@@ -1089,41 +1094,44 @@ class Product {
 	public static function get_square_meta( $product_ids, $array_key = 'product_id' ) {
 		global $wpdb;
 
-		$results = $square_meta = [];
+		$results = $square_meta = array();
 
 		if ( ! empty( $product_ids ) ) {
 
-			$meta_keys     = [
+			$meta_keys = array(
 				'square_item_id'           => self::SQUARE_ID_META_KEY,
 				'square_item_variation_id' => self::SQUARE_VARIATION_ID_META_KEY,
 				'square_version'           => self::SQUARE_VERSION_META_KEY,
 				'square_variation_version' => self::SQUARE_VARIATION_VERSION_META_KEY,
-			];
+			);
 
 			$array_key     = array_key_exists( $array_key, $meta_keys ) ? $array_key : 'product_id';
-			$post_ids_in   = '(' . implode( ',', array_map( 'absint', array_merge( [ 0 ], $product_ids ) ) ) . ')';
+			$post_ids_in   = '(' . implode( ',', array_map( 'absint', array_merge( array( 0 ), $product_ids ) ) ) . ')';
 			$meta_key_in   = "('" . self::SQUARE_ID_META_KEY . "','" . self::SQUARE_VARIATION_ID_META_KEY . "','" . self::SQUARE_VERSION_META_KEY . "','" . self::SQUARE_VARIATION_VERSION_META_KEY . "')";
-			$products_meta = $wpdb->get_results( "
+			$products_meta = $wpdb->get_results(
+				"
 				SELECT post_id AS product_id, meta_key, meta_value
 				FROM $wpdb->postmeta
 				WHERE post_id IN $post_ids_in
 				AND meta_key IN $meta_key_in
-			", ARRAY_A );
+				",
+				ARRAY_A
+			);
 
 			foreach ( $products_meta as $post_meta ) {
 
 				if ( ! array_key_exists( (string) $post_meta['product_id'], $square_meta ) ) {
-					$square_meta[ (string) $post_meta['product_id'] ] = [
+					$square_meta[ (string) $post_meta['product_id'] ] = array(
 						'product_id'               => (int) $post_meta['product_id'],
 						'square_item_id'           => false,
 						'square_item_variation_id' => false,
 						'square_version'           => false,
 						'square_variation_version' => false,
-					];
+					);
 				}
 
 				foreach ( $meta_keys as $square_meta_key => $post_meta_key ) {
-					if ( isset( $post_meta[ 'meta_key' ] ) && $post_meta_key === $post_meta['meta_key'] ) {
+					if ( isset( $post_meta['meta_key'] ) && $post_meta_key === $post_meta['meta_key'] ) {
 						$square_meta[ $post_meta['product_id'] ][ $square_meta_key ] = $post_meta['meta_value'];
 						break;
 					}
@@ -1133,9 +1141,9 @@ class Product {
 			foreach ( $product_ids as $product_id ) {
 
 				// sanity checks: cannot build index without a valid key
-				if (    ! array_key_exists( $product_id, $square_meta )
-				     || ! isset( $square_meta[ $product_id ][ $array_key ] )
-				     || ! $square_meta[ (string) $product_id ][ $array_key ] ) {
+				if ( ! array_key_exists( $product_id, $square_meta )
+					|| ! isset( $square_meta[ $product_id ][ $array_key ] )
+					|| ! $square_meta[ (string) $product_id ][ $array_key ] ) {
 
 					continue;
 				}
@@ -1164,12 +1172,12 @@ class Product {
 			$product_id = $product_id->get_id();
 		}
 
-		return [
+		return array(
 			'product_id'               => $product_id,
 			'square_item_id'           => self::get_square_item_id( $product_id ),
 			'square_item_variation_id' => self::get_square_item_variation_id( $product_id ),
 			'square_version'           => self::get_square_version( $product_id ),
-		];
+		);
 	}
 
 
@@ -1209,23 +1217,23 @@ class Product {
 
 				case 'item_id':
 					self::set_square_item_id( $product_id, $meta_value );
-				break;
+					break;
 
 				case 'item_version':
 					self::set_square_version( $product_id, $meta_value );
-				break;
+					break;
 
 				case 'item_variation_id':
 					self::set_square_item_variation_id( $product_id, $meta_value );
-				break;
+					break;
 
 				case 'item_variation_version':
 					self::set_square_variation_version( $product_id, $meta_value );
-				break;
+					break;
 
 				case 'item_image_id':
 					self::set_square_image_id( $product_id, $meta_value );
-				break;
+					break;
 			}
 		}
 	}
@@ -1241,25 +1249,27 @@ class Product {
 	public static function clear_square_meta( $product_ids ) {
 		global $wpdb;
 
-		$product_ids = is_array( $product_ids ) ? $product_ids : [ $product_ids ];
+		$product_ids = is_array( $product_ids ) ? $product_ids : array( $product_ids );
 
-		$meta_keys = [
+		$meta_keys = array(
 			self::SQUARE_ID_META_KEY,
 			self::SQUARE_VERSION_META_KEY,
 			self::SQUARE_VARIATION_ID_META_KEY,
 			self::SQUARE_VARIATION_VERSION_META_KEY,
 			self::SQUARE_IMAGE_ID_META_KEY,
-		];
+		);
 
 		$meta_key_in = '("' . implode( '","', $meta_keys ) . '")';
-		$post_ids_in = '(' . implode( ',', array_map( 'absint', array_merge( [ 0 ], $product_ids ) ) ) . ')';
+		$post_ids_in = '(' . implode( ',', array_map( 'absint', array_merge( array( 0 ), $product_ids ) ) ) . ')';
 
-		$wpdb->query( "
+		$wpdb->query(
+			"
 			UPDATE $wpdb->postmeta
 			SET meta_value = ''
 			WHERE meta_key IN $meta_key_in
 			AND post_id IN $post_ids_in;
-		" );
+			"
+		);
 	}
 
 
@@ -1277,43 +1287,94 @@ class Product {
 
 		if ( $product ) {
 
-			self::update_square_meta( $product->get_id(), [
-				'item_id'       => $remote_product->getId(),
-				'item_version'  => $remote_product->getVersion(),
-				'item_image_id' => $remote_product->getImageId(),
-			] );
+			self::update_square_meta(
+				$product->get_id(),
+				array(
+					'item_id'       => $remote_product->getId(),
+					'item_version'  => $remote_product->getVersion(),
+					'item_image_id' => $remote_product->getImageId(),
+				)
+			);
 		}
 	}
 
 
 	/**
-	 * Gets an InventoryChange object for a given product.
+	 * Gets an InventoryChange object filled with a \SquareConnect\Model\InventoryPhysicalCount object for a given product.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @param \WC_Product $product the product object
 	 * @return \SquareConnect\Model\InventoryChange|null
 	 */
-	public static function get_inventory_change( \WC_Product $product ) {
+	public static function get_inventory_change_physical_count_type( \WC_Product $product ) {
 
 		$inventory_change = null;
 
 		if ( $square_variation_id = self::get_square_item_variation_id( $product->get_id(), false ) ) {
 
-			$inventory_change = new \SquareConnect\Model\InventoryChange( [
-				'type'           => 'PHYSICAL_COUNT',
-				'physical_count' => new \SquareConnect\Model\InventoryPhysicalCount( [
-					'catalog_object_id' => $square_variation_id,
-					'quantity'          => '' . max( 0, $product->get_stock_quantity() ),
-					'location_id'       => wc_square()->get_settings_handler()->get_location_id(),
-					'state'             => 'IN_STOCK',
-					'occurred_at'       => date( 'Y-m-d\TH:i:sP' ),
-				] ),
-			] );
+			$inventory_change = new \SquareConnect\Model\InventoryChange(
+				array(
+					'type'           => 'PHYSICAL_COUNT',
+					'physical_count' => new \SquareConnect\Model\InventoryPhysicalCount(
+						array(
+							'catalog_object_id' => $square_variation_id,
+							'quantity'          => '' . max( 0, $product->get_stock_quantity() ),
+							'location_id'       => wc_square()->get_settings_handler()->get_location_id(),
+							'state'             => 'IN_STOCK',
+							'occurred_at'       => date( 'Y-m-d\TH:i:sP' ),
+						)
+					),
+				)
+			);
 		}
 
 		return $inventory_change;
 	}
 
 
+	/**
+	 * Gets an InventoryChange object filled with a \SquareConnect\Model\InventoryAdjustment object for a given product.
+	 *
+	 * @since 2.0.8
+	 *
+	 * @param \WC_Product $product the product object
+	 * @param int $adjustment Value can negative or positive.
+	 *
+	 * @return \SquareConnect\Model\InventoryChange|null
+	 */
+	public static function get_inventory_change_adjustment_type( \WC_Product $product, $adjustment ) {
+
+		$square_variation_id = self::get_square_item_variation_id( $product->get_id(), false );
+
+		if ( empty( $square_variation_id ) || 0 === $adjustment ) {
+			return null;
+		}
+
+		if ( 0 > $adjustment ) {
+			$from = 'IN_STOCK';
+			$to   = 'SOLD';
+		} else {
+			$from = 'NONE';
+			$to   = 'IN_STOCK';
+		}
+
+		$inventory_change = new \SquareConnect\Model\InventoryChange(
+			array(
+				'type'       => 'ADJUSTMENT',
+				'adjustment' => new \SquareConnect\Model\InventoryAdjustment(
+					array(
+						'catalog_object_id' => $square_variation_id,
+						'location_id'       => wc_square()->get_settings_handler()->get_location_id(),
+						'quantity'          => '' . absint( $adjustment ),
+						'from_state'        => $from,
+						'to_state'          => $to,
+						'occurred_at'       => date( 'Y-m-d\TH:i:sP' ),
+					)
+				),
+			)
+		);
+
+		return $inventory_change;
+	}
 }

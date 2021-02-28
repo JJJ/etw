@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Model\Order;
@@ -51,9 +51,9 @@ class API extends \WooCommerce\Square\API {
 	 * @param string $access_token the API access token
 	 * @param string $location_id location ID to use for requests
 	 */
-	public function __construct( $access_token, $location_id ) {
+	public function __construct( $access_token, $location_id, $is_sandbox = null ) {
 
-		parent::__construct( $access_token );
+		parent::__construct( $access_token, $is_sandbox );
 
 		$this->location_id = $location_id;
 	}
@@ -73,11 +73,11 @@ class API extends \WooCommerce\Square\API {
 	 */
 	public function credit_card_authorization( \WC_Order $order ) {
 
-		$request = new API\Requests\Transactions( $this->get_location_id(), $this->client );
+		$request = new API\Requests\Payments( $this->get_location_id(), $this->client );
 
 		$request->set_authorization_data( $order );
 
-		$this->set_response_handler( API\Responses\Charge::class );
+		$this->set_response_handler( API\Responses\Create_Payment::class );
 
 		return $this->perform_request( $request );
 	}
@@ -94,11 +94,11 @@ class API extends \WooCommerce\Square\API {
 	 */
 	public function credit_card_charge( \WC_Order $order ) {
 
-		$request = new API\Requests\Transactions( $this->get_location_id(), $this->client );
+		$request = new API\Requests\Payments( $this->get_location_id(), $this->client );
 
 		$request->set_charge_data( $order );
 
-		$this->set_response_handler( API\Responses\Charge::class );
+		$this->set_response_handler( API\Responses\Create_Payment::class );
 
 		return $this->perform_request( $request );
 	}
@@ -117,7 +117,12 @@ class API extends \WooCommerce\Square\API {
 
 		$location_id = ! empty( $order->capture->location_id ) ? $order->capture->location_id : $this->get_location_id();
 
-		$request = new API\Requests\Transactions( $location_id, $this->client );
+		// use the Payments API to capture orders that were processed with Square v2.2+
+		if ( ! empty( $order->square_version ) && version_compare( $order->square_version, '2.2', '>=' ) ) {
+			$request = new API\Requests\Payments( $location_id, $this->client );
+		} else {
+			$request = new API\Requests\Transactions( $location_id, $this->client );
+		}
 
 		$request->set_capture_data( $order );
 
@@ -140,7 +145,12 @@ class API extends \WooCommerce\Square\API {
 
 		$location_id = ! empty( $order->refund->location_id ) ? $order->refund->location_id : $this->get_location_id();
 
-		$request = new API\Requests\Transactions( $location_id, $this->client );
+		// only use the Refunds API to refund orders that took payment after Square v2.2
+		if ( ! empty( $order->square_version ) && version_compare( $order->square_version, '2.2', '>=' ) ) {
+			$request = new API\Requests\Refunds( $this->client );
+		} else {
+			$request = new API\Requests\Transactions( $location_id, $this->client );
+		}
 
 		$request->set_refund_data( $order );
 
@@ -163,7 +173,12 @@ class API extends \WooCommerce\Square\API {
 
 		$location_id = ! empty( $order->refund->location_id ) ? $order->refund->location_id : $this->get_location_id();
 
-		$request = new API\Requests\Transactions( $location_id, $this->client );
+		// use the Payments API to void/cancel orders that were processed after Square v2.2
+		if ( ! empty( $order->square_version ) && version_compare( $order->square_version, '2.2', '>=' ) ) {
+			$request = new API\Requests\Payments( $location_id, $this->client );
+		} else {
+			$request = new API\Requests\Transactions( $location_id, $this->client );
+		}
 
 		$request->set_void_data( $order );
 
@@ -184,17 +199,29 @@ class API extends \WooCommerce\Square\API {
 	 */
 	public function tokenize_payment_method( \WC_Order $order ) {
 
-		// a customer ID should've already been created, but just in case...
-		if ( empty( $order->customer_id ) ) {
+		// a customer ID should've already been created, but there may be cases where the customer id is deleted/corrupted at Square
+		if ( ! empty( $order->customer_id ) ) {
 
-			$response = $this->create_customer( $order );
+			$response = $this->create_customer_card( $order );
 
-			if ( ! $response->transaction_approved() ) {
+			if ( $response->has_error_code( 'NOT_FOUND' ) ) {
+				$order->customer_id = '';
+			} else {
 				return $response;
 			}
-
-			$order->customer_id = $response->get_customer_id();
 		}
+
+		$response = $this->create_customer( $order );
+
+		if ( ! $response->transaction_approved() ) {
+			return $response;
+		}
+
+		// Update the user meta with the new customer id created for further API requests
+		update_user_meta( $order->get_user_id(), 'wc_square_customer_id', $response->get_customer_id(), $order->customer_id );
+
+		// Update the customer id on the order as well
+		$order->square_customer_id = $order->customer_id = $response->get_customer_id();
 
 		return $this->create_customer_card( $order );
 	}
@@ -359,6 +386,27 @@ class API extends \WooCommerce\Square\API {
 		$request->set_get_transaction_data( $transaction_id );
 
 		$this->set_response_handler( API\Responses\Charge::class );
+
+		return $this->perform_request( $request );
+	}
+
+
+	/**
+	 * Gets an existing payment.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param string $payment_id transaction ID
+	 * @return API\Responses\Create_Payment
+	 * @throws Framework\SV_WC_API_Exception
+	 */
+	public function get_payment( $payment_id ) {
+
+		$request = new API\Requests\Payments( $this->get_location_id(), $this->client );
+
+		$request->set_get_payment_data( $payment_id );
+
+		$this->set_response_handler( API\Responses\Create_Payment::class );
 
 		return $this->perform_request( $request );
 	}

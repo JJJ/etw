@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Sync;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Sync\Records\Record;
@@ -63,7 +63,7 @@ class Records {
 	 */
 	public static function get_record( $id ) {
 
-		$records = self::get_records( [ 'id' => $id ] );
+		$records = self::get_records( array( 'id' => $id ) );
 
 		return ! empty( $records ) ? current( $records ) : null;
 	}
@@ -77,19 +77,22 @@ class Records {
 	 * @param array $args associative array of arguments to query records
 	 * @return Record[]
 	 */
-	public static function get_records( array $args = [] ) {
+	public static function get_records( array $args = array() ) {
 
-		$args = wp_parse_args( $args, [
-			'id'      => null,
-			'type'    => null,
-			'product' => null,
-			'orderby' => 'date',
-			'sort'    => 'DESC',
-			'limit'   => 50,
-		] );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'id'      => null,
+				'type'    => null,
+				'product' => null,
+				'orderby' => 'date',
+				'sort'    => 'DESC',
+				'limit'   => 50,
+			)
+		);
 
-		$records     = [];
-		$raw_records = get_option( self::$records_option_key, [] );
+		$records     = array();
+		$raw_records = get_option( self::$records_option_key, array() );
 
 		foreach ( $raw_records as $raw_record_data ) {
 
@@ -128,12 +131,12 @@ class Records {
 		if ( ! empty( $records ) ) {
 
 			switch ( $args['orderby'] ) {
-				case 'date' :
-					uasort( $records, [ 'self', 'sort_records_by_date' ] );
-				break;
-				case 'type' :
-					uasort( $records, [ 'self', 'sort_records_by_type' ] );
-				break;
+				case 'date':
+					uasort( $records, array( 'self', 'sort_records_by_date' ) );
+					break;
+				case 'type':
+					uasort( $records, array( 'self', 'sort_records_by_type' ) );
+					break;
 			}
 
 			if ( 'DESC' === $args['sort'] ) {
@@ -240,8 +243,8 @@ class Records {
 		if ( $new_record instanceof Record ) {
 
 			// ensures there are never more than 50 records, leaving behind the older ones
-			$existing_records = self::get_records( [ 'limit' => 49 ] );
-			$raw_records      = [];
+			$existing_records = self::get_records( array( 'limit' => 49 ) );
+			$raw_records      = array();
 
 			foreach ( $existing_records as $existing_record ) {
 				$raw_records[ $existing_record->get_id() ] = $existing_record->get_data();
@@ -251,7 +254,7 @@ class Records {
 
 			$success = update_option( self::$records_option_key, $raw_records );
 
-		 } else {
+		} else {
 
 			$success = false;
 		}
@@ -271,7 +274,7 @@ class Records {
 	public static function set_records( array $data ) {
 
 		$success     = false;
-		$raw_records = [];
+		$raw_records = array();
 
 		foreach ( $data as $record ) {
 
@@ -286,7 +289,7 @@ class Records {
 
 		if ( ! empty( $raw_records ) ) {
 
-			$records = self::get_records( [ 'limit' => 50 - count( $raw_records ) ] );
+			$records = self::get_records( array( 'limit' => 50 - count( $raw_records ) ) );
 
 			foreach ( $records as $record ) {
 				$raw_records[ $record->get_id() ] = $record->get_data();
@@ -310,7 +313,7 @@ class Records {
 	public static function delete_record( $id ) {
 
 		$success     = false;
-		$raw_records = get_option( self::$records_option_key, [] );
+		$raw_records = get_option( self::$records_option_key, array() );
 
 		if ( array_key_exists( $id, $raw_records ) ) {
 
@@ -334,9 +337,9 @@ class Records {
 	public static function delete_records( array $args ) {
 
 		$removed     = 0;
-		$raw_records = get_option( self::$records_option_key, [] );
+		$raw_records = get_option( self::$records_option_key, array() );
 
-		foreach( $raw_records as $raw_record ) {
+		foreach ( $raw_records as $raw_record ) {
 
 			$record = new Record( $raw_record );
 
@@ -383,7 +386,7 @@ class Records {
 	 */
 	public static function clean_records() {
 
-		return update_option( self::$records_option_key, [] );
+		return update_option( self::$records_option_key, array() );
 	}
 
 

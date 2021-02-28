@@ -27,7 +27,7 @@ use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Model\BatchRetrieveInventoryCountsResponse;
 use WooCommerce\Square\API\Response;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Inventory response object
@@ -46,7 +46,7 @@ class Inventory extends Response {
 	 */
 	public function get_counts() {
 
-		$counts = [];
+		$counts = array();
 
 		if ( $this->get_data() instanceof BatchRetrieveInventoryCountsResponse && is_array( $this->get_data()->getCounts() ) ) {
 			$counts = $this->get_data()->getCounts();

@@ -15,6 +15,13 @@ jQuery( document ).ready ( $ ) ->
 	if ( 'woocommerce_page_wc-settings' isnt pagenow )
 		return
 
+	if not wc_square_admin_settings.is_sandbox
+		# Hide sandbox settings if is_sandbox is set
+		$( '#wc_square_sandbox_settings' ).hide()
+
+		$( '#wc_square_sandbox_settings' ).next().hide()
+
+		$( '.wc_square_sandbox_settings' ).closest( 'tr' ).hide()
 
 	# toggle the "hide products" setting depending on the SOR
 	$( '#wc_square_system_of_record' ).change( ->
@@ -33,6 +40,9 @@ jQuery( document ).ready ( $ ) ->
 
 			$inventory_sync_row.show()
 		else
+
+			$inventory_sync.prop( 'checked', false )
+
 			$inventory_sync_row.hide()
 
 		# toggle the "Hide missing products" setting depending on the SOR
@@ -53,26 +63,6 @@ jQuery( document ).ready ( $ ) ->
 			e.preventDefault()
 			$( 'button.modal-close' ).trigger( 'click' )
 
-		$( '#btn-ok' ).on 'click', ( e ) ->
-			e.preventDefault()
-			$( this ).unbind()
-
-			data =
-				action   : 'wc_square_import_products_from_square'
-				dispatch : wc_square_admin_settings.sync_in_background
-				security : wc_square_admin_settings.import_products_from_square
-
-			$.post wc_square_admin_settings.ajax_url, data, ( response ) ->
-
-				message = if response.data then response.data else null
-
-				if response.success and message
-					alert( message )
-				else if not response.success and message
-					alert( message )
-
-				location.reload()
-
 	# initiate a manual sync
 	$( '#wc-square-sync' ).on 'click', ( e ) ->
 		e.preventDefault()
@@ -86,34 +76,64 @@ jQuery( document ).ready ( $ ) ->
 			e.preventDefault()
 			$( 'button.modal-close' ).trigger( 'click' )
 
-		# upon confirming, start a background process to sync products with Square
-		$( '#btn-ok' ).on 'click', ( e ) ->
-			e.preventDefault()
-			$( this ).unbind()
+	# Listen for wc_backbone_modal_response event handler.
+	$( document.body ).on 'wc_backbone_modal_response', ( e, target ) ->
+		switch target
 
-			$( 'table.sync' ).block
-				message    : null
-				overlayCSS :
-					'opacity' : '0.2'
-			$( 'table.records' ).block
-				message    : null
-				overlayCSS :
-					'opacity' : '0.2'
-			$( '#wc-square_clear-sync-records' ).prop( 'disabled', true )
+			when 'wc-square-import-products'
+				# Add Block overlay since the modal exits immediately
+				# after wc_backbone_modal_response is triggered.
+				$( '#wpbody' ).block
+					message    : null
+					overlayCSS :
+						'opacity' : '0.2'
+					onBlock: ->
+						$( '.blockUI.blockOverlay' ).css
+							'position': 'fixed'
+						return
 
-			data =
-				action   : 'wc_square_sync_products_with_square'
-				dispatch : wc_square_admin_settings.sync_in_background
-				security : wc_square_admin_settings.sync_products_with_square
+				update_during_import = $( '#wc-square-import-product-updates' ).prop( 'checked' )
+				data                 =
+					action               : 'wc_square_import_products_from_square'
+					dispatch             : wc_square_admin_settings.sync_in_background
+					security             : wc_square_admin_settings.import_products_from_square
+					update_during_import : update_during_import
 
-			$.post wc_square_admin_settings.ajax_url, data, ( response ) ->
-				if response and response.success
+				$.post wc_square_admin_settings.ajax_url, data, ( response ) ->
+					message = if response.data then response.data else null
+
+					if message
+						alert( message )
+
 					location.reload()
-				else
-					$( '#wc-square_clear-sync-records' ).prop( 'disabled', false )
-					$( 'table.sync' ).unblock()
-					$( 'table.records' ).unblock()
-					console.log( response )
+
+			when 'wc-square-sync'
+				$( 'table.sync' ).block
+					message    : null
+					overlayCSS :
+						'opacity' : '0.2'
+				$( 'table.records' ).block
+					message    : null
+					overlayCSS :
+						'opacity' : '0.2'
+				$( '#wc-square_clear-sync-records' ).prop( 'disabled', true )
+
+				data =
+					action   : 'wc_square_sync_products_with_square'
+					dispatch : wc_square_admin_settings.sync_in_background
+					security : wc_square_admin_settings.sync_products_with_square
+
+				$.post wc_square_admin_settings.ajax_url, data, ( response ) ->
+					if response and response.success
+						location.reload()
+					else
+						$( '#wc-square_clear-sync-records' ).prop( 'disabled', false )
+						$( 'table.sync' ).unblock()
+						$( 'table.records' ).unblock()
+
+			else
+				return
+		return
 
 
 	# sync record handling
@@ -191,6 +211,17 @@ jQuery( document ).ready ( $ ) ->
 
 			$( 'table.records' ).unblock()
 
+	# Add explicit square environment to post data to deal with swapping between production and sandbox in the back end
+	$( 'form' ).submit ( e ) ->
+
+		environment = if $( '#wc_square_enable_sandbox' ).is( ':checked' ) then 'sandbox' else 'production'
+
+		$( this ).append( $( '<input>', {
+			type: 'hidden',
+			name: 'wc_square_environment',
+			value: environment,
+		} ) )
+	
 
 	###*
 	# Returns a job sync status.
@@ -231,7 +262,8 @@ jQuery( document ).ready ( $ ) ->
 						# update progress info in table cell
 						if 'product_import' is response.data.action
 							progress += wc_square_admin_settings.i18n.skipped + ': ' + parseInt( response.data.skipped_products_count, 10 ) + '<br/>'
-							progress += wc_square_admin_settings.i18n.imported + ': ' + parseInt( response.data.processed_products_count, 10 )
+							progress += wc_square_admin_settings.i18n.updated + ': ' + parseInt( response.data.updated_products_count, 10 ) + '<br/>'
+							progress += wc_square_admin_settings.i18n.imported + ': ' + parseInt( response.data.imported_products_count, 10 )
 						else if response.data.percentage
 							progress += parseInt( response.data.percentage, 10 ) + '%'
 
@@ -255,3 +287,13 @@ jQuery( document ).ready ( $ ) ->
 	# run once on page load
 	if wc_square_admin_settings.existing_sync_job_id
 		getSyncStatus( wc_square_admin_settings.existing_sync_job_id )
+
+	# Show/hide Digital Wallet Settings on Square gateway settings page
+	$( '#woocommerce_square_credit_card_enable_digital_wallets' ).change( ->
+		wallet_settings = $( '.wc-square-digital-wallet-options' )
+
+		if $( '#woocommerce_square_credit_card_enable_digital_wallets' ).is( ':checked' )
+			wallet_settings.closest( 'tr' ).show()
+		else
+			wallet_settings.closest( 'tr' ).hide()
+	).change()

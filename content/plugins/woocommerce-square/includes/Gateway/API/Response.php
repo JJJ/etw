@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway\API;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Gateway;

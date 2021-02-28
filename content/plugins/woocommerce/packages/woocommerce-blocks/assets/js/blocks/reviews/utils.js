@@ -3,17 +3,17 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import classNames from 'classnames';
-import { ENABLE_REVIEW_RATING } from '@woocommerce/block-settings';
+import { REVIEW_RATINGS_ENABLED } from '@woocommerce/block-settings';
 
-export const getOrderArgs = ( orderValue ) => {
-	if ( ENABLE_REVIEW_RATING ) {
-		if ( orderValue === 'lowest-rating' ) {
+export const getSortArgs = ( sortValue ) => {
+	if ( REVIEW_RATINGS_ENABLED ) {
+		if ( sortValue === 'lowest-rating' ) {
 			return {
 				order: 'asc',
 				orderby: 'rating',
 			};
 		}
-		if ( orderValue === 'highest-rating' ) {
+		if ( sortValue === 'highest-rating' ) {
 			return {
 				order: 'desc',
 				orderby: 'rating',
@@ -29,29 +29,84 @@ export const getOrderArgs = ( orderValue ) => {
 
 export const getReviews = ( args ) => {
 	return apiFetch( {
-		path: '/wc/blocks/products/reviews?' + Object.entries( args ).map( ( arg ) => arg.join( '=' ) ).join( '&' ),
+		path:
+			'/wc/store/products/reviews?' +
+			Object.entries( args )
+				.map( ( arg ) => arg.join( '=' ) )
+				.join( '&' ),
 		parse: false,
 	} ).then( ( response ) => {
 		return response.json().then( ( reviews ) => {
-			const totalReviews = parseInt( response.headers.get( 'x-wp-total' ), 10 );
+			const totalReviews = parseInt(
+				response.headers.get( 'x-wp-total' ),
+				10
+			);
 			return { reviews, totalReviews };
 		} );
 	} );
 };
 
-export const getBlockClassName = ( blockClassName, attributes ) => {
-	const { className, showReviewDate, showReviewerName, showReviewContent, showProductName, showReviewImage, showReviewRating } = attributes;
-
-	return classNames(
-		blockClassName,
+export const getBlockClassName = ( attributes ) => {
+	const {
 		className,
-		{
-			'has-image': showReviewImage,
-			'has-name': showReviewerName,
-			'has-date': showReviewDate,
-			'has-rating': showReviewRating,
-			'has-content': showReviewContent,
-			'has-product-name': showProductName,
-		}
-	);
+		categoryIds,
+		productId,
+		showReviewDate,
+		showReviewerName,
+		showReviewContent,
+		showProductName,
+		showReviewImage,
+		showReviewRating,
+	} = attributes;
+
+	let blockClassName = 'wc-block-all-reviews';
+
+	if ( productId ) {
+		blockClassName = 'wc-block-reviews-by-product';
+	}
+
+	if ( Array.isArray( categoryIds ) ) {
+		blockClassName = 'wc-block-reviews-by-category';
+	}
+
+	return classNames( blockClassName, className, {
+		'has-image': showReviewImage,
+		'has-name': showReviewerName,
+		'has-date': showReviewDate,
+		'has-rating': showReviewRating,
+		'has-content': showReviewContent,
+		'has-product-name': showProductName,
+	} );
+};
+
+export const getDataAttrs = ( attributes ) => {
+	const {
+		categoryIds,
+		imageType,
+		orderby,
+		productId,
+		reviewsOnPageLoad,
+		reviewsOnLoadMore,
+		showLoadMore,
+		showOrderby,
+	} = attributes;
+
+	const data = {
+		'data-image-type': imageType,
+		'data-orderby': orderby,
+		'data-reviews-on-page-load': reviewsOnPageLoad,
+		'data-reviews-on-load-more': reviewsOnLoadMore,
+		'data-show-load-more': showLoadMore,
+		'data-show-orderby': showOrderby,
+	};
+
+	if ( productId ) {
+		data[ 'data-product-id' ] = productId;
+	}
+
+	if ( Array.isArray( categoryIds ) ) {
+		data[ 'data-category-ids' ] = categoryIds.join( ',' );
+	}
+
+	return data;
 };

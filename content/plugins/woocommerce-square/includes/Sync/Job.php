@@ -25,7 +25,7 @@ namespace WooCommerce\Square\Sync;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Synchronization Job abstract.
@@ -138,6 +138,7 @@ class Job {
 	 * @return \stdClass the job object
 	 */
 	public function run() {
+		wp_set_current_user( $this->get_attr( 'created_by' ) );
 
 		if ( ! defined( 'DOING_SQUARE_SYNC' ) || false === DOING_SQUARE_SYNC ) {
 			define( 'DOING_SQUARE_SYNC', true );

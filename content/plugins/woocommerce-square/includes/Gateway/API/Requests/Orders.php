@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway\API\Requests;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Api\OrdersApi;
@@ -68,6 +68,9 @@ class Orders extends API\Request {
 
 		$order_model = new SquareModel\Order();
 		$order_model->setReferenceId( $order->get_order_number() );
+		if ( ! empty( $order->square_customer_id ) ) {
+			$order_model->setCustomerId( $order->square_customer_id );
+		}
 
 		$line_items = array_merge( $this->get_product_line_items( $order ), $this->get_fee_line_items( $order ), $this->get_shipping_line_items( $order ) );
 		$taxes      = $this->get_order_taxes( $order );
@@ -78,21 +81,27 @@ class Orders extends API\Request {
 
 		if ( $order->get_discount_total() ) {
 
-			$order_model->setDiscounts( [ new SquareModel\OrderLineItemDiscount( [
-				'name'         => __( 'Discount', 'woocommerce-square' ),
-				'type'         => 'FIXED_AMOUNT',
-				'amount_money' => Money_Utility::amount_to_money( $order->get_discount_total(), $order->get_currency() ),
-				'scope'        => 'ORDER',
-			] ) ] );
+			$order_model->setDiscounts(
+				array(
+					new SquareModel\OrderLineItemDiscount(
+						array(
+							'name'         => __( 'Discount', 'woocommerce-square' ),
+							'type'         => 'FIXED_AMOUNT',
+							'amount_money' => Money_Utility::amount_to_money( $order->get_discount_total(), $order->get_currency() ),
+							'scope'        => 'ORDER',
+						)
+					),
+				)
+			);
 		}
 
 		$this->square_request->setIdempotencyKey( wc_square()->get_idempotency_key( $order->unique_transaction_ref ) );
 		$this->square_request->setOrder( $order_model );
 
-		$this->square_api_args = [
+		$this->square_api_args = array(
 			$location_id,
 			$this->square_request,
-		];
+		);
 	}
 
 
@@ -106,7 +115,7 @@ class Orders extends API\Request {
 	 */
 	protected function get_product_line_items( \WC_Order $order ) {
 
-		$line_items = [];
+		$line_items = array();
 
 		foreach ( $order->get_items() as $item ) {
 
@@ -144,7 +153,7 @@ class Orders extends API\Request {
 	 */
 	protected function get_fee_line_items( \WC_Order $order ) {
 
-		$line_items = [];
+		$line_items = array();
 
 		foreach ( $order->get_fees() as $item ) {
 
@@ -176,7 +185,7 @@ class Orders extends API\Request {
 	 */
 	protected function get_shipping_line_items( \WC_Order $order ) {
 
-		$line_items = [];
+		$line_items = array();
 
 		foreach ( $order->get_shipping_methods() as $item ) {
 
@@ -208,16 +217,18 @@ class Orders extends API\Request {
 	 */
 	protected function get_order_taxes( \WC_Order $order ) {
 
-		$taxes = [];
+		$taxes = array();
 
 		foreach ( $order->get_taxes() as $tax ) {
 
-			$tax_item = new SquareModel\OrderLineItemTax( [
-				'uid'   => uniqid(),
-				'name'  => $tax->get_name(),
-				'type'  => 'ADDITIVE',
-				'scope' => 'LINE_ITEM',
-			] );
+			$tax_item = new SquareModel\OrderLineItemTax(
+				array(
+					'uid'   => uniqid(),
+					'name'  => $tax->get_name(),
+					'type'  => 'ADDITIVE',
+					'scope' => 'LINE_ITEM',
+				)
+			);
 
 			$pre_tax_total = (float) $order->get_total() - (float) $order->get_total_tax();
 			$total_tax     = (float) $tax->get_tax_total() + (float) $tax->get_shipping_tax_total();
@@ -245,13 +256,15 @@ class Orders extends API\Request {
 
 		foreach ( $line_items as $line_item ) {
 
-			$applied_taxes = [];
+			$applied_taxes = array();
 
 			foreach ( $taxes as $tax ) {
 
-				$applied_taxes[] = new SquareModel\OrderLineItemAppliedTax( [
-					'tax_uid' => $tax->getUid(),
-				] );
+				$applied_taxes[] = new SquareModel\OrderLineItemAppliedTax(
+					array(
+						'tax_uid' => $tax->getUid(),
+					)
+				);
 			}
 
 			$line_item->setAppliedTaxes( $applied_taxes );
@@ -277,23 +290,31 @@ class Orders extends API\Request {
 		$order_model = new SquareModel\Order();
 		$order_model->setVersion( $version );
 
-		$order_model->setLineItems( [ new SquareModel\OrderLineItem( [
-			'name'             => __( 'Adjustment', 'woocommerce-square' ),
-			'quantity'         => (string) 1,
-			'base_price_money' => new SquareModel\Money( [
-				'amount'   => $amount,
-				'currency' => $order->get_currency(),
-			] ),
-		] ) ] );
+		$order_model->setLineItems(
+			array(
+				new SquareModel\OrderLineItem(
+					array(
+						'name'             => __( 'Adjustment', 'woocommerce-square' ),
+						'quantity'         => (string) 1,
+						'base_price_money' => new SquareModel\Money(
+							array(
+								'amount'   => $amount,
+								'currency' => $order->get_currency(),
+							)
+						),
+					)
+				),
+			)
+		);
 
 		$this->square_request->setIdempotencyKey( wc_square()->get_idempotency_key( $order->unique_transaction_ref ) . $version );
 		$this->square_request->setOrder( $order_model );
 
-		$this->square_api_args = [
+		$this->square_api_args = array(
 			$location_id,
 			$order->square_order_id,
 			$this->square_request,
-		];
+		);
 	}
 
 
@@ -315,24 +336,32 @@ class Orders extends API\Request {
 		$order_model = new SquareModel\Order();
 		$order_model->setVersion( $version );
 
-		$order_model->setDiscounts( [ new SquareModel\OrderLineItemDiscount( [
-			'name'         => __( 'Adjustment', 'woocommerce-square' ),
-			'type'         => 'FIXED_AMOUNT',
-			'amount_money' => new SquareModel\Money( [
-				'amount'   => $amount,
-				'currency' => $order->get_currency(),
-			] ),
-			'scope'        => 'ORDER',
-		] ) ] );
+		$order_model->setDiscounts(
+			array(
+				new SquareModel\OrderLineItemDiscount(
+					array(
+						'name'         => __( 'Adjustment', 'woocommerce-square' ),
+						'type'         => 'FIXED_AMOUNT',
+						'amount_money' => new SquareModel\Money(
+							array(
+								'amount'   => $amount,
+								'currency' => $order->get_currency(),
+							)
+						),
+						'scope'        => 'ORDER',
+					)
+				),
+			)
+		);
 
 		$this->square_request->setIdempotencyKey( wc_square()->get_idempotency_key( $order->unique_transaction_ref ) . $version );
 		$this->square_request->setOrder( $order_model );
 
-		$this->square_api_args = [
+		$this->square_api_args = array(
 			$location_id,
 			$order->square_order_id,
 			$this->square_request,
-		];
+		);
 	}
 
 }

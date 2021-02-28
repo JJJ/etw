@@ -26,14 +26,16 @@ namespace WooCommerce\Square\Sync;
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Model\BatchRetrieveInventoryCountsResponse;
 use SquareConnect\Model\BatchUpsertCatalogObjectsResponse;
+use SquareConnect\Model\BatchRetrieveCatalogObjectsResponse;
 use SquareConnect\Model\CatalogObject;
 use SquareConnect\Model\CatalogObjectBatch;
 use SquareConnect\Model\SearchCatalogObjectsResponse;
+use SquareConnect\Model\CatalogInfoResponse;
 use SquareConnect\ObjectSerializer;
 use WooCommerce\Square\Handlers\Category;
 use WooCommerce\Square\Handlers\Product;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class to represent a single synchronization job triggered manually.
@@ -49,6 +51,10 @@ class Manual_Synchronization extends Stepped_Job {
 	/** @var int the limit for how many inventory changes can be made in a single request */
 	const BATCH_CHANGE_INVENTORY_LIMIT = 100;
 
+	/** @var int the limit for how many inventory counts can be requested per batch
+	 * Square paginates responses in page size of 100.
+	 * Consider some items can have more than one object returned with different states. */
+	const BATCH_INVENTORY_COUNTS_LIMIT = 125;
 
 	/**
 	 * Validates the products attached to this job.
@@ -59,21 +65,19 @@ class Manual_Synchronization extends Stepped_Job {
 
 		$product_ids = $this->get_attr( 'product_ids' );
 
-		$products_query = [
+		$products_query = array(
 			'include' => $product_ids,
 			'limit'   => -1,
-			'return'  => 'ids'
-		];
-
-		$validated_products = wc_get_products( $products_query );
+			'status'  => array( 'private', 'publish' ),
+			'return'  => 'ids',
+		);
 
 		if ( 'delete' === $this->get_attr( 'action' ) ) {
 
-			$products_query['status'] = 'trash';
-			$trashed_products         = wc_get_products( $products_query );
-
-			$validated_products = array_unique( array_merge( $validated_products, $trashed_products ), SORT_NUMERIC );
+			$products_query['status'] = array( 'trash', 'draft', 'pending', 'private', 'publish' );
 		}
+
+		$validated_products = wc_get_products( $products_query );
 
 		$this->set_attr( 'validated_product_ids', $validated_products );
 
@@ -92,16 +96,16 @@ class Manual_Synchronization extends Stepped_Job {
 
 			$catalog_info = wc_square()->get_api()->catalog_info();
 
-			if ( $catalog_info->get_data() && $catalog_info->get_data()->getLimits() ) {
+			if ( $catalog_info->get_data() instanceof CatalogInfoResponse && $catalog_info->get_data()->getLimits() ) {
 
 				$limits = $catalog_info->get_data()->getLimits();
 
 				$this->set_attr( 'max_objects_to_retrieve', $limits->getBatchRetrieveMaxObjectIds() );
-				$this->set_attr( 'max_objects_per_batch',   $limits->getBatchUpsertMaxObjectsPerBatch() );
-				$this->set_attr( 'max_objects_total',       $limits->getBatchUpsertMaxTotalObjects() );
+				$this->set_attr( 'max_objects_per_batch', $limits->getBatchUpsertMaxObjectsPerBatch() );
+				$this->set_attr( 'max_objects_total', $limits->getBatchUpsertMaxTotalObjects() );
 			}
-
-		} catch ( Framework\SV_WC_Plugin_Exception $exception ) {} // no need to handle errors here
+		} catch ( Framework\SV_WC_Plugin_Exception $exception ) { // no need to handle errors here
+		}
 
 		$this->complete_step( 'update_limits' );
 	}
@@ -133,9 +137,9 @@ class Manual_Synchronization extends Stepped_Job {
 
 		$map                   = Category::get_map();
 		$category_ids          = $this->get_attr( 'refresh_mappings_category_ids', $this->get_attr( 'category_ids' ) );
-		$mapped_categories     = [];
-		$unmapped_categories   = $this->get_attr( 'unmapped_categories', [] );
-		$unmapped_category_ids = [];
+		$mapped_categories     = array();
+		$unmapped_categories   = $this->get_attr( 'unmapped_categories', array() );
+		$unmapped_category_ids = array();
 
 		if ( empty( $category_ids ) ) {
 			$this->complete_step( 'refresh_category_mappings' );
@@ -152,7 +156,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 		} else {
 
-			$this->set_attr( 'refresh_mappings_category_ids', [] );
+			$this->set_attr( 'refresh_mappings_category_ids', array() );
 		}
 
 		foreach ( $category_ids as $category_id ) {
@@ -169,22 +173,32 @@ class Manual_Synchronization extends Stepped_Job {
 
 		if ( ! empty( $mapped_categories ) ) {
 
-			$square_ids = array_values( array_filter( array_map( function ( $mapped_category ) {
-				return isset( $mapped_category['square_id'] ) ? $mapped_category['square_id'] : null;
-			}, $mapped_categories ) ) );
+			$square_ids = array_values(
+				array_filter(
+					array_map(
+						function ( $mapped_category ) {
+							return isset( $mapped_category['square_id'] ) ? $mapped_category['square_id'] : null;
+						},
+						$mapped_categories
+					)
+				)
+			);
 
 			$response = wc_square()->get_api()->batch_retrieve_catalog_objects( $square_ids );
 
 			// swap the square ID into the array key for quick lookup
-			$mapped_category_audit = [];
+			$mapped_category_audit = array();
 
 			foreach ( $mapped_categories as $mapped_category_id => $mapped_category ) {
 				$mapped_category_audit[ $mapped_category['square_id'] ] = $mapped_category_id;
 			}
 
+			if ( ! $response->get_data() instanceof BatchRetrieveCatalogObjectsResponse ) {
+				throw new Framework\SV_WC_API_Exception( 'Could not fetch category data from Square. Response data is missing' );
+			}
+
 			// handle response
 			if ( is_array( $response->get_data()->getObjects() ) ) {
-
 				foreach ( $response->get_data()->getObjects() as $category ) {
 
 					// don't check for the name, it will get overwritten by the Woo value anyway
@@ -192,7 +206,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 						$category_id = $mapped_category_audit[ $category->getId() ];
 
-						$map[ $category_id ]['version'] = $category->getVersion();
+						$map[ $category_id ]['square_version'] = $category->getVersion();
 						unset( $mapped_category_audit[ $category->getId() ] );
 					}
 				}
@@ -218,10 +232,12 @@ class Manual_Synchronization extends Stepped_Job {
 
 		if ( ! empty( $unmapped_category_ids ) ) {
 
-			$unmapped_category_terms = get_terms( [
-				'taxonomy' => 'product_cat',
-				'include'  => $unmapped_category_ids,
-			] );
+			$unmapped_category_terms = get_terms(
+				array(
+					'taxonomy' => 'product_cat',
+					'include'  => $unmapped_category_ids,
+				)
+			);
 
 			// make the 'name' attribute the array key, for more efficient searching later.
 			foreach ( $unmapped_category_terms as $unmapped_category_term ) {
@@ -246,8 +262,8 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function query_unmapped_categories() {
 
-		$unmapped_categories = $this->get_attr( 'unmapped_categories', [] );
-		$mapped_categories   = $this->get_attr( 'mapped_categories', [] );
+		$unmapped_categories = $this->get_attr( 'unmapped_categories', array() );
+		$mapped_categories   = $this->get_attr( 'mapped_categories', array() );
 
 		if ( empty( $unmapped_categories ) ) {
 
@@ -255,13 +271,15 @@ class Manual_Synchronization extends Stepped_Job {
 
 		} else {
 
-			$response = wc_square()->get_api()->search_catalog_objects( [
-				'object_types' => [ 'CATEGORY' ],
-				'cursor'       => $this->get_attr( 'unmapped_categories_cursor' ),
-			] );
+			$response = wc_square()->get_api()->search_catalog_objects(
+				array(
+					'object_types' => array( 'CATEGORY' ),
+					'cursor'       => $this->get_attr( 'unmapped_categories_cursor' ),
+				)
+			);
 
 			$category_map = Category::get_map();
-			$categories   = $response->get_data()->getObjects();
+			$categories   = $response->get_data() instanceof SearchCatalogObjectsResponse ? $response->get_data()->getObjects() : null;
 
 			if ( is_array( $categories ) ) {
 
@@ -273,10 +291,10 @@ class Manual_Synchronization extends Stepped_Job {
 
 						$category_id = $unmapped_categories[ $unmapped_category_key ]['term_id'];
 
-						$category_map[ $category_id ] = [
+						$category_map[ $category_id ] = array(
 							'square_id'      => $category_object->getId(),
 							'square_version' => $category_object->getVersion(),
-						];
+						);
 
 						$mapped_categories[] = $category_id;
 						unset( $unmapped_categories[ $unmapped_category_key ] );
@@ -288,7 +306,7 @@ class Manual_Synchronization extends Stepped_Job {
 			$this->set_attr( 'mapped_categories', $mapped_categories );
 			$this->set_attr( 'unmapped_categories', $unmapped_categories );
 
-			$cursor = $response->get_data()->getCursor();
+			$cursor = $response->get_data() instanceof SearchCatalogObjectsResponse ? $response->get_data()->getCursor() : null;
 			$this->set_attr( 'unmapped_categories_cursor', $cursor );
 
 			if ( empty( $cursor ) ) {
@@ -309,13 +327,15 @@ class Manual_Synchronization extends Stepped_Job {
 	protected function upsert_categories() {
 
 		$category_ids = $this->get_attr( 'category_ids' );
-		$categories   = get_terms( [
-			'taxonomy' => 'product_cat',
-			'include'  => $category_ids,
-		] );
+		$categories   = get_terms(
+			array(
+				'taxonomy' => 'product_cat',
+				'include'  => $category_ids,
+			)
+		);
 
-		$batches     = [];
-		$reverse_map = [];
+		$batches     = array();
+		$reverse_map = array();
 
 		// For now, keep it to one category per batch. Since we can still send 1000 batches per request, it's efficient,
 		// and insulates errors per category rather than a single category error breaking the entire batch it is in.
@@ -329,50 +349,51 @@ class Manual_Synchronization extends Stepped_Job {
 
 			$reverse_map[ $square_id ] = $category_id;
 
-			$catalog_object_data = [
+			$catalog_object_data = array(
 				'type'          => 'CATEGORY',
 				'id'            => $square_id,
-				'category_data' => [
+				'category_data' => array(
 					'name' => wp_specialchars_decode( $category->name ), // names are stored encoded in the database
-				]
-			];
+				),
+			);
 
 			if ( 0 < $square_version ) {
 				$catalog_object_data['version'] = $square_version;
 			}
 
-			$batches[] = new \SquareConnect\Model\CatalogObjectBatch( [ 'objects' => [ new \SquareConnect\Model\CatalogObject( $catalog_object_data ) ] ] );
+			$batches[] = new \SquareConnect\Model\CatalogObjectBatch( array( 'objects' => array( new \SquareConnect\Model\CatalogObject( $catalog_object_data ) ) ) );
 		}
 
-		$idempotency_key = wc_square()->get_idempotency_key( md5( serialize( $batches ) . $this->get_attr( 'id' ) ) . '_upsert_categories' );
+		foreach ( array_chunk( $batches, $this->get_max_objects_per_upsert() ) as $batch ) {
+			$idempotency_key = wc_square()->get_idempotency_key( md5( serialize( $batch ) . $this->get_attr( 'id' ) ) . '_upsert_categories' ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+			$result          = wc_square()->get_api()->batch_upsert_catalog_objects( $idempotency_key, $batch );
 
-		$result = wc_square()->get_api()->batch_upsert_catalog_objects( $idempotency_key, $batches );
+			if ( ! $result->get_data() instanceof BatchUpsertCatalogObjectsResponse ) {
+				throw new Framework\SV_WC_API_Exception( 'Response data is invalid' );
+			}
 
-		// new entries to Square will return in the ID Mapping
-		if ( $id_mappings = $result->get_data()->getIdMappings() ) {
+			$id_mappings = $result->get_data()->getIdMappings(); // new entries to Square will return in the ID Mapping.
 
-			foreach ( $id_mappings as $id_mapping ) {
+			if ( ! empty( $id_mappings ) ) {
+				foreach ( $id_mappings as $id_mapping ) {
+					$client_object_id = $id_mapping->getClientObjectId();
+					$remote_object_id = $id_mapping->getObjectId();
 
-				$client_object_id = $id_mapping->getClientObjectId();
-				$remote_object_id = $id_mapping->getObjectId();
-
-				if ( isset( $reverse_map[ $client_object_id ] ) ) {
-
-					$reverse_map[ $remote_object_id ] = $reverse_map[ $client_object_id ];
-					unset( $reverse_map[ $client_object_id ] );
+					if ( isset( $reverse_map[ $client_object_id ] ) ) {
+						$reverse_map[ $remote_object_id ] = $reverse_map[ $client_object_id ];
+						unset( $reverse_map[ $client_object_id ] );
+					}
 				}
 			}
-		}
 
-		foreach ( $result->get_data()->getObjects() as $upserted_category ) {
+			foreach ( $result->get_data()->getObjects() as $upserted_category ) {
+				$id      = $upserted_category->getId();
+				$version = $upserted_category->getVersion();
 
-			$id      = $upserted_category->getId();
-			$version = $upserted_category->getVersion();
-
-			if ( isset( $reverse_map[ $id ] ) ) {
-
-				Category::update_mapping( $reverse_map[ $id ], $id, $version );
-				unset( $reverse_map[ $id ] );
+				if ( isset( $reverse_map[ $id ] ) ) {
+					Category::update_mapping( $reverse_map[ $id ], $id, $version );
+					unset( $reverse_map[ $id ] );
+				}
 			}
 		}
 
@@ -389,8 +410,8 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function prepare_matched_products_for_upsert() {
 
-		$product_ids_to_prepare = $this->get_attr( 'product_ids_to_prepare', $this->get_attr( 'validated_product_ids', [] ) );
-		$in_progress            = $this->get_attr( 'in_progress_prepare_matched_products_for_upsert', [] );
+		$product_ids_to_prepare = $this->get_attr( 'product_ids_to_prepare', $this->get_attr( 'validated_product_ids', array() ) );
+		$in_progress            = $this->get_attr( 'in_progress_prepare_matched_products_for_upsert', array() );
 
 		if ( empty( $product_ids_to_prepare ) ) {
 			$this->complete_step( 'prepare_matched_products_for_upsert' );
@@ -429,7 +450,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 			try {
 
-				$objects      = [];
+				$objects      = array();
 				$api_response = json_decode( $in_progress['api_response'], true );
 
 				if ( isset( $api_response['objects'] ) ) {
@@ -438,16 +459,17 @@ class Manual_Synchronization extends Stepped_Job {
 					}
 				}
 
-				$response = new \SquareConnect\Model\BatchRetrieveCatalogObjectsResponse( [ 'objects' => $objects ] );
+				$response = new \SquareConnect\Model\BatchRetrieveCatalogObjectsResponse( array( 'objects' => $objects ) );
 
-			} catch ( \Exception $e ) {}
+			} catch ( \Exception $e ) {
+			}
 		}
 
 		if ( null === $response ) {
 
 			$api_response = wc_square()->get_api()->batch_retrieve_catalog_objects( $square_ids );
 
-			if ( ! $api_response->get_data() ) {
+			if ( ! $api_response->get_data() instanceof BatchRetrieveCatalogObjectsResponse ) {
 				throw new Framework\SV_WC_API_Exception( 'Response data is missing' );
 			}
 
@@ -460,7 +482,7 @@ class Manual_Synchronization extends Stepped_Job {
 			return;
 		}
 
-		$catalog_objects = isset( $in_progress['catalog_objects'] ) ? $in_progress['catalog_objects'] : [];
+		$catalog_objects = isset( $in_progress['catalog_objects'] ) ? $in_progress['catalog_objects'] : array();
 
 		if ( $response && $response_objects = $response->getObjects() ) {
 
@@ -487,11 +509,11 @@ class Manual_Synchronization extends Stepped_Job {
 			}
 		}
 
-		$matched_products_to_upsert = $this->get_attr( 'matched_products_to_upsert', [] );
+		$matched_products_to_upsert = $this->get_attr( 'matched_products_to_upsert', array() );
 
 		$this->set_attr( 'matched_products_to_upsert', $matched_products_to_upsert + $catalog_objects );
 		$this->set_attr( 'product_ids_to_prepare', array_diff( $product_ids_to_prepare, $product_ids ) );
-		$this->set_attr( 'in_progress_prepare_matched_products_for_upsert', [] );
+		$this->set_attr( 'in_progress_prepare_matched_products_for_upsert', array() );
 	}
 
 
@@ -504,7 +526,7 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function upsert_matched_products() {
 
-		$matched_products_to_upsert = $this->get_attr( 'matched_products_to_upsert', [] );
+		$matched_products_to_upsert = $this->get_attr( 'matched_products_to_upsert', array() );
 
 		if ( empty( $matched_products_to_upsert ) ) {
 
@@ -517,7 +539,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 		if ( isset( $result['processed'] ) ) {
 
-			$processed_product_ids = $this->get_attr( 'processed_product_ids', [] );
+			$processed_product_ids = $this->get_attr( 'processed_product_ids', array() );
 
 			$this->set_attr( 'processed_product_ids', array_merge( $processed_product_ids, $result['processed'] ) );
 
@@ -536,8 +558,8 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function update_matched_products() {
 
-		$product_ids           = $this->get_attr( 'matched_product_ids', $this->get_attr( 'validated_product_ids', [] ) );
-		$processed_product_ids = $this->get_attr( 'processed_product_ids', [] );
+		$product_ids           = $this->get_attr( 'matched_product_ids', $this->get_attr( 'validated_product_ids', array() ) );
+		$processed_product_ids = $this->get_attr( 'processed_product_ids', array() );
 
 		// remove IDs that have already been processed
 		$product_ids = array_diff( $product_ids, $processed_product_ids );
@@ -558,7 +580,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 		} else {
 
-			$this->set_attr( 'matched_product_ids', [] );
+			$this->set_attr( 'matched_product_ids', array() );
 		}
 
 		$products_map = Product::get_square_meta( $product_ids, 'square_item_id' );
@@ -570,11 +592,11 @@ class Manual_Synchronization extends Stepped_Job {
 
 		$response = wc_square()->get_api()->batch_retrieve_catalog_objects( $square_ids );
 
-		if ( ! $response->get_data() ) {
+		if ( ! $response->get_data() instanceof BatchRetrieveCatalogObjectsResponse ) {
 			throw new Framework\SV_WC_API_Exception( 'Response data is missing' );
 		}
 
-		$catalog_objects = [];
+		$catalog_objects = array();
 
 		if ( $response->get_data()->getObjects() ) {
 
@@ -596,7 +618,7 @@ class Manual_Synchronization extends Stepped_Job {
 			$this->set_attr( 'processed_product_ids', array_merge( $result['processed'], $processed_product_ids ) );
 
 			// any products that were staged but not processed, push to the matched array to try next time
-			$matched_product_ids = $this->get_attr( 'matched_product_ids', [] );
+			$matched_product_ids = $this->get_attr( 'matched_product_ids', array() );
 			$this->set_attr( 'matched_product_ids', array_merge( $result['unprocessed'], $matched_product_ids ) );
 		}
 	}
@@ -611,14 +633,17 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function search_matched_products() {
 
-		$product_ids           = $this->get_attr( 'search_product_ids', $this->get_attr( 'validated_product_ids', [] ) );
-		$processed_product_ids = $this->get_attr( 'processed_product_ids', [] );
-		$in_progress           = $this->get_attr( 'in_progress_search_matched_products', [
-			'unprocessed_search_response' => null,
-			'processed_remote_object_ids' => [],
-			'catalog_objects_to_update'   => [],
-			'upserting'                   => false,
-		] );
+		$product_ids           = $this->get_attr( 'search_product_ids', $this->get_attr( 'validated_product_ids', array() ) );
+		$processed_product_ids = $this->get_attr( 'processed_product_ids', array() );
+		$in_progress           = $this->get_attr(
+			'in_progress_search_matched_products',
+			array(
+				'unprocessed_search_response' => null,
+				'processed_remote_object_ids' => array(),
+				'catalog_objects_to_update'   => array(),
+				'upserting'                   => false,
+			)
+		);
 
 		// remove IDs that have already been processed
 		$product_ids = array_diff( $product_ids, $processed_product_ids );
@@ -643,22 +668,24 @@ class Manual_Synchronization extends Stepped_Job {
 
 		} else {
 
-			$response = wc_square()->get_api()->search_catalog_objects( [
-				'cursor'       => $this->get_attr( 'search_products_cursor' ),
-				'object_types' => [ 'ITEM' ],
-				'limit'        => $this->get_max_objects_to_retrieve(),
-			] );
+			$response = wc_square()->get_api()->search_catalog_objects(
+				array(
+					'cursor'       => $this->get_attr( 'search_products_cursor' ),
+					'object_types' => array( 'ITEM' ),
+					'limit'        => $this->get_max_objects_to_retrieve(),
+				)
+			);
 
 			$search_response = $response->get_data();
 
 			$in_progress['unprocessed_search_response'] = json_encode( json_decode( $search_response . '', true ) );
 		}
 
-		if ( ! $search_response ) {
+		if ( ! $search_response instanceof SearchCatalogObjectsResponse ) {
 			throw new Framework\SV_WC_API_Exception( 'Response data is missing' );
 		}
 
-		$catalog_objects           = $search_response->getObjects() ?: [];
+		$catalog_objects           = $search_response->getObjects() ?: array();
 		$cursor                    = $search_response->getCursor();
 		$catalog_objects_to_update = $in_progress['catalog_objects_to_update'];
 
@@ -764,8 +791,8 @@ class Manual_Synchronization extends Stepped_Job {
 
 			if ( ! empty( $result['unprocessed'] ) ) {
 
-				$catalog_processed = false;
-				$remaining_product_ids = array_merge( $result['unprocessed'], $remaining_product_ids );
+				$catalog_processed                        = false;
+				$remaining_product_ids                    = array_merge( $result['unprocessed'], $remaining_product_ids );
 				$in_progress['catalog_objects_to_update'] = array_diff_key( $catalog_objects_to_update, array_flip( $processed_product_ids ) );
 
 			} else {
@@ -779,7 +806,7 @@ class Manual_Synchronization extends Stepped_Job {
 		if ( ! $catalog_processed && ! empty( $remaining_product_ids ) ) {
 
 			$this->set_attr( 'search_products_cursor', $cursor );
-			$this->set_attr( 'search_product_ids',     $remaining_product_ids );
+			$this->set_attr( 'search_product_ids', $remaining_product_ids );
 
 		} else {
 
@@ -794,8 +821,8 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function upsert_new_products() {
 
-		$product_ids           = $this->get_attr( 'upsert_new_product_ids', $this->get_attr( 'validated_product_ids', [] ) );
-		$processed_product_ids = $this->get_attr( 'processed_product_ids', [] );
+		$product_ids           = $this->get_attr( 'upsert_new_product_ids', $this->get_attr( 'validated_product_ids', array() ) );
+		$processed_product_ids = $this->get_attr( 'processed_product_ids', array() );
 
 		// remove IDs that have already been processed
 		$product_ids = array_diff( $product_ids, $processed_product_ids );
@@ -806,14 +833,16 @@ class Manual_Synchronization extends Stepped_Job {
 			return;
 		}
 
-		$catalog_objects = [];
+		$catalog_objects = array();
 
 		foreach ( $product_ids as $product_id ) {
 
-			$catalog_objects[ $product_id ] = new CatalogObject( [
-				'type'      => 'ITEM',
-				'item_data' => new \SquareConnect\Model\CatalogItem(),
-			] );
+			$catalog_objects[ $product_id ] = new CatalogObject(
+				array(
+					'type'      => 'ITEM',
+					'item_data' => new \SquareConnect\Model\CatalogItem(),
+				)
+			);
 		}
 
 		$result = $this->upsert_catalog_objects( $catalog_objects );
@@ -854,25 +883,29 @@ class Manual_Synchronization extends Stepped_Job {
 
 		wc_square()->log( 'Upserting ' . count( $objects ) . ' catalog objects' );
 
-		$is_delete_action       = 'delete' === $this->get_attr( 'action' );
-		$product_ids            = array_keys( $objects );
-		$staged_product_ids     = [];
-		$successful_product_ids = [];
-		$total_object_count     = 0;
-		$batches                = [];
-		$result                 = [
-			'processed'   => [],
+		$is_delete_action          = 'delete' === $this->get_attr( 'action' );
+		$product_ids               = array_keys( $objects );
+		$original_square_image_ids = array();
+		$staged_product_ids        = array();
+		$successful_product_ids    = array();
+		$total_object_count        = 0;
+		$batches                   = array();
+		$result                    = array(
+			'processed'   => array(),
 			'unprocessed' => $product_ids,
-		];
+		);
 
-		$in_progress = $this->get_attr( 'in_progress_upsert_catalog_objects', [
-			'batches'                           => [],
-			'staged_product_ids'                => [],
-			'total_object_count'                => null,
-			'unprocessed_upsert_response'       => null,
-			'mapped_client_item_ids'            => [],
-			'processed_remote_catalog_item_ids' => []
-		] );
+		$in_progress = $this->get_attr(
+			'in_progress_upsert_catalog_objects',
+			array(
+				'batches'                           => array(),
+				'staged_product_ids'                => array(),
+				'total_object_count'                => null,
+				'unprocessed_upsert_response'       => null,
+				'mapped_client_item_ids'            => array(),
+				'processed_remote_catalog_item_ids' => array(),
+			)
+		);
 
 		if ( null === $in_progress['unprocessed_upsert_response'] ) {
 
@@ -881,9 +914,12 @@ class Manual_Synchronization extends Stepped_Job {
 
 				$staged_product_ids = $in_progress['staged_product_ids'];
 				$total_object_count = $in_progress['total_object_count'];
-				$batches            = array_map( static function ( $batch_data ) {
-					return ObjectSerializer::deserialize( json_decode( $batch_data, false ), CatalogObjectBatch::class );
-				}, $in_progress['batches'] );
+				$batches            = array_map(
+					static function ( $batch_data ) {
+						return ObjectSerializer::deserialize( json_decode( $batch_data, false ), CatalogObjectBatch::class );
+					},
+					$in_progress['batches']
+				);
 			}
 
 			foreach ( $objects as $product_id => $object ) {
@@ -908,13 +944,16 @@ class Manual_Synchronization extends Stepped_Job {
 					$object = $this->convert_to_catalog_object( $object );
 				}
 
-				$catalog_item = new Catalog_Item( $product_id, $is_delete_action );
+				$product                                  = wc_get_product( $product_id );
+				$original_square_image_ids[ $product_id ] = $product->get_meta( '_square_item_image_id' );
+
+				$catalog_item = new Catalog_Item( $product, $is_delete_action );
 				$batch        = $catalog_item->get_batch( $object );
 				$object_count = $catalog_item->get_batch_object_count();
 
 				if ( $this->get_max_objects_total() >= $object_count + $total_object_count ) {
 					$batches[]            = $batch;
-					$total_object_count   += $object_count;
+					$total_object_count  += $object_count;
 					$staged_product_ids[] = $product_id;
 				} else {
 					break;
@@ -932,7 +971,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 			$start = microtime( true );
 
-			$idempotency_key = wc_square()->get_idempotency_key( md5( serialize( $batches ) ) . '_upsert_products' );
+			$idempotency_key = wc_square()->get_idempotency_key( md5( serialize( $batches ) ) . time() . '_upsert_products' );
 			$response        = wc_square()->get_api()->batch_upsert_catalog_objects( $idempotency_key, $batches );
 			$upsert_response = $response->get_data();
 
@@ -998,7 +1037,7 @@ class Manual_Synchronization extends Stepped_Job {
 			wc_square()->log( 'Mapped ' . count( $in_progress['mapped_client_item_ids'] ) . ' Square IDs in ' . $duration . 's' );
 		}
 
-		$pull_inventory_variation_ids = $this->get_attr( 'pull_inventory_variation_ids', [] );
+		$pull_inventory_variation_ids = $this->get_attr( 'pull_inventory_variation_ids', array() );
 
 		wc_square()->log( 'Storing Square item data to WooCommerce products' );
 
@@ -1028,11 +1067,14 @@ class Manual_Synchronization extends Stepped_Job {
 				continue;
 			}
 
-			Product::update_square_meta( $product, [
-				'item_id'       => $remote_item_id,
-				'item_version'  => $remote_catalog_item->getVersion(),
-				'item_image_id' => $remote_catalog_item->getImageId(),
-			] );
+			Product::update_square_meta(
+				$product,
+				array(
+					'item_id'       => $remote_item_id,
+					'item_version'  => $remote_catalog_item->getVersion(),
+					'item_image_id' => $remote_catalog_item->getImageId(),
+				)
+			);
 
 			$successful_product_ids[] = $product->get_id();
 
@@ -1044,10 +1086,13 @@ class Manual_Synchronization extends Stepped_Job {
 
 						$pull_inventory_variation_ids[] = $catalog_item_variation->getId();
 
-						Product::update_square_meta( $product_variation, [
-							'item_variation_id'      => $catalog_item_variation->getId(),
-							'item_variation_version' => $catalog_item_variation->getVersion(),
-						] );
+						Product::update_square_meta(
+							$product_variation,
+							array(
+								'item_variation_id'      => $catalog_item_variation->getId(),
+								'item_variation_version' => $catalog_item_variation->getVersion(),
+							)
+						);
 					}
 				}
 			}
@@ -1060,8 +1105,17 @@ class Manual_Synchronization extends Stepped_Job {
 				return $result;
 			}
 
-			// there is no batch image endpoint
-			$this->push_product_image( $product );
+			$local_image_id = $product->get_image_id();
+			$product_id     = $product->get_id();
+
+			// If there is a local image which is different from the last uploaded image
+			// Or if the remote square image id has changed
+			if ( ( $local_image_id && $local_image_id !== $product->get_meta( '_square_uploaded_image_id' ) ) ||
+				( ! ( $original_square_image_ids[ $product_id ] && $original_square_image_ids[ $product_id ] === $product->get_meta( '_square_item_image_id' ) ) ) ) {
+				// there is no batch image endpoint
+				$this->push_product_image( $product );
+
+			}
 
 			$in_progress['processed_remote_catalog_item_ids'][] = $remote_item_id;
 
@@ -1078,11 +1132,17 @@ class Manual_Synchronization extends Stepped_Job {
 		// log any failed products
 		foreach ( array_diff( $staged_product_ids, $successful_product_ids ) as $product_id ) {
 
-			Records::set_record( [
-				'type'       => 'alert',
-				'product_id' => $product_id,
-				'message'    => __( 'Product could not be updated in Square', 'woocommerce-square' ),
-			] );
+			Records::set_record(
+				array(
+					'type'       => 'alert',
+					'product_id' => $product_id,
+					'message'    => sprintf(
+						/* translators: Placeholder: %s - product ID */
+						esc_html__( 'Product %s could not be updated in Square.', 'woocommerce-square' ),
+						'<a href="' . esc_url( get_edit_post_link( $product_id ) ) . '">' . $product_id . '</a>'
+					),
+				)
+			);
 		}
 
 		$this->set_attr( 'in_progress_upsert_catalog_objects', null );
@@ -1131,11 +1191,6 @@ class Manual_Synchronization extends Stepped_Job {
 
 		$local_image_id = $product->get_image_id();
 
-		// if there is no image, or if the latest uploaded image is the same
-		if ( ! $local_image_id || $local_image_id == $product->get_meta( '_square_uploaded_image_id' ) ) {
-			return;
-		}
-
 		if ( $image_path = get_attached_file( $local_image_id ) ) {
 
 			try {
@@ -1167,8 +1222,8 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function push_inventory() {
 
-		$product_ids            = $this->get_attr( 'inventory_push_product_ids', [] );
-		$inventory_changes      = [];
+		$product_ids            = $this->get_attr( 'inventory_push_product_ids', array() );
+		$inventory_changes      = array();
 		$inventory_change_count = 0;
 
 		foreach ( $product_ids as $key => $product_id ) {
@@ -1177,7 +1232,7 @@ class Manual_Synchronization extends Stepped_Job {
 
 			if ( $product instanceof \WC_Product ) {
 
-				$product_inventory_changes = [];
+				$product_inventory_changes = array();
 
 				if ( $product->is_type( 'variable' ) && $product->has_child() ) {
 
@@ -1185,15 +1240,14 @@ class Manual_Synchronization extends Stepped_Job {
 
 						$child = wc_get_product( $child_id );
 
-						if ( $child instanceof \WC_Product && $inventory_change = Product::get_inventory_change( $child ) ) {
+						if ( $child instanceof \WC_Product && $inventory_change = Product::get_inventory_change_physical_count_type( $child ) ) {
 
 							$product_inventory_changes[] = $inventory_change;
 						}
 					}
-
 				} elseif ( $square_variation_id = Product::get_square_item_variation_id( $product_id, false ) ) {
 
-					if ( $inventory_change = Product::get_inventory_change( $product ) ) {
+					if ( $inventory_change = Product::get_inventory_change_physical_count_type( $product ) ) {
 
 						$product_inventory_changes[] = $inventory_change;
 					}
@@ -1209,7 +1263,6 @@ class Manual_Synchronization extends Stepped_Job {
 
 					break;
 				}
-
 			} else {
 
 				unset( $product_ids[ $key ] );
@@ -1239,8 +1292,8 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function square_sor_sync() {
 
-		$synced_product_ids      = $this->get_attr( 'validated_product_ids', [] );
-		$processed_product_ids   = $this->get_attr( 'processed_product_ids', [] );
+		$synced_product_ids      = $this->get_attr( 'validated_product_ids', array() );
+		$processed_product_ids   = $this->get_attr( 'processed_product_ids', array() );
 		$unprocessed_product_ids = array_diff( $synced_product_ids, $processed_product_ids );
 		$catalog_processed       = $this->get_attr( 'catalog_processed', false );
 
@@ -1266,11 +1319,14 @@ class Manual_Synchronization extends Stepped_Job {
 
 				$cursor = $this->get_attr( 'square_sor_cursor' );
 
-				$response = wc_square()->get_api()->search_catalog_objects( [
-					'cursor'       => $cursor,
-					'object_types' => [ 'ITEM' ],
-					'limit'        => $this->get_max_objects_to_retrieve(),
-				] );
+				$response = wc_square()->get_api()->search_catalog_objects(
+					array(
+						'cursor'                  => $cursor,
+						'object_types'            => array( 'ITEM' ),
+						'include_related_objects' => true,
+						'limit'                   => $this->get_max_objects_to_retrieve(),
+					)
+				);
 
 				$response_data = $response->get_data();
 
@@ -1291,17 +1347,27 @@ class Manual_Synchronization extends Stepped_Job {
 			$catalog_processed = ! $cursor;
 			$this->set_attr( 'catalog_processed', $catalog_processed );
 
-		// bail early and fail for any API and plugin errors
-		} catch ( \Exception $exception ) {
+		} catch ( \Exception $exception ) { // bail early and fail for any API and plugin errors
 
 			$this->fail( 'Product sync failed. ' . $exception->getMessage() );
 			return;
 		}
 
-		$pull_inventory_variation_ids = $this->get_attr( 'pull_inventory_variation_ids', [] );
+		$related_objects = $response_data->getRelatedObjects();
+
+		if ( $related_objects && is_array( $related_objects ) ) {
+			// first import any related categories
+			foreach ( $related_objects as $related_object ) {
+				if ( 'CATEGORY' === $related_object->getType() ) {
+					Category::import_or_update( $related_object );
+				}
+			}
+		}
+
+		$pull_inventory_variation_ids = $this->get_attr( 'pull_inventory_variation_ids', array() );
 
 		/** @var \SquareConnect\Model\CatalogObject[] */
-		$catalog_objects = $products_to_update = [];
+		$catalog_objects = $products_to_update = array();
 
 		wc_square()->log( 'Searching for products in ' . count( $response_data->getObjects() ) . ' Square objects' );
 
@@ -1402,10 +1468,9 @@ class Manual_Synchronization extends Stepped_Job {
 				if ( ! $product->get_image_id() && $square_object->getImageId() ) {
 					Product::update_image_from_square( $product, $square_object->getImageId() );
 				}
-
 			} catch ( Framework\SV_WC_Plugin_Exception $exception ) {
 
-				$this->mark_failed_products( [ $product ] );
+				$this->mark_failed_products( array( $product ) );
 			}
 
 			$processed_product_ids[] = $product->get_id();
@@ -1428,12 +1493,18 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function pull_inventory() {
 
-		$processed_ids = $this->get_attr( 'processed_square_variation_ids', [] );
+		$processed_ids = $this->get_attr( 'processed_square_variation_ids', array() );
 
-		$in_progress = wp_parse_args( $this->get_attr( 'in_progress_pull_inventory', [] ), [
-			'response_data'           => null,
-			'processed_variation_ids' => [],
-		] );
+		$in_progress = wp_parse_args(
+			$this->get_attr(
+				'in_progress_pull_inventory',
+				array()
+			),
+			array(
+				'response_data'           => null,
+				'processed_variation_ids' => array(),
+			)
+		);
 
 		$response_data = null;
 
@@ -1445,7 +1516,7 @@ class Manual_Synchronization extends Stepped_Job {
 		// if the saved response was somehow corrupted, start over
 		if ( ! $response_data instanceof BatchRetrieveInventoryCountsResponse ) {
 
-			$square_variation_ids = $this->get_attr( 'pull_inventory_variation_ids', [] );
+			$square_variation_ids = $this->get_attr( 'pull_inventory_variation_ids', array() );
 
 			// remove IDs that have already been processed
 			$square_variation_ids = array_diff( $square_variation_ids, $processed_ids );
@@ -1456,37 +1527,53 @@ class Manual_Synchronization extends Stepped_Job {
 				return;
 			}
 
-			if ( count( $square_variation_ids ) > 100 ) {
+			if ( count( $square_variation_ids ) > self::BATCH_INVENTORY_COUNTS_LIMIT ) {
 
-				$variation_ids_batch = array_slice( $square_variation_ids, 0, 100 );
+				$variation_ids_batch = array_slice( $square_variation_ids, 0, self::BATCH_INVENTORY_COUNTS_LIMIT );
 
 				$this->set_attr( 'pull_inventory_variation_ids', array_diff( $square_variation_ids, $variation_ids_batch ) );
 
 				$square_variation_ids = $variation_ids_batch;
 			}
 
-			$response = wc_square()->get_api()->batch_retrieve_inventory_counts( [
-				'catalog_object_ids' => array_values( $square_variation_ids ),
-				'location_ids'       => [ wc_square()->get_settings_handler()->get_location_id() ],
-			] );
+			$cursor             = '';
+			$response_counts    = array();
+			$location_ids       = array( wc_square()->get_settings_handler()->get_location_id() );
+			$catalog_object_ids = array_values( $square_variation_ids );
 
-			if ( ! $response->get_data() instanceof BatchRetrieveInventoryCountsResponse ) {
-				throw new Framework\SV_WC_Plugin_Exception( 'Response data missing or invalid' );
-			}
+			// Repeat fetching objects using the cursor when the results are paginated.
+			do {
+				$response = wc_square()->get_api()->batch_retrieve_inventory_counts(
+					array(
+						'catalog_object_ids' => $catalog_object_ids,
+						'location_ids'       => $location_ids,
+						'cursor'             => $cursor,
+					)
+				);
 
-			$response_data = $response->get_data();
+				if ( ! $response->get_data() instanceof BatchRetrieveInventoryCountsResponse ) {
+					throw new Framework\SV_WC_Plugin_Exception( 'Response data missing or invalid' );
+				}
 
-			// if no counts were returned, there's nothing to process
-			if ( ! is_array( $response_data->getCounts() ) ) {
+				$response_data = $response->get_data();
 
-				$this->set_attr( 'processed_square_variation_ids', array_merge( $processed_ids, $square_variation_ids ) );
-				return;
-			}
+				// if no counts were returned, there's nothing to process
+				if ( ! is_array( $response_data->getCounts() ) ) {
 
-			$in_progress['response_data'] = $response_data . '';
+					$this->set_attr( 'processed_square_variation_ids', array_merge( $processed_ids, $square_variation_ids ) );
+					return;
+				}
+
+				$in_progress['response_data'] = $response_data . '';
+
+				// Store the response counts to be processed later.
+				$response_counts = array_merge( $response_counts, $response_data->getCounts() );
+				$cursor          = $response->get_data()->getCursor();
+
+			} while ( ! empty( $cursor ) );
 		}
 
-		foreach ( $response_data->getCounts() as $count ) {
+		foreach ( $response_counts as $count ) {
 
 			if ( in_array( $count->getCatalogObjectId(), $in_progress['processed_variation_ids'], false ) ) {
 				continue;
@@ -1510,9 +1597,9 @@ class Manual_Synchronization extends Stepped_Job {
 					$product->set_stock_quantity( $count->getQuantity() );
 					$product->save();
 				}
-			}
 
-			$in_progress['processed_variation_ids'][] = $count->getCatalogObjectId();
+				$in_progress['processed_variation_ids'][] = $count->getCatalogObjectId();
+			}
 
 			$this->set_attr( 'in_progress_pull_inventory', $in_progress );
 		}
@@ -1520,7 +1607,7 @@ class Manual_Synchronization extends Stepped_Job {
 		$this->set_attr( 'processed_square_variation_ids', array_merge( $processed_ids, $in_progress['processed_variation_ids'] ) );
 
 		// clear any in-progress data
-		$this->set_attr( 'in_progress_pull_inventory', [] );
+		$this->set_attr( 'in_progress_pull_inventory', array() );
 	}
 
 	/**
@@ -1530,7 +1617,7 @@ class Manual_Synchronization extends Stepped_Job {
 	 *
 	 * @param \WC_Product[]|int[] $products products to mark as failed
 	 */
-	protected function mark_failed_products( $products = [] ) {
+	protected function mark_failed_products( $products = array() ) {
 
 		foreach ( $products as $product ) {
 
@@ -1540,10 +1627,10 @@ class Manual_Synchronization extends Stepped_Job {
 				continue;
 			}
 
-			$record_data = [
+			$record_data = array(
 				'type'       => 'alert',
 				'product_id' => $product->get_id(),
-			];
+			);
 
 			// optionally hide unmatched products from catalog
 			if ( wc_square()->get_settings_handler()->is_system_of_record_square() && wc_square()->get_settings_handler()->hide_missing_square_products() ) {
@@ -1555,7 +1642,8 @@ class Manual_Synchronization extends Stepped_Job {
 
 					$record_data['product_hidden'] = true;
 
-				} catch ( \Exception $e ) {}
+				} catch ( \Exception $e ) {
+				}
 			}
 
 			Records::set_record( $record_data );
@@ -1568,26 +1656,22 @@ class Manual_Synchronization extends Stepped_Job {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param int[] $product_ids array of product IDs
+	 * @param  int[] $product_ids array of product IDs.
 	 * @return int[]
 	 */
 	protected function get_shared_category_ids( $product_ids ) {
-		global $wpdb;
 
 		if ( ! empty( $product_ids ) ) {
-
-			$term_ids     = $wpdb->get_col( " SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE taxonomy = 'product_cat' " );
-			$term_in      = '(' . implode( ',', array_map( 'absint', array_merge( [ 0 ], $term_ids ) ) ) . ')';
-			$post_in      = '(' . implode( ',', array_map( 'absint', array_merge( [ 0 ], $product_ids ) ) ) . ')';
-			$category_ids = $wpdb->get_results( "
-				SELECT term_taxonomy_id
-				FROM $wpdb->term_relationships
-				WHERE object_id IN $post_in
-				AND term_taxonomy_id IN $term_in
-			", ARRAY_N );
+			$category_ids = get_terms(
+				array(
+					'taxonomy'   => 'product_cat',
+					'fields'     => 'ids',
+					'object_ids' => $product_ids,
+				)
+			);
 		}
 
-		return ! empty( $category_ids ) ? array_unique( array_map( 'absint', array_merge( ...$category_ids ) ) ) : [];
+		return ! empty( $category_ids ) && ! is_wp_error( $category_ids ) ? $category_ids : array();
 	}
 
 
@@ -1598,21 +1682,21 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function assign_next_steps() {
 
-		$next_steps = [];
+		$next_steps = array();
 
 		if ( $this->is_system_of_record_woocommerce() ) {
 
 			if ( 'delete' === $this->get_attr( 'action' ) ) {
 
-				$next_steps = [
+				$next_steps = array(
 					'validate_products',
 					'update_matched_products',
 					'search_matched_products',
-				];
+				);
 
 			} else {
 
-				$next_steps = [
+				$next_steps = array(
 					'validate_products',
 					'extract_category_ids',
 					'refresh_category_mappings',
@@ -1621,7 +1705,7 @@ class Manual_Synchronization extends Stepped_Job {
 					'update_matched_products',
 					'search_matched_products',
 					'upsert_new_products',
-				];
+				);
 
 				// only handle product inventory if enabled
 				if ( wc_square()->get_settings_handler()->is_inventory_sync_enabled() ) {
@@ -1629,13 +1713,12 @@ class Manual_Synchronization extends Stepped_Job {
 					$next_steps[] = 'pull_inventory';
 				}
 			}
-
 		} elseif ( $this->is_system_of_record_square() ) {
 
-			$next_steps = [
+			$next_steps = array(
 				'validate_products',
 				'square_sor_sync',
-			];
+			);
 
 			// only pull product inventory if enabled
 			if ( wc_square()->get_settings_handler()->is_inventory_sync_enabled() ) {
@@ -1700,7 +1783,7 @@ class Manual_Synchronization extends Stepped_Job {
 	 */
 	protected function get_max_objects_per_upsert() {
 
-		$max = $this->get_attr( 'max_objects_per_upsert', 5000 );
+		$max = $this->get_attr( 'max_objects_per_upsert', 500 );
 
 		/**
 		 * Filters the maximum number of objects per upsert in a single request.

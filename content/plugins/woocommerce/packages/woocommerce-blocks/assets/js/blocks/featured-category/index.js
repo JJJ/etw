@@ -2,9 +2,10 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { InnerBlocks } from '@wordpress/editor';
+import { InnerBlocks } from '@wordpress/block-editor';
 import { registerBlockType } from '@wordpress/blocks';
 import { DEFAULT_HEIGHT } from '@woocommerce/block-settings';
+import { Icon, folderStarred } from '@woocommerce/icons';
 
 /**
  * Internal dependencies
@@ -12,7 +13,7 @@ import { DEFAULT_HEIGHT } from '@woocommerce/block-settings';
 import './style.scss';
 import './editor.scss';
 import Block from './block';
-import { IconFolderStar } from '../../components/icons';
+import { example } from './example';
 
 /**
  * Register and run the "Featured Category" block.
@@ -20,7 +21,7 @@ import { IconFolderStar } from '../../components/icons';
 registerBlockType( 'woocommerce/featured-category', {
 	title: __( 'Featured Category', 'woocommerce' ),
 	icon: {
-		src: <IconFolderStar />,
+		src: <Icon srcElement={ folderStarred } />,
 		foreground: '#96588a',
 	},
 	category: 'woocommerce',
@@ -33,6 +34,7 @@ registerBlockType( 'woocommerce/featured-category', {
 		align: [ 'wide', 'full' ],
 		html: false,
 	},
+	example,
 	attributes: {
 		/**
 		 * Alignment of content inside block.
@@ -125,10 +127,20 @@ registerBlockType( 'woocommerce/featured-category', {
 			type: 'boolean',
 			default: true,
 		},
+
+		/**
+		 * Category preview.
+		 */
+		previewCategory: {
+			type: 'object',
+			default: null,
+		},
 	},
 
 	/**
 	 * Renders and manages the block.
+	 *
+	 * @param {Object} props Props to pass to block.
 	 */
 	edit( props ) {
 		return <Block { ...props } />;

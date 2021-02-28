@@ -6,14 +6,12 @@ import { isObject } from 'lodash';
 /**
  * Internal dependencies
  */
-import {
-	getImageSrcFromProduct,
-} from '../../utils/products';
+import { getImageSrcFromProduct } from '../../utils/products';
 
 /**
  * Generate a style object given either a product object or URL to an image.
  *
- * @param {object|string} url A product object as returned from the API, or an image URL.
+ * @param {Object|string} url A product object as returned from the API, or an image URL.
  * @return {Object} A style object with a backgroundImage set (if a valid image is provided).
  */
 function getBackgroundImageStyles( url ) {
@@ -34,9 +32,9 @@ function getBackgroundImageStyles( url ) {
  * @return {string} The class name, if applicable (not used for ratio 0 or 50).
  */
 function dimRatioToClass( ratio ) {
-	return ratio === 0 || ratio === 50 ?
-		null :
-		`has-background-dim-${ 10 * Math.round( ratio / 10 ) }`;
+	return ratio === 0 || ratio === 50
+		? null
+		: `has-background-dim-${ 10 * Math.round( ratio / 10 ) }`;
 }
 
 export { getBackgroundImageStyles, dimRatioToClass };

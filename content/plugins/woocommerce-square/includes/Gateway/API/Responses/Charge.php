@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway\API\Responses;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -153,19 +153,19 @@ class Charge extends \WooCommerce\Square\Gateway\API\Response implements Framewo
 
 			case 'CARD_DECLINED':
 				$message_id = 'card_declined';
-			break;
+				break;
 
 			case 'INVALID_EXPIRATION':
 				$message_id = 'card_expiry_invalid';
-			break;
+				break;
 
 			case 'VERIFY_AVS_FAILURE':
 				$message_id = 'avs_mismatch';
-			break;
+				break;
 
 			case 'VERIFY_CVV_FAILURE':
 				$message_id = 'csc_mismatch';
-			break;
+				break;
 		}
 
 		$helper = new Framework\SV_WC_Payment_Gateway_API_Response_Message_Helper();

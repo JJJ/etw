@@ -23,14 +23,14 @@
 
 namespace WooCommerce\Square\Gateway\API\Responses;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * The refund API response object.
  *
  * @since 2.0.0
  *
- * @method \SquareConnect\Model\CreateRefundResponse get_data()
+ * @method \SquareConnect\Model\CreateRefundResponse|GetPaymentRefundResponse get_data()
  */
 class Refund extends \WooCommerce\Square\Gateway\API\Response {
 
@@ -43,8 +43,7 @@ class Refund extends \WooCommerce\Square\Gateway\API\Response {
 	 * @return bool
 	 */
 	public function transaction_approved() {
-
-		return parent::transaction_approved() && ( 'APPROVED' === $this->get_status_code() || 'PENDING' === $this->get_status_code() );
+		return parent::transaction_approved() && ( in_array( $this->get_status_code(), array( 'APPROVED', 'COMPLETED', 'PENDING' ), true ) );
 	}
 
 

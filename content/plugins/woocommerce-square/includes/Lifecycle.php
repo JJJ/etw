@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Handlers\Product;
@@ -43,17 +43,20 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param Plugin $plugin main instance
+	 * @param Plugin $plugin main instance.
 	 */
 	public function __construct( Plugin $plugin ) {
 
 		parent::__construct( $plugin );
 
-		// plugin upgrade path: maps automatically each semver to upgrade_to_x_y_z() protected method
-		$this->upgrade_versions = [
+		// plugin upgrade path: maps automatically each semver to upgrade_to_x_y_z() protected method.
+		$this->upgrade_versions = array(
 			'2.0.0',
 			'2.0.4',
-		];
+			'2.1.5',
+			'2.2.0',
+			'2.3.0',
+		);
 	}
 
 
@@ -64,7 +67,7 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 	 */
 	protected function install() {
 
-		// create the db table for the customer index
+		// create the db table for the customer index.
 		Gateway\Customer_Helper::create_table();
 
 		/**
@@ -83,7 +86,7 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $installed_version semver
+	 * @param string $installed_version semver.
 	 */
 	protected function upgrade( $installed_version ) {
 
@@ -108,16 +111,10 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 	 */
 	protected function upgrade_to_2_0_0() {
 
-		// create the db table for the customer index
+		// create the db table for the customer index.
 		Gateway\Customer_Helper::create_table();
 
-		/** @see \wc_set_time_limit() */
-		if (      function_exists( 'set_time_limit' )
-		     && ! ini_get( 'safe_mode' )
-		     &&   false === strpos( ini_get( 'disable_functions' ), 'set_time_limit' ) ) {
-
-			@set_time_limit( 300 );
-		}
+		wc_set_time_limit( 300 );
 
 		// migrate all the things!
 		$syncing_products = $this->migrate_plugin_settings();
@@ -125,19 +122,19 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 		$this->migrate_gateway_settings();
 		$this->migrate_orders();
 
-		// only set the products "sync" status if v2 is now configured to sync products
+		// only set the products "sync" status if v2 is now configured to sync products.
 		if ( $syncing_products ) {
 
 			$this->migrate_products();
 
-			// assume a last sync occurred before upgrading
+			// assume a last sync occurred before upgrading.
 			$this->get_plugin()->get_sync_handler()->set_last_synced_at();
 			$this->get_plugin()->get_sync_handler()->set_inventory_last_synced_at();
 		}
 
 		$this->migrate_customers();
 
-		// mark upgrade complete
+		// mark upgrade complete.
 		update_option( 'wc_square_updated_to_2_0_0', true );
 	}
 
@@ -149,14 +146,93 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 	 */
 	protected function upgrade_to_2_0_4() {
 
-		$v1_settings = get_option( 'woocommerce_squareconnect_settings', [] );
-		$v2_settings = get_option( 'wc_square_settings', [] );
+		$v1_settings = get_option( 'woocommerce_squareconnect_settings', array() );
+		$v2_settings = get_option( 'wc_square_settings', array() );
 
 		$v2_settings = $this->get_migrated_system_of_record( $v1_settings, $v2_settings );
 
 		update_option( 'wc_square_settings', $v2_settings );
 	}
 
+	/**
+	 * Upgrades to version 2.1.5
+	 *
+	 * 2.1.5 updated the woocommerce_square_customers database schema.
+	 *
+	 * @see https://github.com/woocommerce/woocommerce-square/issues/359
+	 * @since 2.1.5
+	 */
+	protected function upgrade_to_2_1_5() {
+		Gateway\Customer_Helper::create_table();
+	}
+
+	/**
+	 * Generates a milestone notice message.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string $custom_message Custom text that notes what milestone was completed.
+	 * @return string
+	 */
+	protected function generate_milestone_notice_message( $custom_message ) {
+
+		$message = '';
+
+		if ( $this->get_plugin()->get_reviews_url() ) {
+
+			// to be prepended at random to each milestone notice.
+			$exclamations = array(
+				__( 'Awesome', 'woocommerce-square' ),
+				__( 'Congratulations', 'woocommerce-square' ),
+				__( 'Great', 'woocommerce-square' ),
+				__( 'Fantastic', 'woocommerce-square' ),
+			);
+
+			$message = $exclamations[ array_rand( $exclamations ) ] . ', ' . esc_html( $custom_message ) . ' ';
+
+			$message .= sprintf(
+			/* translators: Placeholders: %1$s - plugin name, %2$s - <a> tag, %3$s - </a> tag, %4$s - <a> tag, %5$s - </a> tag */
+				__( 'Are you having a great experience with %1$s so far? Please consider %2$sleaving a review%3$s! If things aren\'t going quite as expected, we\'re happy to help -- please %4$sreach out to our support team%5$s.', 'woocommerce-square' ),
+				'<strong>' . esc_html( $this->get_plugin()->get_plugin_name() ) . '</strong>',
+				'<a href="' . esc_url( $this->get_plugin()->get_reviews_url() ) . '">',
+				'</a>',
+				'<a href="' . esc_url( $this->get_plugin()->get_support_url() ) . '">',
+				'</a>'
+			);
+		}
+
+		return $message;
+	}
+
+	/**
+	 * Upgrades to version 2.2.0.
+	 *
+	 * @since 2.2.0
+	 */
+	protected function upgrade_to_2_2_0() {
+
+		$v1_settings = get_option( 'wc_square_settings', array() );
+
+		$v2_settings = $this->set_environment_location_id( $v1_settings );
+
+		update_option( 'wc_square_settings', $v2_settings );
+	}
+
+	/**
+	 * Upgrades to version 2.3.0.
+	 *
+	 * @since 2.3.0
+	 */
+	protected function upgrade_to_2_3_0() {
+		// Set `enable_digital_wallets` default to no for existing stores
+		$gateway_settings = get_option( 'woocommerce_square_credit_card_settings', array() );
+
+		if ( ! isset( $gateway_settings['enable_digital_wallets'] ) ) {
+			$gateway_settings['enable_digital_wallets'] = 'no';
+		}
+
+		update_option( 'woocommerce_square_credit_card_settings', $gateway_settings );
+	}
 
 	/**
 	 * Migrates plugin settings from v1 to v2.
@@ -171,20 +247,21 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 
 		$this->get_plugin()->log( 'Migrating plugin settings...' );
 
-		// get legacy and new default settings
-		$new_settings    = get_option( 'wc_square_settings', [] );
-		$legacy_settings = get_option( 'woocommerce_squareconnect_settings', [] );
-		$email_settings  = get_option( 'woocommerce_wc_square_sync_completed_settings', [] );
+		// get legacy and new default settings.
+		$new_settings    = get_option( 'wc_square_settings', array() );
+		$legacy_settings = get_option( 'woocommerce_squareconnect_settings', array() );
+		$email_settings  = get_option( 'woocommerce_wc_square_sync_completed_settings', array() );
 
-		// bail if they already have v2 settings present
+		// bail if they already have v2 settings present.
 		if ( ! empty( $new_settings ) ) {
 			return;
 		}
 
-		// handle access token first
-		if ( $legacy_access_token = get_option( 'woocommerce_square_merchant_access_token' ) ) {
+		// handle access token first.
+		$legacy_access_token = get_option( 'woocommerce_square_merchant_access_token' );
+		if ( $legacy_access_token ) {
 
-			// the access token was previously stored unencrypted
+			// the access token was previously stored unencrypted.
 			if ( ! empty( $legacy_access_token ) && Utilities\Encryption_Utility::is_encryption_supported() ) {
 
 				$encryption = new Utilities\Encryption_Utility();
@@ -192,46 +269,46 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 				try {
 					$legacy_access_token = $encryption->encrypt_data( $legacy_access_token );
 				} catch ( Framework\SV_WC_Plugin_Exception $exception ) {
-					// log the event, but don't halt the process
+					// log the event, but don't halt the process.
 					$this->get_plugin()->log( 'Could not encrypt access token during upgrade. ' . $exception->getMessage() );
 				}
 			}
 
-			// previously only 'production' environment was assumed
-			$access_tokens               = get_option( 'wc_square_access_tokens', [] );
+			// previously only 'production' environment was assumed.
+			$access_tokens               = get_option( 'wc_square_access_tokens', array() );
 			$access_tokens['production'] = is_string( $legacy_access_token ) ? $legacy_access_token : '';
 
 			update_option( 'wc_square_access_tokens', $access_tokens );
 		}
 
-		// migrate store location
+		// migrate store location.
 		if ( ! empty( $legacy_settings['location'] ) ) {
 			$new_settings['location_id'] = $legacy_settings['location'];
 		}
 
-		// toggle debug logging
-		$new_settings['debug_logging_enabled'] = isset( $legacy_settings['logging'] ) && in_array( $legacy_settings['logging'], [ 'yes', 'no' ], true ) ? $legacy_settings['logging'] : 'no';
+		// toggle debug logging.
+		$new_settings['debug_logging_enabled'] = isset( $legacy_settings['logging'] ) && in_array( $legacy_settings['logging'], array( 'yes', 'no' ), true ) ? $legacy_settings['logging'] : 'no';
 
-		// set the SOR and inventory sync values
+		// set the SOR and inventory sync values.
 		$new_settings = $this->get_migrated_system_of_record( $legacy_settings, $new_settings );
 
-		// migrate email notification settings: if there's a recipient, we enable email and pass recipient(s) to email setting
+		// migrate email notification settings: if there's a recipient, we enable email and pass recipient(s) to email setting.
 		if ( isset( $legacy_settings['sync_email'] ) && is_string( $legacy_settings['sync_email'] ) && '' !== trim( $legacy_settings['sync_email'] ) ) {
 			$email_settings['enabled']   = 'yes';
-			$email_settings['recipient'] = $legacy_settings['sync_email'] ;
+			$email_settings['recipient'] = $legacy_settings['sync_email'];
 		} else {
 			$email_settings['enabled']   = 'no';
 			$email_settings['recipient'] = '';
 		}
 
-		// save email settings
+		// save email settings.
 		update_option( 'woocommerce_wc_square_sync_completed_settings', $email_settings );
-		// save plugin settings
+		// save plugin settings.
 		update_option( 'wc_square_settings', $new_settings );
 
 		$this->get_plugin()->log( 'Plugin settings migration complete.' );
 
-		return isset( $new_settings['system_of_record'] ) && $new_settings['system_of_record'] !== Settings::SYSTEM_OF_RECORD_DISABLED;
+		return isset( $new_settings['system_of_record'] ) && Settings::SYSTEM_OF_RECORD_DISABLED !== $new_settings['system_of_record'];
 	}
 
 
@@ -246,10 +323,10 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 
 		$this->get_plugin()->log( 'Migrating gateway settings...' );
 
-		$legacy_settings = get_option( 'woocommerce_square_settings', [] );
-		$new_settings    = get_option( 'woocommerce_square_credit_card_settings', [] );
+		$legacy_settings = get_option( 'woocommerce_square_settings', array() );
+		$new_settings    = get_option( 'woocommerce_square_credit_card_settings', array() );
 
-		// bail if they already have v2 settings present
+		// bail if they already have v2 settings present.
 		if ( ! empty( $new_settings ) ) {
 			return;
 		}
@@ -260,18 +337,18 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 
 		if ( isset( $legacy_settings['title'] ) && is_string( $legacy_settings['title'] ) ) {
 			$new_settings['title'] = $legacy_settings['title'];
- 		}
+		}
 
 		if ( isset( $legacy_settings['description'] ) && is_string( $legacy_settings['description'] ) ) {
 			$new_settings['description'] = $legacy_settings['description'];
 		}
 
-		// note: the following is not an error, the setting on v1 intends "delayed" capture, hence authorization only, if set
+		// note: the following is not an error, the setting on v1 intends "delayed" capture, hence authorization only, if set.
 		if ( isset( $legacy_settings['capture'] ) ) {
 			$new_settings['transaction_type'] = 'yes' === $legacy_settings['capture'] ? Gateway::TRANSACTION_TYPE_AUTHORIZATION : Gateway::TRANSACTION_TYPE_CHARGE;
 		}
 
-		// not quite the same, since tokenization is a new thing, but we could presume the intention to let customers save their payment details
+		// not quite the same, since tokenization is a new thing, but we could presume the intention to let customers save their payment details.
 		if ( isset( $legacy_settings['create_customer'] ) ) {
 			$new_settings['tokenization'] = 'yes' === $legacy_settings['create_customer'] ? 'yes' : 'no';
 		}
@@ -280,16 +357,16 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 			$new_settings['debug_mode'] = 'yes' === $legacy_settings['logging'] ? 'log' : 'off';
 		}
 
-		// there was no card types setting in v1
-		$new_settings['card_types'] = [
+		// there was no card types setting in v1.
+		$new_settings['card_types'] = array(
 			'VISA',
 			'MC',
 			'AMEX',
 			'JCB',
-			// purposefully omit dinersclub & discover
-		];
+			// purposefully omit dinersclub & discover.
+		);
 
-		// save migrated settings
+		// save migrated settings.
 		update_option( 'woocommerce_square_credit_card_settings', $new_settings );
 
 		$this->get_plugin()->log( 'Gateway settings migration complete.' );
@@ -308,12 +385,20 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 
 		$this->get_plugin()->log( 'Migrating orders data...' );
 
-		// move charge captured flag in orders to SkyVerge framework meta key
-		$wpdb->update( $wpdb->postmeta, [ 'meta_key' => '_wc_square_credit_card_charge_captured' ], [ 'meta_key' => '_square_charge_captured' ] );
+		// move charge captured flag in orders to SkyVerge framework meta key.
+		$wpdb->update( $wpdb->postmeta, array( 'meta_key' => '_wc_square_credit_card_charge_captured' ), array( 'meta_key' => '_square_charge_captured' ) ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery
 
-		// move payment ID to new gateway ID meta key value
-		$wpdb->update( $wpdb->postmeta, [ 'meta_value' => 'square_credit_card' ], [ 'meta_key' => '_payment_method', 'meta_value' => 'square' ] );
-
+		// move payment ID to new gateway ID meta key value.
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$wpdb->postmeta,
+			array(
+				'meta_value' => 'square_credit_card', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			),
+			array(
+				'meta_key'   => '_payment_method', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_value' => 'square', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			)
+		);
 		$this->get_plugin()->log( 'Orders migration complete.' );
 	}
 
@@ -330,42 +415,45 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 
 		$this->get_plugin()->log( 'Migrating products data...' );
 
-		// the handling in v1 was reversed, so we want products where sync wasn't disabled
-		$legacy_product_ids = get_posts( [
-			'nopaging'    => true,
-			'post_type'   => 'product',
-			'post_status' => 'all',
-			'fields'      => 'ids',
-			'meta_query'  => [
-				'relation' => 'OR',
-				[
-					'key'     => '_wcsquare_disable_sync',
-					'value'   => 'no',
-				],
-				[
-					'key'     => '_wcsquare_disable_sync',
-					'compare' => 'NOT EXISTS',
-				]
-			],
-		] );
+		// the handling in v1 was reversed, so we want products where sync wasn't disabled.
+		$legacy_product_ids = get_posts(
+			array(
+				'nopaging'    => true,
+				'post_type'   => 'product',
+				'post_status' => 'all',
+				'fields'      => 'ids',
+				'meta_query'  => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 
-		// in v2 we turn those products as flagged to be sync-enabled instead
+					'relation' => 'OR',
+					array(
+						'key'   => '_wcsquare_disable_sync',
+						'value' => 'no',
+					),
+					array(
+						'key'     => '_wcsquare_disable_sync',
+						'compare' => 'NOT EXISTS',
+					),
+				),
+			)
+		);
+
+		// in v2 we turn those products as flagged to be sync-enabled instead.
 		if ( ! empty( $legacy_product_ids ) ) {
 
-			$failed_products = [];
+			$failed_products = array();
 
-			// ensure taxonomy is registered at this stage
+			// ensure taxonomy is registered at this stage.
 			if ( ! taxonomy_exists( Product::SYNCED_WITH_SQUARE_TAXONOMY ) ) {
 				Product::init_taxonomies();
 			}
 
-			// will not create the term if already exists
+			// will not create the term if already exists.
 			wp_create_term( 'yes', Product::SYNCED_WITH_SQUARE_TAXONOMY );
 
-			// set Square sync status via taxonomy term
+			// set Square sync status via taxonomy term.
 			foreach ( $legacy_product_ids as $i => $product_id ) {
 
-				$set_term = wp_set_object_terms( $product_id, [ 'yes' ], Product::SYNCED_WITH_SQUARE_TAXONOMY );
+				$set_term = wp_set_object_terms( $product_id, array( 'yes' ), Product::SYNCED_WITH_SQUARE_TAXONOMY );
 
 				if ( ! is_array( $set_term ) ) {
 
@@ -375,7 +463,7 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 				}
 			}
 
-			// log any errors
+			// log any errors.
 			if ( ! empty( $failed_products ) ) {
 				$this->get_plugin()->log( 'Could not update sync with Square status for products with ID: ' . implode( ', ', array_unique( $failed_products ) ) . '.' );
 			}
@@ -395,7 +483,7 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 
 		$this->get_plugin()->log( 'Migrating customer data.' );
 
-		$rows = (int) $wpdb->update( $wpdb->usermeta, [ 'meta_key' => 'wc_square_customer_id' ], [ 'meta_key' => '_square_customer_id' ] );
+		$rows = (int) $wpdb->update( $wpdb->usermeta, array( 'meta_key' => 'wc_square_customer_id' ), array( 'meta_key' => '_square_customer_id' ) ); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery
 
 		$this->get_plugin()->log( sprintf( '%d customers migrated', $rows ) );
 	}
@@ -406,8 +494,8 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 	 *
 	 * @since 2.0.2
 	 *
-	 * @param array $v1_settings v1 plugin settings
-	 * @param array $v2_settings v2 plugin settings
+	 * @param array $v1_settings v1 plugin settings.
+	 * @param array $v2_settings v2 plugin settings.
 	 * @return array
 	 */
 	private function get_migrated_system_of_record( $v1_settings, $v2_settings ) {
@@ -422,5 +510,23 @@ class Lifecycle extends Framework\Plugin\Lifecycle {
 		return $v2_settings;
 	}
 
+	/**
+	 * Adds environment specific location_id to, and removes general location_id from v1 setting array.
+	 *
+	 * @since 2.2.0
+	 *
+	 * @param array $v1_settings v1 plugin settings.
+	 * @return array
+	 */
+	private function set_environment_location_id( $v1_settings ) {
 
+		$environment = isset( $v1_settings['enable_sandbox'] ) && 'yes' === $v1_settings['enable_sandbox'] ? 'sandbox' : 'production';
+
+		if ( ! isset( $v1_settings[ $environment . '_location_id' ] ) ) {
+			$v1_location_id                               = isset( $v1_settings['location_id'] ) ? $v1_settings['location_id'] : '';
+			$v1_settings[ $environment . '_location_id' ] = $v1_location_id;
+		}
+
+		return $v1_settings;
+	}
 }

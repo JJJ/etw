@@ -417,7 +417,7 @@ abstract class SV_WC_Payment_Gateway_Hosted extends SV_WC_Payment_Gateway {
 				), $this->get_id() );
 			}
 
-			$this->do_invalid_transaction_response( $order, $response );
+			$this->do_invalid_transaction_response( $response, $order );
 		}
 	}
 
@@ -769,10 +769,10 @@ abstract class SV_WC_Payment_Gateway_Hosted extends SV_WC_Payment_Gateway {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param \WC_Order $order Optional. The order object
 	 * @param SV_WC_Payment_Gateway_API_Payment_Notification_Response $response the response object
+	 * @param \WC_Order $order Optional. The order object
 	 */
-	protected function do_invalid_transaction_response( $order = null, $response ) {
+	protected function do_invalid_transaction_response( $response, $order = null ) {
 
 		if ( $response->is_ipn() ) {
 

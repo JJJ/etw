@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway\API\Responses;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -46,8 +46,8 @@ class Get_Customer extends \WooCommerce\Square\Gateway\API\Response implements F
 	 */
 	public function get_payment_tokens() {
 
-		$cards  = $this->get_data() instanceof \SquareConnect\Model\RetrieveCustomerResponse ? $this->get_data()->getCustomer()->getCards() : [];
-		$tokens = [];
+		$cards  = $this->get_data() instanceof \SquareConnect\Model\RetrieveCustomerResponse ? $this->get_data()->getCustomer()->getCards() : array();
+		$tokens = array();
 
 		if ( is_array( $cards ) ) {
 
@@ -58,13 +58,13 @@ class Get_Customer extends \WooCommerce\Square\Gateway\API\Response implements F
 
 				$tokens[ $token_id ] = new Framework\SV_WC_Payment_Gateway_Payment_Token(
 					$token_id,
-					[
+					array(
 						'type'      => 'credit_card',
 						'card_type' => $card_type,
 						'last_four' => $card->getLast4(),
 						'exp_month' => $card->getExpMonth(),
 						'exp_year'  => $card->getExpYear(),
-					]
+					)
 				);
 			}
 		}

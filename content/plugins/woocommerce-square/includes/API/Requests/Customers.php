@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\API\Requests;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SquareConnect\Api\CustomersApi;
 use WooCommerce\Square\API;
@@ -60,7 +60,7 @@ class Customers extends API\Request {
 
 		$this->square_api_method = 'retrieveCustomer';
 
-		$this->square_api_args = [ $customer_id ];
+		$this->square_api_args = array( $customer_id );
 	}
 
 
@@ -76,7 +76,7 @@ class Customers extends API\Request {
 		$this->square_api_method = 'listCustomers';
 
 		if ( $cursor ) {
-			$this->square_api_args = [ 'cursor' => $cursor ];
+			$this->square_api_args = array( 'cursor' => $cursor );
 		}
 	}
 

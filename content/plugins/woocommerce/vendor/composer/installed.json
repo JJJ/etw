@@ -1,32 +1,36 @@
 [
     {
         "name": "automattic/jetpack-autoloader",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
+        "version": "v2.9.1",
+        "version_normalized": "2.9.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Automattic/jetpack-autoloader.git",
-            "reference": "4ad9631e68e9da8b8a764615766287becfb27f81"
+            "reference": "d6ca2cc26ad6963e1be19b3338a9e98f40d9bd88"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/4ad9631e68e9da8b8a764615766287becfb27f81",
-            "reference": "4ad9631e68e9da8b8a764615766287becfb27f81",
+            "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/d6ca2cc26ad6963e1be19b3338a9e98f40d9bd88",
+            "reference": "d6ca2cc26ad6963e1be19b3338a9e98f40d9bd88",
             "shasum": ""
         },
         "require": {
-            "composer-plugin-api": "^1.1"
+            "composer-plugin-api": "^1.1 || ^2.0"
         },
         "require-dev": {
-            "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5"
+            "yoast/phpunit-polyfills": "0.2.0"
         },
-        "time": "2019-06-24T15:13:23+00:00",
+        "time": "2021-02-05T19:07:06+00:00",
         "type": "composer-plugin",
         "extra": {
-            "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin"
+            "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin",
+            "mirror-repo": "Automattic/jetpack-autoloader"
         },
         "installation-source": "dist",
         "autoload": {
+            "classmap": [
+                "src/AutoloadGenerator.php"
+            ],
             "psr-4": {
                 "Automattic\\Jetpack\\Autoloader\\": "src"
             }
@@ -38,37 +42,74 @@
         "description": "Creates a custom autoloader for a plugin or theme."
     },
     {
-        "name": "composer/installers",
-        "version": "v1.7.0",
-        "version_normalized": "1.7.0.0",
+        "name": "automattic/jetpack-constants",
+        "version": "v1.5.1",
+        "version_normalized": "1.5.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/composer/installers.git",
-            "reference": "141b272484481432cda342727a427dc1e206bfa0"
+            "url": "https://github.com/Automattic/jetpack-constants.git",
+            "reference": "18f772daddc8be5df76c9f4a92e017a3c2569a5b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/composer/installers/zipball/141b272484481432cda342727a427dc1e206bfa0",
-            "reference": "141b272484481432cda342727a427dc1e206bfa0",
+            "url": "https://api.github.com/repos/Automattic/jetpack-constants/zipball/18f772daddc8be5df76c9f4a92e017a3c2569a5b",
+            "reference": "18f772daddc8be5df76c9f4a92e017a3c2569a5b",
+            "shasum": ""
+        },
+        "require-dev": {
+            "php-mock/php-mock": "^2.1",
+            "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5"
+        },
+        "time": "2020-10-28T19:00:31+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0-or-later"
+        ],
+        "description": "A wrapper for defining constants in a more testable way."
+    },
+    {
+        "name": "composer/installers",
+        "version": "v1.10.0",
+        "version_normalized": "1.10.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/composer/installers.git",
+            "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/composer/installers/zipball/1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
+            "reference": "1a0357fccad9d1cc1ea0c9a05b8847fbccccb78d",
             "shasum": ""
         },
         "require": {
-            "composer-plugin-api": "^1.0"
+            "composer-plugin-api": "^1.0 || ^2.0"
         },
         "replace": {
             "roundcube/plugin-installer": "*",
             "shama/baton": "*"
         },
         "require-dev": {
-            "composer/composer": "1.0.*@dev",
-            "phpunit/phpunit": "^4.8.36"
+            "composer/composer": "1.6.* || ^2.0",
+            "composer/semver": "^1 || ^3",
+            "phpstan/phpstan": "^0.12.55",
+            "phpstan/phpstan-phpunit": "^0.12.16",
+            "symfony/phpunit-bridge": "^4.2 || ^5",
+            "symfony/process": "^2.3"
         },
-        "time": "2019-08-12T15:00:31+00:00",
+        "time": "2021-01-14T11:07:16+00:00",
         "type": "composer-plugin",
         "extra": {
             "class": "Composer\\Installers\\Plugin",
             "branch-alias": {
-                "dev-master": "1.0-dev"
+                "dev-main": "1.x-dev"
             }
         },
         "installation-source": "dist",
@@ -99,6 +140,7 @@
             "Kanboard",
             "Lan Management System",
             "MODX Evo",
+            "MantisBT",
             "Mautic",
             "Maya",
             "OXID",
@@ -106,6 +148,7 @@
             "Porto",
             "RadPHP",
             "SMF",
+            "Starbug",
             "Thelia",
             "Whmcs",
             "WolfCMS",
@@ -146,6 +189,7 @@
             "phpbb",
             "piwik",
             "ppi",
+            "processwire",
             "puppet",
             "pxcms",
             "reindex",
@@ -153,38 +197,384 @@
             "shopware",
             "silverstripe",
             "sydes",
+            "sylius",
             "symfony",
             "typo3",
             "wordpress",
             "yawik",
             "zend",
             "zikula"
+        ],
+        "funding": [
+            {
+                "url": "https://packagist.com",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/composer",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                "type": "tidelift"
+            }
         ]
     },
     {
-        "name": "woocommerce/woocommerce-blocks",
-        "version": "v2.4.5",
-        "version_normalized": "2.4.5.0",
+        "name": "maxmind-db/reader",
+        "version": "v1.6.0",
+        "version_normalized": "1.6.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/woocommerce/woocommerce-gutenberg-products-block.git",
-            "reference": "130bc40824f844c0870c94c0ad0aa7a6abb74f6f"
+            "url": "https://github.com/maxmind/MaxMind-DB-Reader-php.git",
+            "reference": "febd4920bf17c1da84cef58e56a8227dfb37fbe4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/woocommerce/woocommerce-gutenberg-products-block/zipball/130bc40824f844c0870c94c0ad0aa7a6abb74f6f",
-            "reference": "130bc40824f844c0870c94c0ad0aa7a6abb74f6f",
+            "url": "https://api.github.com/repos/maxmind/MaxMind-DB-Reader-php/zipball/febd4920bf17c1da84cef58e56a8227dfb37fbe4",
+            "reference": "febd4920bf17c1da84cef58e56a8227dfb37fbe4",
             "shasum": ""
         },
         "require": {
-            "automattic/jetpack-autoloader": "1.2.0",
-            "composer/installers": "1.7.0"
+            "php": ">=5.6"
+        },
+        "conflict": {
+            "ext-maxminddb": "<1.6.0,>=2.0.0"
+        },
+        "require-dev": {
+            "friendsofphp/php-cs-fixer": "2.*",
+            "php-coveralls/php-coveralls": "^2.1",
+            "phpunit/phpcov": "^3.0",
+            "phpunit/phpunit": "5.*",
+            "squizlabs/php_codesniffer": "3.*"
+        },
+        "suggest": {
+            "ext-bcmath": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
+            "ext-gmp": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
+            "ext-maxminddb": "A C-based database decoder that provides significantly faster lookups"
+        },
+        "time": "2019-12-19T22:59:03+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "MaxMind\\Db\\": "src/MaxMind/Db"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Gregory J. Oschwald",
+                "email": "goschwald@maxmind.com",
+                "homepage": "https://www.maxmind.com/"
+            }
+        ],
+        "description": "MaxMind DB Reader API",
+        "homepage": "https://github.com/maxmind/MaxMind-DB-Reader-php",
+        "keywords": [
+            "database",
+            "geoip",
+            "geoip2",
+            "geolocation",
+            "maxmind"
+        ]
+    },
+    {
+        "name": "pelago/emogrifier",
+        "version": "v3.1.0",
+        "version_normalized": "3.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/MyIntervals/emogrifier.git",
+            "reference": "f6a5c7d44612d86c3901c93f1592f5440e6b2cd8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/MyIntervals/emogrifier/zipball/f6a5c7d44612d86c3901c93f1592f5440e6b2cd8",
+            "reference": "f6a5c7d44612d86c3901c93f1592f5440e6b2cd8",
+            "shasum": ""
+        },
+        "require": {
+            "ext-dom": "*",
+            "ext-libxml": "*",
+            "php": "^5.6 || ~7.0 || ~7.1 || ~7.2 || ~7.3 || ~7.4",
+            "symfony/css-selector": "^2.8 || ^3.0 || ^4.0 || ^5.0"
+        },
+        "require-dev": {
+            "friendsofphp/php-cs-fixer": "^2.15.3",
+            "phpmd/phpmd": "^2.7.0",
+            "phpunit/phpunit": "^5.7.27",
+            "squizlabs/php_codesniffer": "^3.5.0"
+        },
+        "time": "2019-12-26T19:37:31+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Pelago\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Oliver Klee",
+                "email": "github@oliverklee.de"
+            },
+            {
+                "name": "Zoli Szabó",
+                "email": "zoli.szabo+github@gmail.com"
+            },
+            {
+                "name": "John Reeve",
+                "email": "jreeve@pelagodesign.com"
+            },
+            {
+                "name": "Jake Hotson",
+                "email": "jake@qzdesign.co.uk"
+            },
+            {
+                "name": "Cameron Brooks"
+            },
+            {
+                "name": "Jaime Prado"
+            }
+        ],
+        "description": "Converts CSS styles into inline style attributes in your HTML code",
+        "homepage": "https://www.myintervals.com/emogrifier.php",
+        "keywords": [
+            "css",
+            "email",
+            "pre-processing"
+        ]
+    },
+    {
+        "name": "psr/container",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/container.git",
+            "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+            "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2017-02-14T16:28:37+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Container\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common Container Interface (PHP FIG PSR-11)",
+        "homepage": "https://github.com/php-fig/container",
+        "keywords": [
+            "PSR-11",
+            "container",
+            "container-interface",
+            "container-interop",
+            "psr"
+        ]
+    },
+    {
+        "name": "symfony/css-selector",
+        "version": "v3.3.6",
+        "version_normalized": "3.3.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/css-selector.git",
+            "reference": "4d882dced7b995d5274293039370148e291808f2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/css-selector/zipball/4d882dced7b995d5274293039370148e291808f2",
+            "reference": "4d882dced7b995d5274293039370148e291808f2",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5.9"
+        },
+        "time": "2017-05-01T15:01:29+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\CssSelector\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jean-François Simon",
+                "email": "jeanfrancois.simon@sensiolabs.com"
+            },
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony CssSelector Component",
+        "homepage": "https://symfony.com",
+        "support": {
+            "source": "https://github.com/symfony/css-selector/tree/master"
+        }
+    },
+    {
+        "name": "woocommerce/action-scheduler",
+        "version": "3.1.6",
+        "version_normalized": "3.1.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/woocommerce/action-scheduler.git",
+            "reference": "275d0ba54b1c263dfc62688de2fa9a25a373edf8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/woocommerce/action-scheduler/zipball/275d0ba54b1c263dfc62688de2fa9a25a373edf8",
+            "reference": "275d0ba54b1c263dfc62688de2fa9a25a373edf8",
+            "shasum": ""
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^5.6",
+            "woocommerce/woocommerce-sniffs": "0.0.8",
+            "wp-cli/wp-cli": "~1.5.1"
+        },
+        "time": "2020-05-12T16:22:33+00:00",
+        "type": "wordpress-plugin",
+        "extra": {
+            "scripts-description": {
+                "test": "Run unit tests",
+                "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+                "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier"
+            }
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-3.0-or-later"
+        ],
+        "description": "Action Scheduler for WordPress and WooCommerce",
+        "homepage": "https://actionscheduler.org/"
+    },
+    {
+        "name": "woocommerce/woocommerce-admin",
+        "version": "2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/woocommerce/woocommerce-admin.git",
+            "reference": "b7e89c48479348847fc97ae8be8c27d068106d04"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/woocommerce/woocommerce-admin/zipball/b7e89c48479348847fc97ae8be8c27d068106d04",
+            "reference": "b7e89c48479348847fc97ae8be8c27d068106d04",
+            "shasum": ""
+        },
+        "require": {
+            "automattic/jetpack-autoloader": "^2.9.1",
+            "composer/installers": "^1.9.0",
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "7.5.20",
+            "suin/phpcs-psr4-sniff": "^2.2",
+            "woocommerce/woocommerce-sniffs": "0.1.0"
+        },
+        "time": "2021-02-12T01:19:48+00:00",
+        "type": "wordpress-plugin",
+        "extra": {
+            "scripts-description": {
+                "test": "Run unit tests",
+                "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+                "phpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Automattic\\WooCommerce\\Admin\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-3.0-or-later"
+        ],
+        "description": "A modern, javascript-driven WooCommerce Admin experience.",
+        "homepage": "https://github.com/woocommerce/woocommerce-admin"
+    },
+    {
+        "name": "woocommerce/woocommerce-blocks",
+        "version": "v4.4.3",
+        "version_normalized": "4.4.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/woocommerce/woocommerce-gutenberg-products-block.git",
+            "reference": "1eade21846e81d5aaf9bf40cdd1be60778849244"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/woocommerce/woocommerce-gutenberg-products-block/zipball/1eade21846e81d5aaf9bf40cdd1be60778849244",
+            "reference": "1eade21846e81d5aaf9bf40cdd1be60778849244",
+            "shasum": ""
+        },
+        "require": {
+            "automattic/jetpack-autoloader": "^2.9.1",
+            "composer/installers": "^1.7.0"
         },
         "require-dev": {
             "phpunit/phpunit": "6.5.14",
-            "woocommerce/woocommerce-sniffs": "0.0.6"
+            "woocommerce/woocommerce-sniffs": "0.1.0"
         },
-        "time": "2019-11-02T13:48:18+00:00",
+        "time": "2021-02-11T18:07:48+00:00",
         "type": "wordpress-plugin",
         "extra": {
             "scripts-description": {
@@ -209,47 +599,5 @@
             "gutenberg",
             "woocommerce"
         ]
-    },
-    {
-        "name": "woocommerce/woocommerce-rest-api",
-        "version": "1.0.3",
-        "version_normalized": "1.0.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/woocommerce/woocommerce-rest-api.git",
-            "reference": "7d9babf1c25890c32df3edb28b8351732640f5ce"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/woocommerce/woocommerce-rest-api/zipball/7d9babf1c25890c32df3edb28b8351732640f5ce",
-            "reference": "7d9babf1c25890c32df3edb28b8351732640f5ce",
-            "shasum": ""
-        },
-        "require": {
-            "automattic/jetpack-autoloader": "1.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "6.5.14",
-            "woocommerce/woocommerce-sniffs": "0.0.6"
-        },
-        "time": "2019-07-16T14:27:40+00:00",
-        "type": "wordpress-plugin",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "src/Controllers/Version1",
-                "src/Controllers/Version2",
-                "src/Controllers/Version3"
-            ],
-            "psr-4": {
-                "Automattic\\WooCommerce\\RestApi\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-3.0-or-later"
-        ],
-        "description": "The WooCommerce core REST API.",
-        "homepage": "https://github.com/woocommerce/woocommerce-rest-api"
     }
 ]

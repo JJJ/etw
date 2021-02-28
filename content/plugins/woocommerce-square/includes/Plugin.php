@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Handlers\Background_Job;
@@ -31,6 +31,7 @@ use WooCommerce\Square\Handlers\Email;
 use WooCommerce\Square\Handlers\Order;
 use WooCommerce\Square\Handlers\Product;
 use WooCommerce\Square\Handlers\Sync;
+use WooCommerce\Square\Handlers\Products;
 
 /**
  * The main plugin class.
@@ -41,7 +42,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 
 	/** plugin version number */
-	const VERSION = '2.0.6';
+	const VERSION = '2.3.4';
 
 	/** plugin ID */
 	const PLUGIN_ID = 'square';
@@ -77,6 +78,8 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	/** @var Order orders handler */
 	private $order_handler;
 
+	/** @var Products products handler */
+	private $products_handler;
 
 	/**
 	 * Constructs the plugin.
@@ -88,19 +91,19 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 		parent::__construct(
 			self::PLUGIN_ID,
 			self::VERSION,
-			[
-				'text_domain' => 'woocommerce-square',
-				'gateways'    => [ self::GATEWAY_ID => Gateway::class ],
-				'require_ssl' => true,
-				'supports'    => [
+			array(
+				'text_domain'  => 'woocommerce-square',
+				'gateways'     => array( self::GATEWAY_ID => Gateway::class ),
+				'require_ssl'  => true,
+				'supports'     => array(
 					self::FEATURE_CAPTURE_CHARGE,
 					self::FEATURE_CUSTOMER_ID,
 					self::FEATURE_MY_PAYMENT_METHODS,
-				],
-				'dependencies' => [
-					'php_extensions' => [ 'curl', 'json', 'mbstring' ],
-				],
-			]
+				),
+				'dependencies' => array(
+					'php_extensions' => array( 'curl', 'json', 'mbstring' ),
+				),
+			)
 		);
 
 		$this->includes();
@@ -112,10 +115,10 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 		 */
 		do_action( 'wc_square_loaded' );
 
-		add_action( 'woocommerce_register_taxonomy', [ $this, 'init_taxonomies' ] );
+		add_action( 'woocommerce_register_taxonomy', array( $this, 'init_taxonomies' ) );
 
-		add_filter( 'woocommerce_locate_template',      [ $this, 'locate_template' ], 20, 3 );
-		add_filter( 'woocommerce_locate_core_template', [ $this, 'locate_template' ], 20, 3 );
+		add_filter( 'woocommerce_locate_template', array( $this, 'locate_template' ), 20, 3 );
+		add_filter( 'woocommerce_locate_core_template', array( $this, 'locate_template' ), 20, 3 );
 	}
 
 
@@ -155,7 +158,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	public function add_api_request_logging() {
 
 		if ( ! has_action( 'wc_' . $this->get_id() . '_api_request_performed' ) ) {
-			add_action( 'wc_' . $this->get_id() . '_api_request_performed', [ $this, 'log_api_request' ], 10, 2 );
+			add_action( 'wc_' . $this->get_id() . '_api_request_performed', array( $this, 'log_api_request' ), 10, 2 );
 		}
 	}
 
@@ -173,6 +176,21 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 		if ( $this->get_settings_handler() && $this->get_settings_handler()->is_debug_enabled() ) {
 			parent::log_api_request( $request, $response, $log_id );
+		}
+	}
+
+
+	/**
+	 * If debug logging is enabled, saves errors or messages to Square Log
+	 *
+	 * @since 2.2.4
+	 * @param string $message error or message to save to log
+	 * @param string $log_id optional log id to segment the files by, defaults to plugin id
+	 */
+	public function log( $message, $log_id = null ) {
+
+		if ( $this->get_settings_handler() && $this->get_settings_handler()->is_debug_enabled() ) {
+			parent::log( $message, $log_id );
 		}
 	}
 
@@ -209,10 +227,13 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	public function init_plugin() {
 
 		$this->settings_handler = new Settings( $this );
+		$this->products_handler = new Products( $this );
 
 		if ( ! $this->admin_handler && is_admin() ) {
 			$this->admin_handler = new Admin( $this );
 		}
+
+		do_action( 'wc_square_initialized' );
 	}
 
 
@@ -267,13 +288,18 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 			$message = sprintf(
 				__( 'Heads up! There may be a problem with your connection to Square. In order to continue accepting payments, please %1$sdisconnect and re-connect your site%2$s.', 'woocommerce-square' ),
-				'<a href="' . esc_url( $this->get_settings_url() ) . '">', '</a>'
+				'<a href="' . esc_url( $this->get_settings_url() ) . '">',
+				'</a>'
 			);
 
-			$this->get_admin_notice_handler()->add_admin_notice( $message, 'refresh-failed', [
-				'dismissible'  => false,
-				'notice_class' => 'notice-warning',
-			] );
+			$this->get_admin_notice_handler()->add_admin_notice(
+				$message,
+				'refresh-failed',
+				array(
+					'dismissible'  => false,
+					'notice_class' => 'notice-warning',
+				)
+			);
 		}
 
 		if ( $this->get_settings_handler()->is_connected() ) {
@@ -292,7 +318,8 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 					$instruction = sprintf(
 						/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
 						__( 'Visit the %1$splugin settings%2$s to set your business location.', 'woocommerce-square' ),
-						'<a href="' . esc_url( $this->get_settings_url() ) . '">', '</a>'
+						'<a href="' . esc_url( $this->get_settings_url() ) . '">',
+						'</a>'
 					);
 				}
 
@@ -307,8 +334,11 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 					$instruction = sprintf(
 						/* translators: Placeholders: %1$s - <strong> tag, %2$s - product count, %3$s - </strong> tag, %4$s - <a> tag, %5$s - </a> tag */
 						__( '%1$s%2$d products%3$s are marked "sync with Square". %4$sStart a new sync now &raquo;%5$s', 'woocommerce-square' ),
-						'<strong>', count( Product::get_products_synced_with_square() ), '</strong>',
-						'<a href="' . esc_url( add_query_arg( 'section', 'update', $this->get_settings_url() ) ) . '">', '</a>'
+						'<strong>',
+						count( Product::get_products_synced_with_square() ),
+						'</strong>',
+						'<a href="' . esc_url( add_query_arg( 'section', 'update', $this->get_settings_url() ) ) . '">',
+						'</a>'
 					);
 
 				} else {
@@ -316,8 +346,10 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 					$instruction = sprintf(
 						/* translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - <a> tag, %4$s - </a> tag */
 						__( '%1$sNo products%2$s are marked "sync with Square". %3$sUpdate your products to sync data &raquo;%4$s', 'woocommerce-square' ),
-						'<strong>', '</strong>',
-						'<a href="' . esc_url( admin_url( 'edit.php?post_type=product' ) ) . '">', '</a>'
+						'<strong>',
+						'</strong>',
+						'<a href="' . esc_url( admin_url( 'edit.php?post_type=product' ) ) . '">',
+						'</a>'
 					);
 				}
 
@@ -329,14 +361,18 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 				$message = sprintf(
 					__( 'Heads up! Square is configured to sync product inventory, but WooCommerce stock management is disabled. Please %1$senable stock management%2$s to ensure product inventory counts are kept in sync.', 'woocommerce-square' ),
-					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=products&section=inventory' ) ) . '">', '</a>'
+					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=products&section=inventory' ) ) . '">',
+					'</a>'
 				);
 
-				$this->get_admin_notice_handler()->add_admin_notice( $message, 'enable-wc-sync', [
-					'notice_class' => 'notice-warning',
-				] );
+				$this->get_admin_notice_handler()->add_admin_notice(
+					$message,
+					'enable-wc-sync',
+					array(
+						'notice_class' => 'notice-warning',
+					)
+				);
 			}
-
 		} else {
 
 			if ( $this->is_plugin_settings() ) {
@@ -348,7 +384,8 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 				$instruction = sprintf(
 					/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
 					__( 'To get started, %1$sconnect with Square &raquo;%2$s', 'woocommerce-square' ),
-					'<a href="' . esc_url( $this->get_settings_url() ) . '">', '</a>'
+					'<a href="' . esc_url( $this->get_settings_url() ) . '">',
+					'</a>'
 				);
 			}
 
@@ -381,11 +418,13 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 					esc_html__( '%1$s has been updated to version %2$s. In order to continue syncing product inventory, please make sure to disconnect and reconnect with Square from the %3$splugin settings%4$s and re-sync your products. Read more in the %5$supdated documentation%6$s.', 'woocommerce-square' ),
 					'<strong>' . esc_html( $this->get_plugin_name() ) . '</strong>',
 					$this->get_version(),
-					'<a href="' . esc_url( $this->get_settings_url() ) . '">', '</a>',
-					'<a href="' . esc_url( $this->get_documentation_url() ) . '">', '</a>'
+					'<a href="' . esc_url( $this->get_settings_url() ) . '">',
+					'</a>',
+					'<a href="' . esc_url( $this->get_documentation_url() ) . '">',
+					'</a>'
 				),
 				'updated-to-v2',
-				[ 'notice_class' => 'notice-warning' ]
+				array( 'notice_class' => 'notice-warning' )
 			);
 		}
 	}
@@ -398,27 +437,32 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	 */
 	protected function add_base_location_admin_notice() {
 
-		$accepted_countries = [
+		$accepted_countries = array(
 			'US',
 			'CA',
 			'GB',
 			'AU',
 			'JP',
-		];
+		);
 
 		$base_location = wc_get_base_location();
 
 		if ( isset( $base_location['country'] ) && ! in_array( $base_location['country'], $accepted_countries, true ) ) {
 
-			$this->get_admin_notice_handler()->add_admin_notice( sprintf(
-				/* translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - 2-character country code, %4$s - comma separated list of 2-character country codes */
-				__( '%1$sWooCommerce Square:%2$s Your base country is %3$s, but Square can’t accept transactions from merchants outside of %4$s.', 'woocommerce-square' ),
-				'<strong>', '</strong>',
-				esc_html( $base_location['country'] ),
-				esc_html( Framework\SV_WC_Helper::list_array_items( $accepted_countries ) )
-			), 'wc-square-base-location', [
-				'notice_class' => 'notice-error',
-			] );
+			$this->get_admin_notice_handler()->add_admin_notice(
+				sprintf(
+					/* translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - 2-character country code, %4$s - comma separated list of 2-character country codes */
+					__( '%1$sWooCommerce Square:%2$s Your base country is %3$s, but Square can’t accept transactions from merchants outside of %4$s.', 'woocommerce-square' ),
+					'<strong>',
+					'</strong>',
+					esc_html( $base_location['country'] ),
+					esc_html( Framework\SV_WC_Helper::list_array_items( $accepted_countries ) )
+				),
+				'wc-square-base-location',
+				array(
+					'notice_class' => 'notice-error',
+				)
+			);
 		}
 	}
 
@@ -432,14 +476,20 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 		if ( $this->get_settings_handler()->is_product_sync_enabled() && ! $this->get_background_job_handler()->test_connection() ) {
 
-			$this->get_admin_notice_handler()->add_admin_notice( sprintf(
-			/* translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - <a> tag, %4$s - </a> tag */
-				__( '%1$sWooCommerce Square:%2$s It looks like your site does not support background processing, which means large numbers of products may not sync successfully with Square. %3$sRead more here%4$s on how to resolve this.', 'woocommerce-square' ),
-				'<strong>', '</strong>',
-				'<a href="https://docs.woocommerce.com/document/woocommerce-square/#sync-issues" target="_blank">', '</a>'
-			), 'wc-square-background-processing', [
-				'notice_class' => 'notice-warning',
-			] );
+			$this->get_admin_notice_handler()->add_admin_notice(
+				sprintf(
+					/* translators: Placeholders: %1$s - <strong> tag, %2$s - </strong> tag, %3$s - <a> tag, %4$s - </a> tag */
+					__( '%1$sWooCommerce Square:%2$s It looks like your site does not support background processing, which means large numbers of products may not sync successfully with Square. %3$sRead more here%4$s on how to resolve this.', 'woocommerce-square' ),
+					'<strong>',
+					'</strong>',
+					'<a href="https://docs.woocommerce.com/document/woocommerce-square/#sync-issues" target="_blank">',
+					'</a>'
+				),
+				'wc-square-background-processing',
+				array(
+					'notice_class' => 'notice-warning',
+				)
+			);
 		}
 	}
 
@@ -449,7 +499,11 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	 * @since 2.0.5
 	 */
 	protected function add_missing_refresh_token_notice() {
-		$refresh_token = '';
+		if ( $this->get_settings_handler()->is_sandbox() ) {
+			return;
+		}
+
+		$refresh_token    = '';
 		$settings_handler = $this->get_settings_handler();
 
 		if ( method_exists( $settings_handler, 'get_access_token' ) ) {
@@ -473,10 +527,10 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 					'</strong>'
 				),
 				'wc-square-missing-refresh-token',
-				[
+				array(
 					'dismissible'  => false,
 					'notice_class' => 'notice-error',
-				]
+				)
 			);
 		}
 	}
@@ -498,12 +552,17 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 			// only show for products configured as taxable and sync with Square
 			if ( $product instanceof \WC_Product && $product->is_taxable() && Product::is_synced_with_square( $product ) ) {
 
-				$this->get_admin_notice_handler()->add_admin_notice( sprintf(
-					__( '%1$sWooCommerce Square:%2$s Product prices are entered inclusive of tax, but Square does not support syncing tax-inclusive prices. Please make sure your Square tax rates match your WooCommerce tax rates.', 'woocommerce-square' ),
-					'<strong>', '</strong>'
-				), 'wc-square-tax-inclusive', [
-					'notice_class' => 'notice-warning',
-				] );
+				$this->get_admin_notice_handler()->add_admin_notice(
+					sprintf(
+						__( '%1$sWooCommerce Square:%2$s Product prices are entered inclusive of tax, but Square does not support syncing tax-inclusive prices. Please make sure your Square tax rates match your WooCommerce tax rates.', 'woocommerce-square' ),
+						'<strong>',
+						'</strong>'
+					),
+					'wc-square-tax-inclusive',
+					array(
+						'notice_class' => 'notice-warning',
+					)
+				);
 			}
 		}
 	}
@@ -524,15 +583,21 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 				if ( $this->get_settings_handler()->get_location_id() === $location->getId() && get_woocommerce_currency() !== $location->getCurrency() ) {
 
-					$this->get_admin_notice_handler()->add_admin_notice( sprintf(
-						__( 'Heads up! Your store currency is %1$s but your configured Square business location currency is %2$s, so payments cannot be processed. Please %3$schoose a different business location%4$s or change your %5$sshop currency%6$s.', 'woocommerce-square' ),
-						'<strong>' . esc_html( get_woocommerce_currency() ) . '</strong>',
-						'<strong>' . esc_html( $location->getCurrency() ) . '</strong>',
-						'<a href="' . esc_url( $this->get_settings_url() ) . '">', '</a>',
-						'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings' ) ) . '">', '</a>'
-					), 'wc-square-currency-mismatch', [
-						'notice_class' => 'notice-error',
-					] );
+					$this->get_admin_notice_handler()->add_admin_notice(
+						sprintf(
+							__( 'Heads up! Your store currency is %1$s but your configured Square business location currency is %2$s, so payments cannot be processed. Please %3$schoose a different business location%4$s or change your %5$sshop currency%6$s.', 'woocommerce-square' ),
+							'<strong>' . esc_html( get_woocommerce_currency() ) . '</strong>',
+							'<strong>' . esc_html( $location->getCurrency() ) . '</strong>',
+							'<a href="' . esc_url( $this->get_settings_url() ) . '">',
+							'</a>',
+							'<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings' ) ) . '">',
+							'</a>'
+						),
+						'wc-square-currency-mismatch',
+						array(
+							'notice_class' => 'notice-error',
+						)
+					);
 				}
 			}
 		}
@@ -548,9 +613,10 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	 * @since 2.0.0
 	 *
 	 * @param string $key_input
+	 * @param bool $append_key_input
 	 * @return string
 	 */
-	public function get_idempotency_key( $key_input = '' ) {
+	public function get_idempotency_key( $key_input = '', $append_key_input = true ) {
 
 		if ( '' === $key_input ) {
 			$key_input = uniqid( '', false );
@@ -563,7 +629,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 		 *
 		 * @param string $key_input
 		 */
-		return apply_filters( 'wc_square_idempotency_key', $key_input );
+		return apply_filters( 'wc_square_idempotency_key', sha1( get_option( 'siteurl' ) . $key_input ) . ( $append_key_input ? ':' . $key_input : '' ) );
 	}
 
 
@@ -580,6 +646,18 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	public function is_plugin_settings() {
 
 		return parent::is_plugin_settings() || ( isset( $_GET['page'], $_GET['tab'] ) && 'wc-settings' === $_GET['page'] && self::PLUGIN_ID === $_GET['tab'] );
+	}
+
+	/**
+	 * Determines if viewing the gateway settings.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @return bool
+	 */
+	public function is_gateway_settings() {
+
+		return isset( $_GET['page'], $_GET['tab'], $_GET['section'] ) && 'wc-settings' === $_GET['page'] && 'checkout' === $_GET['tab'] && self::GATEWAY_ID === $_GET['section'];
 	}
 
 
@@ -701,6 +779,17 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 		return $this->order_handler;
 	}
 
+	/**
+	 * Get the products handler instance/
+	 *
+	 * @since 2.0.8
+	 *
+	 * @return Products
+	 */
+	public function get_products_handler() {
+		return $this->products_handler;
+	}
+
 
 	/**
 	 * Gets the deprecated hook details.
@@ -714,56 +803,77 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	protected function get_deprecated_hooks() {
 
 		// the following are filters, except when an action is explicitly mentioned
-		$v2_0_0_removed_hooks = [
+		$v2_0_0_removed_hooks = array(
 
 			// to filter the locale, the default WordPress filter should be used:
-			'woocommerce_square_plugin_locale'                => [ 'replacement' => 'plugin_locale', 'map' => true ],
+			'woocommerce_square_plugin_locale'             => array(
+				'replacement' => 'plugin_locale',
+				'map'         => true,
+			),
 
 			// sync square product variation properties
-			'woocommerce_square_currency'                     => [], // used when passing a WooCommerce product price into a Square ItemVariation
-			'wc_square_sync_to_square_price'                  => [], // used when passing a WooCommerce product price into a Square ItemVariation
-			'woocommerce_square_format_price'                 => [], // formats the price coming from Square
-			'woocommerce_square_sync_from_square_description' => [], // flag whether to add a description to created item
+			'woocommerce_square_currency'                  => array(), // used when passing a WooCommerce product price into a Square ItemVariation
+			'wc_square_sync_to_square_price'               => array(), // used when passing a WooCommerce product price into a Square ItemVariation
+			'woocommerce_square_format_price'              => array(), // formats the price coming from Square
+			'woocommerce_square_sync_from_square_description' => array(), // flag whether to add a description to created item
 
 			// we no longer filter inventory type in v2.0.0 and timeout is handled by background job differently
-			'woocommerce_square_inventory_type'               => [],
-			'woocommerce_square_inventory_sync_timeout_limit' => [],
-			'woocommerce_square_inventory_poll_frequency'     => [],
+			'woocommerce_square_inventory_type'            => array(),
+			'woocommerce_square_inventory_sync_timeout_limit' => array(),
+			'woocommerce_square_inventory_poll_frequency'  => array(),
 
 			// Square payment
-			'woocommerce_square_payment_form_trigger_element' => [],
-			'woocommerce_square_payment_order_note'           => [ 'replacement' => 'wc_square_payment_order_note', 'map' => true ],
-			'woocommerce_square_description'                  => [], // front end payment fields description
+			'woocommerce_square_payment_form_trigger_element' => array(),
+			'woocommerce_square_payment_order_note'        => array(
+				'replacement' => 'wc_square_payment_order_note',
+				'map'         => true,
+			),
+			'woocommerce_square_description'               => array(), // front end payment fields description
 
 			// most gateway properties and settings can be mapped to new filters:
-			'woocommerce_square_api_url'                      => [ 'replacement' => 'wc_square_api_url', 'map' => true ],                           // filter is reinstated with name change for consistency
-			'woocommerce_square_payment_gateway_is_available' => [ 'replacement' => 'wc_gateway_square_credit_card_is_available', 'map' => true ],  // filter handled by SkyVerge Framework
-			'woocommerce_square_integration_settings_args'    => [ 'replacement' => 'woocommerce_settings_api_form_fields_square', 'map' => true ], // filters gateway settings
-			'woocommerce_square_integration_custom_settings'  => [ 'replacement' => 'woocommerce_settings_tabs_square', 'map' => true ],            // settings action hook
+			'woocommerce_square_api_url'                   => array(
+				'replacement' => 'wc_square_api_url',
+				'map'         => true,
+			), // filter is reinstated with name change for consistency
+			'woocommerce_square_payment_gateway_is_available' => array(
+				'replacement' => 'wc_gateway_square_credit_card_is_available',
+				'map'         => true,
+			),  // filter handled by SkyVerge Framework
+			'woocommerce_square_integration_settings_args' => array(
+				'replacement' => 'woocommerce_settings_api_form_fields_square',
+				'map'         => true,
+			), // filters gateway settings
+			'woocommerce_square_integration_custom_settings' => array(
+				'replacement' => 'woocommerce_settings_tabs_square',
+				'map'         => true,
+			), // settings action hook
 
 			// API requests filters, these are handled differently and can't be mapped:
-			'woocommerce_square_request_args'                 => [],
-			'woocommerce_square_request_retries'              => [],
+			'woocommerce_square_request_args'              => array(),
+			'woocommerce_square_request_retries'           => array(),
 
 			// transients are no longer used to handle these cache types:
-			'woocommerce_square_business_location_cache'      => [],
-			'woocommerce_square_item_sku_cache'               => [],
-			'woocommerce_square_inventory_cache'              => [],
-			'woocommerce_square_sync_processing_ids_cache'    => [],
-			'woocommerce_square_manual_sync_processing_cache' => [],
-			'woocommerce_square_syncing_square_ids_cache'     => [],
-			'woocommerce_square_syncing_wc_product_ids_cache' => [],
+			'woocommerce_square_business_location_cache'   => array(),
+			'woocommerce_square_item_sku_cache'            => array(),
+			'woocommerce_square_inventory_cache'           => array(),
+			'woocommerce_square_sync_processing_ids_cache' => array(),
+			'woocommerce_square_manual_sync_processing_cache' => array(),
+			'woocommerce_square_syncing_square_ids_cache'  => array(),
+			'woocommerce_square_syncing_wc_product_ids_cache' => array(),
 
 			// when a bulk sync action is triggered (action hook):
-			'woocommerce_square_bulk_syncing_square_to_wc'    => [],
+			'woocommerce_square_bulk_syncing_square_to_wc' => array(),
 
 			// get_posts args filter, the new implementation has different scope:
-			'woocommerce_square_get_all_product_ids_args'     => [],
+			'woocommerce_square_get_all_product_ids_args'  => array(),
 
 			// idempotency key
-			'woocommerce_square_idempotency_key'              => [ 'replacement' => 'wc_square_idempotency_key', 'map' => true ],
+			'woocommerce_square_idempotency_key'           => array(
+				'replacement' => 'wc_square_idempotency_key',
+				'map'         => true,
+			),
 
-		];
+		);
 
 		// add common array data for all removed hooks in version 2.0.0
 		foreach ( array_keys( $v2_0_0_removed_hooks ) as $hook_name ) {
@@ -798,10 +908,10 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	 */
 	public function get_settings_url( $gateway_id = null ) {
 
-		$params = [
+		$params = array(
 			'page' => 'wc-settings',
 			'tab'  => self::PLUGIN_ID,
-		];
+		);
 
 		return add_query_arg( $params, admin_url( 'admin.php' ) );
 	}
@@ -816,7 +926,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	 */
 	public function get_sales_page_url() {
 
-		return 'https://woocommerce.com/products/woocommerce-square/';
+		return 'https://woocommerce.com/products/square/';
 	}
 
 
@@ -834,6 +944,21 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 
 
 	/**
+	 * Gets the plugin reviews page URL.
+	 *
+	 * Used for the 'Reviews' plugin action and review prompts.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @return string
+	 */
+	public function get_reviews_url() {
+
+		return $this->get_sales_page_url() ? $this->get_sales_page_url() . '#comments' : '';
+	}
+
+
+	/**
 	 * Gets the support URL.
 	 *
 	 * @since 2.0.0
@@ -842,7 +967,7 @@ class Plugin extends Framework\SV_WC_Payment_Gateway_Plugin {
 	 */
 	public function get_support_url() {
 
-		return 'https://wordpress.org/support/plugin/woocommerce-square/'; // TODO: confirm this
+		return 'https://woocommerce.com/my-account/create-a-ticket/?select=1770503';
 	}
 
 

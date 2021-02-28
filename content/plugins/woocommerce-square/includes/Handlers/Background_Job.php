@@ -30,7 +30,7 @@ use WooCommerce\Square\Sync\Manual_Synchronization;
 use WooCommerce\Square\Sync\Product_Import;
 use WooCommerce\Square\Sync\Records;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Product and Inventory Synchronization handler class.
@@ -62,16 +62,19 @@ class Background_Job extends Framework\SV_WP_Background_Job_Handler {
 
 		$this->maybe_increase_time_limit();
 
-		add_action( "{$this->identifier}_job_complete",       [ $this, 'job_complete' ] );
-		add_action( "{$this->identifier}_job_failed",         [ $this, 'job_failed' ] );
-		add_filter( "{$this->identifier}_default_time_limit", [ $this, 'set_default_time_limit' ] );
+		add_action( "{$this->identifier}_job_complete", array( $this, 'job_complete' ) );
+		add_action( "{$this->identifier}_job_failed", array( $this, 'job_failed' ) );
+		add_filter( "{$this->identifier}_default_time_limit", array( $this, 'set_default_time_limit' ) );
 
 		// ensures the queue lock time never expires before our timeout does
-		add_filter( "{$this->identifier}_queue_lock_time", function( $lock_time ) {
+		add_filter(
+			"{$this->identifier}_queue_lock_time",
+			function( $lock_time ) {
 
-			return $this->set_default_time_limit( $lock_time ) + 10;
+				return $this->set_default_time_limit( $lock_time ) + 10;
 
-		} );
+			}
+		);
 	}
 
 
@@ -87,17 +90,23 @@ class Background_Job extends Framework\SV_WP_Background_Job_Handler {
 
 		$sor = wc_square()->get_settings_handler()->get_system_of_record();
 
-		return parent::create_job( wp_parse_args( $attrs, [
-			'action'                => '',    // job action
-			'catalog_processed'     => false, // whether the Square catalog has been processed
-			'cursor'                => '',    // job advancement position
-			'manual'                => false, // whether it's a sync job triggered manually
-			'percentage'            => 0,     // percentage completed
-			'product_ids'           => [],    // products to process
-			'processed_product_ids' => [],    // products processed
-			'skipped_products'      => [],    // remote product IDs that were skipped
-			'system_of_record'      => $sor,  // system of record used
-		] ) );
+		return parent::create_job(
+			wp_parse_args(
+				$attrs,
+				array(
+					'action'                => '',      // job action
+					'catalog_processed'     => false,   // whether the Square catalog has been processed
+					'cursor'                => '',      // job advancement position
+					'manual'                => false,   // whether it's a sync job triggered manually
+					'percentage'            => 0,       // percentage completed
+					'product_ids'           => array(), // products to process
+					'processed_product_ids' => array(), // newly imported products processed
+					'updated_product_ids'   => array(), // updated products processed
+					'skipped_products'      => array(), // remote product IDs that were skipped
+					'system_of_record'      => $sor,    // system of record used
+				)
+			)
+		);
 	}
 
 
@@ -168,8 +177,9 @@ class Background_Job extends Framework\SV_WP_Background_Job_Handler {
 		}
 
 		if ( $job instanceof Job ) {
-
-			$job = $job->run();
+			$current_user_id = get_current_user_id();
+			$job             = $job->run();
+			wp_set_current_user( $current_user_id );
 		}
 
 		return $job;
@@ -189,9 +199,7 @@ class Background_Job extends Framework\SV_WP_Background_Job_Handler {
 
 		wc_square()->get_sync_handler()->record_sync( $job->processed_product_ids, $job );
 
-		if ( ! empty( $job->manual ) ) {
-			wc_square()->get_email_handler()->get_sync_completed_email()->trigger( $job );
-		}
+		wc_square()->get_email_handler()->get_sync_completed_email()->trigger( $job );
 	}
 
 
@@ -204,14 +212,14 @@ class Background_Job extends Framework\SV_WP_Background_Job_Handler {
 	 */
 	public function job_failed( $job ) {
 
-		Records::set_record( [
-			'type'    => 'alert',
-			'message' => 'Sync failed. Please try again',
-		] );
+		Records::set_record(
+			array(
+				'type'    => 'alert',
+				'message' => 'Sync failed. Please try again',
+			)
+		);
 
-		if ( ! empty( $job->manual ) ) {
-			wc_square()->get_email_handler()->get_sync_completed_email()->trigger( $job );
-		}
+		wc_square()->get_email_handler()->get_sync_completed_email()->trigger( $job );
 	}
 
 
@@ -339,7 +347,7 @@ class Background_Job extends Framework\SV_WP_Background_Job_Handler {
 			'name'     => __( 'Clear Square Sync', 'woocommerce-square' ),
 			'button'   => __( 'Clear', 'woocommerce-square' ),
 			'desc'     => __( 'This tool will clear any ongoing Square product syncs.', 'woocommerce-square' ),
-			'callback' => [ $this, 'run_clear_background_jobs' ],
+			'callback' => array( $this, 'run_clear_background_jobs' ),
 		);
 
 		return $tools;

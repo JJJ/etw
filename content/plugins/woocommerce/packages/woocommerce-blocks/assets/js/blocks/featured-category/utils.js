@@ -6,7 +6,7 @@ import { isObject } from 'lodash';
 /**
  * Get the src from a category object, unless null (no image).
  *
- * @param {object|null} category A product category object from the API.
+ * @param {Object|null} category A product category object from the API.
  * @return {string} The src of the category image.
  */
 function getCategoryImageSrc( category ) {
@@ -19,7 +19,7 @@ function getCategoryImageSrc( category ) {
 /**
  * Get the attachment ID from a category object, unless null (no image).
  *
- * @param {object|null} category A product category object from the API.
+ * @param {Object|null} category A product category object from the API.
  * @return {number} The id of the category image.
  */
 function getCategoryImageId( category ) {
@@ -49,9 +49,14 @@ function getBackgroundImageStyles( url ) {
  * @return {string} The class name, if applicable (not used for ratio 0 or 50).
  */
 function dimRatioToClass( ratio ) {
-	return ratio === 0 || ratio === 50 ?
-		null :
-		`has-background-dim-${ 10 * Math.round( ratio / 10 ) }`;
+	return ratio === 0 || ratio === 50
+		? null
+		: `has-background-dim-${ 10 * Math.round( ratio / 10 ) }`;
 }
 
-export { getCategoryImageSrc, getCategoryImageId, getBackgroundImageStyles, dimRatioToClass };
+export {
+	getCategoryImageSrc,
+	getCategoryImageId,
+	getBackgroundImageStyles,
+	dimRatioToClass,
+};

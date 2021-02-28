@@ -28,7 +28,7 @@ use WooCommerce\Square\Plugin;
 use WooCommerce\Square\Sync\Interval_Polling;
 use WooCommerce\Square\Sync\Records;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Synchronization handler class
@@ -73,10 +73,10 @@ class Sync {
 	private function add_hooks() {
 
 		// schedule the interval sync
-		add_action( 'init', [ $this, 'schedule_sync' ] );
+		add_action( 'init', array( $this, 'schedule_sync' ) );
 
 		// run the interval sync when fired by Action Scheduler
-		add_action( $this->sync_scheduled_event_name, [ $this, 'start_interval_sync' ] );
+		add_action( $this->sync_scheduled_event_name, array( $this, 'start_interval_sync' ) );
 	}
 
 
@@ -115,8 +115,8 @@ class Sync {
 		$plugin_id = $this->get_plugin()->get_id();
 		$interval  = $this->get_sync_schedule_interval();
 
-		if ( false === as_next_scheduled_action( $this->sync_scheduled_event_name, [], $plugin_id ) ) {
-			as_schedule_recurring_action( time() + $interval, $interval, $this->sync_scheduled_event_name, [], $plugin_id );
+		if ( false === as_next_scheduled_action( $this->sync_scheduled_event_name, array(), $plugin_id ) ) {
+			as_schedule_recurring_action( time() + $interval, $interval, $this->sync_scheduled_event_name, array(), $plugin_id );
 		}
 	}
 
@@ -128,7 +128,7 @@ class Sync {
 	 */
 	public function unschedule_sync() {
 
-		as_unschedule_action( $this->sync_scheduled_event_name, [], $this->get_plugin()->get_id() );
+		as_unschedule_action( $this->sync_scheduled_event_name, array(), $this->get_plugin()->get_id() );
 	}
 
 
@@ -138,13 +138,17 @@ class Sync {
 	 * @since 2.0.0
 	 *
 	 * @param bool $dispatch whether the job should be immediately dispatched
+	 * @param bool $update_during_import whether the store manager has ticked to update products during an import
 	 * @return \stdClass|null
 	 */
-	public function start_product_import( $dispatch = true ) {
+	public function start_product_import( $dispatch = true, $update_during_import = false ) {
 
-		$job = $this->get_plugin()->get_background_job_handler()->create_job( [
-			'action' => 'product_import',
-		] );
+		$job = $this->get_plugin()->get_background_job_handler()->create_job(
+			array(
+				'action'                        => 'product_import',
+				'update_products_during_import' => $update_during_import,
+			)
+		);
 
 		if ( $job ) {
 
@@ -166,15 +170,17 @@ class Sync {
 	 * @param int[] $product_ids (optional) array of product IDs to sync
 	 * @return \stdClass|null
 	 */
-	public function start_manual_sync( $dispatch = true, array $product_ids = [] ) {
+	public function start_manual_sync( $dispatch = true, array $product_ids = array() ) {
 
 		$product_ids = empty( $product_ids ) ? Product::get_products_synced_with_square() : $product_ids;
 
-		$job = $this->get_plugin()->get_background_job_handler()->create_job( [
-			'action'      => 'sync',
-			'manual'      => true,
-			'product_ids' => $product_ids,
-		] );
+		$job = $this->get_plugin()->get_background_job_handler()->create_job(
+			array(
+				'action'      => 'sync',
+				'manual'      => true,
+				'product_ids' => $product_ids,
+			)
+		);
 
 		if ( $job ) {
 
@@ -198,11 +204,13 @@ class Sync {
 	 */
 	public function start_manual_deletion( array $product_ids, $dispatch = true ) {
 
-		$job = $this->get_plugin()->get_background_job_handler()->create_job( [
-			'action'      => 'delete',
-			'manual'      => true,
-			'product_ids' => $product_ids,
-		] );
+		$job = $this->get_plugin()->get_background_job_handler()->create_job(
+			array(
+				'action'      => 'delete',
+				'manual'      => true,
+				'product_ids' => $product_ids,
+			)
+		);
 
 		if ( $job ) {
 
@@ -230,12 +238,14 @@ class Sync {
 		// use this opportunity to clear old background jobs
 		$this->get_plugin()->get_background_job_handler()->clear_all_jobs();
 
-		$job = $this->get_plugin()->get_background_job_handler()->create_job( [
-			'action'                   => 'poll',
-			'manual'                   => false,
-			'catalog_last_synced_at'   => $this->get_last_synced_at(),
-			'inventory_last_synced_at' => $this->get_inventory_last_synced_at(),
-		] );
+		$job = $this->get_plugin()->get_background_job_handler()->create_job(
+			array(
+				'action'                   => 'poll',
+				'manual'                   => false,
+				'catalog_last_synced_at'   => $this->get_last_synced_at(),
+				'inventory_last_synced_at' => $this->get_inventory_last_synced_at(),
+			)
+		);
 
 		if ( $job ) {
 			$this->get_plugin()->get_background_job_handler()->dispatch();
@@ -276,7 +286,7 @@ class Sync {
 	public function is_sync_in_progress() {
 
 		return ( defined( 'DOING_SQUARE_SYNC' ) && true === DOING_SQUARE_SYNC )
-		       || null !== $this->get_job_in_progress();
+			|| null !== $this->get_job_in_progress();
 	}
 
 
@@ -311,14 +321,16 @@ class Sync {
 		// only add a record of some products were synced
 		if ( $products ) {
 
-			Records::set_record( [
-				'id'      => $job && isset( $job->id ) ? $job->id : null,
-				'message' => sprintf(
-				/* translators: Placeholder: %d number of products processed */
-					_n( 'Updated data for %d product.', 'Updated data for %d products.', $products, 'woocommerce-square' ),
-					$products
-				),
-			] );
+			Records::set_record(
+				array(
+					'id'      => $job && isset( $job->id ) ? $job->id : null,
+					'message' => sprintf(
+						/* translators: Placeholder: %d number of products processed */
+						_n( 'Updated data for %d product.', 'Updated data for %d products.', $products, 'woocommerce-square' ),
+						$products
+					),
+				)
+			);
 		}
 
 		/**
@@ -370,7 +382,7 @@ class Sync {
 			$job = null;
 		}
 
-		return $job && isset( $job->status ) && in_array( $job->status, [ 'created', 'queued', 'processing' ], true ) ? $job : null;
+		return $job && isset( $job->status ) && in_array( $job->status, array( 'created', 'queued', 'processing' ), true ) ? $job : null;
 	}
 
 
@@ -458,15 +470,20 @@ class Sync {
 
 
 	/**
-	 * Sets the timestamp for when the last inventory sync job completed.
+	 * Sets the timestamp for when the last inventory sync job started.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return int
+	 * @param int|string|null $timestamp a valid timestamp in UTC (optional, will default to now)
+	 * @return bool success
 	 */
-	public function set_inventory_last_synced_at() {
+	public function set_inventory_last_synced_at( $timestamp = null ) {
 
-		return update_option( $this->last_synced_at_option_key . '_inventory', current_time( 'timestamp', true ) );
+		if ( null === $timestamp ) {
+			$timestamp = current_time( 'timestamp', true );
+		}
+
+		return is_numeric( $timestamp ) && update_option( $this->last_synced_at_option_key . '_inventory', $timestamp );
 	}
 
 

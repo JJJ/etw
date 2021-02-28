@@ -26,7 +26,7 @@ namespace WooCommerce\Square\Sync;
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Handlers\Product;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Class to represent a single catalog item.
@@ -128,19 +128,21 @@ class Catalog_Item {
 
 		if ( ! $catalog_object ) {
 
-			$catalog_object = new \SquareConnect\Model\CatalogObject( [
-				'type' => 'ITEM',
-			] );
+			$catalog_object = new \SquareConnect\Model\CatalogObject(
+				array(
+					'type' => 'ITEM',
+				)
+			);
 		}
 
 		// update the object data from the Woo product
 		$catalog_object = Product\Woo_SOR::update_catalog_item( $catalog_object, $this->product );
 
-		$batch_data = [ 'objects' => [ $catalog_object ] ];
+		$batch_data = array( 'objects' => array( $catalog_object ) );
 
 		$this->batch = new \SquareConnect\Model\CatalogObjectBatch( $batch_data );
 
-		$variations = $catalog_object->getItemData()->getVariations() ?: [];
+		$variations = $catalog_object->getItemData()->getVariations() ?: array();
 
 		$this->batch_object_count = 1 + count( $variations );
 	}

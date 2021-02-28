@@ -10,7 +10,6 @@ jQuery( document ).ready ( $ ) ->
 	typenow = window.typenow ? ''
 	pagenow = window.pagenow ? ''
 
-
 	# bail if not on product admin pages
 	if 'product' isnt typenow
 		return
@@ -25,63 +24,90 @@ jQuery( document ).ready ( $ ) ->
 
 
 		# when clicking the quick edit button fetch the default Synced with Square checkbox
-		$( 'button.editinline' ).on 'click', ( e ) ->
+		$( '#the-list' ).on 'click', '.editinline', ->
 
 			$row   = $( this ).closest( 'tr' )
 			postID = $row.find( 'th.check-column input' ).val()
 			data   =
-				action     : 'wc_square_is_product_synced_with_square'
-				security   : wc_square_admin_products.is_product_synced_with_square_nonce
+				action     : 'wc_square_get_quick_edit_product_details'
+				security   : wc_square_admin_products.get_quick_edit_product_details_nonce
 				product_id : $row.find( 'th.check-column input' ).val()
 
 			$.post wc_square_admin_products.ajax_url, data, ( response ) ->
 
-				$editRow      = $( 'tr#edit-' + postID )
-				$squareSynced = $editRow.find( 'select.square-synced' )
-				$sku          = $editRow.find( 'input[name=_sku]' )
-				$manageStock  = $editRow.find( 'input[name=_manage_stock]' )
-				$stockStatus  = $editRow.find( 'select[name=_stock_status]' )
-				$stockQty     = $editRow.find( 'input[name=_stock]' )
-				$errors       = $editRow.find( '.wc-square-sync-with-square-errors' )
+				$editRow           = $( 'tr#edit-' + postID )
+				$squareSynced      = $editRow.find( 'select.square-synced' )
+				$errors            = $editRow.find( '.wc-square-sync-with-square-errors' )
 
-				if response and response.data
-
+				if ! response.success and response.data
 					# if the product has multiple attributes we show an inline error message and bail
 					if 'multiple_attributes' is response.data
 						$squareSynced.prop( 'checked', false )
 						$squareSynced.prop( 'disabled', true )
 						$errors.find( '.multiple_attributes' ).show()
 						return
+					# if the product has variations without an SKU we show an inline error message and bail
+					else if 'missing_variation_sku' is response.data
+						$squareSynced.prop( 'checked', false )
+						$squareSynced.prop( 'disabled', true )
+						$errors.find( '.missing_variation_sku' ).show()
+						return
+
+				$sku                  = $editRow.find( 'input[name=_sku]' )
+				$stockStatus          = $editRow.find( 'select[name=_stock_status]' )
+				$stockQty             = $editRow.find( 'input[name=_stock]' )
+				$manageStockLabel     = $editRow.find( '.manage_stock_field .manage_stock' )
+				$manageStockInput     = $editRow.find( 'input[name=_manage_stock]' )
+				$manageStockDesc      = '<span class="description"><a href="' + wc_square_admin_products.settings_url + '">' + wc_square_admin_products.i18n.synced_with_square + '</a></span>'
+				edit_url              = response.data.edit_url
+				i18n                  = response.data.i18n
+				is_variable           = response.data.is_variable
+
+				$squareSynced.val( response.data.is_synced_with_square )
+
+				# if the SKU changes, enabled or disable Synced with Square checkbox accordingly
+				$sku.on 'change keyup keypress', ( e ) ->
+					if '' is $( this ).val() and ! is_variable
+						$squareSynced.val( 'no' )
+						$squareSynced.prop( 'disabled', true )
+						$errors.find( '.missing_sku' ).show()
 					else
-						# a missing sku can be recoverable instead, since the admin can enter one from the quick edit panel
-						$squareSynced.val( if 'missing_sku' is response.data then 'no' else response.data )
+						$squareSynced.prop( 'disabled', false )
+						$squareSynced.trigger 'change'
+						$errors.find( '.missing_sku' ).hide()
+				.trigger 'change'
 
-					# if the SKU changes, enabled or disable Synced with Square checkbox accordingly
-					$sku.on 'change keyup keypress', ( e ) ->
-						if '' is $( this ).val()
-							$squareSynced.val( 'no' )
-							$squareSynced.prop( 'disabled', true )
-							$errors.find( '.missing_sku' ).show()
+				# if Synced with Square is enabled, we might as well disable stock management (without verbose explanations as in the product page)
+				$squareSynced.on 'change', ( e ) ->
+					if 'no' is $( this ).val()
+						$manageStockInput.off()
+						$manageStockInput.add( $stockQty ).css( { 'opacity': 1 } )
+						$manageStockLabel.find( '.description' ).remove()
+						# Stock input manipulation will differ depending on whether product is variable or simple
+						if is_variable
+							if $manageStockInput.is( ':checked' )
+								$( '.stock_qty_field' ).show()
+								$( '.backorder_field' ).show()
+							else
+								$( '.stock_status_field' ).show()
 						else
-							$squareSynced.prop( 'disabled', false )
-							$squareSynced.trigger 'change'
-							$errors.find( '.missing_sku' ).hide()
-					.trigger 'change'
-
-					# if Synced with Square is enabled, we might as well disable stock management (without verbose explanations as in the product page)
-					$squareSynced.on 'change', ( e ) ->
-						if 'no' is $( this ).val()
-							$manageStock.prop( 'disabled', false )
-							$stockStatus.prop( 'disabled', false )
-							$stockQty.prop( 'disabled', false )
+							$stockQty.prop( 'readonly', false )
+							$stockStatus.prop( 'readonly', false )
+					else
+						$manageStockInput.prop( 'checked', true );
+						$manageStockInput.on 'click', -> false
+						$manageStockInput.add( $stockQty ).css( { 'opacity': '0.5' } )
+						$manageStockLabel.append( $manageStockDesc )
+						if wc_square_admin_products.is_woocommerce_sor and edit_url and i18n
+							$manageStockLabel.append( '<p class="description"><a href="' + edit_url + '">' + i18n + '</a></p>' )
+						if is_variable
+							$( '.stock_status_field' ).hide()
+							$( '.stock_qty_field' ).hide()
+							$( '.backorder_field' ).hide()
 						else
-							$manageStock.prop( 'checked', true )
-							$( '.stock_qty_field' ).show()
-							$manageStock.prop( 'disabled', true )
-							$stockStatus.prop( 'disabled', true )
-							$stockQty.prop( 'disabled', true )
-					.trigger 'change'
-
+							$stockQty.prop( 'readonly', true )
+							$stockStatus.prop( 'readonly', true )
+				.trigger 'change'
 
 	# individual product edit screen
 	if 'product' is pagenow
@@ -99,7 +125,38 @@ jQuery( document ).ready ( $ ) ->
 		# @since 2.0.0
 		###
 		hasSKU = ->
-			return $( '#_sku' ).val() isnt ''
+			return $( '#_sku' ).val().trim() isnt ''
+
+
+		###*
+		# Checks whether the product variations all have SKUs.
+		#
+		# @since 2.2.3
+		###
+		hasVariableSKUs = ( skus ) ->
+
+			return false if not skus.length
+
+			valid = skus.filter ->
+				return true if $( this ).val().trim() isnt ''
+
+			return valid.length is skus.length
+
+
+		###*
+		# Checks whether the given skus are unique.
+		#
+		# @since 2.2.3
+		###
+		hasUniqueSKUs = ( skus ) ->
+
+			skuValues = skus.map ( sku ) ->
+				$( this ).val()
+
+			skuValues = $.makeArray( skuValues )
+
+			return skuValues.every ( sku ) ->
+				skuValues.indexOf( sku ) is skuValues.lastIndexOf( sku )
 
 
 		###*
@@ -115,6 +172,30 @@ jQuery( document ).ready ( $ ) ->
 
 
 		###*
+		# Displays the given error and disables the sync checkbox
+		# Accepted errors are 'missing_sku', 'missing_variation_sku', and 'multiple_attributes'
+		#
+		# @since 2.2.3
+		###
+		showError = ( error ) ->
+			$( '.wc-square-sync-with-square-error.' + error ).show()
+			$( syncCheckboxID ).prop( 'disabled', true )
+			$( syncCheckboxID ).prop( 'checked', false )
+
+
+		###*
+		# Hides the given error and maybe enables the sync checkbox
+		# Accepted errors are 'missing_sku', 'missing_variation_sku', and 'multiple_attributes'
+		#
+		# @since 2.2.3
+		###
+		hideError = ( error, enable = true ) ->
+			$( '.wc-square-sync-with-square-error.' + error ).hide()
+			if enable
+				$( syncCheckboxID ).prop( 'disabled', false )
+
+
+		###*
 		# Handle SKU.
 		#
 		# Disables the Sync with Square checkbox and toggles an inline notice when no SKU is set on a product.
@@ -123,22 +204,31 @@ jQuery( document ).ready ( $ ) ->
 		###
 		handleSKU = ( syncCheckboxID ) ->
 
-			return if isVariable()
+			if isVariable()
+				$( '#_sku' ).off 'change keypress keyup'
+				hideError( 'missing_sku', not hasMultipleAttributes() )
 
-			$( '#_sku' ).on 'change keypress keyup', ( e ) ->
+				skus = $( 'input[id^="variable_sku"]' )
 
-				if '' is $( this ).val()
-					$( '.wc-square-sync-with-square-error.missing_sku' ).show()
-					$( syncCheckboxID ).prop( 'disabled', true )
-					$( syncCheckboxID ).prop( 'checked', false )
-				else
-					$( '.wc-square-sync-with-square-error.missing_sku' ).hide()
-					if not hasMultipleAttributes()
-						$( syncCheckboxID ).prop( 'disabled', false )
+				skus.on 'change keypress keyup', ( e ) ->
+					if not hasVariableSKUs( skus ) or not hasUniqueSKUs( skus )
+						showError( 'missing_variation_sku' )
+					else
+						hideError( 'missing_variation_sku', not hasMultipleAttributes() )
+					$( syncCheckboxID ).triggerHandler 'change'
+				.triggerHandler 'change'
 
-				$( syncCheckboxID ).trigger( 'change' )
+			else
+				$( 'input[id^="variable_sku"]' ).off 'change keypress keyup'
+				hideError( 'missing_variation_sku', not hasMultipleAttributes() )
 
-			.trigger 'change'
+				$( '#_sku' ).on 'change keypress keyup', ( e ) ->
+					if '' is $( this ).val().trim()
+						showError( 'missing_sku' )
+					else
+						hideError( 'missing_sku', not hasMultipleAttributes() )
+					$( syncCheckboxID ).trigger 'change'
+				.trigger 'change'
 
 
 		###*
@@ -153,21 +243,27 @@ jQuery( document ).ready ( $ ) ->
 			$( '#variable_product_options' ).on 'reload', ( e ) ->
 
 				if hasMultipleAttributes()
-					$( '.wc-square-sync-with-square-error.multiple_attributes' ).show()
-					$( syncCheckboxID ).prop( 'disabled', true )
-					$( syncCheckboxID ).prop( 'checked', false )
+					showError( 'multiple_attributes' )
 				else
-					$( '.wc-square-sync-with-square-error.multiple_attributes' ).hide()
-					if hasSKU()
-						$( syncCheckboxID ).prop( 'disabled', false )
-
+					hideError( 'multiple_attributes', if isVariable() then hasVariableSKUs else hasSKU() )
 				$( syncCheckboxID ).trigger( 'change' )
 
 			.trigger( 'reload' )
 
 
+		###*
+		# Triggers an update to the sync checkbox, checking for relevant errors.
+		#
+		# @since 2.2.3
+		###
+		triggerUpdate = ->
+			handleSKU( syncCheckboxID )
+			# handleSKU misses cases where product is variable with no variations
+			if isVariable() and not $( 'input[id^="variable_sku"]' ).length
+				showError( 'missing_variation_sku' )
+
+
 		# fire once on page load
-		handleSKU( syncCheckboxID )
 		handleAttributes( syncCheckboxID )
 
 
@@ -178,6 +274,7 @@ jQuery( document ).ready ( $ ) ->
 		###
 		$stockFields = $( '.stock_fields' )
 		$stockInput  = $stockFields.find( '#_stock' )
+		$stockStatus = $( '.stock_status_field' )
 		$manageField = $( '._manage_stock_field' )
 		$manageInput = $manageField.find( '#_manage_stock' )
 		$manageDesc  = $manageField.find( '.description' )
@@ -199,7 +296,9 @@ jQuery( document ).ready ( $ ) ->
 				useSquare = true
 
 				$manageDesc.html( '<a href="' + wc_square_admin_products.settings_url + '">' + wc_square_admin_products.i18n.synced_with_square + '</a>' )
-				$manageInput.prop( 'disabled', true ).prop( 'checked', not variableProduct ).change()
+				$manageInput.prop( 'disabled', true ).prop( 'checked', not variableProduct )
+				$stockFields.hide()
+				$stockStatus.hide()
 				$stockInput.prop( 'readonly', true )
 
 				if not variableProduct
@@ -265,6 +364,10 @@ jQuery( document ).ready ( $ ) ->
 
 				if manageStockOriginal
 					$stockFields.show()
+					$stockStatus.hide()
+				else
+					$stockStatus.show()
+					$stockFields.hide()
 
 
 			# handle variations data separately (HTML differs from parent UI!)
@@ -272,7 +375,7 @@ jQuery( document ).ready ( $ ) ->
 
 				# fetch relevant variables for each variation
 				variationID           = $( this ).find( 'h3 > a' ).attr( 'rel' )
-				$variationManageInput = $( '.variable_manage_stock' )
+				$variationManageInput = $( this ).find( '#wc_square_variation_manage_stock' )
 				$variationManageField = $variationManageInput.parent()
 				$variationStockInput  = $( this ).find( '.wc_input_stock' )
 				$variationStockField  = $variationStockInput.parent()
@@ -281,7 +384,7 @@ jQuery( document ).ready ( $ ) ->
 				if useSquare
 
 					# disable stock management inputs
-					$variationManageInput.prop( 'disabled', true ).prop( 'checked', true ).change()
+					$variationManageInput.prop( 'disabled', true ).prop( 'checked', true )
 					$variationStockInput.prop( 'readonly', true )
 					$( '#wc_square_variation_manage_stock' ).prop( 'disabled', false )
 
@@ -335,16 +438,16 @@ jQuery( document ).ready ( $ ) ->
 					$variationStockInput.prop( 'readonly', false )
 					$variationManageInput.prop( 'disabled', false )
 					$variationManageInput.next( '.description' ).remove()
-					$( '#wc_square_variation_manage_stock' ).prop( 'disabled', true )
-
+					$( this ).find( '#wc_square_variation_manage_stock' ).prop( 'disabled', true )
 
 		# initial page load handling
 		.trigger 'change'
 
+
 		# trigger an update if the product type changes
 		$( '#product-type' ).on 'change', ( e ) ->
-			$( syncCheckboxID ).trigger 'change'
+			triggerUpdate()
 
-		# trigger an update for variable products when variations are loaded
-		$( '#woocommerce-product-data' ).on 'woocommerce_variations_loaded', ( e ) ->
-			$( syncCheckboxID ).trigger 'change'
+		# trigger an update for variable products when variations are loaded, added, or removed.
+		$( '#woocommerce-product-data' ).on 'woocommerce_variations_loaded woocommerce_variations_added woocommerce_variations_removed', ( e ) ->
+			triggerUpdate()

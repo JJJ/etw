@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Admin;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square;
@@ -141,10 +141,10 @@ class Settings_Page extends \WC_Settings_Page {
 	 */
 	public function get_sections() {
 
-		$sections = [
-			''        => __( 'Settings', 'woocommerce-square' ), // this key is intentionally blank
-			'update'  => __( 'Update', 'woocommerce-square' ),
-		];
+		$sections = array(
+			''       => __( 'Settings', 'woocommerce-square' ), // this key is intentionally blank
+			'update' => __( 'Update', 'woocommerce-square' ),
+		);
 
 		/**
 		 * Filters the WooCommerce Square settings sections.
@@ -177,7 +177,12 @@ class Settings_Page extends \WC_Settings_Page {
 						</header>
 						<article>
 							<?php /* translators: Placeholders: %1$s - <strong>, %2%s - </strong> */ ?>
-							<?php printf( esc_html__( 'You are about to import all products from Square. This will create a new product in WooCommerce for every product retrieved from Square. If you have products in the trash from the previous imports, these will be ignored in the import. %1$sOnly use this action to perform a one-time import!%2$s', 'woocommerce-square' ), '<strong>', '</strong>' ); ?>
+							<p><?php printf( esc_html__( 'You are about to import all new products, variations and categories from Square. This will create a new product in WooCommerce for every product retrieved from Square. If you have products in the trash from the previous imports, these will be ignored in the import.', 'woocommerce-square' ), '<strong>', '</strong>' ); ?></p>
+							<hr>
+							<h4><?php esc_html_e( 'Do you wish to import existing product updates from Square?', 'woocommerce-square' ); ?></h4>
+							<?php /* translators: Placeholders: %1$s - <a> tag linking to WooCommerce Square docs, %2%s - closing </a> tag */ ?>
+							<p><?php printf( esc_html__( 'Doing so will update existing WooCommerce products with the latest information from Square. %1$sView Documentation%2$s.', 'woocommerce-square' ), '<a href="https://docs.woocommerce.com/document/woocommerce-square/#section-4">', '</a>' ); ?></p>
+							<label for="wc-square-import-product-updates"><input type="checkbox" id="wc-square-import-product-updates" /><?php esc_html_e( 'Update existing products during import.', 'woocommerce-square' ); ?></label>
 						</article>
 						<footer>
 							<div class="inner">

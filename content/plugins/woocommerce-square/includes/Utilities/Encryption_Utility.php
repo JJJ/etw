@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Utilities;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -67,8 +67,7 @@ class Encryption_Utility {
 
 				$this->cipher_method = $preferred_cipher_method;
 
-			// otherwise, throw a notice and continue with the default
-			} else {
+			} else { // otherwise, throw a notice and continue with the default
 
 				$message = sprintf(
 					__( '%1$s encryption is not available on this site. %2$s will be used instead.', 'woocommerce-square' ),

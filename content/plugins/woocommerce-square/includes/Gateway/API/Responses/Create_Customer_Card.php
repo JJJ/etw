@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway\API\Responses;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -46,7 +46,7 @@ class Create_Customer_Card extends \WooCommerce\Square\Gateway\API\Response impl
 	 */
 	public function get_payment_token() {
 
-		$card = $this->get_data() instanceof \SquareConnect\Model\CreateCustomerCardResponse ? $this->get_data()->getCard() : null;
+		$card  = $this->get_data() instanceof \SquareConnect\Model\CreateCustomerCardResponse ? $this->get_data()->getCard() : null;
 		$token = null;
 
 		if ( $card ) {
@@ -55,13 +55,13 @@ class Create_Customer_Card extends \WooCommerce\Square\Gateway\API\Response impl
 
 			$token = new Framework\SV_WC_Payment_Gateway_Payment_Token(
 				$card->getId(),
-				[
+				array(
 					'type'      => 'credit_card',
 					'card_type' => $card_type,
 					'last_four' => $card->getLast4(),
 					'exp_month' => $card->getExpMonth(),
 					'exp_year'  => $card->getExpYear(),
-				]
+				)
 			);
 		}
 

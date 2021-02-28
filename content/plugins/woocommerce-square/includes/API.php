@@ -28,7 +28,7 @@ use SquareConnect;
 use WooCommerce\Square\API\Requests;
 use WooCommerce\Square\API\Responses;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WooCommerce Square API class
@@ -173,7 +173,7 @@ class API extends Framework\SV_WC_API_Base {
 	 * @return Responses\Catalog
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function list_catalog( $cursor = '', $types = [] ) {
+	public function list_catalog( $cursor = '', $types = array() ) {
 
 		$request = $this->get_catalog_request();
 		$request->set_list_catalog_data( $cursor, $types );
@@ -210,7 +210,7 @@ class API extends Framework\SV_WC_API_Base {
 	 * @return Responses\Catalog
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function search_catalog_objects( $args = [] ) {
+	public function search_catalog_objects( $args = array() ) {
 
 		$request = $this->get_catalog_request();
 		$request->set_search_catalog_objects_data( $args );
@@ -230,7 +230,7 @@ class API extends Framework\SV_WC_API_Base {
 	 * @return Responses\Catalog
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function update_item_modifier_lists( array $item_ids, array $modifier_lists_to_enable = [], array $modifier_lists_to_disable = [] ) {
+	public function update_item_modifier_lists( array $item_ids, array $modifier_lists_to_enable = array(), array $modifier_lists_to_disable = array() ) {
 
 		$request = $this->get_catalog_request();
 		$request->set_update_item_modifier_lists_data( $item_ids, $modifier_lists_to_enable, $modifier_lists_to_disable );
@@ -250,7 +250,7 @@ class API extends Framework\SV_WC_API_Base {
 	 * @return Responses\Catalog
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function update_item_taxes( array $item_ids, array $taxes_to_enable = [], array $taxes_to_disable = [] ) {
+	public function update_item_taxes( array $item_ids, array $taxes_to_enable = array(), array $taxes_to_disable = array() ) {
 
 		$request = $this->get_catalog_request();
 		$request->set_update_item_taxes_data( $item_ids, $taxes_to_enable, $taxes_to_disable );
@@ -299,27 +299,27 @@ class API extends Framework\SV_WC_API_Base {
 
 		$image = file_get_contents( $image_path );
 
-		$headers = [
+		$headers = array(
 			'accept'         => 'application/json',
 			'content-type'   => 'multipart/form-data; boundary="boundary"',
 			'Square-Version' => '2019-05-08',
 			'Authorization'  => 'Bearer ' . wc_square()->get_settings_handler()->get_access_token(),
-		];
+		);
 
-		$body = '--boundary' . "\r\n";
+		$body  = '--boundary' . "\r\n";
 		$body .= 'Content-Disposition: form-data; name="request"' . "\r\n";
 		$body .= 'Content-Type: application/json' . "\r\n\r\n";
 
-		$request = [
+		$request = array(
 			'idempotency_key' => wc_square()->get_idempotency_key(),
-			'image'           => [
+			'image'           => array(
 				'type'       => 'IMAGE',
 				'id'         => '#TEMP_ID',
-				'image_data' => [
+				'image_data' => array(
 					'caption' => esc_attr( $caption ),
-				],
-			],
-		];
+				),
+			),
+		);
 
 		if ( $square_item_id ) {
 			$request['object_id'] = $square_item_id;
@@ -330,15 +330,20 @@ class API extends Framework\SV_WC_API_Base {
 		$body .= "\r\n";
 
 		$body .= '--boundary' . "\r\n";
-		$body .= 'Content-Disposition: form-data; name="image"; filename="' . esc_attr( basename( $image_path ) ) . '"' . "\r\n";
+		$body .= 'Content-Disposition: form-data; name="file"; filename="' . esc_attr( basename( $image_path ) ) . '"' . "\r\n";
 		$body .= 'Content-Type: image/jpeg' . "\r\n\r\n";
 		$body .= $image . "\r\n";
 		$body .= '--boundary--';
 
-		$response = wp_remote_post( 'https://connect.squareup.com/v2/catalog/images', [
-			'headers' => $headers,
-			'body'    => $body,
-		] );
+		$url = $this->client->getConfig()->getHost() . '/v2/catalog/images';
+
+		$response = wp_remote_post(
+			$url,
+			array(
+				'headers' => $headers,
+				'body'    => $body,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			throw new Framework\SV_WC_API_Exception( $response->get_error_message() );
@@ -436,18 +441,25 @@ class API extends Framework\SV_WC_API_Base {
 
 		$change = new SquareConnect\Model\InventoryChange();
 		$change->setType( 'ADJUSTMENT' );
-		$change->setAdjustment( new SquareConnect\Model\InventoryAdjustment( [
-			'catalog_object_id' => $square_id,
-			'location_id'       => $this->get_plugin()->get_settings_handler()->get_location_id(),
-			'quantity'          => (string) absint( $amount ),
-			'from_state'        => $from_state,
-			'to_state'          => $to_state,
-			'occurred_at'       => $date->format( DATE_ATOM ),
-		] ) );
+		$change->setAdjustment(
+			new SquareConnect\Model\InventoryAdjustment(
+				array(
+					'catalog_object_id' => $square_id,
+					'location_id'       => $this->get_plugin()->get_settings_handler()->get_location_id(),
+					'quantity'          => (string) absint( $amount ),
+					'from_state'        => $from_state,
+					'to_state'          => $to_state,
+					'occurred_at'       => $date->format( DATE_ATOM ),
+				)
+			)
+		);
 
-		return $this->batch_change_inventory( uniqid( '', false ), [
-			$change,
-		] );
+		return $this->batch_change_inventory(
+			uniqid( '', false ),
+			array(
+				$change,
+			)
+		);
 	}
 
 
@@ -481,7 +493,7 @@ class API extends Framework\SV_WC_API_Base {
 	 * @return Responses\Inventory
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function batch_retrieve_inventory_changes( array $args = [] ) {
+	public function batch_retrieve_inventory_changes( array $args = array() ) {
 
 		$request = $this->get_inventory_request();
 		$request->set_batch_retrieve_inventory_changes_data( $args );
@@ -500,7 +512,7 @@ class API extends Framework\SV_WC_API_Base {
 	 * @return Responses\Inventory
 	 * @throws Framework\SV_WC_API_Exception
 	 */
-	public function batch_retrieve_inventory_counts( array $args = [] ) {
+	public function batch_retrieve_inventory_counts( array $args = array() ) {
 
 		$request = $this->get_inventory_request();
 		$request->set_batch_retrieve_inventory_counts_data( $args );
@@ -559,7 +571,7 @@ class API extends Framework\SV_WC_API_Base {
 	public function retrieve_inventory_count( $catalog_object_id ) {
 
 		$request = $this->get_inventory_request();
-		$request->set_retrieve_inventory_count_data( $catalog_object_id, [ $this->get_plugin()->get_settings_handler()->get_location_id() ] );
+		$request->set_retrieve_inventory_count_data( $catalog_object_id, array( $this->get_plugin()->get_settings_handler()->get_location_id() ) );
 
 		return $this->perform_request( $request );
 	}
@@ -681,12 +693,12 @@ class API extends Framework\SV_WC_API_Base {
 			case self::REQUEST_TYPE_CATALOG:
 				$request          = new Requests\Catalog( $this->client );
 				$response_handler = Responses\Catalog::class;
-			break;
+				break;
 
 			case self::REQUEST_TYPE_INVENTORY:
 				$request          = new Requests\Inventory( $this->client );
 				$response_handler = Responses\Inventory::class;
-			break;
+				break;
 
 			default:
 				throw new Framework\SV_WC_API_Exception( 'Invalid request type.' );
@@ -797,7 +809,7 @@ class API extends Framework\SV_WC_API_Base {
 			return true;
 		}
 
-		$errors = [];
+		$errors = array();
 
 		foreach ( $this->get_response()->get_errors() as $error ) {
 			if ( empty( $error->code ) ) {
@@ -807,7 +819,7 @@ class API extends Framework\SV_WC_API_Base {
 			$errors[] = trim( "[{$error->code}] {$error->detail}" );
 
 			// Last attempt to refresh access token.
-			if ( 'ACCESS_TOKEN_EXPIRED'  == $error->code ) {
+			if ( 'ACCESS_TOKEN_EXPIRED' == $error->code ) {
 				$this->get_plugin()->log( 'Access Token Expired, attempting a refresh.' );
 				$this->get_plugin()->get_connection_handler()->refresh_connection();
 
@@ -821,7 +833,7 @@ class API extends Framework\SV_WC_API_Base {
 			}
 
 			// if the error indicates that access token is bad, disconnect the plugin to prevent further attempts
-			if ( in_array( $error->code, [ 'UNAUTHORIZED', 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_REVOKED' ], true ) ) {
+			if ( in_array( $error->code, array( 'ACCESS_TOKEN_EXPIRED', 'ACCESS_TOKEN_REVOKED' ), true ) ) {
 				$this->get_plugin()->get_connection_handler()->disconnect();
 				$this->get_plugin()->log( 'Disconnected due to invalid authorization. Please try connecting again.' );
 			}
@@ -843,23 +855,22 @@ class API extends Framework\SV_WC_API_Base {
 	 */
 	protected function do_square_request( $square_api, $method, $args ) {
 
-		if ( ! is_callable( [ $square_api, $method ] ) ) {
+		if ( ! is_callable( array( $square_api, $method ) ) ) {
 			throw new Framework\SV_WC_API_Exception( 'Invalid API method' );
 		}
 
 		try {
 
 			// perform the request
-			$response = call_user_func_array( [ $square_api, $method ], $args );
+			$response = call_user_func_array( array( $square_api, $method ), $args );
 
 			if ( is_array( $response ) && $this->request->get_with_http_info() ) {
 				$this->response_code     = isset( $response[1] ) ? (int) $response[1] : 400;
-				$this->response_headers  = isset( $response[2] ) ? (array) $response[2] : [];
-				$this->raw_response_body = isset( $response[0] ) ? $response[0] : [];
+				$this->response_headers  = isset( $response[2] ) ? (array) $response[2] : array();
+				$this->raw_response_body = isset( $response[0] ) ? $response[0] : array();
 			} else {
 				$this->raw_response_body = $response;
 			}
-
 		} catch ( SquareConnect\ApiException $exception ) {
 
 			$this->response_code     = $exception->getCode();

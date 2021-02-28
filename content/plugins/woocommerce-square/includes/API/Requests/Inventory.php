@@ -28,7 +28,7 @@ use SquareConnect\Model as SquareModel;
 use SquareConnect\Api\InventoryApi;
 use WooCommerce\Square\API\Request;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WooCommerce Square Inventory API Request class
@@ -66,11 +66,15 @@ class Inventory extends Request {
 	public function set_batch_change_inventory_data( $idempotency_key, $changes, $ignore_unchanged_counts = true ) {
 
 		$this->square_api_method = 'batchChangeInventory';
-		$this->square_api_args   = [ new SquareModel\BatchChangeInventoryRequest( [
-			'idempotency_key'         => $idempotency_key,
-			'changes'                 => $changes,
-			'ignore_unchanged_counts' => (bool) $ignore_unchanged_counts
-		] ) ];
+		$this->square_api_args   = array(
+			new SquareModel\BatchChangeInventoryRequest(
+				array(
+					'idempotency_key'         => $idempotency_key,
+					'changes'                 => $changes,
+					'ignore_unchanged_counts' => (bool) $ignore_unchanged_counts,
+				)
+			),
+		);
 	}
 
 
@@ -91,9 +95,9 @@ class Inventory extends Request {
 	 *     @type string $updated_before filters any changes updated before this time
 	 *     @type string $cursor pagination cursor
 	 */
-	public function set_batch_retrieve_inventory_changes_data( $args = [] ) {
+	public function set_batch_retrieve_inventory_changes_data( $args = array() ) {
 
-		$defaults = [
+		$defaults = array(
 			'catalog_object_ids' => null,
 			'location_ids'       => null,
 			'types'              => null,
@@ -101,13 +105,13 @@ class Inventory extends Request {
 			'updated_after'      => null,
 			'updated_before'     => null,
 			'cursor'             => null,
-		];
+		);
 
 		// apply defaults and remove any keys that aren't recognized
 		$args = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
 
 		$this->square_api_method = 'batchRetrieveInventoryChanges';
-		$this->square_api_args   = [ new SquareModel\BatchRetrieveInventoryChangesRequest( $args ) ];
+		$this->square_api_args   = array( new SquareModel\BatchRetrieveInventoryChangesRequest( $args ) );
 	}
 
 
@@ -125,20 +129,20 @@ class Inventory extends Request {
 	 *     @type string $updated_after filters any changes updated after this time
 	 *     @type string $cursor pagination cursor
 	 */
-	public function set_batch_retrieve_inventory_counts_data( $args = [] ) {
+	public function set_batch_retrieve_inventory_counts_data( $args = array() ) {
 
-		$defaults = [
+		$defaults = array(
 			'catalog_object_ids' => null,
 			'location_ids'       => null,
 			'updated_after'      => null,
 			'cursor'             => null,
-		];
+		);
 
 		// apply defaults and remove any keys that aren't recognized
 		$args = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
 
 		$this->square_api_method = 'batchRetrieveInventoryCounts';
-		$this->square_api_args   = [ new SquareModel\BatchRetrieveInventoryCountsRequest( $args ) ];
+		$this->square_api_args   = array( new SquareModel\BatchRetrieveInventoryCountsRequest( $args ) );
 	}
 
 
@@ -155,7 +159,7 @@ class Inventory extends Request {
 	public function set_retrieve_inventory_adjustment_data( $adjustment_id ) {
 
 		$this->square_api_method = 'retrieveInventoryAdjustment';
-		$this->square_api_args   = [ $adjustment_id ];
+		$this->square_api_args   = array( $adjustment_id );
 	}
 
 
@@ -172,7 +176,7 @@ class Inventory extends Request {
 	public function set_retrieve_inventory_changes_data( $catalog_object_id ) {
 
 		$this->square_api_method = 'retrieveInventoryChanges';
-		$this->square_api_args   = [ $catalog_object_id ];
+		$this->square_api_args   = array( $catalog_object_id );
 	}
 
 
@@ -187,10 +191,10 @@ class Inventory extends Request {
 	 * @param string $catalog_object_id the CatalogObject ID to retrieve
 	 * @param string[] $location_ids location IDs
 	 */
-	public function set_retrieve_inventory_count_data( $catalog_object_id, array $location_ids = [] ) {
+	public function set_retrieve_inventory_count_data( $catalog_object_id, array $location_ids = array() ) {
 
 		$this->square_api_method = 'retrieveInventoryCount';
-		$this->square_api_args   = [ $catalog_object_id, $location_ids ];
+		$this->square_api_args   = array( $catalog_object_id, $location_ids );
 	}
 
 
@@ -207,7 +211,7 @@ class Inventory extends Request {
 	public function set_retrieve_inventory_physical_count_data( $physical_count_id ) {
 
 		$this->square_api_method = 'retrieveInventoryPhysicalCount';
-		$this->square_api_args   = [ $physical_count_id ];
+		$this->square_api_args   = array( $physical_count_id );
 	}
 
 

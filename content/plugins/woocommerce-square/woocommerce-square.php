@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WooCommerce Square
- * Version: 2.0.6
+ * Version: 2.3.4
  * Plugin URI: https://woocommerce.com/products/square/
  * Description: Adds ability to sync inventory between WooCommerce and Square POS. In addition, you can also make purchases through the Square payment gateway.
  * Author: WooCommerce
@@ -9,7 +9,7 @@
  * Text Domain: woocommerce-square
  * Domain Path: /i18n/languages/
  *
- * Copyright: (c) 2019, Automattic, Inc.
+ * Copyright: © 2020 WooCommerce
  *
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -19,10 +19,10 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
  * WC requires at least: 3.0
- * WC tested up to: 3.7.1
+ * WC tested up to: 5.0
  */
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 require_once( plugin_dir_path( __FILE__ ) . 'vendor/prospress/action-scheduler/action-scheduler.php' );
 
@@ -211,23 +211,35 @@ class WooCommerce_Square_Loader {
 
 		if ( ! $this->is_wp_compatible() ) {
 
-			$this->add_admin_notice( 'update_wordpress', 'error', sprintf(
-				'%s requires WordPress version %s or higher. Please %supdate WordPress &raquo;%s',
-				'<strong>' . self::PLUGIN_NAME . '</strong>',
-				self::MINIMUM_WP_VERSION,
-				'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">', '</a>'
-			) );
+			$this->add_admin_notice(
+				'update_wordpress',
+				'error',
+				sprintf(
+					'%s requires WordPress version %s or higher. Please %supdate WordPress &raquo;%s',
+					'<strong>' . self::PLUGIN_NAME .
+					'</strong>',
+					self::MINIMUM_WP_VERSION,
+					'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
+					'</a>'
+				)
+			);
 		}
 
 		if ( ! $this->is_wc_compatible() ) {
 
-			$this->add_admin_notice( 'update_woocommerce', 'error', sprintf(
-				'%1$s requires WooCommerce version %2$s or higher. Please %3$supdate WooCommerce%4$s to the latest version, or %5$sdownload the minimum required version &raquo;%6$s',
-				'<strong>' . self::PLUGIN_NAME . '</strong>',
-				self::MINIMUM_WC_VERSION,
-				'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">', '</a>',
-				'<a href="' . esc_url( 'https://downloads.wordpress.org/plugin/woocommerce.' . self::MINIMUM_WC_VERSION . '.zip' ) . '">', '</a>'
-			) );
+			$this->add_admin_notice(
+				'update_woocommerce',
+				'error',
+				sprintf(
+					'%1$s requires WooCommerce version %2$s or higher. Please %3$supdate WooCommerce%4$s to the latest version, or %5$sdownload the minimum required version &raquo;%6$s',
+					'<strong>' . self::PLUGIN_NAME . '</strong>',
+					self::MINIMUM_WC_VERSION,
+					'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">',
+					'</a>',
+					'<a href="' . esc_url( 'https://downloads.wordpress.org/plugin/woocommerce.' . self::MINIMUM_WC_VERSION . '.zip' ) . '">',
+					'</a>'
+				)
+			);
 		}
 	}
 
@@ -307,7 +319,7 @@ class WooCommerce_Square_Loader {
 
 		$this->notices[ $slug ] = array(
 			'class'   => $class,
-			'message' => $message
+			'message' => $message,
 		);
 	}
 

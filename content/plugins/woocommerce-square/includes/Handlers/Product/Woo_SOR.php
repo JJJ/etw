@@ -78,7 +78,7 @@ class Woo_SOR extends \WooCommerce\Square\Handlers\Product {
 			$item_data->setCategoryId( $square_category_id );
 		}
 
-		$catalog_variations = $item_data->getVariations() ?: [];
+		$catalog_variations = $item_data->getVariations() ?: array();
 
 		// if dealing with a variable product, try and match the variations
 		if ( $product->is_type( 'variable' ) ) {
@@ -108,7 +108,6 @@ class Woo_SOR extends \WooCommerce\Square\Handlers\Product {
 							// consider this variation taken care of
 							unset( $product_variation_ids[ $key ] );
 						}
-
 					} else {
 
 						unset( $catalog_variations[ $object_key ] );
@@ -125,18 +124,20 @@ class Woo_SOR extends \WooCommerce\Square\Handlers\Product {
 					continue;
 				}
 
-				$variation_object = new CatalogObject( [
-					'type'                => 'ITEM_VARIATION',
-					'item_variation_data' => new \SquareConnect\Model\CatalogItemVariation( [
-						'item_id' => $catalog_object->getId(),
-					] ),
-				] );
+				$variation_object = new CatalogObject(
+					array(
+						'type'                => 'ITEM_VARIATION',
+						'item_variation_data' => new \SquareConnect\Model\CatalogItemVariation(
+							array(
+								'item_id' => $catalog_object->getId(),
+							)
+						),
+					)
+				);
 
 				$catalog_variations[] = self::update_catalog_variation( $variation_object, $product_variation );
 			}
-
-		// otherwise, we have a simple product
-		} else {
+		} else { // otherwise, we have a simple product
 
 			if ( ! empty( $catalog_variations ) ) {
 
@@ -144,15 +145,19 @@ class Woo_SOR extends \WooCommerce\Square\Handlers\Product {
 
 			} else {
 
-				$variation_object = new CatalogObject( [
-					'type'                => 'ITEM_VARIATION',
-					'item_variation_data' => new \SquareConnect\Model\CatalogItemVariation( [
-						'item_id' => $catalog_object->getId(),
-					] ),
-				] );
+				$variation_object = new CatalogObject(
+					array(
+						'type'                => 'ITEM_VARIATION',
+						'item_variation_data' => new \SquareConnect\Model\CatalogItemVariation(
+							array(
+								'item_id' => $catalog_object->getId(),
+							)
+						),
+					)
+				);
 			}
 
-			$catalog_variations = [ self::update_catalog_variation( $variation_object, $product ) ];
+			$catalog_variations = array( self::update_catalog_variation( $variation_object, $product ) );
 		}
 
 		$item_data->setVariations( array_values( $catalog_variations ) );
@@ -258,8 +263,8 @@ class Woo_SOR extends \WooCommerce\Square\Handlers\Product {
 
 		$location_id = wc_square()->get_settings_handler()->get_location_id();
 
-		$present_location_ids = $catalog_object->getPresentAtLocationIds() ?: [];
-		$absent_location_ids  = $catalog_object->getAbsentAtLocationIds() ?: [];
+		$present_location_ids = $catalog_object->getPresentAtLocationIds() ?: array();
+		$absent_location_ids  = $catalog_object->getAbsentAtLocationIds() ?: array();
 
 		// if trashed, set as absent at our location
 		if ( $is_delete ) {
@@ -269,9 +274,7 @@ class Woo_SOR extends \WooCommerce\Square\Handlers\Product {
 			if ( false !== ( $key = array_search( $location_id, $present_location_ids, true ) ) ) {
 				unset( $present_location_ids[ $key ] );
 			}
-
-		// otherwise, it's present
-		} else {
+		} else { // otherwise, it's present
 
 			$present_location_ids[] = $location_id;
 

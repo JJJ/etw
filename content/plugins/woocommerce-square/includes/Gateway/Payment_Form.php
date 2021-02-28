@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Gateway;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -31,8 +31,106 @@ use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
  * The payment form handler.
  *
  * @since 2.0.0
+ *
+ * @method \WooCommerce\Square\Gateway get_gateway()
  */
 class Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
+
+	/**
+	 * Adds hooks for rendering the payment form.
+	 * Extended from SV framework and remove render_js action
+	 *
+	 * @see SV_WC_Payment_Gateway_Payment_Form::render()
+	 *
+	 * @since 2.2.3
+	 */
+	protected function add_hooks() {
+
+		$gateway_id = $this->get_gateway()->get_id();
+
+		// payment form description
+		add_action( "wc_{$gateway_id}_payment_form_start", array( $this, 'render_payment_form_description' ), 15 );
+
+		// saved payment methods
+		add_action( "wc_{$gateway_id}_payment_form_start", array( $this, 'render_saved_payment_methods' ), 20 );
+
+		// sample eCheck image (if eCheck gateway)
+		add_action( "wc_{$gateway_id}_payment_form_start", array( $this, 'render_sample_check' ), 25 );
+
+		// fieldset start
+		add_action( "wc_{$gateway_id}_payment_form_start", array( $this, 'render_fieldset_start' ), 30 );
+
+		// payment fields
+		add_action( "wc_{$gateway_id}_payment_form",       array( $this, 'render_payment_fields' ), 0 );
+
+		// fieldset end
+		add_action( "wc_{$gateway_id}_payment_form_end",   array( $this, 'render_fieldset_end' ), 5 );
+	}
+
+	/**
+	 * Renders any additional billing information we need for processing on pages other than checkout
+	 * e.g. pay page, add payment method page
+	 *
+	 * @since 2.1.0
+	 */
+	public function render_supplementary_billing_info() {
+
+		$billing_data        = array();
+		$billing_data_source = null;
+
+		if ( is_checkout_pay_page() ) {
+
+			if ( $order = wc_get_order( $this->get_gateway()->get_checkout_pay_page_order_id() ) ) {
+				$billing_data_source = $order;
+			}
+		} elseif ( WC()->customer && ! is_checkout() ) {
+
+			$billing_data_source = WC()->customer;
+		}
+
+		if ( $billing_data_source ) {
+
+			$billing_data = array( 'billing_postcode' => $billing_data_source->get_billing_postcode() );
+
+			// 3d secure requires the full billing info
+			if ( $this->get_gateway()->is_3d_secure_enabled() ) {
+
+				$billing_data = array_merge(
+					$billing_data,
+					array(
+						'billing_first_name' => $billing_data_source->get_billing_first_name(),
+						'billing_last_name'  => $billing_data_source->get_billing_last_name(),
+						'billing_email'      => $billing_data_source->get_billing_email(),
+						'billing_country'    => $billing_data_source->get_billing_country(),
+						'billing_address_1'  => $billing_data_source->get_billing_address_1(),
+						'billing_address_2'  => $billing_data_source->get_billing_address_2(),
+						'billing_state'      => $billing_data_source->get_billing_state(),
+						'billing_city'       => $billing_data_source->get_billing_city(),
+						'billing_phone'      => $billing_data_source->get_billing_phone(),
+					)
+				);
+			}
+		}
+
+		foreach ( $billing_data as $key => $value ) {
+			echo '<input type="hidden" id="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '" />';
+		}
+
+		if ( is_checkout_pay_page() ) {
+
+			$order = wc_get_order( $this->get_gateway()->get_checkout_pay_page_order_id() );
+
+			$total_amount = $order->get_total();
+
+		} else {
+
+			$total_amount = WC()->cart->total;
+		}
+
+		echo '<input type="hidden" name="wc-' . $this->get_gateway()->get_id_dasherized() . '-amount" value="' . esc_attr( $total_amount > 0 ? $total_amount : '' ) . '" />';
+
+		echo '<style> #sq-nudata-modal { z-index: 999999 !important; } </style>';
+	}
 
 
 	/**
@@ -44,35 +142,24 @@ class Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
 
 		parent::render_payment_fields();
 
-		$fields = [
+		$fields = array(
 			'card-type',
 			'last-four',
 			'exp-month',
 			'exp-year',
 			'payment-nonce',
 			'payment-postcode',
-		];
+		);
+
+		if ( $this->get_gateway()->is_3d_secure_enabled() ) {
+			$fields[] = 'buyer-verification-token';
+		}
 
 		foreach ( $fields as $field_id ) {
 			echo '<input type="hidden" name="wc-' . esc_attr( $this->get_gateway()->get_id_dasherized() ) . '-' . esc_attr( $field_id ) . '" />';
 		}
 
-		$postcode = '';
-
-		if ( is_checkout_pay_page() ) {
-
-			if ( $order = wc_get_order( $this->get_gateway()->get_checkout_pay_page_order_id() ) ) {
-				$postcode = $order->get_billing_postcode();
-			}
-
-		} elseif ( WC()->customer && ! is_checkout() ) {
-
-			$postcode = WC()->customer->get_billing_postcode();
-		}
-
-		if ( $postcode ) {
-			echo '<input type="hidden" id="billing_postcode" value="' . esc_attr( $postcode ) . '" />';
-		}
+		$this->render_supplementary_billing_info();
 	}
 
 
@@ -90,23 +177,23 @@ class Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
 		$fields = parent::get_credit_card_fields();
 
 		// Square JS requires a postal code field for the form, but this is pre-filled and hidden
-		$fields['card-postal-code'] = [
+		$fields['card-postal-code'] = array(
 			'id'          => 'wc-' . $this->get_gateway()->get_id_dasherized() . '-postal-code',
 			'label'       => __( 'Postal code', 'woocommerce-square' ),
-			'class'       => [ 'form-row-wide' ],
+			'class'       => array( 'form-row-wide' ),
 			'required'    => true,
-			'input_class' => [ 'js-sv-wc-payment-gateway-credit-card-form-input', 'js-sv-wc-payment-gateway-credit-card-form-postal-code' ],
-		];
+			'input_class' => array( 'js-sv-wc-payment-gateway-credit-card-form-input', 'js-sv-wc-payment-gateway-credit-card-form-postal-code' ),
+		);
 
-		foreach ( [ 'card-number', 'card-expiry', 'card-csc', 'card-postal-code' ] as $field_key ) {
+		foreach ( array( 'card-number', 'card-expiry', 'card-csc', 'card-postal-code' ) as $field_key ) {
 
 			if ( isset( $fields[ $field_key ] ) ) {
 
 				// parent div classes - contains both the label and hosted field container div
-				$fields[ $field_key ]['class'] = array_merge( $fields[ $field_key ]['class'], [ "wc-{$this->get_gateway()->get_id_dasherized()}-{$field_key}-parent", "wc-{$this->get_gateway()->get_id_dasherized()}-hosted-field-parent" ] );
+				$fields[ $field_key ]['class'] = array_merge( $fields[ $field_key ]['class'], array( "wc-{$this->get_gateway()->get_id_dasherized()}-{$field_key}-parent", "wc-{$this->get_gateway()->get_id_dasherized()}-hosted-field-parent" ) );
 
 				// hosted field container classes - contains the iframe element
-				$fields[ $field_key ]['input_class'] = array_merge( $fields[ $field_key ]['input_class'], [ "wc-{$this->get_gateway()->get_id_dasherized()}-hosted-field-{$field_key}", "wc-{$this->get_gateway()->get_id_dasherized()}-hosted-field" ] );
+				$fields[ $field_key ]['input_class'] = array_merge( $fields[ $field_key ]['input_class'], array( "wc-{$this->get_gateway()->get_id_dasherized()}-hosted-field-{$field_key}", "wc-{$this->get_gateway()->get_id_dasherized()}-hosted-field" ) );
 			}
 		}
 
@@ -125,7 +212,12 @@ class Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
 
 		?>
 		<div class="form-row <?php echo implode( ' ', array_map( 'sanitize_html_class', $field['class'] ) ); ?>">
-			<label for="<?php echo esc_attr( $field['id'] ) . '-hosted'; ?>"><?php echo esc_html( $field['label'] ); if ( $field['required'] ) : ?><abbr class="required" title="required">&nbsp;*</abbr><?php endif; ?></label>
+			<label for="<?php echo esc_attr( $field['id'] ) . '-hosted'; ?>">
+			<?php
+			echo esc_html( $field['label'] );
+			if ( $field['required'] ) :
+				?>
+				<abbr class="required" title="required">&nbsp;*</abbr> <?php endif; ?></label>
 			<div id="<?php echo esc_attr( $field['id'] ) . '-hosted'; ?>" class="<?php echo implode( ' ', array_map( 'sanitize_html_class', $field['input_class'] ) ); ?>" data-placeholder="<?php echo isset( $field['placeholder'] ) ? esc_attr( $field['placeholder'] ) : ''; ?>"></div>
 		</div>
 		<?php
@@ -139,39 +231,47 @@ class Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
 	 */
 	public function render_js() {
 
-		$args = [
-			'id'                      => $this->get_gateway()->get_id(),
-			'id_dasherized'           => $this->get_gateway()->get_id_dasherized(),
-			'csc_required'            => $this->get_gateway()->csc_enabled(),
-			'logging_enabled'         => $this->get_gateway()->debug_log(),
-			'general_error'           => __( 'An error occurred, please try again or try an alternate form of payment.', 'woocommerce-square' ),
-			'ajax_url'                => admin_url( 'admin-ajax.php' ),
-			'ajax_log_nonce'          => wp_create_nonce( 'wc_' . $this->get_gateway()->get_id() . '_log_js_data' ),
-			'application_id'          => $this->get_gateway()->get_application_id(),
-		];
+		$args = array(
+			'application_id'                   => $this->get_gateway()->get_application_id(),
+			'ajax_log_nonce'                   => wp_create_nonce( 'wc_' . $this->get_gateway()->get_id() . '_log_js_data' ),
+			'ajax_url'                         => admin_url( 'admin-ajax.php' ),
+			'csc_required'                     => $this->get_gateway()->csc_enabled(),
+			'currency_code'                    => get_woocommerce_currency(),
+			'general_error'                    => __( 'An error occurred, please try again or try an alternate form of payment.', 'woocommerce-square' ),
+			'id'                               => $this->get_gateway()->get_id(),
+			'id_dasherized'                    => $this->get_gateway()->get_id_dasherized(),
+			'is_3d_secure_enabled'             => $this->get_gateway()->is_3d_secure_enabled(),
+			'is_checkout_registration_enabled' => 'yes' === get_option( 'woocommerce_enable_signup_and_login_from_checkout', 'no' ),
+			'is_user_logged_in'                => is_user_logged_in(),
+			'is_add_payment_method_page'       => is_add_payment_method_page(),
+			'location_id'                      => wc_square()->get_settings_handler()->get_location_id(),
+			'logging_enabled'                  => $this->get_gateway()->debug_log(),
+			'ajax_wc_checkout_validate_nonce'  => wp_create_nonce( 'wc_' . $this->get_gateway()->get_id() . '_checkout_validate' ),
+			'is_manual_order_payment'          => is_checkout() && is_wc_endpoint_url( 'order-pay' ),
+		);
 
 		// map the unique square card type string to our framework standards
-		$square_card_types = [
+		$square_card_types = array(
 			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD => 'masterCard',
 			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX       => 'americanExpress',
 			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_DINERSCLUB => 'discoverDiners',
 			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_JCB        => 'JCB',
-		];
+		);
 
-		$card_types = is_array( $this->get_gateway()->get_card_types() ) ? $this->get_gateway()->get_card_types() : [];
+		$card_types = is_array( $this->get_gateway()->get_card_types() ) ? $this->get_gateway()->get_card_types() : array();
 
-		$framework_card_types = array_map( [ Framework\SV_WC_Payment_Gateway_Helper::class, 'normalize_card_type' ], $card_types );
+		$framework_card_types = array_map( array( Framework\SV_WC_Payment_Gateway_Helper::class, 'normalize_card_type' ), $card_types );
 		$square_card_types    = array_merge( array_combine( $framework_card_types, $framework_card_types ), $square_card_types );
 
 		$args['enabled_card_types'] = $framework_card_types;
 		$args['square_card_types']  = array_flip( $square_card_types );
 
-		$input_styles = [
-			[
+		$input_styles = array(
+			array(
 				'backgroundColor' => 'transparent',
 				'fontSize'        => '1.3em',
-			]
-		];
+			),
+		);
 
 		/**
 		 * Filters the the Square payment form input styles.

@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Sync\Records;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use WooCommerce\Square\Sync\Records;
@@ -81,20 +81,23 @@ class Record {
 	private function parse_data( $data ) {
 
 		if ( is_numeric( $data ) ) {
-			$data = [
+			$data = array(
 				'type'       => 'alert',
 				'product_id' => absint( $data ),
-			];
+			);
 		}
 
 		$date = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
-		$data = wp_parse_args( (array) $data, [
-			'type'           => $this->get_default_type(),
-			'date'           => $date,
-			'message'        => '',
-			'product_id'     => 0,
-			'product_hidden' => false,
-		] );
+		$data = wp_parse_args(
+			(array) $data,
+			array(
+				'type'           => $this->get_default_type(),
+				'date'           => $date,
+				'message'        => '',
+				'product_id'     => 0,
+				'product_hidden' => false,
+			)
+		);
 
 		if ( empty( $data['id'] ) ) {
 			$data['id'] = uniqid( 'wc_square_sync_record_', false );
@@ -129,14 +132,14 @@ class Record {
 	 */
 	public function get_data() {
 
-		return [
+		return array(
 			'id'             => (string) $this->id,
 			'type'           => (string) $this->type,
 			'date'           => (string) $this->date,
 			'message'        => (string) $this->message,
 			'product_id'     => (int) $this->product_id,
 			'product_hidden' => (bool) $this->product_hidden,
-		];
+		);
 	}
 
 
@@ -199,12 +202,12 @@ class Record {
 	 */
 	private function get_valid_types() {
 
-		return [
+		return array(
 			'info'     => __( 'Info', 'woocommerce-square' ),
 			'notice'   => __( 'Notice', 'woocommerce-square' ),
 			'alert'    => __( 'Alert', 'woocommerce-square' ),
 			'resolved' => __( 'Resolved', 'woocommerce-square' ),
-		];
+		);
 	}
 
 
@@ -502,7 +505,7 @@ class Record {
 
 		if ( is_bool( $was_hidden ) ) {
 			$this->product_hidden = $was_hidden;
-			$set = true;
+			$set                  = true;
 		}
 
 		return $set;
@@ -533,32 +536,32 @@ class Record {
 	 */
 	public function get_actions() {
 
-		$actions = [];
+		$actions = array();
 
 		if ( ! $this->is_resolved() ) {
 
-			$actions['delete'] = (object) [
+			$actions['delete'] = (object) array(
 				'name'  => 'delete',
 				'label' => __( 'Delete', 'woocommerce-square' ),
 				'icon'  => '<span class="dashicons dashicons-trash"></span>',
-			];
+			);
 
 			if ( ! $this->is_type( 'info' ) ) {
 
-				$actions['resolve'] = (object) [
+				$actions['resolve'] = (object) array(
 					'name'  => 'resolve',
 					'label' => __( 'Ignore', 'woocommerce-square' ),
 					'icon'  => '<span class="dashicons dashicons-hidden"></span>',
-				];
+				);
 			}
 
 			if ( $this->has_product() ) {
 
-				$actions['unsync'] = (object) [
+				$actions['unsync'] = (object) array(
 					'name'  => 'unsync',
 					'label' => __( 'Unlink', 'woocommerce-square' ),
 					'icon'  => '<span class="dashicons dashicons-editor-unlink"></span>',
-				];
+				);
 			}
 		}
 

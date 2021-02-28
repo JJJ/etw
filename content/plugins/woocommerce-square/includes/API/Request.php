@@ -26,7 +26,7 @@ namespace WooCommerce\Square\API;
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 use SquareConnect\Configuration;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Base WooCommerce Square API request object.
@@ -46,7 +46,7 @@ class Request implements Framework\SV_WC_API_Request {
 	protected $square_api_method;
 
 	/** @var array arguments for the method call */
-	protected $square_api_args = [];
+	protected $square_api_args = array();
 
 	/** @var null|object the square API request model */
 	protected $square_request;
@@ -168,17 +168,17 @@ class Request implements Framework\SV_WC_API_Request {
 
 		$body = '';
 
-		if ( is_callable( [ $this->square_request, '__toString' ] ) ) {
+		if ( is_callable( array( $this->square_request, '__toString' ) ) ) {
 
 			$body = $this->square_request->__toString();
 
 		} elseif ( is_array( $this->square_api_args ) ) {
 
-			$body = [];
+			$body = array();
 
 			foreach ( $this->square_api_args as $key => $arg ) {
 
-				if ( is_callable( [ $arg, '__toString' ] ) ) {
+				if ( is_callable( array( $arg, '__toString' ) ) ) {
 					$body[ $key ] = $arg->__toString();
 				}
 			}

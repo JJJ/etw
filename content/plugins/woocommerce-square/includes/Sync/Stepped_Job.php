@@ -25,7 +25,7 @@ namespace WooCommerce\Square\Sync;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Stepped Job abstract.
@@ -105,7 +105,7 @@ abstract class Stepped_Job extends Job {
 
 		$next_step = $this->get_next_step();
 
-		if ( is_callable( [ $this, $next_step ] ) ) {
+		if ( is_callable( array( $this, $next_step ) ) ) {
 
 			$this->start_step_cycle( $next_step );
 
@@ -138,10 +138,10 @@ abstract class Stepped_Job extends Job {
 	 */
 	protected function start_step_cycle( $step_name ) {
 
-		$current_step_cycle = [
+		$current_step_cycle = array(
 			'step_name'  => $step_name,
 			'start_time' => microtime( true ),
-		];
+		);
 
 		wc_square()->log( "Starting step cycle: $step_name" );
 
@@ -160,7 +160,7 @@ abstract class Stepped_Job extends Job {
 	 */
 	protected function complete_step_cycle( $step_name, $is_successful = true, $error_message = '' ) {
 
-		$current_step_cycle = $this->get_attr( 'current_step_cycle', [] );
+		$current_step_cycle = $this->get_attr( 'current_step_cycle', array() );
 
 		if ( ! empty( $current_step_cycle ) ) {
 
@@ -177,7 +177,7 @@ abstract class Stepped_Job extends Job {
 				wc_square()->log( "Failed step cycle: $step_name (${current_step_cycle['runtime']}) - $error_message" );
 			}
 
-			$completed_cycles   = $this->get_attr( 'completed_step_cycles', [] );
+			$completed_cycles   = $this->get_attr( 'completed_step_cycles', array() );
 			$completed_cycles[] = $current_step_cycle;
 			$this->set_attr( 'completed_step_cycles', $completed_cycles );
 		}
@@ -217,12 +217,12 @@ abstract class Stepped_Job extends Job {
 			return;
 		}
 
-		$completed_steps = $this->get_attr( 'completed_steps', [] );
+		$completed_steps = $this->get_attr( 'completed_steps', array() );
 
-		$completed_steps[] = [
+		$completed_steps[] = array(
 			'name'            => $step_name,
 			'completion_time' => current_time( 'mysql' ),
-		];
+		);
 
 		$this->set_attr( 'completed_steps', $completed_steps );
 

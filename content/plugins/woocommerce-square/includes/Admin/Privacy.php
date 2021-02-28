@@ -23,7 +23,7 @@
 
 namespace WooCommerce\Square\Admin;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -42,10 +42,9 @@ class Privacy extends \WC_Abstract_Privacy {
 	 */
 	public function __construct() {
 
-
 		parent::__construct( __( 'Square', 'woocommerce-square' ) );
 
-		$this->add_eraser( 'woocommerce-square-customer-data', __( 'WooCommerce Square Customer Data', 'woocommerce-square' ), [ $this, 'customer_data_eraser' ] );
+		$this->add_eraser( 'woocommerce-square-customer-data', __( 'WooCommerce Square Customer Data', 'woocommerce-square' ), array( $this, 'customer_data_eraser' ) );
 	}
 
 
@@ -60,7 +59,8 @@ class Privacy extends \WC_Abstract_Privacy {
 			sprintf(
 				/* translators: Placeholder: %1$s - <a> tag, %2$s - </a> tag */
 				__( 'By using this extension, you may be storing personal data or sharing data with an external service. %1$sLearn more about how this works, including what you may want to include in your privacy policy.%2$s', 'woocommerce-square' ),
-				'<a href="https://docs.woocommerce.com/document/privacy-payments/#woocommerce-square" target="_blank">', '</a>'
+				'<a href="https://docs.woocommerce.com/document/privacy-payments/#woocommerce-square" target="_blank">',
+				'</a>'
 			)
 		);
 	}
@@ -82,7 +82,7 @@ class Privacy extends \WC_Abstract_Privacy {
 		$square_customer_id = get_user_meta( $user->ID, 'wc_square_customer_id', true );
 
 		$items_removed = false;
-		$messages      = [];
+		$messages      = array();
 
 		if ( ! empty( $square_customer_id ) ) {
 
@@ -93,12 +93,12 @@ class Privacy extends \WC_Abstract_Privacy {
 			$messages[] = __( 'Square User Data Erased.', 'woocommerce-square' );
 		}
 
-		return [
+		return array(
 			'items_removed'  => $items_removed,
 			'items_retained' => false,
 			'messages'       => $messages,
 			'done'           => true,
-		];
+		);
 	}
 
 

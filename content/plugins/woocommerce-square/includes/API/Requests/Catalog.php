@@ -28,7 +28,7 @@ use SquareConnect\Model as SquareModel;
 use SquareConnect\Api\CatalogApi;
 use WooCommerce\Square\API\Request;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * WooCommerce Square Catalog API Request class.
@@ -64,7 +64,7 @@ class Catalog extends Request {
 	public function set_batch_delete_catalog_objects_data( array $object_ids ) {
 
 		$this->square_api_method = 'batchDeleteCatalogObjects';
-		$this->square_api_args   = [ new SquareModel\BatchDeleteCatalogObjectsRequest( [ 'object_ids' => $object_ids ] ) ];
+		$this->square_api_args   = array( new SquareModel\BatchDeleteCatalogObjectsRequest( array( 'object_ids' => $object_ids ) ) );
 	}
 
 
@@ -82,10 +82,14 @@ class Catalog extends Request {
 	public function set_batch_retrieve_catalog_objects_data( array $object_ids, $include_related_objects = false ) {
 
 		$this->square_api_method = 'batchRetrieveCatalogObjects';
-		$this->square_api_args   = [ new SquareModel\BatchRetrieveCatalogObjectsRequest( [
-			'object_ids'              => $object_ids,
-			'include_related_objects' => (bool) $include_related_objects
-		] ) ];
+		$this->square_api_args   = array(
+			new SquareModel\BatchRetrieveCatalogObjectsRequest(
+				array(
+					'object_ids'              => $object_ids,
+					'include_related_objects' => (bool) $include_related_objects,
+				)
+			),
+		);
 	}
 
 
@@ -103,10 +107,14 @@ class Catalog extends Request {
 	public function set_batch_upsert_catalog_objects_data( $idempotency_key, array $batches ) {
 
 		$this->square_api_method = 'batchUpsertCatalogObjects';
-		$this->square_api_args   = [ new SquareModel\BatchUpsertCatalogObjectsRequest( [
-			'idempotency_key' => $idempotency_key,
-			'batches'         => $batches,
-		] ) ];
+		$this->square_api_args   = array(
+			new SquareModel\BatchUpsertCatalogObjectsRequest(
+				array(
+					'idempotency_key' => $idempotency_key,
+					'batches'         => $batches,
+				)
+			),
+		);
 	}
 
 
@@ -121,7 +129,7 @@ class Catalog extends Request {
 	 * @param string $cursor
 	 * @param array $types
 	 */
-	public function set_catalog_info_data( $cursor = '', $types = [] ) {
+	public function set_catalog_info_data( $cursor = '', $types = array() ) {
 
 		$this->square_api_method = 'catalogInfo';
 	}
@@ -140,7 +148,7 @@ class Catalog extends Request {
 	public function set_delete_catalog_object_data( $object_id ) {
 
 		$this->square_api_method = 'deleteCatalogObject';
-		$this->square_api_args   = [ $object_id ];
+		$this->square_api_args   = array( $object_id );
 	}
 
 
@@ -155,13 +163,13 @@ class Catalog extends Request {
 	 * @param string $cursor (optional) the pagination cursor
 	 * @param array $types (optional) the catalog item types to filter by
 	 */
-	public function set_list_catalog_data( $cursor = '', $types = [] ) {
+	public function set_list_catalog_data( $cursor = '', $types = array() ) {
 
 		$this->square_api_method = 'listCatalog';
-		$this->square_api_args   = [
+		$this->square_api_args   = array(
 			'cursor' => $cursor,
-			'types'  => is_array( $types ) ? implode( ',', array_map( 'strtoupper', $types ) ) : ''
-		];
+			'types'  => is_array( $types ) ? implode( ',', array_map( 'strtoupper', $types ) ) : '',
+		);
 	}
 
 
@@ -179,7 +187,7 @@ class Catalog extends Request {
 	public function set_retrieve_catalog_object_data( $object_id, $include_related_objects = false ) {
 
 		$this->square_api_method = 'retrieveCatalogObject';
-		$this->square_api_args   = [ $object_id, (bool) $include_related_objects ];
+		$this->square_api_args   = array( $object_id, (bool) $include_related_objects );
 	}
 
 
@@ -193,14 +201,14 @@ class Catalog extends Request {
 	 *
 	 * @param array $args see Square documentation for full list of args allowed
 	 */
-	public function set_search_catalog_objects_data( array $args = [] ) {
+	public function set_search_catalog_objects_data( array $args = array() ) {
 
 		// convert object types to array
 		if ( isset( $args['object_types'] ) && ! is_array( $args['object_types'] ) ) {
-			$args['object_types'] = [ $args['object_types'] ];
+			$args['object_types'] = array( $args['object_types'] );
 		}
 
-		$defaults = [
+		$defaults = array(
 			'cursor'                  => null,
 			'object_types'            => null,
 			'include_deleted_objects' => null,
@@ -208,13 +216,13 @@ class Catalog extends Request {
 			'begin_time'              => null,
 			'query'                   => null,
 			'limit'                   => null,
-		];
+		);
 
 		// apply defaults and remove any keys that aren't recognized
 		$args = array_intersect_key( wp_parse_args( $args, $defaults ), $defaults );
 
 		$this->square_api_method = 'searchCatalogObjects';
-		$this->square_api_args   = [ new SquareModel\SearchCatalogObjectsRequest( $args ) ];
+		$this->square_api_args   = array( new SquareModel\SearchCatalogObjectsRequest( $args ) );
 	}
 
 
@@ -230,14 +238,18 @@ class Catalog extends Request {
 	 * @param string[] $modifier_lists_to_enable array of list IDs to enable
 	 * @param string[] $modifier_lists_to_disable array of list IDs to disable
 	 */
-	public function set_update_item_modifier_lists_data( array $item_ids, array $modifier_lists_to_enable = [], array $modifier_lists_to_disable = [] ) {
+	public function set_update_item_modifier_lists_data( array $item_ids, array $modifier_lists_to_enable = array(), array $modifier_lists_to_disable = array() ) {
 
 		$this->square_api_method = 'updateItemModifierLists';
-		$this->square_api_args   = [ new SquareModel\UpdateItemModifierListsRequest( [
-			'item_ids'                  => $item_ids,
-			'modifier_lists_to_enable'  => $modifier_lists_to_enable,
-			'modifier_lists_to_disable' => $modifier_lists_to_disable,
-		] ) ];
+		$this->square_api_args   = array(
+			new SquareModel\UpdateItemModifierListsRequest(
+				array(
+					'item_ids'                  => $item_ids,
+					'modifier_lists_to_enable'  => $modifier_lists_to_enable,
+					'modifier_lists_to_disable' => $modifier_lists_to_disable,
+				)
+			),
+		);
 	}
 
 
@@ -253,14 +265,18 @@ class Catalog extends Request {
 	 * @param string[] $taxes_to_enable array of catalog tax IDs to enable
 	 * @param string[] $taxes_to_disable array of catalog tax IDs to disable
 	 */
-	public function set_update_item_taxes_data( array $item_ids, array $taxes_to_enable = [], array $taxes_to_disable = [] ) {
+	public function set_update_item_taxes_data( array $item_ids, array $taxes_to_enable = array(), array $taxes_to_disable = array() ) {
 
 		$this->square_api_method = 'updateItemTaxes';
-		$this->square_api_args   = [ new SquareModel\UpdateItemTaxesRequest( [
-			'item_ids'         => $item_ids,
-			'taxes_to_enable'  => $taxes_to_enable,
-			'taxes_to_disable' => $taxes_to_disable,
-		] ) ];
+		$this->square_api_args   = array(
+			new SquareModel\UpdateItemTaxesRequest(
+				array(
+					'item_ids'         => $item_ids,
+					'taxes_to_enable'  => $taxes_to_enable,
+					'taxes_to_disable' => $taxes_to_disable,
+				)
+			),
+		);
 	}
 
 
@@ -278,10 +294,14 @@ class Catalog extends Request {
 	public function set_upsert_catalog_object_data( $idempotency_key, $object ) {
 
 		$this->square_api_method = 'upsertCatalogObject';
-		$this->square_api_args   = [ new SquareModel\UpsertCatalogObjectRequest( [
-			'idempotency_key' => $idempotency_key,
-			'object'          => $object,
-		] ) ];
+		$this->square_api_args   = array(
+			new SquareModel\UpsertCatalogObjectRequest(
+				array(
+					'idempotency_key' => $idempotency_key,
+					'object'          => $object,
+				)
+			),
+		);
 	}
 
 

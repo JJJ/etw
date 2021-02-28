@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { createBlock, registerBlockType } from '@wordpress/blocks';
 import { without } from 'lodash';
+import { Icon, folder } from '@woocommerce/icons';
 
 /**
  * Internal dependencies
@@ -11,7 +12,9 @@ import { without } from 'lodash';
 import './editor.scss';
 import Block from './block';
 import { deprecatedConvertToShortcode } from '../../utils/deprecations';
-import sharedAttributes, { sharedAttributeBlockTypes } from '../../utils/shared-attributes';
+import sharedAttributes, {
+	sharedAttributeBlockTypes,
+} from '../../utils/shared-attributes';
 
 /**
  * Register and run the "Products by Category" block.
@@ -19,7 +22,7 @@ import sharedAttributes, { sharedAttributeBlockTypes } from '../../utils/shared-
 registerBlockType( 'woocommerce/product-category', {
 	title: __( 'Products by Category', 'woocommerce' ),
 	icon: {
-		src: 'category',
+		src: <Icon srcElement={ folder } />,
 		foreground: '#96588a',
 	},
 	category: 'woocommerce',
@@ -31,6 +34,11 @@ registerBlockType( 'woocommerce/product-category', {
 	supports: {
 		align: [ 'wide', 'full' ],
 		html: false,
+	},
+	example: {
+		attributes: {
+			isPreview: true,
+		},
 	},
 	attributes: {
 		...sharedAttributes,
@@ -56,11 +64,15 @@ registerBlockType( 'woocommerce/product-category', {
 		from: [
 			{
 				type: 'block',
-				blocks: without( sharedAttributeBlockTypes, 'woocommerce/product-category' ),
-				transform: ( attributes ) => createBlock(
-					'woocommerce/product-category',
-					{ ...attributes, editMode: false }
+				blocks: without(
+					sharedAttributeBlockTypes,
+					'woocommerce/product-category'
 				),
+				transform: ( attributes ) =>
+					createBlock( 'woocommerce/product-category', {
+						...attributes,
+						editMode: false,
+					} ),
 			},
 		],
 	},
@@ -79,12 +91,16 @@ registerBlockType( 'woocommerce/product-category', {
 					default: 'date',
 				},
 			},
-			save: deprecatedConvertToShortcode( 'woocommerce/product-category' ),
+			save: deprecatedConvertToShortcode(
+				'woocommerce/product-category'
+			),
 		},
 	],
 
 	/**
 	 * Renders and manages the block.
+	 *
+	 * @param {Object} props Props to pass to block.
 	 */
 	edit( props ) {
 		return <Block { ...props } />;

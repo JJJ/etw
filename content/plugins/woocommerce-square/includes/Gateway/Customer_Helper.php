@@ -16,14 +16,11 @@
  * versions in the future. If you wish to customize WooCommerce Square for your
  * needs please refer to https://docs.woocommerce.com/document/woocommerce-square/
  *
- * @author    WooCommerce
- * @copyright Copyright: (c) 2019, Automattic, Inc.
- * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
 namespace WooCommerce\Square\Gateway;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
@@ -40,8 +37,8 @@ class Customer_Helper {
 	public static function add_customers( array $customers ) {
 		global $wpdb;
 
-		$placeholders = [];
-		$values       = [];
+		$placeholders = array();
+		$values       = array();
 
 		$query = "INSERT INTO {$wpdb->prefix}woocommerce_square_customers (square_id, email_address) VALUES ";
 
@@ -61,9 +58,9 @@ class Customer_Helper {
 		$query .= implode( ', ', $placeholders );
 
 		// update the Square ID value when duplicate email addresses are present
-		$query .= " ON DUPLICATE KEY UPDATE email_address = VALUES(email_address)";
+		$query .= " ON DUPLICATE KEY UPDATE email_address = VALUES(email_address)"; //phpcs:ignore Squiz.Strings.DoubleQuoteUsage.NotRequired
 
-		$wpdb->query( $wpdb->prepare( $query, $values ) );
+		$wpdb->query( $wpdb->prepare( $query, $values ) ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 	}
 
 
@@ -81,10 +78,10 @@ class Customer_Helper {
 
 		if ( is_email( $email_address ) ) {
 
-			$params = [
+			$params = array(
 				'square_id'     => wc_clean( $square_id ),
 				'email_address' => wc_clean( $email_address ),
-			];
+			);
 
 			if ( $user_id && is_numeric( $user_id ) ) {
 				$params['user_id'] = (int) $user_id;
@@ -111,10 +108,12 @@ class Customer_Helper {
 
 		if ( is_email( $email_address ) ) {
 
-			$square_id = $wpdb->get_var( $wpdb->prepare(
-				"SELECT square_id FROM {$wpdb->prefix}woocommerce_square_customers WHERE email_address = %s",
-				$email_address
-			) );
+			$square_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT square_id FROM {$wpdb->prefix}woocommerce_square_customers WHERE email_address = %s",
+					$email_address
+				)
+			);
 		}
 
 		return $square_id;
@@ -124,14 +123,16 @@ class Customer_Helper {
 	public static function get_customers_by_email( $email_address ) {
 		global $wpdb;
 
-		$square_ids = [];
+		$square_ids = array();
 
 		if ( is_email( $email_address ) ) {
 
-			$square_ids = $wpdb->get_col( $wpdb->prepare(
-				"SELECT square_id FROM {$wpdb->prefix}woocommerce_square_customers WHERE email_address = %s",
-				$email_address
-			) );
+			$square_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT square_id FROM {$wpdb->prefix}woocommerce_square_customers WHERE email_address = %s",
+					$email_address
+				)
+			);
 		}
 
 		return $square_ids;
@@ -149,10 +150,12 @@ class Customer_Helper {
 	public static function is_customer_indexed( $square_id ) {
 		global $wpdb;
 
-		$result = $wpdb->get_var( $wpdb->prepare(
-			"SELECT * FROM {$wpdb->prefix}woocommerce_square_customers WHERE square_id = %s",
-			$square_id
-		) );
+		$result = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}woocommerce_square_customers WHERE square_id = %s",
+				$square_id
+			)
+		);
 
 		return (bool) $result;
 	}
@@ -174,16 +177,9 @@ class Customer_Helper {
 			$collate = $wpdb->get_charset_collate();
 		}
 
-		$schema = "
-CREATE TABLE IF NOT EXISTS {$wpdb->prefix}woocommerce_square_customers (
-square_id varchar(200) NOT NULL,
-email_address varchar(200) NOT NULL,
-user_id BIGINT UNSIGNED NOT NULL,
-PRIMARY KEY (square_id)
-) $collate;
-		";
+		$schema = $wpdb->prepare( "CREATE TABLE {$wpdb->prefix}woocommerce_square_customers (`square_id` varchar(191) NOT NULL, `email_address` varchar(200) NOT NULL, `user_id` BIGINT UNSIGNED NOT NULL, PRIMARY KEY (`square_id`) ) %1s", $collate ); //phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder
 
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		dbDelta( $schema );
 	}

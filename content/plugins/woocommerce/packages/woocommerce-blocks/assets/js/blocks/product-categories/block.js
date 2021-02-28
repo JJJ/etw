@@ -2,125 +2,207 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component, createRef, Fragment } from 'react';
-import classnames from 'classnames';
-import { HOME_URL } from '@woocommerce/block-settings';
+import { InspectorControls } from '@wordpress/block-editor';
+import ServerSideRender from '@wordpress/server-side-render';
+import PropTypes from 'prop-types';
+import { PanelBody, ToggleControl, Placeholder } from '@wordpress/components';
+import { Icon, list } from '@woocommerce/icons';
+import ToggleButtonControl from '@woocommerce/editor-components/toggle-button-control';
 
-/**
- * Internal dependencies
- */
-import withComponentId from '../../base/hocs/with-component-id';
+const EmptyPlaceholder = () => (
+	<Placeholder
+		icon={ <Icon srcElement={ list } /> }
+		label={ __(
+			'Product Categories List',
+			'woocommerce'
+		) }
+		className="wc-block-product-categories"
+	>
+		{ __(
+			"This block shows product categories for your store. To use it, you'll first need to create a product and assign it to a category.",
+			'woocommerce'
+		) }
+	</Placeholder>
+);
 
 /**
  * Component displaying the categories as dropdown or list.
+ *
+ * @param {Object} props Incoming props for the component.
+ * @param {Object} props.attributes Incoming block attributes.
+ * @param {function(any):any} props.setAttributes Setter for block attributes.
+ * @param {string} props.name Name for block.
  */
-class ProductCategoriesBlock extends Component {
-	constructor() {
-		super( ...arguments );
-		this.select = createRef();
-		this.onNavigate = this.onNavigate.bind( this );
-		this.renderList = this.renderList.bind( this );
-		this.renderOptions = this.renderOptions.bind( this );
-	}
-
-	onNavigate() {
-		const { isPreview = false } = this.props;
-		const url = this.select.current.value;
-		if ( 'false' === url ) {
-			return;
-		}
-		const home = HOME_URL;
-
-		if ( ! isPreview && 0 === url.indexOf( home ) ) {
-			document.location.href = url;
-		}
-	}
-
-	renderList( items, depth = 0 ) {
-		const { isPreview = false } = this.props;
-		const { hasCount } = this.props.attributes;
-		const parentKey = 'parent-' + items[ 0 ].term_id;
+const ProductCategoriesBlock = ( { attributes, setAttributes, name } ) => {
+	const getInspectorControls = () => {
+		const {
+			hasCount,
+			hasImage,
+			hasEmpty,
+			isDropdown,
+			isHierarchical,
+		} = attributes;
 
 		return (
-			<ul key={ parentKey }>
-				{ items.map( ( cat ) => {
-					const count = hasCount ? <span>({ cat.count })</span> : null;
-					return [
-						<li key={ cat.term_id }>
-							<a href={ isPreview ? null : cat.link }>{ cat.name }</a> { count } { /* eslint-disable-line */ }
-						</li>,
-						!! cat.children && !! cat.children.length && this.renderList( cat.children, depth + 1 ),
-					];
-				} ) }
-			</ul>
-		);
-	}
-
-	renderOptions( items, depth = 0 ) {
-		const { hasCount } = this.props.attributes;
-
-		return items.map( ( cat ) => {
-			const count = hasCount ? `(${ cat.count })` : null;
-			return [
-				<option key={ cat.term_id } value={ cat.link }>
-					{ '–'.repeat( depth ) } { cat.name } { count }
-				</option>,
-				!! cat.children && !! cat.children.length && this.renderOptions( cat.children, depth + 1 ),
-			];
-		} );
-	}
-
-	render() {
-		const { attributes, categories, componentId } = this.props;
-		const { className, isDropdown } = attributes;
-		const classes = classnames(
-			'wc-block-product-categories',
-			className,
-			{
-				'is-dropdown': isDropdown,
-				'is-list': ! isDropdown,
-			}
-		);
-
-		const selectId = `prod-categories-${ componentId }`;
-
-		return (
-			<Fragment>
-				{ categories.length > 0 && (
-					<div className={ classes }>
-						{ isDropdown ? (
-							<Fragment>
-								<div className="wc-block-product-categories__dropdown">
-									<label className="screen-reader-text" htmlFor={ selectId }>
-										{ __( 'Select a category', 'woocommerce' ) }
-									</label>
-									<select id={ selectId } ref={ this.select }>
-										<option value="false" hidden>
-											{ __( 'Select a category', 'woocommerce' ) }
-										</option>
-										{ this.renderOptions( categories ) }
-									</select>
-								</div>
-								<button
-									type="button"
-									className="wc-block-product-categories__button"
-									aria-label={ __( 'Go to category', 'woocommerce' ) }
-									icon="arrow-right-alt2"
-									onClick={ this.onNavigate }
-								>
-									<svg aria-hidden="true" role="img" focusable="false" className="dashicon dashicons-arrow-right-alt2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-										<path d="M6 15l5-5-5-5 1-2 7 7-7 7z"></path>
-									</svg>
-								</button>
-							</Fragment>
-						) : (
-							this.renderList( categories )
+			<InspectorControls key="inspector">
+				<PanelBody
+					title={ __(
+						'List Settings',
+						'woocommerce'
+					) }
+					initialOpen
+				>
+					<ToggleButtonControl
+						label={ __(
+							'Display style',
+							'woocommerce'
 						) }
-					</div>
-				) }
-			</Fragment>
+						value={ isDropdown ? 'dropdown' : 'list' }
+						options={ [
+							{
+								label: __(
+									'List',
+									'woocommerce'
+								),
+								value: 'list',
+							},
+							{
+								label: __(
+									'Dropdown',
+									'woocommerce'
+								),
+								value: 'dropdown',
+							},
+						] }
+						onChange={ ( value ) =>
+							setAttributes( {
+								isDropdown: value === 'dropdown',
+							} )
+						}
+					/>
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Content', 'woocommerce' ) }
+					initialOpen
+				>
+					<ToggleControl
+						label={ __(
+							'Show product count',
+							'woocommerce'
+						) }
+						help={
+							hasCount
+								? __(
+										'Product count is visible.',
+										'woocommerce'
+								  )
+								: __(
+										'Product count is hidden.',
+										'woocommerce'
+								  )
+						}
+						checked={ hasCount }
+						onChange={ () =>
+							setAttributes( { hasCount: ! hasCount } )
+						}
+					/>
+					{ ! isDropdown && (
+						<ToggleControl
+							label={ __(
+								'Show category images',
+								'woocommerce'
+							) }
+							help={
+								hasImage
+									? __(
+											'Category images are visible.',
+											'woocommerce'
+									  )
+									: __(
+											'Category images are hidden.',
+											'woocommerce'
+									  )
+							}
+							checked={ hasImage }
+							onChange={ () =>
+								setAttributes( { hasImage: ! hasImage } )
+							}
+						/>
+					) }
+					<ToggleControl
+						label={ __(
+							'Show hierarchy',
+							'woocommerce'
+						) }
+						help={
+							isHierarchical
+								? __(
+										'Hierarchy is visible.',
+										'woocommerce'
+								  )
+								: __(
+										'Hierarchy is hidden.',
+										'woocommerce'
+								  )
+						}
+						checked={ isHierarchical }
+						onChange={ () =>
+							setAttributes( {
+								isHierarchical: ! isHierarchical,
+							} )
+						}
+					/>
+					<ToggleControl
+						label={ __(
+							'Show empty categories',
+							'woocommerce'
+						) }
+						help={
+							hasEmpty
+								? __(
+										'Empty categories are visible.',
+										'woocommerce'
+								  )
+								: __(
+										'Empty categories are hidden.',
+										'woocommerce'
+								  )
+						}
+						checked={ hasEmpty }
+						onChange={ () =>
+							setAttributes( { hasEmpty: ! hasEmpty } )
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
 		);
-	}
-}
+	};
 
-export default withComponentId( ProductCategoriesBlock );
+	return (
+		<>
+			{ getInspectorControls() }
+			<ServerSideRender
+				block={ name }
+				attributes={ attributes }
+				EmptyResponsePlaceholder={ EmptyPlaceholder }
+			/>
+		</>
+	);
+};
+
+ProductCategoriesBlock.propTypes = {
+	/**
+	 * The attributes for this block
+	 */
+	attributes: PropTypes.object.isRequired,
+	/**
+	 * The register block name.
+	 */
+	name: PropTypes.string.isRequired,
+	/**
+	 * A callback to update attributes
+	 */
+	setAttributes: PropTypes.func.isRequired,
+};
+
+export default ProductCategoriesBlock;

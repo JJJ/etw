@@ -25,7 +25,7 @@ namespace WooCommerce\Square\API;
 
 use SkyVerge\WooCommerce\PluginFramework\v5_4_0 as Framework;
 
-defined( 'ABSPATH' ) or exit;
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Base WooCommerce Square API response object.
@@ -74,7 +74,7 @@ class Response implements Framework\SV_WC_API_Response {
 	 */
 	public function get_errors() {
 
-		return ! empty( $this->raw_response_data->errors ) && is_array( $this->raw_response_data->errors ) ? $this->raw_response_data->errors : [];
+		return ! empty( $this->raw_response_data->errors ) && is_array( $this->raw_response_data->errors ) ? $this->raw_response_data->errors : array();
 	}
 
 
@@ -92,6 +92,24 @@ class Response implements Framework\SV_WC_API_Response {
 
 
 	/**
+	 * Determines if the API response contains a particular error code.
+	 *
+	 * @since 2.1.6
+	 *
+	 * @return bool
+	 */
+	public function has_error_code( $error_code ) {
+
+		foreach ( $this->get_errors() as $error ) {
+			if ( $error_code === $error->code ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * Gets the response data as a string.
 	 *
 	 * @since 2.0.0
@@ -100,7 +118,7 @@ class Response implements Framework\SV_WC_API_Response {
 	 */
 	public function to_string() {
 
-		return is_callable( [ $this->get_data(), '__toString' ] ) ? $this->get_data() : '';
+		return is_callable( array( $this->get_data(), '__toString' ) ) ? $this->get_data() : '';
 	}
 
 
