@@ -3,6 +3,7 @@
  */
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
+import { AddressForm } from '@woocommerce/base-components/cart-checkout';
 import Button from '@woocommerce/base-components/button';
 import { useState } from '@wordpress/element';
 import isShallowEqual from '@wordpress/is-shallow-equal';
@@ -12,7 +13,6 @@ import { useValidationContext } from '@woocommerce/base-context';
  * Internal dependencies
  */
 import './style.scss';
-import { AddressForm } from '../address-form';
 
 const ShippingCalculatorAddress = ( {
 	address: initialAddress,

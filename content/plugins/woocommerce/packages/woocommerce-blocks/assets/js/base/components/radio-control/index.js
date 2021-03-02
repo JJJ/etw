@@ -30,7 +30,7 @@ const RadioControl = ( {
 			>
 				{ options.map( ( option ) => (
 					<RadioControlOption
-						key={ `${ radioControlId }-${ option.value }` }
+						key={ option.value }
 						name={ `radio-control-${ radioControlId }` }
 						checked={ option.value === selected }
 						option={ option }

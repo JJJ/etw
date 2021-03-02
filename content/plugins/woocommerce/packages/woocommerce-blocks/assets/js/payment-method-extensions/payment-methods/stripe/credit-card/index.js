@@ -36,11 +36,11 @@ const StripeComponent = ( props ) => {
 const StripeLabel = ( props ) => {
 	const { PaymentMethodLabel } = props.components;
 
-	const labelText = getStripeServerData().title
-		? getStripeServerData().title
-		: __( 'Credit / Debit Card', 'woocommerce' );
-
-	return <PaymentMethodLabel text={ labelText } />;
+	return (
+		<PaymentMethodLabel
+			text={ __( 'Credit / Debit Card', 'woocommerce' ) }
+		/>
+	);
 };
 
 const cardIcons = getStripeCreditCardIcons();
@@ -56,9 +56,7 @@ const stripeCcPaymentMethod = {
 		'woocommerce'
 	),
 	supports: {
-		showSavedCards: getStripeServerData().showSavedCards,
-		showSaveOption: getStripeServerData().showSaveOption,
-		features: getStripeServerData()?.supports ?? [],
+		savePaymentInfo: getStripeServerData().allowSavedCards,
 	},
 };
 

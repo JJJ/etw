@@ -250,7 +250,7 @@
 		var shifted    = false;
 		var hasFocus   = false;
 
-		$( document.body ).on( 'keyup keydown', function( e ) {
+		$( document.body ).bind( 'keyup keydown', function( e ) {
 			shifted    = e.shiftKey;
 			controlled = e.ctrlKey || e.metaKey;
 		});
@@ -315,7 +315,7 @@
 			} else {
 				$( this ).closest( 'tr' ).next( 'tr' ).show();
 			}
-		}).trigger( 'change' );
+		}).change();
 
 		// Hidden options
 		$( '.hide_options_if_checked' ).each( function() {
@@ -331,7 +331,7 @@
 						.nextUntil( '.hide_options_if_checked, .show_options_if_checked', '.hidden_option' )
 						.show();
 				}
-			}).trigger( 'change' );
+			}).change();
 		});
 
 		$( '.show_options_if_checked' ).each( function() {
@@ -347,7 +347,7 @@
 						.nextUntil( '.hide_options_if_checked, .show_options_if_checked', '.hidden_option' )
 						.hide();
 				}
-			}).trigger( 'change' );
+			}).change();
 		});
 
 		// Reviews.
@@ -357,7 +357,7 @@
 			} else {
 				$( '#woocommerce_enable_review_rating' ).closest( 'tr' ).hide();
 			}
-		}).trigger( 'change' );
+		}).change();
 
 		// Attribute term table
 		$( 'table.attributes-table tbody tr:nth-child(odd)' ).addClass( 'alternate' );

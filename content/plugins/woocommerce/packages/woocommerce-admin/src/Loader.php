@@ -1085,10 +1085,8 @@ class Loader {
 			}
 		}
 
-		$user_controller = new \WP_REST_Users_Controller();
-		$request         = new \WP_REST_Request();
-		$request->set_query_params( array( 'context' => 'edit' ) );
-		$user_response     = $user_controller->get_current_item( $request );
+		$user_controller   = new \WP_REST_Users_Controller();
+		$user_response     = $user_controller->get_current_item( new \WP_REST_Request() );
 		$current_user_data = is_wp_error( $user_response ) ? (object) array() : $user_response->get_data();
 
 		$settings['currentUserData']      = $current_user_data;
@@ -1101,7 +1099,6 @@ class Loader {
 		$settings['wcAdminAssetUrl'] = plugins_url( 'images/', dirname( __DIR__ ) . '/woocommerce-admin.php' );
 		$settings['wcVersion']       = WC_VERSION;
 		$settings['siteUrl']         = site_url();
-		$settings['shopUrl']         = get_permalink( wc_get_page_id( 'shop' ) );
 		$settings['dateFormat']      = get_option( 'date_format' );
 		$settings['plugins']         = array(
 			'installedPlugins' => PluginsHelper::get_installed_plugin_slugs(),

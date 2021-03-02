@@ -14,7 +14,8 @@ import {
 	withSpokenMessages,
 	Placeholder,
 	Button,
-	ToolbarGroup,
+	IconButton,
+	Toolbar,
 	Disabled,
 	Tip,
 } from '@wordpress/components';
@@ -45,7 +46,6 @@ import {
 } from '../base-utils';
 import { getSharedContentControls, getSharedListControls } from '../edit';
 import Block from './block';
-import './editor.scss';
 
 /**
  * Component to handle edit mode of "All Products".
@@ -139,7 +139,7 @@ class Editor extends Component {
 
 		return (
 			<BlockControls>
-				<ToolbarGroup
+				<Toolbar
 					controls={ [
 						{
 							icon: 'edit',
@@ -235,7 +235,7 @@ class Editor extends Component {
 						>
 							{ __( 'Cancel', 'woocommerce' ) }
 						</Button>
-						<Button
+						<IconButton
 							className="wc-block-all-products__reset-button"
 							icon={ <Icon srcElement={ grid } /> }
 							label={ __(
@@ -248,7 +248,7 @@ class Editor extends Component {
 								'Reset Layout',
 								'woocommerce'
 							) }
-						</Button>
+						</IconButton>
 					</div>
 				</div>
 			</Placeholder>

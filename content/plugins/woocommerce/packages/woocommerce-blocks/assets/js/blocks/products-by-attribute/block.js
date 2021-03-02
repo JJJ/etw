@@ -3,16 +3,16 @@
  */
 import { __ } from '@wordpress/i18n';
 import { BlockControls, InspectorControls } from '@wordpress/block-editor';
-import ServerSideRender from '@wordpress/server-side-render';
+import { ServerSideRender } from '@wordpress/editor';
 import {
 	Button,
 	Disabled,
 	PanelBody,
 	Placeholder,
-	ToolbarGroup,
+	Toolbar,
 	withSpokenMessages,
 } from '@wordpress/components';
-import { Component } from '@wordpress/element';
+import { Component, Fragment } from '@wordpress/element';
 import { Icon, tags } from '@woocommerce/icons';
 import PropTypes from 'prop-types';
 import GridContentControl from '@woocommerce/editor-components/grid-content-control';
@@ -162,9 +162,9 @@ class ProductsByAttributeBlock extends Component {
 		}
 
 		return (
-			<>
+			<Fragment>
 				<BlockControls>
-					<ToolbarGroup
+					<Toolbar
 						controls={ [
 							{
 								icon: 'edit',
@@ -187,7 +187,7 @@ class ProductsByAttributeBlock extends Component {
 						/>
 					</Disabled>
 				) }
-			</>
+			</Fragment>
 		);
 	}
 }

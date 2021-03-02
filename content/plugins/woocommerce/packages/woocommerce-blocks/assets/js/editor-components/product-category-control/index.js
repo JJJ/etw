@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
+import { Fragment } from '@wordpress/element';
 import { find } from 'lodash';
 import PropTypes from 'prop-types';
 import { SearchListControl, SearchListItem } from '@woocommerce/components';
@@ -131,7 +132,7 @@ const ProductCategoryControl = ( {
 	}
 
 	return (
-		<>
+		<Fragment>
 			<SearchListControl
 				className="woocommerce-product-categories"
 				list={ categories }
@@ -182,7 +183,7 @@ const ProductCategoryControl = ( {
 					/>
 				</div>
 			) }
-		</>
+		</Fragment>
 	);
 };
 

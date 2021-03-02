@@ -1,4 +1,3 @@
-/* eslint-disable you-dont-need-lodash-underscore/flatten -- until we have an alternative to uniqBy we'll keep flatten to avoid potential introduced bugs with alternatives */
 /**
  * External dependencies
  */

@@ -332,16 +332,15 @@ export function* changeCartItemQuantity( cartItemKey, quantity ) {
  * Selects a shipping rate.
  *
  * @param {string} rateId the id of the rate being selected.
- * @param {number|string} [packageId] the key of the packages that we will select within.
+ * @param {number} [packageId] the key of the packages that we will select within.
  */
 export function* selectShippingRate( rateId, packageId = 0 ) {
 	try {
 		yield shippingRatesBeingSelected( true );
 		const { response } = yield apiFetchWithHeaders( {
-			path: `/wc/store/cart/select-shipping-rate`,
+			path: `/wc/store/cart/select-shipping-rate/${ packageId }`,
 			method: 'POST',
 			data: {
-				package_id: packageId,
 				rate_id: rateId,
 			},
 			cache: 'no-store',

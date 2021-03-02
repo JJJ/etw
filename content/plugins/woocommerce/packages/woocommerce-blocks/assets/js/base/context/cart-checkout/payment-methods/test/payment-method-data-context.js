@@ -60,9 +60,6 @@ const registerMockPaymentMethods = () => {
 			edit: <div>A payment method</div>,
 			icons: null,
 			canMakePayment: () => true,
-			supports: {
-				features: [ 'products' ],
-			},
 			ariaLabel: name,
 		} );
 	} );
@@ -75,9 +72,7 @@ const registerMockPaymentMethods = () => {
 			icons: null,
 			canMakePayment: () => true,
 			supports: {
-				showSavedCards: true,
-				showSaveOption: true,
-				features: [ 'products' ],
+				savePaymentInfo: true,
 			},
 			ariaLabel: name,
 		} );
@@ -104,9 +99,6 @@ const registerMockPaymentMethods = () => {
 			edit: <div>An express payment method</div>,
 			canMakePayment: () => true,
 			paymentMethodId: name,
-			supports: {
-				features: [ 'products' ],
-			},
 		} );
 	} );
 };

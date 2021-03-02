@@ -2,8 +2,7 @@
  * External dependencies
  */
 import PropTypes from 'prop-types';
-import { useState, Fragment } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 import classnames from 'classnames';
 import { PLACEHOLDER_IMG_SRC } from '@woocommerce/block-settings';
 import {
@@ -11,6 +10,7 @@ import {
 	useProductDataContext,
 } from '@woocommerce/shared-context';
 import { withProductDataContext } from '@woocommerce/shared-hocs';
+import { isEmpty } from 'lodash';
 
 /**
  * Internal dependencies
@@ -29,10 +29,10 @@ import './style.scss';
  * @param {string} [props.saleBadgeAlign] How should the sale badge be aligned if displayed.
  * @return {*} The component.
  */
-export const Block = ( {
+const Block = ( {
 	className,
 	imageSizing = 'full-size',
-	productLink: showProductLink = true,
+	productLink = true,
 	showSaleBadge,
 	saleBadgeAlign = 'right',
 } ) => {
@@ -56,19 +56,8 @@ export const Block = ( {
 			</div>
 		);
 	}
-	const hasProductImages = !! product.images.length;
-	const image = hasProductImages ? product.images[ 0 ] : null;
-	const ParentComponent = showProductLink ? 'a' : Fragment;
-	const anchorLabel = sprintf(
-		/* Translators: %s is referring to the product name */
-		__( 'Link to %s', 'woocommerce' ),
-		product.name
-	);
-	const anchorProps = {
-		href: product.permalink,
-		rel: 'nofollow',
-		...( ! hasProductImages && { 'aria-label': anchorLabel } ),
-	};
+
+	const image = ! isEmpty( product.images ) ? product.images[ 0 ] : null;
 
 	return (
 		<div
@@ -80,21 +69,37 @@ export const Block = ( {
 				}
 			) }
 		>
-			<ParentComponent { ...( showProductLink && anchorProps ) }>
-				{ !! showSaleBadge && (
-					<ProductSaleBadge
-						align={ saleBadgeAlign }
-						product={ product }
+			{ productLink ? (
+				<a href={ product.permalink } rel="nofollow">
+					{ !! showSaleBadge && (
+						<ProductSaleBadge
+							align={ saleBadgeAlign }
+							product={ product }
+						/>
+					) }
+					<Image
+						image={ image }
+						onLoad={ () => setImageLoaded( true ) }
+						loaded={ imageLoaded }
+						showFullSize={ imageSizing !== 'cropped' }
 					/>
-				) }
-				<Image
-					fallbackAlt={ product.name }
-					image={ image }
-					onLoad={ () => setImageLoaded( true ) }
-					loaded={ imageLoaded }
-					showFullSize={ imageSizing !== 'cropped' }
-				/>
-			</ParentComponent>
+				</a>
+			) : (
+				<>
+					{ !! showSaleBadge && (
+						<ProductSaleBadge
+							align={ saleBadgeAlign }
+							product={ product }
+						/>
+					) }
+					<Image
+						image={ image }
+						onLoad={ () => setImageLoaded( true ) }
+						loaded={ imageLoaded }
+						showFullSize={ imageSizing !== 'cropped' }
+					/>
+				</>
+			) }
 		</div>
 	);
 };
@@ -105,22 +110,28 @@ const ImagePlaceholder = () => {
 	);
 };
 
-const Image = ( { image, onLoad, loaded, showFullSize, fallbackAlt } ) => {
+const Image = ( { image, onLoad, loaded, showFullSize } ) => {
 	const { thumbnail, src, srcset, sizes, alt } = image || {};
-	const imageProps = {
-		alt: alt || fallbackAlt,
+
+	let imageProps = {
+		alt,
 		onLoad,
 		hidden: ! loaded,
 		src: thumbnail,
-		...( showFullSize && { src, srcSet: srcset, sizes } ),
 	};
+	if ( showFullSize ) {
+		imageProps = {
+			...imageProps,
+			src,
+			srcSet: srcset,
+			sizes,
+		};
+	}
 
 	return (
 		<>
-			{ imageProps.src && (
-				/* eslint-disable-next-line jsx-a11y/alt-text */
-				<img data-testid="product-image" { ...imageProps } />
-			) }
+			{ /* eslint-disable-next-line jsx-a11y/alt-text */ }
+			<img { ...imageProps } />
 			{ ! loaded && <ImagePlaceholder /> }
 		</>
 	);
@@ -128,7 +139,6 @@ const Image = ( { image, onLoad, loaded, showFullSize, fallbackAlt } ) => {
 
 Block.propTypes = {
 	className: PropTypes.string,
-	fallbackAlt: PropTypes.string,
 	productLink: PropTypes.bool,
 	showSaleBadge: PropTypes.bool,
 	saleBadgeAlign: PropTypes.string,

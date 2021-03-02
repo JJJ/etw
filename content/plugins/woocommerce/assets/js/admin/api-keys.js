@@ -58,7 +58,7 @@
 					} else {
 						$( '#copy-error' ).text( '' );
 						wcClearClipboard();
-						wcSetClipboard( $( this ).prev( 'input' ).val().trim(), $( css_class ) );
+						wcSetClipboard( $.trim( $( this ).prev( 'input' ).val() ), $( css_class ) );
 					}
 				} )
 				.on( 'aftercopy', css_class, function() {

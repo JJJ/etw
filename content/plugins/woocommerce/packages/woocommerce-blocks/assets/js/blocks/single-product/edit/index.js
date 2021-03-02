@@ -85,7 +85,7 @@ const Editor = ( {
 								setAttributes={ setAttributes }
 							/>
 							<Button
-								isSecondary
+								isDefault
 								onClick={ () => {
 									setIsEditing( false );
 								} }

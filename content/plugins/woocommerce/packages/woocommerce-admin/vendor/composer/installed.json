@@ -1,30 +1,29 @@
 [
     {
         "name": "automattic/jetpack-autoloader",
-        "version": "v2.9.1",
-        "version_normalized": "2.9.1.0",
+        "version": "v2.5.0",
+        "version_normalized": "2.5.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Automattic/jetpack-autoloader.git",
-            "reference": "d6ca2cc26ad6963e1be19b3338a9e98f40d9bd88"
+            "reference": "7945e862473e39f05e6f698f1598ea30a12e5965"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/d6ca2cc26ad6963e1be19b3338a9e98f40d9bd88",
-            "reference": "d6ca2cc26ad6963e1be19b3338a9e98f40d9bd88",
+            "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/7945e862473e39f05e6f698f1598ea30a12e5965",
+            "reference": "7945e862473e39f05e6f698f1598ea30a12e5965",
             "shasum": ""
         },
         "require": {
             "composer-plugin-api": "^1.1 || ^2.0"
         },
         "require-dev": {
-            "yoast/phpunit-polyfills": "0.2.0"
+            "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5"
         },
-        "time": "2021-02-05T19:07:06+00:00",
+        "time": "2020-10-08T19:51:11+00:00",
         "type": "composer-plugin",
         "extra": {
-            "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin",
-            "mirror-repo": "Automattic/jetpack-autoloader"
+            "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin"
         },
         "installation-source": "dist",
         "autoload": {
@@ -39,7 +38,10 @@
         "license": [
             "GPL-2.0-or-later"
         ],
-        "description": "Creates a custom autoloader for a plugin or theme."
+        "description": "Creates a custom autoloader for a plugin or theme.",
+        "support": {
+            "source": "https://github.com/Automattic/jetpack-autoloader/tree/v2.5.0"
+        }
     },
     {
         "name": "composer/installers",

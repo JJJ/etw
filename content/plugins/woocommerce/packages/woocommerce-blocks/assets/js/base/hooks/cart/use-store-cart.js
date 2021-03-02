@@ -37,7 +37,6 @@ const decodeAddress = ( address ) =>
 export const defaultCartData = {
 	cartCoupons: [],
 	cartItems: [],
-	cartFees: [],
 	cartItemsCount: 0,
 	cartItemsWeight: 0,
 	cartNeedsPayment: true,
@@ -51,7 +50,6 @@ export const defaultCartData = {
 	shippingRates: [],
 	shippingRatesLoading: false,
 	cartHasCalculatedShipping: false,
-	paymentRequirements: [],
 	receiveCart: () => {},
 };
 
@@ -82,7 +80,6 @@ export const useStoreCart = ( options = { shouldSelect: true } ) => {
 				return {
 					cartCoupons: previewCart.coupons,
 					cartItems: previewCart.items,
-					cartFees: previewCart.fees,
 					cartItemsCount: previewCart.items_count,
 					cartItemsWeight: previewCart.items_weight,
 					cartNeedsPayment: previewCart.needs_payment,
@@ -93,12 +90,10 @@ export const useStoreCart = ( options = { shouldSelect: true } ) => {
 					cartErrors: [],
 					billingAddress: defaultBillingAddress,
 					shippingAddress: defaultShippingAddress,
-					extensions: {},
 					shippingRates: previewCart.shipping_rates,
 					shippingRatesLoading: false,
 					cartHasCalculatedShipping:
 						previewCart.has_calculated_shipping,
-					paymentRequirements: previewCart.paymentRequirements,
 					receiveCart:
 						typeof previewCart?.receiveCart === 'function'
 							? previewCart.receiveCart
@@ -118,11 +113,10 @@ export const useStoreCart = ( options = { shouldSelect: true } ) => {
 			const billingAddress = decodeAddress( cartData.billingAddress );
 			const shippingAddress = cartData.needsShipping
 				? decodeAddress( cartData.shippingAddress )
-				: billingAddress;
+				: defaultShippingAddress;
 			return {
 				cartCoupons: cartData.coupons,
 				cartItems: cartData.items || [],
-				cartFees: cartData.fees || [],
 				cartItemsCount: cartData.itemsCount,
 				cartItemsWeight: cartData.itemsWeight,
 				cartNeedsPayment: cartData.needsPayment,
@@ -133,11 +127,9 @@ export const useStoreCart = ( options = { shouldSelect: true } ) => {
 				cartErrors,
 				billingAddress,
 				shippingAddress,
-				extensions: cartData.extensions || {},
 				shippingRates: cartData.shippingRates || [],
 				shippingRatesLoading,
 				cartHasCalculatedShipping: cartData.hasCalculatedShipping,
-				paymentRequirements: cartData.paymentRequirements || [],
 				receiveCart,
 			};
 		},

@@ -7,10 +7,10 @@ import {
 	ShippingRatesControl,
 } from '@woocommerce/base-components/cart-checkout';
 import {
+	getCurrencyFromPriceResponse,
 	getShippingRatesPackageCount,
 	getShippingRatesRateCount,
 } from '@woocommerce/base-utils';
-import { getCurrencyFromPriceResponse } from '@woocommerce/price-format';
 import FormattedMonetaryAmount from '@woocommerce/base-components/formatted-monetary-amount';
 import {
 	useCheckoutContext,
@@ -64,6 +64,8 @@ const ShippingOptionsStep = () => {
 		return null;
 	}
 
+	const packageCount = getShippingRatesPackageCount( shippingRates );
+
 	return (
 		<FormStep
 			id="shipping-option"
@@ -79,7 +81,7 @@ const ShippingOptionsStep = () => {
 					: ''
 			}
 		>
-			{ isEditor && ! getShippingRatesPackageCount( shippingRates ) ? (
+			{ isEditor && ! packageCount ? (
 				<NoShippingPlaceholder />
 			) : (
 				<ShippingRatesControl

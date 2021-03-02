@@ -5,13 +5,14 @@ import { QUERY_STATE_STORE_KEY as storeKey } from '@woocommerce/block-data';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useRef, useEffect, useCallback } from '@wordpress/element';
 import { useQueryStateContext } from '@woocommerce/base-context';
+import { usePrevious } from '@woocommerce/base-hooks';
 import isShallowEqual from '@wordpress/is-shallow-equal';
+import { assign } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import { useShallowEqual } from './use-shallow-equal';
-import { usePrevious } from './use-previous';
 
 /**
  * A custom hook that exposes the current query state and a setter for the query
@@ -133,7 +134,7 @@ export const useSynchronizedQueryState = ( synchronizedQuery, context ) => {
 			)
 		) {
 			setQueryState(
-				Object.assign( {}, currentQueryState, currentSynchronizedQuery )
+				assign( {}, currentQueryState, currentSynchronizedQuery )
 			);
 			isInitialized.current = true;
 		}

@@ -1,11 +1,15 @@
 /**
  * External dependencies
  */
-import { useEffect, useRef, useCallback } from '@wordpress/element';
+import { useEffect, useState, useRef, useCallback } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { usePaymentMethodDataContext } from '@woocommerce/base-context';
+import {
+	useEditorContext,
+	usePaymentMethodDataContext,
+} from '@woocommerce/base-context';
 import RadioControl from '@woocommerce/base-components/radio-control';
 import { getPaymentMethods } from '@woocommerce/blocks-registry';
+import PropTypes from 'prop-types';
 
 /**
  * @typedef {import('@woocommerce/type-defs/contexts').CustomerPaymentMethod} CustomerPaymentMethod
@@ -43,7 +47,7 @@ const getCcOrEcheckPaymentMethodOption = (
 			setActivePaymentMethod( method.gateway );
 			setPaymentStatus().success( {
 				payment_method: method.gateway,
-				[ savedTokenKey ]: token + '',
+				[ savedTokenKey ]: token,
 				isSavedToken: true,
 			} );
 		},
@@ -77,22 +81,21 @@ const getDefaultPaymentMethodOptions = (
 			setActivePaymentMethod( method.gateway );
 			setPaymentStatus().success( {
 				payment_method: method.gateway,
-				[ savedTokenKey ]: token + '',
+				[ savedTokenKey ]: token,
 				isSavedToken: true,
 			} );
 		},
 	};
 };
 
-const SavedPaymentMethodOptions = () => {
+const SavedPaymentMethodOptions = ( { onChange } ) => {
+	const { isEditor } = useEditorContext();
 	const {
 		setPaymentStatus,
 		customerPaymentMethods,
-		activePaymentMethod,
 		setActivePaymentMethod,
-		activeSavedToken,
-		setActiveSavedToken,
 	} = usePaymentMethodDataContext();
+	const [ selectedToken, setSelectedToken ] = useState( '' );
 	const standardMethods = getPaymentMethods();
 
 	/**
@@ -106,9 +109,10 @@ const SavedPaymentMethodOptions = () => {
 			if ( token === '0' ) {
 				setPaymentStatus().started();
 			}
-			setActiveSavedToken( token );
+			setSelectedToken( token );
+			onChange( token );
 		},
-		[ setActiveSavedToken, setPaymentStatus ]
+		[ onChange, setSelectedToken, setPaymentStatus ]
 	);
 
 	useEffect( () => {
@@ -117,6 +121,11 @@ const SavedPaymentMethodOptions = () => {
 			.flatMap( ( type ) => {
 				const typeMethods = customerPaymentMethods[ type ];
 				return typeMethods.map( ( paymentMethod ) => {
+					const method =
+						standardMethods[ paymentMethod.method.gateway ];
+					if ( ! method?.supports?.savePaymentInfo ) {
+						return null;
+					}
 					const option =
 						type === 'cc' || type === 'echeck'
 							? getCcOrEcheckPaymentMethodOption(
@@ -129,11 +138,7 @@ const SavedPaymentMethodOptions = () => {
 									setActivePaymentMethod,
 									setPaymentStatus
 							  );
-					if (
-						! activePaymentMethod &&
-						paymentMethod.is_default &&
-						activeSavedToken === ''
-					) {
+					if ( paymentMethod.is_default && selectedToken === '' ) {
 						updateToken( paymentMethod.tokenId + '' );
 						option.onChange( paymentMethod.tokenId );
 					}
@@ -145,21 +150,31 @@ const SavedPaymentMethodOptions = () => {
 	}, [
 		customerPaymentMethods,
 		updateToken,
-		activeSavedToken,
-		activePaymentMethod,
+		selectedToken,
 		setActivePaymentMethod,
 		setPaymentStatus,
 		standardMethods,
 	] );
 
+	// In the editor, show `Use a new payment method` option as selected.
+	const selectedOption = isEditor ? '0' : selectedToken + '';
+	const newPaymentMethodOption = {
+		value: '0',
+		label: __( 'Use a new payment method', 'woo-gutenberg-product-blocks' ),
+		name: `wc-saved-payment-method-token-new`,
+	};
 	return currentOptions.current.length > 0 ? (
 		<RadioControl
 			id={ 'wc-payment-method-saved-tokens' }
-			selected={ activeSavedToken }
+			selected={ selectedOption }
 			onChange={ updateToken }
-			options={ currentOptions.current }
+			options={ [ ...currentOptions.current, newPaymentMethodOption ] }
 		/>
 	) : null;
+};
+
+SavedPaymentMethodOptions.propTypes = {
+	onChange: PropTypes.func.isRequired,
 };
 
 export default SavedPaymentMethodOptions;

@@ -2,13 +2,14 @@
 	@include reset-typography();
 	@include with-translucent-border( 0 0 1px );
 	display: block;
-	padding: em($gap) 0 em($gap) em($gap-largest);
+	padding: $gap-small $gap-small 0 #{$gap-larger * 2};
 }
 
 .wc-block-components-radio-control__option-layout {
 	@include with-translucent-border( 0 0 1px );
 	display: table;
 	width: 100%;
+	padding-bottom: $gap-small;
 }
 
 .wc-block-components-radio-control__option .wc-block-components-radio-control__option-layout {
@@ -34,10 +35,10 @@
 
 .wc-block-components-radio-control__label,
 .wc-block-components-radio-control__secondary-label {
+	line-height: 20px;
 	// Currently, max() CSS function calls need to be wrapped with unquote.
 	// See: https://github.com/sass/sass/issues/2378#issuecomment-367490840
-	// These values should be the same as the control input height.
-	line-height: unquote("max(1.5rem, 24px)");
+	line-height: unquote("max(1rem, 20px)");
 }
 
 .wc-block-components-radio-control__description,
@@ -50,42 +51,56 @@
 .wc-block-components-radio-control {
 	.wc-block-components-radio-control__input {
 		appearance: none;
-		background: #fff;
-		border: 2px solid $input-border-gray;
+		background: transparent;
+		border: 2px solid currentColor;
 		border-radius: 50%;
 		display: inline-block;
-		height: em(24px); // =1.5rem
-		min-height: 24px;
-		min-width: 24px;
-		width: em(24px);
-		// The code belows centers the input vertically.
+		height: 1.25rem;
+		left: $gap-large;
+		min-height: 20px;
+		min-width: 20px;
 		position: absolute;
-		left: 0;
-		top: 50%;
-		transform: translate(0, -50%);
+		top: $gap-small;
+		width: 1.25rem;
 
 		&:checked::before {
-			background: #000;
+			background: currentColor;
 			border-radius: 50%;
 			content: "";
 			display: block;
-			height: em(12px);
+			height: 0.625em;
 			left: 50%;
 			margin: 0;
-			min-height: 12px;
-			min-width: 12px;
+			min-height: 10px;
+			min-width: 10px;
 			position: absolute;
 			top: 50%;
 			transform: translate(-50%, -50%);
-			width: em(12px);
+			width: 0.625em;
 		}
 
 		.has-dark-controls & {
 			border-color: $controls-border-dark;
-			background-color: $input-background-dark;
 
 			&:checked::before {
 				background: $input-text-dark;
+			}
+		}
+	}
+
+	@include breakpoint( ">782px" ) {
+		.wc-block-components-radio-control__input {
+			height: 1rem;
+			margin-top: 2px;
+			min-height: 16px;
+			min-width: 16px;
+			width: 1rem;
+
+			&:checked::before {
+				height: 0.5em;
+				min-height: 8px;
+				min-width: 8px;
+				width: 0.5em;
 			}
 		}
 	}

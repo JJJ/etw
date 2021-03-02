@@ -9,8 +9,6 @@ namespace Automattic\WooCommerce\Admin\Notes;
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Admin\Survey;
-
 /**
  * Giving_Feedback_Notes
  */
@@ -48,7 +46,7 @@ class GivingFeedbackNotes {
 		$note->add_action(
 			'share-feedback',
 			__( 'Share feedback', 'woocommerce' ),
-			Survey::get_url( '/store-setup-survey' )
+			'https://automattic.survey.fm/store-setup-survey'
 		);
 		return $note;
 	}

@@ -4,6 +4,7 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { CART_STORE_KEY as storeKey } from '@woocommerce/block-data';
+import { usePrevious } from '@woocommerce/base-hooks';
 import { useDebounce } from 'use-debounce';
 import { useCheckoutContext } from '@woocommerce/base-context';
 import { triggerFragmentRefresh } from '@woocommerce/base-utils';
@@ -12,7 +13,6 @@ import { triggerFragmentRefresh } from '@woocommerce/base-utils';
  * Internal dependencies
  */
 import { useStoreCart } from './use-store-cart';
-import { usePrevious } from '../use-previous';
 
 /**
  * @typedef {import('@woocommerce/type-defs/hooks').StoreCartItemQuantity} StoreCartItemQuantity

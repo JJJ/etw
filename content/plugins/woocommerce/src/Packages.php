@@ -72,18 +72,17 @@ class Packages {
 		// Proxies "activated_plugin" hook for embedded packages listen on WC plugin activation
 		// https://github.com/woocommerce/woocommerce/issues/28697.
 		if ( is_admin() ) {
-			$activated_plugin = get_transient( 'woocommerce_activated_plugin' );
-			if ( $activated_plugin ) {
+			$is_activated = get_transient( 'woocommerce_activated_plugin' );
+			if ( $is_activated ) {
 				delete_transient( 'woocommerce_activated_plugin' );
 
 				/**
 				 * WooCommerce is activated hook.
 				 *
 				 * @since 5.0.0
-				 * @param bool $activated_plugin Activated plugin path,
-				 *                               generally woocommerce/woocommerce.php.
+				 * @param bool $is_activated Indicates if WooCommerce is activated.
 				 */
-				do_action( 'woocommerce_activated_plugin', $activated_plugin );
+				do_action( 'woocommerce_activated_plugin', $is_activated );
 			}
 		}
 	}

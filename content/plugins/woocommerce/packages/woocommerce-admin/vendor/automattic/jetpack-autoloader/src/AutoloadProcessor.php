@@ -14,6 +14,8 @@
 
 namespace Automattic\Jetpack\Autoloader;
 
+use Composer\Util\Filesystem;
+
 /**
  * Class AutoloadProcessor.
  */

@@ -45,9 +45,6 @@ const paypalPaymentMethod = {
 		settings.title ||
 			__( 'Payment via PayPal', 'woocommerce' )
 	),
-	supports: {
-		features: settings.supports ?? [],
-	},
 };
 
 registerPaymentMethod( paypalPaymentMethod );
