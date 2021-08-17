@@ -120,7 +120,7 @@ class WP_Upgrader {
 	 *                               instance.
 	 */
 	public function __construct( $skin = null ) {
-		if ( null == $skin ) {
+		if ( null === $skin ) {
 			$this->skin = new WP_Upgrader_Skin();
 		} else {
 			$this->skin = $skin;
@@ -422,7 +422,7 @@ class WP_Upgrader {
 	/**
 	 * Install a package.
 	 *
-	 * Copies the contents of a package form a source directory, and installs them in
+	 * Copies the contents of a package from a source directory, and installs them in
 	 * a destination directory. Optionally removes the source. It can also optionally
 	 * clear out the destination folder if it already exists.
 	 *
@@ -478,9 +478,8 @@ class WP_Upgrader {
 		/**
 		 * Filters the install response before the installation has started.
 		 *
-		 * Returning a truthy value, or one that could be evaluated as a WP_Error
-		 * will effectively short-circuit the installation, returning that value
-		 * instead.
+		 * Returning a value that could be evaluated as a `WP_Error` will effectively
+		 * short-circuit the installation, returning that value instead.
 		 *
 		 * @since 2.8.0
 		 *
@@ -504,7 +503,7 @@ class WP_Upgrader {
 		if ( 1 === count( $source_files ) && $wp_filesystem->is_dir( trailingslashit( $args['source'] ) . $source_files[0] . '/' ) ) {
 			// Only one folder? Then we want its contents.
 			$source = trailingslashit( $args['source'] ) . trailingslashit( $source_files[0] );
-		} elseif ( count( $source_files ) == 0 ) {
+		} elseif ( 0 === count( $source_files ) ) {
 			// There are no files?
 			return new WP_Error( 'incompatible_archive_empty', $this->strings['incompatible_archive'], $this->strings['no_files'] );
 		} else {
@@ -773,7 +772,7 @@ class WP_Upgrader {
 			return $download;
 		}
 
-		$delete_package = ( $download != $options['package'] ); // Do not delete a "local" file.
+		$delete_package = ( $download !== $options['package'] ); // Do not delete a "local" file.
 
 		// Unzips the file into a temporary directory.
 		$working_dir = $this->unpack_package( $download, $delete_package );
@@ -833,8 +832,8 @@ class WP_Upgrader {
 			 * @since 3.7.0 Added to WP_Upgrader::run().
 			 * @since 4.6.0 `$translations` was added as a possible argument to `$hook_extra`.
 			 *
-			 * @param WP_Upgrader $this WP_Upgrader instance. In other contexts, $this, might be a
-			 *                          Theme_Upgrader, Plugin_Upgrader, Core_Upgrade, or Language_Pack_Upgrader instance.
+			 * @param WP_Upgrader $upgrader   WP_Upgrader instance. In other contexts this might be a
+			 *                                Theme_Upgrader, Plugin_Upgrader, Core_Upgrade, or Language_Pack_Upgrader instance.
 			 * @param array       $hook_extra {
 			 *     Array of bulk item update data.
 			 *
