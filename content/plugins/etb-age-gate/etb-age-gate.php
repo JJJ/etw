@@ -44,14 +44,24 @@ final class Simple_Age_Gate {
 
 	/** Should we render the gate this request? */
 	private function should_render(): bool {
+
+		// No admin or AJAX
 		if ( is_admin() || wp_doing_ajax() ) {
 			return false;
 		}
+
+		// Cookie already accepted
 		$cookie = $this->cookie_name();
 		if ( isset( $_COOKIE[ $cookie ] ) && '1' === $_COOKIE[ $cookie ] ) {
 			return false;
 		}
-		return true;
+
+		// Only for these 2 pages
+		if ( is_page( 'our-drink-menu' ) || is_page( 'our-cocktail-menu' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/** Minimal, non-conflicting styles */
