@@ -56,6 +56,11 @@ final class Simple_Age_Gate {
 			return false;
 		}
 
+		// Skip for logged-in users
+		if ( is_user_logged_in() ) {
+			return false;
+		}
+
 		// Only for these 2 pages
 		if ( is_page( 'our-drink-menu' ) || is_page( 'our-cocktail-menu' ) ) {
 			return true;
