@@ -81,7 +81,7 @@ final class Simple_Age_Gate {
 			#sag-overlay.sag-open { display: flex; }
 			#sag-modal { max-width: 32rem; width: 92%; background: #111; color: #fff; border-radius: 12px;
 				box-shadow: 0 10px 30px rgba(0,0,0,.6); padding: 1.5rem; font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
-			#sag-modal h2 { margin: 0 0 .75rem; font-size: 1.5rem; }
+			#sag-modal h2 { margin: 0 0 .75rem; font-size: 1.5rem; font-family: initial; color: #fff; }
 			#sag-modal p { margin: 0 0 1rem; opacity: .9; }
 			#sag-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1rem; }
 			.sag-btn { appearance: none; border: 0; padding: .75rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 600; }
