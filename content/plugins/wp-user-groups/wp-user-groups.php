@@ -1,16 +1,19 @@
 <?php
 
 /**
- * Plugin Name: WP User Groups
- * Plugin URI:  https://wordpress.org/plugins/wp-user-groups/
- * Author:      John James Jacoby
- * Author URI:  https://profiles.wordpress.org/johnjamesjacoby/
- * License:     GPLv2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Description: Group users together with taxonomies & terms.
- * Version:     1.0.0
- * Text Domain: wp-user-groups
- * Domain Path: /wp-user-groups/assets/languages/
+ * Plugin Name:       WP User Groups
+ * Description:       Group users together with taxonomies & terms
+ * Plugin URI:        https://wordpress.org/plugins/wp-user-groups/
+ * Author:            Triple J Software, Inc.
+ * Author URI:        https://jjj.software
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       wp-user-activity
+ * Domain Path:       /wp-user-activity/includes/languages
+ * Requires at least: 5.2
+ * Requires PHP:      7.2
+ * Tested up to:      5.8
+ * Version:           2.5.0
  */
 
 // Exit if accessed directly
@@ -32,13 +35,14 @@ function _wp_user_groups() {
 	// Functions
 	require_once $plugin_path . 'includes/functions/admin.php';
 	require_once $plugin_path . 'includes/functions/common.php';
+	require_once $plugin_path . 'includes/functions/sponsor.php';
 	require_once $plugin_path . 'includes/functions/taxonomies.php';
 	require_once $plugin_path . 'includes/functions/hooks.php';
 }
 add_action( 'plugins_loaded', '_wp_user_groups' );
 
 /**
- * Return the plugin's URL
+ * Return the plugin URL
  *
  * @since 0.1.4
  *
@@ -56,5 +60,7 @@ function wp_user_groups_get_plugin_url() {
  * @return int
  */
 function wp_user_groups_get_asset_version() {
-	return 201612070001;
+	return defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
+		? time()
+		: 202103230001;
 }

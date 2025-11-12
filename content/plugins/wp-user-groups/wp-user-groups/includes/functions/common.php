@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 function wp_get_terms_for_user( $user = false, $taxonomy = '' ) {
 
 	// Verify user ID
-	$user_id = is_object( $user )
+	$user_id = is_object( $user ) && ! empty( $user->ID )
 		? $user->ID
 		: absint( $user );
 
@@ -42,39 +42,31 @@ function wp_get_terms_for_user( $user = false, $taxonomy = '' ) {
  *
  * @since 0.1.0
  *
- * @param  int      $user_id
- * @param  string   $taxonomy
- * @param  array    $terms
- * @param  boolean  $bulk
+ * @param  mixed   $user
+ * @param  string  $taxonomy
+ * @param  array   $terms
  *
- * @return boolean
+ * @return void
  */
-function wp_set_terms_for_user( $user_id, $taxonomy, $terms = array(), $bulk = false ) {
+function wp_set_terms_for_user( $user = false, $taxonomy = '', $terms = array() ) {
 
-	// Get the taxonomy
-	$tax = get_taxonomy( $taxonomy );
+	// Verify user ID
+	$user_id = is_object( $user ) && ! empty( $user->ID )
+		? $user->ID
+		: absint( $user );
 
-	// Make sure the current user can edit the user and assign terms before proceeding.
-	if ( ! current_user_can( 'edit_user', $user_id ) && current_user_can( $tax->cap->assign_terms ) ) {
+	// Bail if empty
+	if ( empty( $user_id ) ) {
 		return false;
 	}
 
-	if ( empty( $terms ) && empty( $bulk ) ) {
-		$terms = isset( $_POST[ $taxonomy ] )
-			? $_POST[ $taxonomy ]
-			: null;
-	}
-
-	// Delete all user terms
-	if ( is_null( $terms ) || empty( $terms ) ) {
+	// Delete all terms for the user
+	if ( empty( $terms ) ) {
 		wp_delete_object_term_relationships( $user_id, $taxonomy );
 
-	// Set the terms
+	// Sets the terms for the user
 	} else {
-		$_terms = array_map( 'sanitize_key', $terms );
-
-		// Sets the terms for the user
-		wp_set_object_terms( $user_id, $_terms, $taxonomy, false );
+		wp_set_object_terms( $user_id, $terms, $taxonomy, false );
 	}
 
 	// Clean the cache
@@ -127,31 +119,48 @@ function wp_get_user_group_objects( $args = array(), $operator = 'and' ) {
 }
 
 /**
- * Return a list of users in a specific group
+ * Return a list of users in a specific group.
  *
  * @since 0.1.0
- */
-function wp_get_users_of_group( $args = array() ) {
 
-	// Parse arguments
+ * @param array $args {
+ *     Array or term information.
+ *
+ *     @type string     $taxomony Taxonomy name. Default is 'user-group'.
+ *     @type string|int $term     Search for this term value.
+ *     @type string     $term_by  Either 'slug', 'name', 'id' (term_id), or 'term_taxonomy_id'.
+ *                                Default is 'slug'.
+ * }
+ * @param array $user_args Optional. WP_User_Query arguments.
+ *
+ * @return array List of users in the user group.
+ */
+function wp_get_users_of_group( $args = array(), $user_args = array() ) {
+
+	// Parse arguments.
 	$r = wp_parse_args( $args, array(
-		'taxonomy' => 'user-type',
+		'taxonomy' => 'user-group',
 		'term'     => '',
 		'term_by'  => 'slug'
 	) );
 
-	// Get user IDs in group
+	// Get user IDs in group.
 	$term     = get_term_by( $r['term_by'], $r['term'], $r['taxonomy'] );
 	$user_ids = get_objects_in_term( $term->term_id, $r['taxonomy'] );
 
-	// Bail if no users in this term
+	// Bail if no users in this term.
 	if ( empty( $term ) || empty( $user_ids ) ) {
 		return array();
 	}
 
-	// Return queried users
-	return get_users( array(
+	// Parse optional user arguments
+	$user_args = wp_parse_args( $user_args, array(
 		'orderby' => 'display_name',
-		'include' => $user_ids,
 	) );
+
+	// Strictly enforce the inclusion of user IDs to this group
+	$user_args['include'] = $user_ids;
+
+	// Return queried users.
+	return get_users( $user_args );
 }
