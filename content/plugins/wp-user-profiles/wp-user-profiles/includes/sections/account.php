@@ -85,6 +85,19 @@ class WP_User_Profile_Account_Section extends WP_User_Profile_Section {
 				$user
 			);
 		}
+
+		// Two-Factor Authentication
+		if ( wp_user_profiles_user_supports( 'two-factor-authentication', $user ) ) {
+			add_meta_box(
+				'two-factor',
+				_x( 'Two-Factor Authentication', 'users user-admin edit screen', 'wp-user-profiles' ),
+				'wp_user_profiles_two_factor_metabox',
+				$type,
+				'normal',
+				'core',
+				$user
+			);		
+		}
 	}
 
 	/**
@@ -92,7 +105,8 @@ class WP_User_Profile_Account_Section extends WP_User_Profile_Section {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param  WP_User  $user
+	 * @param WP_User $user
+	 * @return mixed Integer on success. WP_Error on failure.
 	 */
 	public function save( $user = null ) {
 
@@ -106,17 +120,17 @@ class WP_User_Profile_Account_Section extends WP_User_Profile_Section {
 			? $_POST['pass2']
 			: '';
 
-		/** This filter is documented in wp-admin/includes/user.php */
+		// This filter is documented in wp-admin/includes/user.php
 		do_action_ref_array( 'check_passwords', array( $user->user_login, &$pass1, &$pass2 ) );
 
 		// Check for "\" in password
 		if ( false !== strpos( wp_unslash( $pass1 ), "\\" ) ) {
-			$this->errors->add( 'pass', __( '<strong>ERROR</strong>: Passwords may not contain the character "\\".' ), array( 'form-field' => 'pass1' ) );
+			$this->errors->add( 'pass', __( '<strong>ERROR</strong>: Passwords may not contain the character "\\".', 'wp-user-profiles' ), array( 'form-field' => 'pass1' ) );
 		}
 
 		// Checking the password has been typed twice the same
 		if ( $pass1 !== $pass2 ) {
-			$this->errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
+			$this->errors->add( 'pass', __( '<strong>ERROR</strong>: Please enter the same password in both password fields.', 'wp-user-profiles' ), array( 'form-field' => 'pass1' ) );
 		}
 
 		// Set the password
@@ -147,25 +161,20 @@ class WP_User_Profile_Account_Section extends WP_User_Profile_Section {
 
 			// Email empty
 			if ( empty( $user->user_email ) ) {
-				$this->errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.' ), array( 'form-field' => 'email' ) );
+				$this->errors->add( 'empty_email', __( '<strong>ERROR</strong>: Please enter an email address.', 'wp-user-profiles' ), array( 'form-field' => 'email' ) );
 
 			// Email invalid
 			} elseif ( ! is_email( $user->user_email ) ) {
-				$this->errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address is not correct.' ), array( 'form-field' => 'email' ) );
+				$this->errors->add( 'invalid_email', __( '<strong>ERROR</strong>: The email address is not correct.', 'wp-user-profiles' ), array( 'form-field' => 'email' ) );
 
 			// Email in use
 			} elseif ( ( $owner_id = email_exists( $user->user_email ) ) && ( $owner_id !== $user->ID ) ) {
-				$this->errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already in use.' ), array( 'form-field' => 'email' ) );
+				$this->errors->add( 'email_exists', __( '<strong>ERROR</strong>: This email is already in use.', 'wp-user-profiles' ), array( 'form-field' => 'email' ) );
 			}
 		}
 
-		// Bail if password change errors occurred
-		if ( $this->errors->get_error_code() ) {
-			return $this->errors;
-		}
-
 		// Allow third party plugins to save data in this section
-		parent::save( $user );
+		return parent::save( $user );
 	}
 
 	/**
@@ -174,16 +183,28 @@ class WP_User_Profile_Account_Section extends WP_User_Profile_Section {
 	 * @since 0.2.0
 	 */
 	public function add_contextual_help() {
+
+		// General
+		$content = '<p>' . esc_html__( 'This is where important account information can be found.',          'wp-user-profiles' ) . '</p><ul>' .
+			'<li>' . esc_html__( 'Your email address is used for receiving notifications from this site',    'wp-user-profiles' ) . '</li>' .
+			'<li>' . esc_html__( 'Passwords should be lengthy and complex to help keep your account secure', 'wp-user-profiles' ) . '</li>' .
+			'<li>' . esc_html__( 'The language you pick will be used wherever it is supported.',             'wp-user-profiles' ) . '</li>' .
+			'<li>' . esc_html__( 'Sessions are logged from each device you login from',                      'wp-user-profiles' ) . '</li>' .
+			'<li>' . esc_html__( 'Application passwords allow authentication via non-interactive systems.',  'wp-user-profiles' ) . '</li>';
+
+		// Two-Factor Authentication
+		if ( wp_user_profiles_user_supports( 'two-factor-authentication' ) ) {
+			$content .= '<li>' . esc_html__( 'Two-Factor Authentication adds an extra layer of security to your account.', 'wp-user-profiles' ) . '</li>';
+		}
+
+		// Close the list
+		$content .= '</ul>';
+
+		// Add the help tab
 		get_current_screen()->add_help_tab( array(
 			'id'		=> $this->id,
 			'title'		=> $this->name,
-			'content'	=>
-				'<p>'  . esc_html__( 'This is where important account information can be found.',                'wp-user-profiles' ) . '</p><ul>' .
-				'<li>' . esc_html__( 'Your email address is used for receiving notifications from this site',    'wp-user-profiles' ) . '</li>' .
-				'<li>' . esc_html__( 'Passwords should be lengthy and complex to help keep your account secure', 'wp-user-profiles' ) . '</li>' .
-				'<li>' . esc_html__( 'The language you pick will be used wherever it is supported.',             'wp-user-profiles' ) . '</li>' .
-				'<li>' . esc_html__( 'Sessions are logged from each device you login from',                      'wp-user-profiles' ) . '</li>' .
-				'<li>' . esc_html__( 'Application passwords allow authentication via non-interactive systems.',  'wp-user-profiles' ) . '</li></ul>'
+			'content'	=> $content
 		) );
 	}
 }

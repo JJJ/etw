@@ -179,8 +179,65 @@ function wp_user_profiles_user_supports( $thing = '', $user_id = 0 ) {
 				$retval = true;
 			}
 			break;
+
+		// Two-Factor Authentication in WordPress 6.X
+		case 'two-factor-authentication' :
+			if ( defined( 'TWO_FACTOR_DIR' ) && class_exists( 'Two_Factor_Core' ) ) {
+				$retval = true;
+			}
+			break;
 	}
 
 	// Filter & return
-	return apply_filters( '', $retval, $thing, $user_id );
+	return (bool) apply_filters( 'wp_user_profiles_user_supports', $retval, $thing, $user_id );
+}
+
+/**
+ * Grant or revoke super admin status
+ *
+ * This function exists to assist with updating whether a user is an
+ * administrator to the entire installation.
+ *
+ * @since 2.5.1
+ *
+ * @param WP_User $user
+ * @return WP_User
+ */
+function wp_user_profiles_save_user_super_admin( $user = null ) {
+
+	// Bail if global is set
+	if ( isset( $GLOBALS['super_admins'] ) ) {
+		return $user;
+	}
+
+	// Bail if empty user ID
+	if ( empty( $user->ID ) ) {
+		return $user;
+	}
+
+	// Bail if not in network admin
+	if ( ! is_multisite() || ! is_network_admin() ) {
+		return $user;
+	}
+
+	// Bail if current user cannot manage network options
+	if ( ! current_user_can( 'manage_network_options' ) ) {
+		return $user;
+	}
+
+	// Bail if editing their own profile
+	if ( wp_is_profile_page() ) {
+		return $user;
+	}
+
+	// Determine which function to call
+	$func = empty( $_POST['super_admin'] )
+		? 'revoke_super_admin'
+		: 'grant_super_admin';
+
+	// Grant or revoke super admin status if requested.
+	call_user_func( $func, $user->ID );
+
+	// Return the user
+	return $user;
 }

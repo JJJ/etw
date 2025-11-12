@@ -42,12 +42,13 @@ add_action( 'wp_user_profiles_add_meta_boxes', 'wp_user_profiles_add_status_meta
 add_action( 'wp_user_profiles_admin_notices', 'wp_user_profiles_admin_notices' );
 
 // Admin Saving
-add_action( 'admin_init',                         'wp_user_profiles_save_user'           );
-add_action( 'wp_user_profiles_get_admin_notices', 'wp_user_profiles_save_user_notices'   );
-add_filter( 'wp_user_profiles_save',              'wp_user_profiles_update_global_admin' );
+add_action( 'admin_init',                                'wp_user_profiles_save_user'             );
+add_filter( 'wp_user_profiles_save',                     'wp_user_profiles_save_user_status'      );
+add_action( 'wp_user_profiles_get_admin_notices',        'wp_user_profiles_save_user_notices'     );
+add_filter( 'wp_user_profiles_save_permissions_section', 'wp_user_profiles_save_user_super_admin' );
 
 // Capabilities
-add_filter( 'map_meta_cap',     'wp_user_profiles_map_meta_cap', 10, 4 );
+add_filter( 'map_meta_cap', 'wp_user_profiles_map_meta_cap', 10, 4 );
 
 // Redirect
 add_filter( 'load-profile.php',   'wp_user_profiles_old_profile_redirect'   );
@@ -71,3 +72,14 @@ add_action( 'wp_user_profiles_nav_actions', 'wp_user_profiles_admin_subnav', 14 
 
 // BuddyPress
 add_action( 'bp_init', 'wp_user_profiles_unhook_bp_profile_nav' );
+
+// Two-Factor Core Plugin
+if ( wp_user_profiles_user_supports( 'two-factor-authentication' ) ) {
+
+	// Prevent Two-Factor from loading its assets.
+	remove_action( 'admin_enqueue_scripts', array( 'Two_Factor_Core', 'enqueue_assets' ) );
+
+	// Prevent Two-Factor from getting hooked to 'Other' tab.
+	remove_action( 'show_user_profile', array( 'Two_Factor_Core', 'user_two_factor_options' ) );
+	remove_action( 'edit_user_profile', array( 'Two_Factor_Core', 'user_two_factor_options' ) );
+}

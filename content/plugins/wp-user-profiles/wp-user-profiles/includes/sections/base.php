@@ -109,21 +109,38 @@ class WP_User_Profile_Section {
 			return;
 		}
 
-		// Get function arguments
-		$args = func_get_args();
+		// Get first function argument
+		$args = func_get_arg( 0 );
 
-		// Bail if first arg is not an array
-		if ( ! is_array( $args[0] ) || empty( $args[0] ) ) {
+		// Setup if first arg is an array and not empty
+		if ( is_array( $args ) || ! empty( $args ) ) {
+
+			// Setup
+			$this->setup( $args );
+
+			// Add hooks
+			$this->add_hooks();
+		}
+	}
+
+	/**
+	 * Setup the section.
+	 *
+	 * @since 2.5.1
+	 *
+	 * @param array $args
+	 *
+	 * @return void
+	 */
+	public function setup( $args = array() ) {
+
+		// Bail if no arguments
+		if ( empty( $args ) || ! is_array( $args ) ) {
 			return;
 		}
 
-		// Maybe return section if already set
-		if ( is_string( $args[0] ) && isset( $GLOBALS['wp_user_profile_sections'][ $args[0] ] ) ) {
-			return $GLOBALS['wp_user_profile_sections'][ $args[0] ];
-		}
-
 		// Bail if required fields are missing
-		if ( empty( $args[0]['id'] ) || empty( $args[0]['slug'] ) || empty( $args[0]['name'] ) || empty( $args[0]['icon'] ) ) {
+		if ( empty( $args['id'] ) || empty( $args['slug'] ) || empty( $args['name'] ) || empty( $args['icon'] ) ) {
 			return;
 		}
 
@@ -131,17 +148,30 @@ class WP_User_Profile_Section {
 		$this->errors = new WP_Error();
 
 		// Set object properties
-		$this->id      = isset( $args[0]['id']      ) ? $args[0]['id']      : '';
-		$this->slug    = isset( $args[0]['slug']    ) ? $args[0]['slug']    : '';
-		$this->name    = isset( $args[0]['name']    ) ? $args[0]['name']    : '';
-		$this->icon    = isset( $args[0]['icon']    ) ? $args[0]['icon']    : '';
-		$this->order   = isset( $args[0]['order']   ) ? $args[0]['order']   : '';
-		$this->cap     = isset( $args[0]['cap']     ) ? $args[0]['cap']     : '';
-		$this->parent  = isset( $args[0]['parent']  ) ? $args[0]['parent']  : '';
-		$this->subname = isset( $args[0]['subname'] ) ? $args[0]['subname'] : '';
+		$this->id      = isset( $args['id']      ) ? $args['id']      : '';
+		$this->slug    = isset( $args['slug']    ) ? $args['slug']    : '';
+		$this->name    = isset( $args['name']    ) ? $args['name']    : '';
+		$this->icon    = isset( $args['icon']    ) ? $args['icon']    : '';
+		$this->order   = isset( $args['order']   ) ? $args['order']   : '';
+		$this->cap     = isset( $args['cap']     ) ? $args['cap']     : '';
+		$this->parent  = isset( $args['parent']  ) ? $args['parent']  : '';
+		$this->subname = isset( $args['subname'] ) ? $args['subname'] : '';
 
 		// Setup the profile section
 		$GLOBALS['wp_user_profile_sections'][ $this->id ] = $this;
+	}
+
+	/**
+	 * Add actions and filters for this section.
+	 *
+	 * @since 2.5.1
+	 */
+	public function add_hooks() {
+
+		// Bail if no section ID
+		if ( empty( $this->id ) ) {
+			return;
+		}
 
 		// Saving
 		add_filter( 'wp_user_profiles_save', array( $this, 'action_save' ) );
@@ -157,11 +187,13 @@ class WP_User_Profile_Section {
 	 * Saving this section?
 	 *
 	 * @since 0.2.0
+	 *
+	 * @return WP_User
 	 */
 	public function action_save( $user = null ) {
 
-		// Bail if ID is empty or object is not a user
-		if ( empty( $this->id ) || ! is_a( $user, 'WP_User' ) ) {
+		// Bail if ID is empty
+		if ( empty( $this->id ) ) {
 			return $user;
 		}
 
@@ -184,10 +216,10 @@ class WP_User_Profile_Section {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param  string  $type
-	 * @param  array   $args
+	 * @param string $type
+	 * @param array  $args
 	 */
-	public function action_add_meta_boxes( $type = '', $args = null ) {
+	public function action_add_meta_boxes( $type = '', $args = array() ) {
 
 		// Bail if ID is empty
 		if ( empty( $this->id ) ) {
@@ -216,22 +248,28 @@ class WP_User_Profile_Section {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param  WP_User $user
+	 * @param WP_User $user
+	 * @return mixed Integer on success. WP_Error on failure.
 	 */
 	public function save( $user = null ) {
 
 		// Allow third party plugins to hook into this sections saving process
 		$user = apply_filters( "wp_user_profiles_save_{$this->id}_section", $user );
 
-		// Return errors if there are any
-		if ( is_wp_error( $user ) && $user->get_error_codes() ) {
-			return $user;
+		// This action is documented in wp-admin/includes/user.php
+		do_action_ref_array( 'user_profile_update_errors', array(
+			&$this->errors,
+			true,
+			&$user
+		) );
+
+		// Return (do not update) if there are any errors
+		if ( $this->errors->get_error_codes() || ( is_wp_error( $user ) && $user->get_error_codes() ) ) {
+			return $this->errors;
 		}
 
-		// Maybe save user status
-		if ( ! empty( $_POST['user_status'] ) ) {
-			wp_user_profiles_update_user_status( $user, sanitize_key( $_POST['user_status'] ) );
-		}
+		// Pre-clean the cache before updating
+		clean_user_cache( $user );
 
 		// Update the user in the database
 		return wp_update_user( $user );
@@ -242,11 +280,11 @@ class WP_User_Profile_Section {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param  string  $type
-	 * @param  WP_User $user
+	 * @param string $type
+	 * @param array  $args
 	 */
-	public function add_meta_boxes( $type = '', $user = null ) {
-		do_action( "wp_user_profiles_add_{$this->id}_meta_boxes", $type, $user );
+	public function add_meta_boxes( $type = '', $args = array() ) {
+		do_action( "wp_user_profiles_add_{$this->id}_meta_boxes", $type, $args );
 	}
 
 	/**

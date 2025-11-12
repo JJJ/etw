@@ -20,8 +20,31 @@ function wp_user_profiles_admin_register_scripts() {
 	$src = wp_user_profiles_get_plugin_url();
 	$ver = wp_user_profiles_get_asset_version();
 
+	// Append CSS directory
+	$src .= 'assets/css/';
+
+	// Minify?
+	if ( ! defined( 'SCRIPT_DEBUG' ) || ! SCRIPT_DEBUG ) {
+		$src .= 'min/';
+	}
+
+	// Right-to-Left?
+	if ( is_rtl() ) {
+		$src .= 'rtl/';
+	} else {
+		$src .= 'ltr/';
+	}
+
+	// Maybe add a trailing slash
+	if ( ! empty( $src ) ) {
+		$src = trailingslashit( $src );
+	}
+
+	// CSS Dependencies
+	$deps = array( 'dashboard', 'dashicons', 'edit' );
+
 	// Styles
-	wp_register_style( 'wp-user-profiles', $src . 'assets/css/user-profiles.css', array(), $ver );
+	wp_register_style( 'wp-user-profiles', $src . 'user-profiles.css', $deps, $ver );
 }
 
 /**
@@ -33,6 +56,7 @@ function wp_user_profiles_admin_register_scripts() {
  * @since 0.1.0
  */
 function wp_user_profiles_admin_enqueue_scripts() {
+
 
 	// Set location & version for scripts & styles
 	$src = wp_user_profiles_get_plugin_url();
@@ -63,7 +87,7 @@ function wp_user_profiles_admin_enqueue_scripts() {
 		? absint( $_GET['user_id'] )
 		: get_current_user_id();
 
-	// Only enqueue;
+	// Application Passwords
 	if ( wp_user_profiles_user_supports( 'application-passwords', $user_id ) ) {
 
 		// Replace the application-passwords script with our own
@@ -78,6 +102,23 @@ function wp_user_profiles_admin_enqueue_scripts() {
 		wp_scripts()->registered[ $handle ]->deps = $deps;
 		wp_scripts()->set_translations( $handle );
 	}
+
+	// Two-Factor Authentication
+	if ( wp_user_profiles_user_supports( 'two-factor-authentication', $user_id ) ) {
+
+		// Check for dependencies
+		$two_factor_fido_u2f_admin = constant( 'TWO_FACTOR_DIR' ) . 'providers/class-two-factor-fido-u2f-admin.php';
+		if ( ! class_exists( 'Two_Factor_FIDO_U2F_Admin' ) && file_exists( $two_factor_fido_u2f_admin ) ) {
+			require_once $two_factor_fido_u2f_admin;
+		}
+
+		// Two-Factor assets are not enqueued because WP User Profiles
+		// uses non-core $hook global values, so we manually enqueue them
+		// here and pass the necessary $hook value.
+		if ( class_exists( 'Two_Factor_FIDO_U2F_Admin' ) ) {
+			Two_Factor_FIDO_U2F_Admin::enqueue_assets( 'profile.php' );
+		}
+	}
 }
 
 /**
@@ -86,6 +127,10 @@ function wp_user_profiles_admin_enqueue_scripts() {
  * @since 0.1.0
  */
 function wp_user_profiles_admin_menus() {
+	global $title;
+
+	// Set the title
+	$title = esc_html__( 'Profile', 'wp-user-profiles' );
 
 	// Empty hooks array
 	$file     = wp_user_profiles_get_file();
@@ -223,7 +268,7 @@ function wp_user_profiles_admin_menus() {
  *
  * @since 2.0.0
  *
- * @param string $hook
+ * @param string $hook The current admin page.
  */
 function wp_user_profiles_admin_menu_hooks( $hook = '' ) {
 
@@ -242,8 +287,8 @@ function wp_user_profiles_admin_menu_hooks( $hook = '' ) {
  *
  * @since 0.1.0
  *
- * @global  string  $plugin_page
- * @global  string  $submenu_file
+ * @global  string  $plugin_page  The current plugin page
+ * @global  string  $submenu_file The current submenu file
  */
 function wp_user_profiles_admin_menu_highlight() {
 	global $plugin_page, $submenu_file;
@@ -294,8 +339,7 @@ function wp_user_profiles_admin_notices() {
 	}
 
 	// Check for conditional classes
-	$updated     = isset( $notice['classes'] ) && in_array( 'updated',        $notice['classes'], true );
-	$dismissible = isset( $notice['classes'] ) && in_array( 'is-dismissible', $notice['classes'], true ); ?>
+	$updated = isset( $notice['classes'] ) && in_array( 'updated', $notice['classes'], true ); ?>
 
 	<div id="message" class="<?php echo esc_attr( implode( ' ', $notice['classes'] ) ); ?>">
 
@@ -304,14 +348,6 @@ function wp_user_profiles_admin_notices() {
 		<?php if ( ! empty( $wp_http_referer ) && ( true === $updated ) ) : ?>
 
 			<p><a href="<?php echo esc_url( $wp_http_referer ); ?>"><?php esc_html_e( '&larr; Back to Users', 'wp-user-profiles' ); ?></a></p>
-
-		<?php endif; ?>
-
-		<?php if ( true === $dismissible ) : ?>
-
-			<button type="button" class="notice-dismiss">
-				<span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'wp-user-profiles' ); ?></span>
-			</button>
 
 		<?php endif; ?>
 
@@ -325,7 +361,7 @@ function wp_user_profiles_admin_notices() {
  *
  * @since 2.0.0
  *
- * @param WP_User $user
+ * @param WP_User|null $user User to create profile navigation for.
  *
  * @return array
  */
@@ -390,7 +426,7 @@ function wp_user_profiles_admin_show_subnav( $parent = '' ) {
  *
  * @since 0.1.0
  *
- * @param object|null $user User to create profile navigation for.
+ * @param WP_User|null $user User to create profile navigation for.
  *
  * @return string
  */
@@ -481,7 +517,7 @@ function wp_user_profiles_admin_nav( $user = null ) {
  *
  * @since 2.0.0
  *
- * @param object|null $user User to create profile navigation for.
+ * @param WP_User|null $user User to create profile navigation for.
  *
  * @return string
  */
@@ -628,10 +664,10 @@ function wp_user_profiles_title_actions() {
  * @since 0.1.0
  */
 function wp_user_profiles_user_admin() {
-	global $user_id;
+	global $user_id, $user_can_edit;
 
 	// Reset some global values
-	wp_reset_vars( array( 'action', 'user_id', 'wp_http_referer' ) );
+	wp_reset_vars( array( 'action', 'wp_http_referer' ) );
 
 	// Get user to edit
 	$user = wp_user_profiles_get_user_to_edit();
@@ -641,12 +677,19 @@ function wp_user_profiles_user_admin() {
 		? $user->ID
 		: 0;
 
+	// Compatibility with Classic Editor plugin
+	// See: https://github.com/WordPress/classic-editor/issues/158
+	$user_can_edit = current_user_can( 'edit_posts' ) || current_user_can( 'edit_pages' );
+
 	/**
 	 * Backwards compatibility for JIT metaboxes
 	 *
 	 * @since 0.2.0 Use `wp_user_profiles_add_meta_boxes` instead
 	 */
 	do_action( 'add_meta_boxes', get_current_screen()->id, $user );
+
+	// Remove the Classic Editor metabox
+	remove_meta_box( 'classic-editor-switch-editor', null, 'side' );
 
 	// Remove possible query arguments
 	$request_url = remove_query_arg( array(
@@ -673,7 +716,7 @@ function wp_user_profiles_user_admin() {
 		: '2'; ?>
 
 	<div class="wrap" id="wp-user-profiles-page">
-		<h1><?php
+		<h1 class="wp-heading-inline"><?php
 
 			// The page title
 			echo esc_html( $display_name );

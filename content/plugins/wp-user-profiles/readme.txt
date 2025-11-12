@@ -1,31 +1,48 @@
 === WP User Profiles ===
-Contributors: johnjamesjacoby, stuttter, baden03
-Tags: users, user, profile, edit, metabox
-Requires PHP: 7.2
+Author:            Triple J Software, Inc.
+Author URI:        https://jjj.software
+Plugin URI:        https://wordpress.org/plugins/wp-user-profiles/
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+License:           GPLv2 or later
+Contributors:      johnjamesjacoby, baden03
+Tags:              user, profile, edit, metabox
+Requires PHP:      7.2
 Requires at least: 5.2
-Tested up to: 5.6
-Stable tag: 2.5.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
+Tested up to:      6.6
+Stable tag:        2.6.2
 
 == Description ==
 
 WP User Profiles is a sophisticated way to edit users in WordPress.
 
-= Also checkout =
+* Includes all functionality from WordPress itself
+* Includes 4 top-level "Sections"
+* Includes an "Other" section to automatically work with third-party plugins
+* Each section includes 1 or more meta-boxes
+* Status meta-box allows easily changing user status
+* Works great with multisite Network and User Dashboards
+* Works great with WP User Groups and WP User Avatars plugins
 
-* [WP Chosen](https://wordpress.org/plugins/wp-chosen/ "Make long, unwieldy select boxes much more user-friendly.")
-* [WP Pretty Filters](https://wordpress.org/plugins/wp-pretty-filters/ "Makes post filters better match what's already in Media & Attachments.")
-* [WP Media Categories](https://wordpress.org/plugins/wp-media-categories/ "Add categories to media & attachments.")
-* [WP Term Order](https://wordpress.org/plugins/wp-term-order/ "Sort taxonomy terms, your way.")
-* [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
-* [WP Term Colors](https://wordpress.org/plugins/wp-term-colors/ "Pretty colors for categories, tags, and other taxonomy terms.")
-* [WP Term Icons](https://wordpress.org/plugins/wp-term-icons/ "Pretty icons for categories, tags, and other taxonomy terms.")
-* [WP Term Visibility](https://wordpress.org/plugins/wp-term-visibility/ "Visibilities for categories, tags, and other taxonomy terms.")
-* [WP User Groups](https://wordpress.org/plugins/wp-user-groups/ "Group users together with taxonomies & terms.")
+= Recommended Plugins =
+
+If you like this plugin, you'll probably like these!
+
+* [WP User Profiles](https://wordpress.org/plugins/wp-user-profiles/ "A sophisticated way to edit users in WordPress.")
 * [WP User Activity](https://wordpress.org/plugins/wp-user-activity/ "The best way to log activity in WordPress.")
 * [WP User Avatars](https://wordpress.org/plugins/wp-user-avatars/ "Allow users to upload avatars or choose them from your media library.")
+* [WP User Groups](https://wordpress.org/plugins/wp-user-groups/ "Group users together with taxonomies & terms.")
+* [WP User Signups](https://wordpress.org/plugins/wp-user-signups/ "The best way to manage user & site sign-ups in WordPress.")
+* [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
+* [WP Term Colors](https://wordpress.org/plugins/wp-term-colors/ "Pretty colors for categories, tags, and other taxonomy terms.")
+* [WP Term Families](https://wordpress.org/plugins/wp-term-families/ "Associate taxonomy terms with other taxonomy terms.")
+* [WP Term Icons](https://wordpress.org/plugins/wp-term-icons/ "Pretty icons for categories, tags, and other taxonomy terms.")
+* [WP Term Images](https://wordpress.org/plugins/wp-term-images/ "Pretty images for categories, tags, and other taxonomy terms.")
+* [WP Term Locks](https://wordpress.org/plugins/wp-term-locks/ "Protect categories, tags, and other taxonomy terms from being edited or deleted.")
+* [WP Term Order](https://wordpress.org/plugins/wp-term-order/ "Sort taxonomy terms, your way.")
+* [WP Term Visibility](https://wordpress.org/plugins/wp-term-visibility/ "Visibilities for categories, tags, and other taxonomy terms.")
+* [WP Media Categories](https://wordpress.org/plugins/wp-media-categories/ "Add categories to media & attachments.")
+* [WP Pretty Filters](https://wordpress.org/plugins/wp-pretty-filters/ "Makes post filters better match what's already in Media & Attachments.")
+* [WP Chosen](https://wordpress.org/plugins/wp-chosen/ "Make long, unwieldy select boxes much more user-friendly.")
 
 == Screenshots ==
 
@@ -52,13 +69,26 @@ Yes. There are a bunch of filters to add/remove sections, and their boxes & fiel
 
 = Where can I get support? =
 
-* https://wordpress.org/support/plugin/wp-user-profiles/
-
-= Where can I find documentation? =
-
-http://github.com/stuttter/wp-user-profiles
+* Community: https://wordpress.org/support/plugin/wp-user-profiles
+* Development: https://github.com/stuttter/wp-user-profiles/discussions
 
 == Changelog ==
+
+= [2.6.1] - 2021-05-29 =
+* Update author info
+* Add sponsor link
+
+= [2.6.0]- 2021-03-26 =
+* Improve compatibility with Classic Editor plugin
+* Fix some untranslatable strings
+* Fix styling for RTL languages
+* Add minified styling for production sites
+
+= [2.5.1]- 2021-03-24 =
+* Add support for Sending Password Reset Email, in WordPress 5.7
+* Fix bug causing unintended revocation of super admin abilities
+* Fix bug causing contact methods not to work
+* Fix some untranslatable strings
 
 = [2.5.0]- 2020-11-11 =
 * Add support for Application Passwords, in WordPress 5.6

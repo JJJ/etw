@@ -22,12 +22,12 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 	 * @since 0.2.0
 	 *
 	 * @param string $type
-	 * @param object $user
+	 * @param array  $args
 	 */
-	public function add_meta_boxes( $type = '', $user = null ) {
+	public function add_meta_boxes( $type = '', $args = array() ) {
 
 		// Allow third party plugins to add metaboxes
-		parent::add_meta_boxes( $type, $user );
+		parent::add_meta_boxes( $type, $args );
 
 		// Name
 		add_meta_box(
@@ -37,7 +37,7 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 			$type,
 			'normal',
 			'high',
-			$user
+			$args
 		);
 
 		// About
@@ -48,11 +48,11 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 			$type,
 			'normal',
 			'core',
-			$user
+			$args
 		);
 
 		// Contact, if methods are registered
-		if ( wp_get_user_contact_methods( $user ) ) {
+		if ( wp_get_user_contact_methods( $args['user'] ) ) {
 			add_meta_box(
 				'contact',
 				_x( 'Contact', 'users user-admin edit screen', 'wp-user-profiles' ),
@@ -60,7 +60,7 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 				$type,
 				'normal',
 				'low',
-				$user
+				$args
 			);
 		}
 	}
@@ -71,6 +71,7 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 	 * @since 0.2.0
 	 *
 	 * @param WP_User $user
+	 * @return mixed Integer on success. WP_Error on failure.
 	 */
 	public function save( $user = null ) {
 
@@ -82,22 +83,29 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 
 			// Invalid login
 			if ( ! validate_username( $user->user_login ) ) {
-				$this->errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.' ) );
+				$this->errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is invalid because it uses illegal characters. Please enter a valid username.', 'wp-user-profiles' ) );
 			}
 
 			// Login already exists
 			if ( username_exists( $user->user_login ) ) {
-				$this->errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.' ) );
+				$this->errors->add( 'user_login', __( '<strong>ERROR</strong>: This username is already registered. Please choose another one.', 'wp-user-profiles' ) );
 			}
 
 			// Checking that username has been typed
 			if ( empty( $user->user_login ) ) {
-				$this->errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.' ) );
+				$this->errors->add( 'user_login', __( '<strong>ERROR</strong>: Please enter a username.', 'wp-user-profiles' ) );
 			}
+		}
 
-			// Return if errored
-			if ( $this->errors->get_error_code() ) {
-				return $this->errors;
+		// Nickname
+		if ( isset( $_POST['nickname'] ) ) {
+
+			// Set the nick
+			$user->nickname = sanitize_text_field( $_POST['nickname'] );
+
+			// Nickname was empty
+			if ( empty( $user->nickname ) ) {
+				$this->errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.', 'wp-user-profiles' ) );
 			}
 		}
 
@@ -110,19 +118,6 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 		$user->last_name = isset( $_POST['last_name'] )
 			? sanitize_text_field( $_POST['last_name'] )
 			: '';
-
-		// Nickname
-		if ( isset( $_POST['nickname'] ) ) {
-
-			// Set the nick
-			$user->nickname = sanitize_text_field( $_POST['nickname'] );
-
-			// Nickname was empty
-			if ( empty( $user->nickname ) ) {
-				$this->errors->add( 'nickname', __( '<strong>ERROR</strong>: Please enter a nickname.' ) );
-				return $this->errors;
-			}
-		}
 
 		// Display
 		$user->display_name = isset( $_POST['display_name'] )
@@ -147,7 +142,7 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 				$protocols      = implode( '|', array_map( 'preg_quote', wp_allowed_protocols() ) );
 				$user->user_url = preg_match( '/^(' . $protocols . '):/is', $user->user_url )
 					? $user->user_url
-					: 'http://' . $user->user_url;
+					: 'https://' . $user->user_url;
 			}
 		}
 
@@ -162,7 +157,7 @@ class WP_User_Profile_Profile_Section extends WP_User_Profile_Section {
 		}
 
 		// Allow third party plugins to save data in this section
-		parent::save( $user );
+		return parent::save( $user );
 	}
 
 	/**

@@ -21,13 +21,13 @@ class WP_User_Profile_Options_Section extends WP_User_Profile_Section {
 	 *
 	 * @since 0.2.0
 	 *
-	 * @param  string  $type
-	 * @param  WP_User $user
+	 * @param string $type
+	 * @param array  $args
 	 */
-	public function add_meta_boxes( $type = '', $user = null ) {
+	public function add_meta_boxes( $type = '', $args = array() ) {
 
 		// Allow third party plugins to add metaboxes
-		parent::add_meta_boxes( $type, $user );
+		parent::add_meta_boxes( $type, $args );
 
 		// Color schemes (only if available)
 		if ( count( $GLOBALS['_wp_admin_css_colors'] ) && has_action( 'admin_color_scheme_picker' ) ) {
@@ -38,11 +38,11 @@ class WP_User_Profile_Options_Section extends WP_User_Profile_Section {
 				$type,
 				'normal',
 				'high',
-				$user
+				$args
 			);
 		}
 
-		// Color schemes
+		// Personal options
 		add_meta_box(
 			'options',
 			_x( 'Personal Options', 'users user-admin edit screen', 'wp-user-profiles' ),
@@ -50,7 +50,7 @@ class WP_User_Profile_Options_Section extends WP_User_Profile_Section {
 			$type,
 			'normal',
 			'core',
-			$user
+			$args
 		);
 	}
 
@@ -60,6 +60,7 @@ class WP_User_Profile_Options_Section extends WP_User_Profile_Section {
 	 * @since 0.2.0
 	 *
 	 * @param WP_User $user
+	 * @return mixed Integer on success. WP_Error on failure.
 	 */
 	public function save( $user = null ) {
 
@@ -70,6 +71,11 @@ class WP_User_Profile_Options_Section extends WP_User_Profile_Section {
 
 		// Double negative visual editor
 		$user->rich_editing = isset( $_POST['rich_editing'] )
+			? 'false'
+			: 'true';
+
+		// Double negative syntax highlighting
+		$user->syntax_highlighting = isset( $_POST['syntax_highlighting'] )
 			? 'false'
 			: 'true';
 
@@ -89,7 +95,7 @@ class WP_User_Profile_Options_Section extends WP_User_Profile_Section {
 			: 0;
 
 		// Allow third party plugins to save data in this section
-		parent::save( $user );
+		return parent::save( $user );
 	}
 
 	/**
