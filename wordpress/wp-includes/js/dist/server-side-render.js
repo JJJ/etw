@@ -1,444 +1,267 @@
-this["wp"] = this["wp"] || {}; this["wp"]["serverSideRender"] =
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/
-/******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "4dqW");
-/******/ })
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
 /************************************************************************/
-/******/ ({
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
 
-/***/ "1ZqX":
-/***/ (function(module, exports) {
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (/* binding */ index_default)
+});
 
-(function() { module.exports = window["wp"]["data"]; }());
+// UNUSED EXPORTS: ServerSideRender, useServerSideRender
 
-/***/ }),
-
-/***/ "4dqW":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__("wx14");
-
-// EXTERNAL MODULE: external ["wp","element"]
-var external_wp_element_ = __webpack_require__("GRId");
-
-// EXTERNAL MODULE: external ["wp","data"]
-var external_wp_data_ = __webpack_require__("1ZqX");
-
-// EXTERNAL MODULE: external ["wp","deprecated"]
-var external_wp_deprecated_ = __webpack_require__("NMb1");
-var external_wp_deprecated_default = /*#__PURE__*/__webpack_require__.n(external_wp_deprecated_);
-
-// EXTERNAL MODULE: external "lodash"
-var external_lodash_ = __webpack_require__("YLtl");
-
-// EXTERNAL MODULE: external ["wp","compose"]
-var external_wp_compose_ = __webpack_require__("K9lf");
-
-// EXTERNAL MODULE: external ["wp","i18n"]
-var external_wp_i18n_ = __webpack_require__("l3Sj");
-
-// EXTERNAL MODULE: external ["wp","apiFetch"]
-var external_wp_apiFetch_ = __webpack_require__("ywyh");
-var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_);
-
-// EXTERNAL MODULE: external ["wp","url"]
-var external_wp_url_ = __webpack_require__("Mmq9");
-
-// EXTERNAL MODULE: external ["wp","components"]
-var external_wp_components_ = __webpack_require__("tI+e");
-
-// EXTERNAL MODULE: external ["wp","blocks"]
-var external_wp_blocks_ = __webpack_require__("HSyU");
-
-// CONCATENATED MODULE: ./node_modules/@wordpress/server-side-render/build-module/server-side-render.js
-
-
-
-/**
- * External dependencies
- */
-
-/**
- * WordPress dependencies
- */
-
-
-
+;// external "ReactJSXRuntime"
+const external_ReactJSXRuntime_namespaceObject = window["ReactJSXRuntime"];
+;// external ["wp","element"]
+const external_wp_element_namespaceObject = window["wp"]["element"];
+;// external ["wp","i18n"]
+const external_wp_i18n_namespaceObject = window["wp"]["i18n"];
+;// external ["wp","components"]
+const external_wp_components_namespaceObject = window["wp"]["components"];
+;// external ["wp","data"]
+const external_wp_data_namespaceObject = window["wp"]["data"];
+;// external ["wp","compose"]
+const external_wp_compose_namespaceObject = window["wp"]["compose"];
+;// external ["wp","apiFetch"]
+const external_wp_apiFetch_namespaceObject = window["wp"]["apiFetch"];
+var external_wp_apiFetch_default = /*#__PURE__*/__webpack_require__.n(external_wp_apiFetch_namespaceObject);
+;// external ["wp","url"]
+const external_wp_url_namespaceObject = window["wp"]["url"];
+;// external ["wp","blocks"]
+const external_wp_blocks_namespaceObject = window["wp"]["blocks"];
+;// ./node_modules/@wordpress/server-side-render/build-module/hook.js
 
 
 
 
 
 function rendererPath(block, attributes = null, urlQueryArgs = {}) {
-  return Object(external_wp_url_["addQueryArgs"])(`/wp/v2/block-renderer/${block}`, {
-    context: 'edit',
-    ...(null !== attributes ? {
-      attributes
-    } : {}),
+  return (0,external_wp_url_namespaceObject.addQueryArgs)(`/wp/v2/block-renderer/${block}`, {
+    context: "edit",
+    ...null !== attributes ? { attributes } : {},
     ...urlQueryArgs
   });
 }
-
-function DefaultEmptyResponsePlaceholder({
-  className
-}) {
-  return Object(external_wp_element_["createElement"])(external_wp_components_["Placeholder"], {
-    className: className
-  }, Object(external_wp_i18n_["__"])('Block rendered as empty.'));
+function removeBlockSupportAttributes(attributes) {
+  const {
+    backgroundColor,
+    borderColor,
+    fontFamily,
+    fontSize,
+    gradient,
+    textColor,
+    className,
+    ...restAttributes
+  } = attributes;
+  const {
+    border,
+    color,
+    elements,
+    shadow,
+    spacing,
+    typography,
+    ...restStyles
+  } = attributes?.style || {};
+  return {
+    ...restAttributes,
+    style: restStyles
+  };
 }
-
-function DefaultErrorResponsePlaceholder({
-  response,
-  className
-}) {
-  const errorMessage = Object(external_wp_i18n_["sprintf"])( // translators: %s: error message describing the problem
-  Object(external_wp_i18n_["__"])('Error loading block: %s'), response.errorMsg);
-  return Object(external_wp_element_["createElement"])(external_wp_components_["Placeholder"], {
-    className: className
-  }, errorMessage);
-}
-
-function DefaultLoadingResponsePlaceholder({
-  className
-}) {
-  return Object(external_wp_element_["createElement"])(external_wp_components_["Placeholder"], {
-    className: className
-  }, Object(external_wp_element_["createElement"])(external_wp_components_["Spinner"], null));
-}
-
-function ServerSideRender(props) {
+function useServerSideRender(args) {
+  const [response, setResponse] = (0,external_wp_element_namespaceObject.useState)({ status: "idle" });
+  const shouldDebounceRef = (0,external_wp_element_namespaceObject.useRef)(false);
   const {
     attributes,
     block,
-    className,
-    httpMethod = 'GET',
-    urlQueryArgs,
-    EmptyResponsePlaceholder = DefaultEmptyResponsePlaceholder,
-    ErrorResponsePlaceholder = DefaultErrorResponsePlaceholder,
-    LoadingResponsePlaceholder = DefaultLoadingResponsePlaceholder
-  } = props;
-  const isMountedRef = Object(external_wp_element_["useRef"])(true);
-  const fetchRequestRef = Object(external_wp_element_["useRef"])();
-  const [response, setResponse] = Object(external_wp_element_["useState"])(null);
-  const prevProps = Object(external_wp_compose_["usePrevious"])(props);
-
-  function fetchData() {
-    if (!isMountedRef.current) {
-      return;
-    }
-
-    if (null !== response) {
-      setResponse(null);
-    }
-
-    const sanitizedAttributes = attributes && Object(external_wp_blocks_["__experimentalSanitizeBlockAttributes"])(block, attributes); // If httpMethod is 'POST', send the attributes in the request body instead of the URL.
-    // This allows sending a larger attributes object than in a GET request, where the attributes are in the URL.
-
-
-    const isPostRequest = 'POST' === httpMethod;
-    const urlAttributes = isPostRequest ? null : sanitizedAttributes !== null && sanitizedAttributes !== void 0 ? sanitizedAttributes : null;
-    const path = rendererPath(block, urlAttributes, urlQueryArgs);
-    const data = isPostRequest ? {
-      attributes: sanitizedAttributes !== null && sanitizedAttributes !== void 0 ? sanitizedAttributes : null
-    } : null; // Store the latest fetch request so that when we process it, we can
-    // check if it is the current request, to avoid race conditions on slow networks.
-
-    const fetchRequest = fetchRequestRef.current = external_wp_apiFetch_default()({
-      path,
-      data,
-      method: isPostRequest ? 'POST' : 'GET'
-    }).then(fetchResponse => {
-      if (isMountedRef.current && fetchRequest === fetchRequestRef.current && fetchResponse) {
-        setResponse(fetchResponse.rendered);
-      }
-    }).catch(error => {
-      if (isMountedRef.current && fetchRequest === fetchRequestRef.current) {
-        setResponse({
-          error: true,
-          errorMsg: error.message
-        });
-      }
-    });
-    return fetchRequest;
+    skipBlockSupportAttributes = false,
+    httpMethod = "GET",
+    urlQueryArgs
+  } = args;
+  let sanitizedAttributes = attributes && (0,external_wp_blocks_namespaceObject.__experimentalSanitizeBlockAttributes)(block, attributes);
+  if (skipBlockSupportAttributes) {
+    sanitizedAttributes = removeBlockSupportAttributes(sanitizedAttributes);
   }
-
-  const debouncedFetchData = Object(external_wp_compose_["useDebounce"])(fetchData, 500); // When the component unmounts, set isMountedRef to false. This will
-  // let the async fetch callbacks know when to stop.
-
-  Object(external_wp_element_["useEffect"])(() => () => {
-    isMountedRef.current = false;
-  }, []);
-  Object(external_wp_element_["useEffect"])(() => {
-    // Don't debounce the first fetch. This ensures that the first render
-    // shows data as soon as possible
-    if (prevProps === undefined) {
-      fetchData();
-    } else if (!Object(external_lodash_["isEqual"])(prevProps, props)) {
-      debouncedFetchData();
-    }
-  });
-
-  if (response === '') {
-    return Object(external_wp_element_["createElement"])(EmptyResponsePlaceholder, props);
-  } else if (!response) {
-    return Object(external_wp_element_["createElement"])(LoadingResponsePlaceholder, props);
-  } else if (response.error) {
-    return Object(external_wp_element_["createElement"])(ErrorResponsePlaceholder, Object(esm_extends["a" /* default */])({
-      response: response
-    }, props));
-  }
-
-  return Object(external_wp_element_["createElement"])(external_wp_element_["RawHTML"], {
-    className: className
-  }, response);
+  const isPostRequest = "POST" === httpMethod;
+  const urlAttributes = isPostRequest ? null : sanitizedAttributes;
+  const path = rendererPath(block, urlAttributes, urlQueryArgs);
+  const body = isPostRequest ? JSON.stringify({ attributes: sanitizedAttributes ?? null }) : void 0;
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    const controller = new AbortController();
+    const debouncedFetch = (0,external_wp_compose_namespaceObject.debounce)(
+      function() {
+        {
+          setResponse({ status: "loading" });
+          external_wp_apiFetch_default()({
+            path,
+            method: isPostRequest ? "POST" : "GET",
+            body,
+            headers: isPostRequest ? {
+              "Content-Type": "application/json"
+            } : {},
+            signal: controller.signal
+          }).then((res) => {
+            setResponse({
+              status: "success",
+              content: res ? res.rendered : ""
+            });
+          }).catch((error) => {
+            if (error.name === "AbortError") {
+              return;
+            }
+            setResponse({
+              status: "error",
+              error: error.message
+            });
+          }).finally(() => {
+            shouldDebounceRef.current = true;
+          });
+        }
+      },
+      shouldDebounceRef.current ? 500 : 0
+    );
+    debouncedFetch();
+    return () => {
+      controller.abort();
+      debouncedFetch.cancel();
+    };
+  }, [path, isPostRequest, body]);
+  return response;
 }
 
-// CONCATENATED MODULE: ./node_modules/@wordpress/server-side-render/build-module/index.js
+
+;// ./node_modules/@wordpress/server-side-render/build-module/server-side-render.js
 
 
 
-/**
- * WordPress dependencies
- */
 
 
-
-/**
- * Internal dependencies
- */
-
-
-/**
- * Constants
- */
 
 const EMPTY_OBJECT = {};
-const ExportedServerSideRender = Object(external_wp_data_["withSelect"])(select => {
-  const coreEditorSelect = select('core/editor');
-
-  if (coreEditorSelect) {
-    const currentPostId = coreEditorSelect.getCurrentPostId(); // For templates and template parts we use a custom ID format.
-    // Since they aren't real posts, we don't want to use their ID
-    // for server-side rendering. Since they use a string based ID,
-    // we can assume real post IDs are numbers.
-
-    if (currentPostId && typeof currentPostId === 'number') {
-      return {
-        currentPostId
-      };
+function DefaultEmptyResponsePlaceholder({ className }) {
+  return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Placeholder, { className, children: (0,external_wp_i18n_namespaceObject.__)("Block rendered as empty.") });
+}
+function DefaultErrorResponsePlaceholder({ message, className }) {
+  const errorMessage = (0,external_wp_i18n_namespaceObject.sprintf)(
+    // translators: %s: error message describing the problem
+    (0,external_wp_i18n_namespaceObject.__)("Error loading block: %s"),
+    message
+  );
+  return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Placeholder, { className, children: errorMessage });
+}
+function DefaultLoadingResponsePlaceholder({ children }) {
+  const [showLoader, setShowLoader] = (0,external_wp_element_namespaceObject.useState)(false);
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    const timeout = setTimeout(() => {
+      setShowLoader(true);
+    }, 1e3);
+    return () => clearTimeout(timeout);
+  }, []);
+  return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsxs)("div", { style: { position: "relative" }, children: [
+    showLoader && /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(
+      "div",
+      {
+        style: {
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          marginTop: "-9px",
+          marginLeft: "-9px"
+        },
+        children: /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_components_namespaceObject.Spinner, {})
+      }
+    ),
+    /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)("div", { style: { opacity: showLoader ? "0.3" : 1 }, children })
+  ] });
+}
+function ServerSideRender(props) {
+  const prevContentRef = (0,external_wp_element_namespaceObject.useRef)("");
+  const {
+    className,
+    EmptyResponsePlaceholder = DefaultEmptyResponsePlaceholder,
+    ErrorResponsePlaceholder = DefaultErrorResponsePlaceholder,
+    LoadingResponsePlaceholder = DefaultLoadingResponsePlaceholder,
+    ...restProps
+  } = props;
+  const { content, status, error } = useServerSideRender(restProps);
+  (0,external_wp_element_namespaceObject.useEffect)(() => {
+    if (content) {
+      prevContentRef.current = content;
     }
+  }, [content]);
+  if (status === "loading") {
+    return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(LoadingResponsePlaceholder, { ...props, children: !!prevContentRef.current && /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_element_namespaceObject.RawHTML, { className, children: prevContentRef.current }) });
   }
-
-  return EMPTY_OBJECT;
-})(({
+  if (status === "success" && !content) {
+    return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(EmptyResponsePlaceholder, { ...props });
+  }
+  if (status === "error") {
+    return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(ErrorResponsePlaceholder, { message: error, ...props });
+  }
+  return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(external_wp_element_namespaceObject.RawHTML, { className, children: content });
+}
+function ServerSideRenderWithPostId({
   urlQueryArgs = EMPTY_OBJECT,
-  currentPostId,
   ...props
-}) => {
-  const newUrlQueryArgs = Object(external_wp_element_["useMemo"])(() => {
+}) {
+  const currentPostId = (0,external_wp_data_namespaceObject.useSelect)((select) => {
+    const postId = select("core/editor")?.getCurrentPostId();
+    return postId && typeof postId === "number" ? postId : null;
+  }, []);
+  const newUrlQueryArgs = (0,external_wp_element_namespaceObject.useMemo)(() => {
     if (!currentPostId) {
       return urlQueryArgs;
     }
-
     return {
       post_id: currentPostId,
       ...urlQueryArgs
     };
   }, [currentPostId, urlQueryArgs]);
-  return Object(external_wp_element_["createElement"])(ServerSideRender, Object(esm_extends["a" /* default */])({
-    urlQueryArgs: newUrlQueryArgs
-  }, props));
-});
-
-if (window && window.wp && window.wp.components) {
-  window.wp.components.ServerSideRender = Object(external_wp_element_["forwardRef"])((props, ref) => {
-    external_wp_deprecated_default()('wp.components.ServerSideRender', {
-      since: '5.3',
-      alternative: 'wp.serverSideRender'
-    });
-    return Object(external_wp_element_["createElement"])(ExportedServerSideRender, Object(esm_extends["a" /* default */])({}, props, {
-      ref: ref
-    }));
-  });
+  return /* @__PURE__ */ (0,external_ReactJSXRuntime_namespaceObject.jsx)(ServerSideRender, { urlQueryArgs: newUrlQueryArgs, ...props });
 }
 
-/* harmony default export */ var build_module = __webpack_exports__["default"] = (ExportedServerSideRender);
+
+;// ./node_modules/@wordpress/server-side-render/build-module/index.js
 
 
-/***/ }),
+const ServerSideRenderCompat = ServerSideRenderWithPostId;
+ServerSideRenderCompat.ServerSideRender = ServerSideRenderWithPostId;
+ServerSideRenderCompat.useServerSideRender = useServerSideRender;
+var index_default = ServerSideRenderCompat;
 
-/***/ "GRId":
-/***/ (function(module, exports) {
 
-(function() { module.exports = window["wp"]["element"]; }());
-
-/***/ }),
-
-/***/ "HSyU":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["blocks"]; }());
-
-/***/ }),
-
-/***/ "K9lf":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["compose"]; }());
-
-/***/ }),
-
-/***/ "Mmq9":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["url"]; }());
-
-/***/ }),
-
-/***/ "NMb1":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["deprecated"]; }());
-
-/***/ }),
-
-/***/ "YLtl":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["lodash"]; }());
-
-/***/ }),
-
-/***/ "l3Sj":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["i18n"]; }());
-
-/***/ }),
-
-/***/ "tI+e":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["components"]; }());
-
-/***/ }),
-
-/***/ "wx14":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _extends; });
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-/***/ }),
-
-/***/ "ywyh":
-/***/ (function(module, exports) {
-
-(function() { module.exports = window["wp"]["apiFetch"]; }());
-
-/***/ })
-
-/******/ })["default"];
+(window.wp = window.wp || {}).serverSideRender = __webpack_exports__["default"];
+/******/ })()
+;

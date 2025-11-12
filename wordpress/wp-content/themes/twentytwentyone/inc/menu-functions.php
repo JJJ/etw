@@ -13,7 +13,7 @@
  */
 
 /**
- * Add a button to top-level menu items that has sub-menus.
+ * Adds a button to top-level menu items that has sub-menus.
  * An icon is added using CSS depending on the value of aria-expanded.
  *
  * @since Twenty Twenty-One 1.0
@@ -25,12 +25,15 @@
  * @return string Nav menu item start element.
  */
 function twenty_twenty_one_add_sub_menu_toggle( $output, $item, $depth, $args ) {
-	if ( 0 === $depth && in_array( 'menu-item-has-children', $item->classes, true ) ) {
+	if ( 'primary' === $args->theme_location
+		&& 0 === $depth && in_array( 'menu-item-has-children', $item->classes, true )
+	) {
 
 		// Add toggle button.
 		$output .= '<button class="sub-menu-toggle" aria-expanded="false" onClick="twentytwentyoneExpandSubMenu(this)">';
 		$output .= '<span class="icon-plus">' . twenty_twenty_one_get_icon_svg( 'ui', 'plus', 18 ) . '</span>';
 		$output .= '<span class="icon-minus">' . twenty_twenty_one_get_icon_svg( 'ui', 'minus', 18 ) . '</span>';
+		/* translators: Hidden accessibility text. */
 		$output .= '<span class="screen-reader-text">' . esc_html__( 'Open menu', 'twentytwentyone' ) . '</span>';
 		$output .= '</button>';
 	}
@@ -87,11 +90,15 @@ add_filter( 'walker_nav_menu_start_el', 'twenty_twenty_one_nav_menu_social_icons
  * @return stdClass
  */
 function twenty_twenty_one_add_menu_description_args( $args, $item, $depth ) {
-	$args->link_after = '';
+	if ( '</span>' !== $args->link_after ) {
+		$args->link_after = '';
+	}
+
 	if ( 0 === $depth && isset( $item->description ) && $item->description ) {
 		// The extra <span> element is here for styling purposes: Allows the description to not be underlined on hover.
 		$args->link_after = '<p class="menu-item-description"><span>' . $item->description . '</span></p>';
 	}
+
 	return $args;
 }
 add_filter( 'nav_menu_item_args', 'twenty_twenty_one_add_menu_description_args', 10, 3 );
