@@ -20,7 +20,7 @@ function flox_get_default_network_options() {
 	$timestamp = 1408167226;
 
 	// Stuttter Specific
-	$network_wide_plugins['brutus/brutus.php']                           = $timestamp;
+//	$network_wide_plugins['brutus/brutus.php']                           = $timestamp;
 	$network_wide_plugins['user-switching/user-switching.php']           = $timestamp;
 	$network_wide_plugins['wp-chosen/wp-chosen.php']                     = $timestamp;
 	$network_wide_plugins['wp-comment-humility/wp-comment-humility.php'] = $timestamp;
