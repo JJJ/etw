@@ -1,35 +1,90 @@
 {
-	"name"       : "johnbillion/user-switching",
-	"description": "WordPress plugin that provides instant switching between user accounts.",
-	"homepage"   : "https://github.com/johnbillion/user-switching",
-	"type"       : "wordpress-plugin",
-	"license"    : "GPL-2.0+",
-	"authors"    : [
+	"name": "johnbillion/user-switching",
+	"description": "Instant switching between user accounts in WordPress.",
+	"license": "GPL-2.0-or-later",
+	"type": "wordpress-plugin",
+	"authors": [
 		{
-			"name"    : "John Blackbourn",
+			"name": "John Blackbourn",
 			"homepage": "https://johnblackbourn.com/"
 		}
 	],
+	"homepage": "https://github.com/johnbillion/user-switching/",
 	"support": {
 		"issues": "https://github.com/johnbillion/user-switching/issues",
 		"forum": "https://wordpress.org/support/plugin/user-switching",
-		"source": "https://github.com/johnbillion/user-switching"
+		"source": "https://github.com/johnbillion/user-switching",
+		"security": "https://patchstack.com/database/vdp/user-switching"
 	},
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/johnbillion"
+		}
+	],
 	"require": {
-		"composer/installers": "~1.0"
+		"php": ">=7.4",
+		"composer/installers": "^1.0 || ^2.0"
 	},
-	"require-dev" : {
-		"behat/behat": "~3.0",
-		"behat/mink-extension": "~2.0",
-		"behat/mink-goutte-driver": "~1.1",
-		"johnbillion/wordpress-behat-extension": ">=0.1.3",
-		"johnpbloch/wordpress": ">=4.3.0@stable",
-		"phpunit/phpunit": ">=3.7@stable"
-    },
-    "config": {
-        "bin-dir": "bin/"
-    },
-    "extra": {
-        "wordpress-install-dir": "vendor/wordpress"
-    }
+	"require-dev": {
+		"johnbillion/plugin-infrastructure": "2.0.0",
+		"johnbillion/wp-compat": "1.3.0",
+		"phpcompatibility/phpcompatibility-wp": "2.1.7",
+		"phpstan/phpstan": "2.1.31",
+		"phpstan/phpstan-phpunit": "2.0.7",
+		"swissspidy/phpstan-no-private": "1.0.0",
+		"szepeviktor/phpstan-wordpress": "2.0.2",
+		"wp-coding-standards/wpcs": "3.2.0"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"UserSwitching\\Tests\\": "tests/integration"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"roots/wordpress-core-installer": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"classmap-authoritative": true,
+		"preferred-install": "dist",
+		"prepend-autoloader": false,
+		"sort-packages": true
+	},
+	"extra": {
+		"wordpress-install-dir": "vendor/wordpress/wordpress"
+	},
+	"scripts": {
+		"test": [
+			"@composer validate --strict --no-check-lock",
+			"@test:phpstan",
+			"@test:start",
+			"@test:integration",
+			"@test:acceptance",
+			"@test:phpcs",
+			"@test:stop"
+		],
+		"test:acceptance": [
+			"acceptance-tests"
+		],
+		"test:destroy": [
+			"tests-destroy"
+		],
+		"test:integration": [
+			"integration-tests"
+		],
+		"test:phpcs": [
+			"phpcs -ps --colors --report-code --report-summary --report-width=80 --basepath='./' ."
+		],
+		"test:phpstan": [
+			"phpstan analyze -v --memory-limit=1024M"
+		],
+		"test:start": [
+			"tests-start"
+		],
+		"test:stop": [
+			"tests-stop"
+		]
+	}
 }
